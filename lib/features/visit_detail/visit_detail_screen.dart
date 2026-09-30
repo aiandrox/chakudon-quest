@@ -10,6 +10,8 @@ import '../records/record_repository.dart';
 import '../records/visit_history.dart';
 import '../records/visit_photo.dart';
 import '../records/wait_time.dart';
+import '../scoring/points_breakdown_view.dart';
+import '../scoring/scoring_providers.dart';
 import 'visit_edit_screen.dart';
 
 class VisitDetailScreen extends ConsumerWidget {
@@ -72,6 +74,7 @@ class VisitDetailScreen extends ConsumerWidget {
     }
     final visit = entry.visit;
     final previous = previousVisitAtShop(visits, visit);
+    final scored = ref.watch(scoredVisitByIdProvider)[visit.id];
     final textTheme = Theme.of(context).textTheme;
     final style = visit.style;
     final waited = waitMinutes(visit);
@@ -138,6 +141,25 @@ class VisitDetailScreen extends ConsumerWidget {
                 if (visit.memo.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   Text(visit.memo, style: textTheme.bodyLarge),
+                ],
+                if (scored != null) ...[
+                  const Divider(height: 32),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l10n.pointsSection,
+                          style: textTheme.titleMedium,
+                        ),
+                      ),
+                      Text(
+                        l10n.points(scored.points.total),
+                        style: textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  PointsBreakdownView(scored: scored),
                 ],
                 if (previous != null) ...[
                   const Divider(height: 32),

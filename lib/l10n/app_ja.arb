@@ -5,7 +5,6 @@
   "homeLoadFailed": "記録を読み込めませんでした",
   "addRecord": "記録する",
   "recordTitle": "記録する",
-  "recordSaved": "着丼！記録しました",
   "recordSaveFailed": "保存できませんでした。もう一度お試しください",
   "save": "着丼！",
   "takePhoto": "カメラで撮る",
@@ -117,5 +116,61 @@
     "placeholders": {
       "minutes": {"type": "int"}
     }
-  }
+  },
+  "rankApprentice": "見習い冒険者",
+  "rankTraveler": "麺の旅人",
+  "rankHero": "行列の勇者",
+  "rankLegend": "伝説の麺道士",
+  "points": "{points} pt",
+  "@points": {
+    "placeholders": {
+      "points": {"type": "int"}
+    }
+  },
+  "pointsGained": "+{points} pt",
+  "@pointsGained": {
+    "placeholders": {
+      "points": {"type": "int"}
+    }
+  },
+  "pointsSection": "獲得ポイント",
+  "pointsBase": "基本",
+  "pointsWait": "待ち時間 {minutes}分",
+  "@pointsWait": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "pointsFirstVisit": "初訪問",
+  "pointsRetry": "再挑戦成功",
+  "pointsHours": "営業時間（{label}）",
+  "@pointsHours": {
+    "placeholders": {
+      "label": {"type": "String"}
+    }
+  },
+  "pointsMultiplier": "×{multiplier}",
+  "@pointsMultiplier": {
+    "placeholders": {
+      "multiplier": {"type": "String"}
+    }
+  },
+  "pointsRetreat": "撤退の記録にポイントはつきません",
+  "totalPoints": "累計 {points} pt",
+  "@totalPoints": {
+    "placeholders": {
+      "points": {"type": "int"}
+    }
+  },
+  "nextRank": "「{rank}」まで あと {points} pt",
+  "@nextRank": {
+    "placeholders": {
+      "rank": {"type": "String"},
+      "points": {"type": "int"}
+    }
+  },
+  "maxRank": "最高ランクに到達しました",
+  "rankUp": "ランクアップ！",
+  "resultTitle": "着丼！",
+  "resultOk": "OK"
 }

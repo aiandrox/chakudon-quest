@@ -1,0 +1,71 @@
+import 'package:flutter/material.dart';
+
+import '../../l10n/app_localizations.dart';
+import '../records/labels.dart';
+import '../records/models.dart';
+import '../records/wait_time.dart';
+import 'points.dart';
+
+/// 1件の記録で得たポイントの内訳。0点の項目は出さない。
+class PointsBreakdownView extends StatelessWidget {
+  const PointsBreakdownView({super.key, required this.scored});
+
+  final ScoredVisit scored;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    if (scored.visit.result != VisitResult.eaten) {
+      return Text(l10n.pointsRetreat, style: textTheme.bodyMedium);
+    }
+    final points = scored.points;
+    final rows = [
+      (l10n.pointsBase, points.base),
+      (l10n.pointsWait(waitMinutes(scored.visit) ?? 0), points.waitBonus),
+      (l10n.isLimited, points.limitedBonus),
+      (l10n.hasTicket, points.ticketBonus),
+      (l10n.pointsFirstVisit, points.firstVisitBonus),
+      (l10n.pointsRetry, points.retryBonus),
+    ];
+
+    return Column(
+      children: [
+        for (final (label, value) in rows)
+          if (value > 0) _Row(label: label, value: l10n.pointsGained(value)),
+        if (points.hoursType != HoursType.normal)
+          _Row(
+            label: l10n.pointsHours(hoursTypeLabel(l10n, points.hoursType)),
+            value: l10n.pointsMultiplier(
+              _format(hoursMultiplier(points.hoursType)),
+            ),
+          ),
+      ],
+    );
+  }
+
+  String _format(double multiplier) => multiplier == multiplier.roundToDouble()
+      ? multiplier.toStringAsFixed(0)
+      : multiplier.toString();
+}
+
+class _Row extends StatelessWidget {
+  const _Row({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: textTheme.bodyMedium)),
+          Text(value, style: textTheme.bodyMedium),
+        ],
+      ),
+    );
+  }
+}

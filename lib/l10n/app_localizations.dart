@@ -124,12 +124,6 @@ abstract class AppLocalizations {
   /// **'記録する'**
   String get recordTitle;
 
-  /// No description provided for @recordSaved.
-  ///
-  /// In ja, this message translates to:
-  /// **'着丼！記録しました'**
-  String get recordSaved;
-
   /// No description provided for @recordSaveFailed.
   ///
   /// In ja, this message translates to:
@@ -621,6 +615,126 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'待ち時間 {minutes}分'**
   String waitTime(int minutes);
+
+  /// No description provided for @rankApprentice.
+  ///
+  /// In ja, this message translates to:
+  /// **'見習い冒険者'**
+  String get rankApprentice;
+
+  /// No description provided for @rankTraveler.
+  ///
+  /// In ja, this message translates to:
+  /// **'麺の旅人'**
+  String get rankTraveler;
+
+  /// No description provided for @rankHero.
+  ///
+  /// In ja, this message translates to:
+  /// **'行列の勇者'**
+  String get rankHero;
+
+  /// No description provided for @rankLegend.
+  ///
+  /// In ja, this message translates to:
+  /// **'伝説の麺道士'**
+  String get rankLegend;
+
+  /// No description provided for @points.
+  ///
+  /// In ja, this message translates to:
+  /// **'{points} pt'**
+  String points(int points);
+
+  /// No description provided for @pointsGained.
+  ///
+  /// In ja, this message translates to:
+  /// **'+{points} pt'**
+  String pointsGained(int points);
+
+  /// No description provided for @pointsSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'獲得ポイント'**
+  String get pointsSection;
+
+  /// No description provided for @pointsBase.
+  ///
+  /// In ja, this message translates to:
+  /// **'基本'**
+  String get pointsBase;
+
+  /// No description provided for @pointsWait.
+  ///
+  /// In ja, this message translates to:
+  /// **'待ち時間 {minutes}分'**
+  String pointsWait(int minutes);
+
+  /// No description provided for @pointsFirstVisit.
+  ///
+  /// In ja, this message translates to:
+  /// **'初訪問'**
+  String get pointsFirstVisit;
+
+  /// No description provided for @pointsRetry.
+  ///
+  /// In ja, this message translates to:
+  /// **'再挑戦成功'**
+  String get pointsRetry;
+
+  /// No description provided for @pointsHours.
+  ///
+  /// In ja, this message translates to:
+  /// **'営業時間（{label}）'**
+  String pointsHours(String label);
+
+  /// No description provided for @pointsMultiplier.
+  ///
+  /// In ja, this message translates to:
+  /// **'×{multiplier}'**
+  String pointsMultiplier(String multiplier);
+
+  /// No description provided for @pointsRetreat.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退の記録にポイントはつきません'**
+  String get pointsRetreat;
+
+  /// No description provided for @totalPoints.
+  ///
+  /// In ja, this message translates to:
+  /// **'累計 {points} pt'**
+  String totalPoints(int points);
+
+  /// No description provided for @nextRank.
+  ///
+  /// In ja, this message translates to:
+  /// **'「{rank}」まで あと {points} pt'**
+  String nextRank(String rank, int points);
+
+  /// No description provided for @maxRank.
+  ///
+  /// In ja, this message translates to:
+  /// **'最高ランクに到達しました'**
+  String get maxRank;
+
+  /// No description provided for @rankUp.
+  ///
+  /// In ja, this message translates to:
+  /// **'ランクアップ！'**
+  String get rankUp;
+
+  /// No description provided for @resultTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'着丼！'**
+  String get resultTitle;
+
+  /// No description provided for @resultOk.
+  ///
+  /// In ja, this message translates to:
+  /// **'OK'**
+  String get resultOk;
 }
 
 class _AppLocalizationsDelegate

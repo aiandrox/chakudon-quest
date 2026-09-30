@@ -82,7 +82,7 @@ void main() {
     controller().setRating(4);
     expect(state().canSave, isTrue);
 
-    expect(await controller().save(), isTrue);
+    expect(await controller().save(), isNotNull);
 
     final entry = (await visits()).single;
     expect(entry.shop.name, '麺屋テスト');
@@ -106,7 +106,7 @@ void main() {
 
     controller().setManualName('電波のない店');
     controller().setRating(3);
-    expect(await controller().save(), isTrue);
+    expect(await controller().save(), isNotNull);
 
     final entry = (await visits()).single;
     expect(entry.shop.name, '電波のない店');
@@ -124,7 +124,7 @@ void main() {
     controller().setRating(3);
 
     expect(state().searchFailure, ShopSearchFailure.searchFailed);
-    expect(await controller().save(), isTrue);
+    expect(await controller().save(), isNotNull);
     expect((await visits()).single.shop.name, '遅い回線の店');
   });
 
@@ -142,7 +142,7 @@ void main() {
 
     controller().setManualName('手入力の店');
     controller().setRating(5);
-    expect(await controller().save(), isTrue);
+    expect(await controller().save(), isNotNull);
 
     final entry = (await visits()).single;
     expect(entry.shop.name, '手入力の店');
@@ -168,7 +168,7 @@ void main() {
 
     controller().setManualName('地図にない店');
     controller().setRating(2);
-    expect(await controller().save(), isTrue);
+    expect(await controller().save(), isNotNull);
   });
 
   test('カメラをキャンセルしても、写真なしで保存できる', () async {
@@ -182,7 +182,7 @@ void main() {
 
     controller().setManualName('写真なしの店');
     controller().setRating(3);
-    expect(await controller().save(), isTrue);
+    expect(await controller().save(), isNotNull);
 
     final entry = (await visits()).single;
     expect(entry.visit.photoPath, isNull);
@@ -228,7 +228,7 @@ void main() {
 
     expect(state().manualName, '');
     expect(state().hoursType, HoursType.fewDays);
-    expect(await controller().save(), isTrue);
+    expect(await controller().save(), isNotNull);
     expect(
       await container.read(recordRepositoryProvider).allShops(),
       hasLength(1),
@@ -334,7 +334,7 @@ void main() {
       expect(state().isCheckinShopSelected, isTrue);
 
       controller().setRating(5);
-      expect(await controller().save(), isTrue);
+      expect(await controller().save(), isNotNull);
 
       final entry = (await visits()).single;
       expect(entry.shop.name, '並んだ店');
@@ -464,11 +464,11 @@ void main() {
     await controller().start();
     await pumpEventQueue();
 
-    expect(await controller().save(), isFalse);
+    expect(await controller().save(), isNull);
     controller().setRating(3);
-    expect(await controller().save(), isFalse);
+    expect(await controller().save(), isNull);
     controller().setManualName('   ');
-    expect(await controller().save(), isFalse);
+    expect(await controller().save(), isNull);
     expect(await visits(), isEmpty);
   });
 
@@ -479,7 +479,7 @@ void main() {
     controller().setRating(3);
     await container.read(appDatabaseProvider).close();
 
-    expect(await controller().save(), isFalse);
+    expect(await controller().save(), isNull);
 
     expect(state().isSaving, isFalse);
     expect(state().canSave, isTrue);

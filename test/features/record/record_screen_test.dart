@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
+import 'package:chakudon_quest/features/record/record_result_screen.dart';
 import 'package:chakudon_quest/features/record/record_screen.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
@@ -30,6 +31,8 @@ void main() {
       ProviderScope(
         overrides: [
           appDatabaseProvider.overrideWithValue(database),
+          // driftの監視はテストの偽の時間の中で止まってしまうため、一覧は固定の値にする。
+          visitsProvider.overrideWithValue(const AsyncData([])),
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           locationServiceProvider.overrideWithValue(
             FakeLocationService(position: const GeoPoint(35.0, 139.0)),
@@ -67,7 +70,7 @@ void main() {
     );
   });
 
-  testWidgets('候補の店と出典を表示し、店と★を選ぶと「着丼！」で保存して閉じる', (tester) async {
+  testWidgets('候補の店と出典を表示し、店と★を選ぶと「着丼！」で保存して結果を見せる', (tester) async {
     await pumpScreen(tester);
 
     expect(find.text('麺屋テスト'), findsOneWidget);
@@ -85,9 +88,12 @@ void main() {
       await tester.tap(saveButton);
       await Future<void>.delayed(const Duration(milliseconds: 200));
     });
-    await tester.pumpAndSettle();
+    // 結果の画面は読み込み中の表示が回り続けるため、一定時間だけ進める。
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
     expect(find.byType(RecordScreen), findsNothing);
+    expect(find.byType(RecordResultScreen), findsOneWidget);
     final visits = await tester.runAsync(
       () => RecordRepository(database).watchVisits().first,
     );

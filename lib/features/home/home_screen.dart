@@ -11,6 +11,8 @@ import '../records/date_format.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_photo.dart';
+import '../scoring/rank_progress.dart';
+import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -34,14 +36,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _openRecord({String? recoveredPhotoPath}) async {
-    final saved = await Navigator.of(context).push<bool>(
+    await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (_) => RecordScreen(recoveredPhotoPath: recoveredPhotoPath),
       ),
-    );
-    if (saved != true || !mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).recordSaved)),
     );
   }
 
@@ -67,6 +65,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(title: Text(l10n.appName)),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: RankProgress(totalPoints: ref.watch(totalPointsProvider)),
+          ),
           if (checkin != null) CheckinBanner(checkin: checkin),
           Expanded(child: _buildVisits(l10n, visits)),
         ],
@@ -119,16 +121,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-class _VisitTile extends StatelessWidget {
+class _VisitTile extends ConsumerWidget {
   const _VisitTile({required this.entry});
 
   final VisitWithShop entry;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final visit = entry.visit;
     final rating = visit.rating;
+    final points = ref.watch(scoredVisitByIdProvider)[visit.id]?.points.total;
     const textStyle = TextStyle(color: Colors.white, height: 1.2);
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
@@ -180,6 +183,8 @@ class _VisitTile extends StatelessWidget {
                   [
                     formatDate(visit.eatenAt),
                     if (rating != null) l10n.ratingStar(rating),
+                    if (points != null && visit.result == VisitResult.eaten)
+                      l10n.pointsGained(points),
                   ].join('  '),
                   style: textStyle.copyWith(fontSize: 12),
                 ),
