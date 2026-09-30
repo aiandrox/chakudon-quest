@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/checkin/checkin_controller.dart';
+import 'package:chakudon_quest/features/map/map_screen.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
@@ -36,7 +37,7 @@ void main() {
     expect(find.text(ja.checkinButton), findsOneWidget);
   });
 
-  testWidgets('下のタブでクエストと統計に切り替えられる', (tester) async {
+  testWidgets('下のタブでクエスト・統計・地図に切り替えられる。地図は開いたときだけ作る', (tester) async {
     await pumpApp(tester, const []);
 
     await tester.tap(find.text(ja.navQuests));
@@ -49,6 +50,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(ja.statsEmpty), findsOneWidget);
+    expect(find.byType(MapScreen), findsNothing);
+
+    await tester.tap(find.text(ja.navMap));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MapScreen), findsOneWidget);
+    expect(find.text(ja.mapEmpty), findsOneWidget);
   });
 
   testWidgets('記録があるときは店名・★・ポイントと、ランクを表示する', (tester) async {

@@ -916,6 +916,54 @@ abstract class AppLocalizations {
   /// **'その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）'**
   String get statsShopRanksNote;
 
+  /// No description provided for @navMap.
+  ///
+  /// In ja, this message translates to:
+  /// **'地図'**
+  String get navMap;
+
+  /// No description provided for @mapAttribution.
+  ///
+  /// In ja, this message translates to:
+  /// **'OpenStreetMap contributors'**
+  String get mapAttribution;
+
+  /// No description provided for @mapTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'行った店の地図'**
+  String get mapTitle;
+
+  /// No description provided for @mapEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'位置のわかる店がまだありません。カメラで撮って、近くの店の候補から選ぶと地図に出ます'**
+  String get mapEmpty;
+
+  /// No description provided for @mapShopBowls.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}杯'**
+  String mapShopBowls(int count);
+
+  /// No description provided for @mapShopRetreats.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退 {count}回'**
+  String mapShopRetreats(int count);
+
+  /// No description provided for @mapLastVisit.
+  ///
+  /// In ja, this message translates to:
+  /// **'最後に行った日 {date}'**
+  String mapLastVisit(String date);
+
+  /// No description provided for @mapShopRank.
+  ///
+  /// In ja, this message translates to:
+  /// **'店ランク {rank}'**
+  String mapShopRank(String rank);
+
   /// No description provided for @statsBestPoints.
   ///
   /// In ja, this message translates to:
