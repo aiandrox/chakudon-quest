@@ -795,6 +795,84 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'クエスト達成！'**
   String get questAchieved;
+
+  /// No description provided for @navStats.
+  ///
+  /// In ja, this message translates to:
+  /// **'統計'**
+  String get navStats;
+
+  /// No description provided for @statsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'統計'**
+  String get statsTitle;
+
+  /// No description provided for @statsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録が増えると、ここに統計が出ます'**
+  String get statsEmpty;
+
+  /// No description provided for @statsThisYear.
+  ///
+  /// In ja, this message translates to:
+  /// **'今年の杯数'**
+  String get statsThisYear;
+
+  /// No description provided for @statsTotal.
+  ///
+  /// In ja, this message translates to:
+  /// **'累計の杯数'**
+  String get statsTotal;
+
+  /// No description provided for @bowls.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}杯'**
+  String bowls(int count);
+
+  /// No description provided for @statsStyles.
+  ///
+  /// In ja, this message translates to:
+  /// **'系統の割合'**
+  String get statsStyles;
+
+  /// No description provided for @styleUnset.
+  ///
+  /// In ja, this message translates to:
+  /// **'系統なし'**
+  String get styleUnset;
+
+  /// No description provided for @percent.
+  ///
+  /// In ja, this message translates to:
+  /// **'{percent}%'**
+  String percent(int percent);
+
+  /// No description provided for @statsFrequent.
+  ///
+  /// In ja, this message translates to:
+  /// **'よく行く店'**
+  String get statsFrequent;
+
+  /// No description provided for @statsShopRanks.
+  ///
+  /// In ja, this message translates to:
+  /// **'店ランク'**
+  String get statsShopRanks;
+
+  /// No description provided for @statsShopRanksNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）'**
+  String get statsShopRanksNote;
+
+  /// No description provided for @statsBestPoints.
+  ///
+  /// In ja, this message translates to:
+  /// **'最高 {points} pt'**
+  String statsBestPoints(int points);
 }
 
 class _AppLocalizationsDelegate

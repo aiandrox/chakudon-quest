@@ -392,4 +392,50 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get questAchieved => 'クエスト達成！';
+
+  @override
+  String get navStats => '統計';
+
+  @override
+  String get statsTitle => '統計';
+
+  @override
+  String get statsEmpty => '記録が増えると、ここに統計が出ます';
+
+  @override
+  String get statsThisYear => '今年の杯数';
+
+  @override
+  String get statsTotal => '累計の杯数';
+
+  @override
+  String bowls(int count) {
+    return '$count杯';
+  }
+
+  @override
+  String get statsStyles => '系統の割合';
+
+  @override
+  String get styleUnset => '系統なし';
+
+  @override
+  String percent(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get statsFrequent => 'よく行く店';
+
+  @override
+  String get statsShopRanks => '店ランク';
+
+  @override
+  String get statsShopRanksNote =>
+      'その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）';
+
+  @override
+  String statsBestPoints(int points) {
+    return '最高 $points pt';
+  }
 }
