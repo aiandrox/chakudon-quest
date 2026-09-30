@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
+import 'package:chakudon_quest/features/records/models.dart';
+import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
@@ -70,4 +72,63 @@ class FakePhotoPicker implements PhotoPicker {
 
   @override
   Future<String?> retrieveLostPhoto() async => lostPath;
+}
+
+typedef VisitUpdate = ({
+  String visitId,
+  String shopName,
+  HoursType hoursType,
+  DateTime eatenAt,
+  int? rating,
+  RamenStyle? style,
+  bool isLimited,
+  bool hasTicket,
+  String memo,
+});
+
+/// 画面のテスト用。driftを通さずに、呼ばれた内容だけを覚える。
+class FakeRecordRepository implements RecordRepository {
+  final updates = <VisitUpdate>[];
+  final deletedVisitIds = <String>[];
+  String? deletedPhotoPath;
+  Object? error;
+
+  @override
+  Future<void> updateVisit({
+    required String visitId,
+    required String shopName,
+    required HoursType hoursType,
+    required DateTime eatenAt,
+    required int? rating,
+    required RamenStyle? style,
+    required bool isLimited,
+    required bool hasTicket,
+    required String memo,
+    required DateTime now,
+  }) async {
+    final error = this.error;
+    if (error != null) throw error;
+    updates.add((
+      visitId: visitId,
+      shopName: shopName,
+      hoursType: hoursType,
+      eatenAt: eatenAt,
+      rating: rating,
+      style: style,
+      isLimited: isLimited,
+      hasTicket: hasTicket,
+      memo: memo,
+    ));
+  }
+
+  @override
+  Future<String?> deleteVisit(String visitId) async {
+    final error = this.error;
+    if (error != null) throw error;
+    deletedVisitIds.add(visitId);
+    return deletedPhotoPath;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

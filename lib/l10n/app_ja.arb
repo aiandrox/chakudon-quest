@@ -53,5 +53,20 @@
   "discardTitle": "記録をやめますか？",
   "discardMessage": "入力した内容は保存されません",
   "discardConfirm": "やめる",
-  "discardCancel": "続ける"
+  "discardCancel": "続ける",
+  "cancel": "キャンセル",
+  "edit": "編集",
+  "delete": "削除",
+  "deleteConfirmTitle": "この記録を削除しますか？",
+  "deleteConfirmMessage": "写真も削除されます。元に戻せません",
+  "deleteFailed": "削除できませんでした",
+  "previousVisit": "前回の記録",
+  "visitNotFound": "記録が見つかりません",
+  "editTitle": "記録を編集",
+  "editSave": "保存",
+  "editSaveFailed": "保存できませんでした。もう一度お試しください",
+  "editShopName": "店名",
+  "editEatenAt": "食べた日時",
+  "limitedBadge": "限定",
+  "ticketBadge": "整理券"
 }

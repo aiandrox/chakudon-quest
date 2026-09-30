@@ -58,7 +58,7 @@ void main() {
     ]);
 
     expect(find.text('麺屋テスト'), findsOneWidget);
-    expect(find.text('2026/9/30 12:34  ★4'), findsOneWidget);
+    expect(find.text('2026/9/30  ★4'), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsNothing);
   });
 }

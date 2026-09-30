@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../records/labels.dart';
-import '../records/models.dart';
+import '../records/visit_details_form.dart';
 import '../shop_search/shop_candidate.dart';
 import 'record_controller.dart';
 import 'record_state.dart';
@@ -121,7 +120,18 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             tilePadding: EdgeInsets.zero,
             title: Text(l10n.optionalSection),
             children: [
-              _OptionalSection(state: state, memoController: _memoController),
+              VisitDetailsForm(
+                style: state.style,
+                isLimited: state.isLimited,
+                hasTicket: state.hasTicket,
+                hoursType: state.hoursType,
+                memoController: _memoController,
+                onStyleChanged: controller.setStyle,
+                onLimitedChanged: controller.setLimited,
+                onHasTicketChanged: controller.setHasTicket,
+                onHoursTypeChanged: controller.setHoursType,
+                onMemoChanged: controller.setMemo,
+              ),
             ],
           ),
         ],
@@ -322,79 +332,6 @@ class _ShopTile extends StatelessWidget {
         subtitle: details.isEmpty ? null : Text(details.join('・')),
         onTap: onTap,
       ),
-    );
-  }
-}
-
-class _OptionalSection extends ConsumerWidget {
-  const _OptionalSection({required this.state, required this.memoController});
-
-  final RecordState state;
-  final TextEditingController memoController;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final controller = ref.read(recordControllerProvider.notifier);
-    final textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.styleSection, style: textTheme.labelLarge),
-        Wrap(
-          spacing: 8,
-          children: [
-            for (final style in RamenStyle.values)
-              ChoiceChip(
-                label: Text(styleLabel(l10n, style)),
-                selected: state.style == style,
-                onSelected: (selected) =>
-                    controller.setStyle(selected ? style : null),
-              ),
-          ],
-        ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.isLimited),
-          value: state.isLimited,
-          onChanged: controller.setLimited,
-        ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.hasTicket),
-          value: state.hasTicket,
-          onChanged: controller.setHasTicket,
-        ),
-        const SizedBox(height: 8),
-        Text(l10n.hoursSection, style: textTheme.labelLarge),
-        const SizedBox(height: 4),
-        SegmentedButton<HoursType>(
-          showSelectedIcon: false,
-          segments: [
-            for (final type in HoursType.values)
-              ButtonSegment(
-                value: type,
-                label: Text(hoursTypeLabel(l10n, type)),
-              ),
-          ],
-          selected: {state.hoursType},
-          onSelectionChanged: (selection) =>
-              controller.setHoursType(selection.first),
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: memoController,
-          minLines: 2,
-          maxLines: 4,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: l10n.memoLabel,
-          ),
-          onChanged: controller.setMemo,
-        ),
-        const SizedBox(height: 8),
-      ],
     );
   }
 }

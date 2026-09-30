@@ -1,0 +1,76 @@
+import 'package:chakudon_quest/features/records/models.dart';
+
+Shop buildShop({
+  String id = 'shop',
+  String? name,
+  HoursType hoursType = HoursType.normal,
+  double? latitude,
+  double? longitude,
+  String? osmId,
+}) => Shop(
+  id: id,
+  name: name ?? id,
+  latitude: latitude,
+  longitude: longitude,
+  osmId: osmId,
+  hoursType: hoursType,
+  createdAt: DateTime(2026),
+);
+
+var _visitCount = 0;
+
+Visit buildVisit({
+  String? id,
+  String shopId = 'shop',
+  VisitResult result = VisitResult.eaten,
+  DateTime? eatenAt,
+  int? waitMinutes,
+  RamenStyle? style,
+  int? rating = 3,
+  bool isLimited = false,
+  bool hasTicket = false,
+  String memo = '',
+  String? photoPath,
+}) {
+  final at = eatenAt ?? DateTime(2026, 9, 30, 12);
+  return Visit(
+    id: id ?? 'visit-${_visitCount++}',
+    shopId: shopId,
+    result: result,
+    photoPath: photoPath,
+    checkedInAt: waitMinutes == null
+        ? null
+        : at.subtract(Duration(minutes: waitMinutes)),
+    eatenAt: at,
+    style: style,
+    rating: result == VisitResult.eaten ? rating : null,
+    isLimited: isLimited,
+    hasTicket: hasTicket,
+    memo: memo,
+    createdAt: at,
+  );
+}
+
+VisitWithShop buildEntry({
+  Shop? shop,
+  VisitResult result = VisitResult.eaten,
+  DateTime? eatenAt,
+  int? waitMinutes,
+  RamenStyle? style,
+  bool isLimited = false,
+  bool hasTicket = false,
+}) {
+  final resolvedShop = shop ?? buildShop();
+  return VisitWithShop(
+    shop: resolvedShop,
+    visit: buildVisit(
+      shopId: resolvedShop.id,
+      result: result,
+      eatenAt: eatenAt,
+      waitMinutes: waitMinutes,
+      style: style,
+      isLimited: isLimited,
+      hasTicket: hasTicket,
+    ),
+  );
+}

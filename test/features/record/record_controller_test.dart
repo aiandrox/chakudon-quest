@@ -9,6 +9,7 @@ import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/record/record_controller.dart';
 import 'package:chakudon_quest/features/record/record_state.dart';
+import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';

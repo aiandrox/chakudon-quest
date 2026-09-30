@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../records/clock.dart';
 import '../records/models.dart';
 import '../records/photo_storage.dart';
 import '../records/record_repository.dart';
@@ -13,8 +14,6 @@ import '../shop_search/overpass_client.dart';
 import '../shop_search/shop_candidate.dart';
 import 'photo_picker.dart';
 import 'record_state.dart';
-
-final clockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
 
 final recordControllerProvider =
     NotifierProvider.autoDispose<RecordController, RecordState>(

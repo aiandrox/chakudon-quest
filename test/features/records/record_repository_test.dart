@@ -163,4 +163,137 @@ void main() {
     expect(second.shopId, first.shopId);
     expect(shops.single.hoursType, HoursType.fewDays);
   });
+
+  group('updateVisit', () {
+    Future<void> update(
+      Visit visit, {
+      required String shopName,
+      HoursType hoursType = HoursType.normal,
+      int? rating = 4,
+      String memo = '',
+    }) => repository.updateVisit(
+      visitId: visit.id,
+      shopName: shopName,
+      hoursType: hoursType,
+      eatenAt: visit.eatenAt,
+      rating: rating,
+      style: visit.style,
+      isLimited: visit.isLimited,
+      hasTicket: visit.hasTicket,
+      memo: memo,
+      now: DateTime(2026, 10, 1),
+    );
+
+    test('記録の内容と店の営業時間の種類を書き換える', () async {
+      final visit = await save(const ShopInput(name: '麺屋'));
+
+      await repository.updateVisit(
+        visitId: visit.id,
+        shopName: '麺屋',
+        hoursType: HoursType.lunchOnly,
+        eatenAt: DateTime(2026, 9, 29, 11),
+        rating: 2,
+        style: RamenStyle.miso,
+        isLimited: true,
+        hasTicket: true,
+        memo: '書き直した',
+        now: DateTime(2026, 10, 1),
+      );
+
+      final entry = (await repository.watchVisits().first).single;
+      expect(entry.visit.id, visit.id);
+      expect(entry.visit.eatenAt, DateTime(2026, 9, 29, 11));
+      expect(entry.visit.rating, 2);
+      expect(entry.visit.style, RamenStyle.miso);
+      expect(entry.visit.isLimited, isTrue);
+      expect(entry.visit.hasTicket, isTrue);
+      expect(entry.visit.memo, '書き直した');
+      expect(entry.shop.hoursType, HoursType.lunchOnly);
+    });
+
+    test('ほかに記録の無い手入力の店は、位置を残したまま名前を直す', () async {
+      final visit = await save(
+        const ShopInput(name: '麺やテスト', latitude: 35.0, longitude: 139.0),
+      );
+
+      await update(visit, shopName: ' 麺屋テスト ');
+
+      final shop = (await repository.allShops()).single;
+      expect(shop.id, visit.shopId);
+      expect(shop.name, '麺屋テスト');
+      expect(shop.latitude, 35.0);
+    });
+
+    test('ほかにも記録のある店の名前を変えると、その記録だけを新しい店に付け替える', () async {
+      final first = await save(const ShopInput(name: '麺屋'));
+      final second = await save(const ShopInput(name: '麺屋'));
+
+      await update(second, shopName: '別の店');
+
+      final visits = await repository.watchVisits().first;
+      final names = {for (final v in visits) v.visit.id: v.shop.name};
+      expect(names, {first.id: '麺屋', second.id: '別の店'});
+      expect(await repository.allShops(), hasLength(2));
+    });
+
+    test('OSMの店を選び間違えたときは、元の店を書き換えずに付け替える', () async {
+      final visit = await save(const ShopInput(osmId: 'node/1', name: '一風堂'));
+
+      await update(visit, shopName: '本当に行った店');
+
+      final shop = (await repository.allShops()).single;
+      expect(shop.name, '本当に行った店');
+      expect(shop.osmId, isNull);
+    });
+
+    test('記録済みの店の名前に変えると、その店の記録になる', () async {
+      final known = await save(const ShopInput(osmId: 'node/1', name: '一風堂'));
+      final visit = await save(const ShopInput(name: 'いっぷうどう'));
+
+      await update(visit, shopName: '一風堂');
+
+      final visits = await repository.watchVisits().first;
+      expect(visits.map((v) => v.shop.id).toSet(), {known.shopId});
+      expect(await repository.allShops(), hasLength(1));
+    });
+
+    test('店名を空にしても元の店のままにする', () async {
+      final visit = await save(const ShopInput(name: '麺屋'));
+
+      await update(visit, shopName: '  ');
+
+      expect((await repository.allShops()).single.name, '麺屋');
+    });
+  });
+
+  group('deleteVisit', () {
+    test('記録を削除して写真のパスを返し、記録の無くなった店も消す', () async {
+      final visit = await repository.saveEatenVisit(
+        shop: const ShopInput(name: '麺屋'),
+        eatenAt: DateTime(2026, 9, 30),
+        rating: 3,
+        photoPath: 'photos/a.jpg',
+        now: DateTime(2026, 9, 30),
+      );
+
+      expect(await repository.deleteVisit(visit.id), 'photos/a.jpg');
+      expect(await repository.watchVisits().first, isEmpty);
+      expect(await repository.allShops(), isEmpty);
+    });
+
+    test('ほかに記録のある店は残す', () async {
+      final first = await save(const ShopInput(name: '麺屋'));
+      final second = await save(const ShopInput(name: '麺屋'));
+
+      await repository.deleteVisit(second.id);
+
+      final visits = await repository.watchVisits().first;
+      expect(visits.single.visit.id, first.id);
+      expect(await repository.allShops(), hasLength(1));
+    });
+
+    test('無い記録の削除は何もしない', () async {
+      expect(await repository.deleteVisit('missing'), isNull);
+    });
+  });
 }
