@@ -52,13 +52,16 @@ void main() {
 
   group('着丼の道（常設）', () {
     test('杯数の段階ごとにレベルが上がり、段階ごとの到達日を持つ', () {
+      final four = _progress('bowls', _bowls(4));
       final nine = _progress('bowls', _bowls(9));
       final ten = _progress('bowls', _bowls(10));
 
+      // 1杯目は「はじめての着丼」で祝うので、Lv.1 は5杯から。
+      expect(four.level, 0);
       expect(nine.level, 1);
       expect(nine.nextThreshold, 10);
       expect(ten.level, 2);
-      expect(ten.levelAchievedAt, [_day(0), _day(9)]);
+      expect(ten.levelAchievedAt, [_day(4), _day(9)]);
       expect(ten.nextThreshold, 30);
     });
 
@@ -97,6 +100,19 @@ void main() {
     expect(progress.current, 3);
     expect(progress.level, 1);
     expect(progress.levelAchievedAt, [_day(2)]);
+  });
+
+  test('不屈の挑戦者は、撤退のあとに食べた回数。撤退1回につき1回まで', () {
+    final shop = buildShop();
+    VisitWithShop retreat(int d) =>
+        buildEntry(shop: shop, eatenAt: _day(d), result: VisitResult.retreated);
+    VisitWithShop eat(int d) => buildEntry(shop: shop, eatenAt: _day(d));
+
+    expect(_progress('retry', [retreat(1), eat(2), eat(3), eat(4)]).current, 1);
+    expect(
+      _progress('retry', [retreat(1), eat(2), retreat(3), eat(4)]).current,
+      2,
+    );
   });
 
   test('行列の覇者は30分以上並んだ回数。29分は数えない', () {
@@ -257,16 +273,13 @@ void main() {
       expect(levelUps.map((l) => (l.quest.id, l.level)), [('bowls', 2)]);
     });
 
-    test('最初の1杯では、着丼の道 Lv.1 と「はじめての着丼」を知らせる', () {
+    test('最初の1杯では「はじめての着丼」だけを知らせる（同じことを二重に知らせない）', () {
       final levelUps = newlyAchievedLevels(
         before: evaluateQuests(const []),
         after: evaluateQuests(scoreVisits(_bowls(1))),
       );
 
-      expect(levelUps.map((l) => (l.quest.id, l.level)), [
-        ('bowls', 1),
-        ('first_bowl', 1),
-      ]);
+      expect(levelUps.map((l) => (l.quest.id, l.level)), [('first_bowl', 1)]);
     });
 
     test('レベルが変わらなければ知らせない', () {

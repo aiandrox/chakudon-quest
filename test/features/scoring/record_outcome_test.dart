@@ -101,10 +101,7 @@ void main() {
       second,
     ], second.visit.id)!;
 
-    expect(firstOutcome.questLevelUps.map((l) => l.quest.id), [
-      'bowls',
-      'first_bowl',
-    ]);
+    expect(firstOutcome.questLevelUps.map((l) => l.quest.id), ['first_bowl']);
     expect(secondOutcome.questLevelUps.map((l) => l.quest.id), ['queue']);
   });
 

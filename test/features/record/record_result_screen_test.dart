@@ -71,11 +71,10 @@ void main() {
     expect(find.text(ja.rankUp), findsNothing);
 
     // スポット「はじめての着丼」の達成と、常設の Lv.1 到達
-    // （1杯目・35分待ち・限定・1杯で60点以上のSランク）を知らせる。
+    // （35分待ち・限定・1杯で60点以上のSランク）を知らせる。
     expect(find.text(ja.questAchieved), findsOneWidget);
     expect(find.text('はじめての着丼'), findsOneWidget);
-    expect(find.text(ja.questLevelUp), findsNWidgets(4));
-    expect(find.text(ja.questLevelReached('着丼の道', 1)), findsOneWidget);
+    expect(find.text(ja.questLevelUp), findsNWidgets(3));
     expect(find.text(ja.questLevelReached('行列の覇者', 1)), findsOneWidget);
     expect(find.text(ja.questLevelReached('限定ハンター', 1)), findsOneWidget);
     expect(find.text(ja.questLevelReached('大物討伐', 1)), findsOneWidget);

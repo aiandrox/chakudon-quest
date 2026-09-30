@@ -17,7 +17,8 @@ const quests = <Quest>[
     title: '着丼の道',
     description: '食べた杯数',
     unit: '杯',
-    thresholds: [1, 10, 30, 50, 100, 200],
+    // 1杯目は「はじめての着丼」で祝うので、Lv.1 は5杯から。
+    thresholds: [5, 10, 30, 50, 100, 200],
     count: _eatenCount,
   ),
   Quest(
@@ -269,19 +270,9 @@ int _styleCount(List<ScoredVisit> scored) => {
 int _limitedCount(List<ScoredVisit> scored) =>
     scored.where((e) => _isEaten(e) && e.visit.isLimited).length;
 
-/// 撤退したことのある店で、そのあとに食べた記録の数。
-int _retryCount(List<ScoredVisit> scored) {
-  final retreatedShops = <String>{};
-  var count = 0;
-  for (final entry in scored) {
-    if (entry.visit.result == VisitResult.retreated) {
-      retreatedShops.add(entry.visit.shopId);
-    } else if (retreatedShops.contains(entry.visit.shopId)) {
-      count++;
-    }
-  }
-  return count;
-}
+/// 撤退のあと、同じ店で食べた（再挑戦成功した）回数。撤退1回につき1回まで数える。
+int _retryCount(List<ScoredVisit> scored) =>
+    scored.where((entry) => entry.isRetrySuccess).length;
 
 /// 同じ店で2回以上撤退したあと、その店で食べた記録の数。
 int _thirdTimeCount(List<ScoredVisit> scored) {

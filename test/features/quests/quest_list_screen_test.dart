@@ -36,8 +36,7 @@ void main() {
     expect(find.text(ja.questSpotSummary(0, 6)), findsOneWidget);
     expect(find.text('着丼の道'), findsOneWidget);
     expect(find.text('はじめての着丼'), findsOneWidget);
-    // 着丼の道と限定ハンターは、どちらも最初の段階が1杯。
-    expect(find.text(ja.questNext(0, 1, '杯')), findsNWidgets(2));
+    expect(find.text(ja.questNext(0, 5, '杯')), findsOneWidget);
     final emblems = tester.widgetList<Emblem>(find.byType(Emblem));
     expect(emblems.map((e) => e.tier).toSet(), {EmblemTier.locked});
   });
