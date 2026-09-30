@@ -1,17 +1,31 @@
-# chakudon_quest
+# 着丼クエスト
 
-着丼クエスト — ラーメンの攻略難易度でポイントとクエストを楽しむ記録アプリ
+食べたラーメンを記録し、行列や限定営業の「攻略難易度」に応じてポイントを貯めたり、クエスト（お題）を達成したりする、自分用のやり込みゲームです。
 
-## Getting Started
+- 記録はすべてスマホの中に保存します。サーバーやログインはありません
+- 外部への通信は、近くのラーメン店を探すための [Overpass API](https://overpass-api.de/)（OpenStreetMap）だけです
+- 店の情報の出典: © OpenStreetMap contributors
 
-This project is a starting point for a Flutter application.
+## できること
 
-A few resources to get you started if this is your first Flutter project:
+| 機能 | 内容 |
+|---|---|
+| 記録する | 「＋」→ 撮影 → 近くの店の候補から選ぶ → ★ →「着丼！」。電波がなくても店名の手入力で保存できる |
+| 一覧と詳細 | 写真のタイル表示。詳細から編集・削除。同じ店の2回目以降は前回の記録を表示 |
+| 待ち時間 | 「並んだ」で店にチェックイン（100m 以内）。食べるまでの時間を記録。食べられなかったら「撤退」 |
+| ポイントとランク | 待ち時間・限定・整理券・初訪問・再挑戦成功・営業時間でポイントを計算し、累計で冒険者ランクが上がる |
+| クエスト | 「はじめての着丼」「60分の試練」「全系統制覇」などのお題 |
+| 統計 | 今年の杯数、系統の割合、よく行く店、店ランク |
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+地図表示は検討中です（[#8](https://github.com/aiandrox/chakudon-quest/issues/8)）。
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 動かし方
+
+```bash
+flutter pub get
+flutter run          # スマホをつないで実行
+flutter analyze      # 静的解析
+flutter test         # テスト
+```
+
+仕様と決定事項は [CLAUDE.md](CLAUDE.md) にまとめています。
