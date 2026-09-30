@@ -25,7 +25,8 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final visits = ref.watch(visitsProvider).value;
+    final visitsState = ref.watch(visitsProvider);
+    final visits = visitsState.value;
     _outcome ??= visits == null
         ? null
         : computeRecordOutcome(visits, widget.visitId);
@@ -36,9 +37,13 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
         automaticallyImplyLeading: false,
         title: Text(l10n.resultTitle),
       ),
-      body: outcome == null
-          ? const Center(child: CircularProgressIndicator())
-          : _ResultBody(outcome: outcome),
+      body: switch (outcome) {
+        final outcome? => _ResultBody(outcome: outcome),
+        null when visitsState.hasError => Center(
+          child: Text(l10n.homeLoadFailed),
+        ),
+        null => const Center(child: CircularProgressIndicator()),
+      },
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         child: FilledButton(
