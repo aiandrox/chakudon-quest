@@ -81,6 +81,29 @@ void main() {
     expect(find.bySemanticsLabel('まだ行っていない店'), findsOneWidget);
   });
 
+  testWidgets('位置のわからない手入力の店や、撤退しただけの店は「まだ行っていない店」に出さない', (tester) async {
+    await pumpMap(tester, [
+      buildEntry(
+        shop: buildShop(id: 'typed', name: '行った店'),
+      ),
+      buildEntry(
+        shop: buildShop(
+          id: 'retreated',
+          name: 'まだ行っていない店',
+          osmId: 'node/2',
+          latitude: 35.002,
+          longitude: 139.0,
+        ),
+        result: VisitResult.retreated,
+      ),
+    ]);
+
+    await tester.tap(find.text(ja.mapSearchHere));
+    await tester.pumpAndSettle();
+
+    expect(find.text(ja.mapNearbyNone), findsOneWidget);
+  });
+
   testWidgets('検索に失敗したら知らせる', (tester) async {
     overpass.error = StateError('offline');
     await pumpMap(tester, const []);

@@ -82,13 +82,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             timeout: const Duration(seconds: 25),
           );
       if (!mounted) return;
-      final eaten = {
-        for (final pin in shopPins(ref.read(scoredVisitsProvider)))
-          if (pin.eatenCount > 0) pin.shop.id: pin.shop,
+      // 位置のわからない手入力の店や、撤退しただけの店も「行った店」として除く。
+      final visited = {
+        for (final entry in ref.read(scoredVisitsProvider))
+          entry.shop.id: entry.shop,
       };
       final nearby = unvisitedShops(
         found: found,
-        eatenShops: eaten.values.toList(),
+        eatenShops: visited.values.toList(),
       );
       setState(() => _nearby = nearby);
       _showMessage(

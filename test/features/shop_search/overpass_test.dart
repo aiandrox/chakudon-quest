@@ -69,6 +69,10 @@ void main() {
 
     expect(query, startsWith('[out:json][timeout:10];'));
     expect(
+      buildOverpassQuery(const GeoPoint(35.0, 139.0), radiusMeters: 1000),
+      contains('(around:1000,35.0,139.0)'),
+    );
+    expect(
       query,
       contains('nwr["cuisine"~"ramen"](around:300,35.6909,139.7003);'),
     );

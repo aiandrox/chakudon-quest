@@ -37,7 +37,8 @@ class OverpassClient {
             'data': buildOverpassQuery(
               center,
               radiusMeters: radiusMeters,
-              timeoutSeconds: timeout.inSeconds,
+              // サーバーが制限時間いっぱいまで探しても、返事を受け取る時間を残す。
+              timeoutSeconds: timeout.inSeconds - 2,
             ),
           },
         )
