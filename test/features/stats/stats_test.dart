@@ -149,4 +149,106 @@ void main() {
       expect(shops, isEmpty);
     });
   });
+
+  group('personalBests', () {
+    DateTime day(int d) => DateTime(2026, 9, d, 12);
+
+    test('最長の待ち時間・1杯の最高ポイント・撤退の多い店を返す', () {
+      final bests = personalBests(
+        scoreVisits([
+          buildEntry(shop: shopA, eatenAt: day(1), waitMinutes: 45),
+          buildEntry(shop: shopB, eatenAt: day(2), waitMinutes: 70),
+          // (10 + 10 + 20) × 2 = 80
+          buildEntry(shop: shopC, eatenAt: day(3), isLimited: true),
+          buildEntry(
+            shop: shopA,
+            eatenAt: day(4),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopB,
+            eatenAt: day(5),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopB,
+            eatenAt: day(6),
+            result: VisitResult.retreated,
+          ),
+        ]),
+      );
+
+      expect(bests.longestWait!.value, 70);
+      expect(bests.longestWait!.entry.shop.name, 'B店');
+      expect(bests.highestPoints!.value, 80);
+      expect(bests.highestPoints!.entry.shop.name, 'C店');
+      expect(bests.mostRetreats!.value, 2);
+      expect(bests.mostRetreats!.entry.shop.name, 'B店');
+      expect(bests.mostRetreats!.entry.visit.eatenAt, day(6));
+    });
+
+    test('撤退の回数が同じ店どうしでは、先にその回数に達した店を残す', () {
+      final bests = personalBests(
+        scoreVisits([
+          buildEntry(
+            shop: shopB,
+            eatenAt: day(1),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopA,
+            eatenAt: day(5),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopA,
+            eatenAt: day(10),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopB,
+            eatenAt: day(20),
+            result: VisitResult.retreated,
+          ),
+        ]),
+      );
+
+      expect(bests.mostRetreats!.entry.shop.name, 'A店');
+      expect(bests.mostRetreats!.entry.visit.eatenAt, day(10));
+    });
+
+    test('同じ値なら先に達成した記録を残す', () {
+      final bests = personalBests(
+        scoreVisits([
+          buildEntry(shop: shopA, eatenAt: day(1), waitMinutes: 30),
+          buildEntry(shop: shopB, eatenAt: day(2), waitMinutes: 30),
+        ]),
+      );
+
+      expect(bests.longestWait!.entry.visit.eatenAt, day(1));
+    });
+
+    test('並んだ記録や撤退が無ければ、その自己ベストは無い', () {
+      final bests = personalBests(scoreVisits([buildEntry(shop: shopA)]));
+
+      expect(bests.longestWait, isNull);
+      expect(bests.mostRetreats, isNull);
+      expect(bests.highestPoints!.value, 20);
+    });
+
+    test('撤退で並んだ時間は最長の待ち時間に数えない', () {
+      final bests = personalBests(
+        scoreVisits([
+          buildEntry(
+            shop: shopA,
+            waitMinutes: 120,
+            result: VisitResult.retreated,
+          ),
+        ]),
+      );
+
+      expect(bests.longestWait, isNull);
+      expect(bests.highestPoints, isNull);
+    });
+  });
 }

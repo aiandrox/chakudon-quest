@@ -233,6 +233,29 @@
     }
   },
   "statsFrequent": "よく行く店",
+  "statsBests": "自己ベスト",
+  "bestLongestWait": "最長の待ち時間",
+  "bestHighestPoints": "1杯の最高ポイント",
+  "bestMostRetreats": "いちばん手ごわい店",
+  "minutes": "{minutes}分",
+  "@minutes": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "retreatCount": "撤退 {count}回",
+  "@retreatCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "bestDetail": "{shop}（{date}）",
+  "@bestDetail": {
+    "placeholders": {
+      "shop": {"type": "String"},
+      "date": {"type": "String"}
+    }
+  },
   "statsShopRanks": "店ランク",
   "statsShopRanksNote": "その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）",
   "navMap": "地図",
