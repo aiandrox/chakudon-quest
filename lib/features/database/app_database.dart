@@ -34,6 +34,7 @@ class Shops extends Table {
   TextColumn get hoursConditions => text()
       .map(const HoursConditionsConverter())
       .withDefault(const Constant(''))();
+  TextColumn get strategyMemo => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -81,7 +82,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'chakudon_quest'));
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -98,10 +99,12 @@ class AppDatabase extends _$AppDatabase {
                 "WHEN 'fewDays' THEN 'fewDays' ELSE '' END",
               ),
             },
-            newColumns: [shops.hoursConditions],
+            // 作り直した表には、バージョン4で足した列もすでに入る。
+            newColumns: [shops.hoursConditions, shops.strategyMemo],
           ),
         );
       }
+      if (from == 3) await migrator.addColumn(shops, shops.strategyMemo);
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

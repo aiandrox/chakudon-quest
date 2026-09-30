@@ -456,4 +456,13 @@ void main() {
       expect(await repository.allShops(), hasLength(1));
     });
   });
+
+  test('店の攻略メモを保存でき、記録を読むと店と一緒に出る', () async {
+    final visit = await save(const ShopInput(name: '麺屋'));
+
+    await repository.setShopMemo(visit.shopId, ' 券売機は現金のみ ');
+
+    final entry = (await repository.watchVisits().first).single;
+    expect(entry.shop.strategyMemo, '券売機は現金のみ');
+  });
 }

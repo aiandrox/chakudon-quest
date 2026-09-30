@@ -7,12 +7,14 @@ Shop buildShop({
   double? latitude,
   double? longitude,
   String? osmId,
+  String strategyMemo = '',
 }) => Shop(
   id: id,
   name: name ?? id,
   latitude: latitude,
   longitude: longitude,
   osmId: osmId,
+  strategyMemo: strategyMemo,
   hoursConditions: hoursConditions,
   createdAt: DateTime(2026),
 );

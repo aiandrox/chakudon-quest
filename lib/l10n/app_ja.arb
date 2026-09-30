@@ -233,6 +233,16 @@
     }
   },
   "statsFrequent": "よく行く店",
+  "shopMemoSection": "この店の攻略メモ",
+  "shopMemoEmpty": "まだありません",
+  "shopMemoHint": "開店の何分前に着けばいいか、券売機、整理券の配り方など",
+  "shopMemoEdit": "攻略メモを書く",
+  "shopMemoInline": "攻略メモ: {memo}",
+  "@shopMemoInline": {
+    "placeholders": {
+      "memo": {"type": "String"}
+    }
+  },
   "statsBests": "自己ベスト",
   "bestLongestWait": "最長の待ち時間",
   "bestHighestPoints": "1杯の最高ポイント",

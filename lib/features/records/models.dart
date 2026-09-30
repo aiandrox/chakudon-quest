@@ -20,6 +20,7 @@ class Shop {
     this.longitude,
     this.osmId,
     this.hoursConditions = const {},
+    this.strategyMemo = '',
     required this.createdAt,
   });
 
@@ -29,6 +30,9 @@ class Shop {
   final double? longitude;
   final String? osmId;
   final Set<HoursCondition> hoursConditions;
+
+  /// 店ごとの攻略メモ（開店の何分前に着けばよいか、券売機など）。記録ごとのメモとは別。
+  final String strategyMemo;
   final DateTime createdAt;
 }
 

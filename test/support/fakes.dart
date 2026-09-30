@@ -141,6 +141,13 @@ class FakeRecordRepository implements RecordRepository {
     checkins.add(shop);
   }
 
+  final shopMemos = <String, String>{};
+
+  @override
+  Future<void> setShopMemo(String shopId, String memo) async {
+    shopMemos[shopId] = memo;
+  }
+
   final ratings = <String, int>{};
   Object? ratingError;
 

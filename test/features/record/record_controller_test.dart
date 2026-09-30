@@ -458,6 +458,28 @@ void main() {
       expect(waitMinutes(entry.visit), 35);
     });
 
+    test('記録済みの店に並んでいるときは、その店の攻略メモと営業の条件も引き継ぐ', () async {
+      final repository = container.read(recordRepositoryProvider);
+      final first = await repository.saveEatenVisit(
+        shop: const ShopInput(name: '行きつけの店'),
+        hoursConditions: {HoursCondition.weekdaysOnly},
+        eatenAt: DateTime(2026, 9, 1),
+        now: DateTime(2026, 9, 1),
+      );
+      await repository.setShopMemo(first.shopId, '開店30分前で1巡目');
+      await repository.checkIn(
+        shop: ShopInput(shopId: first.shopId, name: '行きつけの店'),
+        at: checkedInAt,
+      );
+
+      await controller().start();
+      await pumpEventQueue();
+
+      expect(state().isCheckinShopSelected, isTrue);
+      expect(state().selectedShop!.strategyMemo, '開店30分前で1巡目');
+      expect(state().hoursConditions, {HoursCondition.weekdaysOnly});
+    });
+
     test('3時間を超えたチェックインは使わない', () async {
       await checkIn(at: _photoTime.subtract(const Duration(hours: 4)));
 

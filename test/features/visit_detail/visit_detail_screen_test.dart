@@ -137,6 +137,34 @@ void main() {
     expect(find.text(ja.editSaveFailed), findsOneWidget);
   });
 
+  testWidgets('店の攻略メモを表示し、書き直せる', (tester) async {
+    await pumpDetail(tester, [
+      VisitWithShop(
+        shop: buildShop(name: '麺屋テスト', strategyMemo: '券売機は現金のみ'),
+        visit: buildVisit(id: 'v', eatenAt: DateTime(2026, 9, 30)),
+      ),
+    ], 'v');
+
+    expect(find.text('券売機は現金のみ'), findsOneWidget);
+
+    await tester.ensureVisible(find.byTooltip(ja.shopMemoEdit));
+    await tester.tap(find.byTooltip(ja.shopMemoEdit));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), ' 開店30分前で1巡目 ');
+    await tester.tap(find.text(ja.editSave));
+    await tester.pumpAndSettle();
+
+    expect(repository.shopMemos, {'shop': '開店30分前で1巡目'});
+  });
+
+  testWidgets('攻略メモが無い店は「まだありません」と出す', (tester) async {
+    await pumpDetail(tester, [
+      entry(id: 'v', eatenAt: DateTime(2026, 9, 30)),
+    ], 'v');
+
+    expect(find.text(ja.shopMemoEmpty), findsOneWidget);
+  });
+
   testWidgets('同じ店の2回目は、前回の日付・★・メモを表示する', (tester) async {
     await pumpDetail(tester, [
       entry(id: 'second', eatenAt: DateTime(2026, 9, 30, 12), rating: 3),

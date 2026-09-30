@@ -454,6 +454,23 @@ class AppLocalizationsJa extends AppLocalizations {
   String get statsFrequent => 'よく行く店';
 
   @override
+  String get shopMemoSection => 'この店の攻略メモ';
+
+  @override
+  String get shopMemoEmpty => 'まだありません';
+
+  @override
+  String get shopMemoHint => '開店の何分前に着けばいいか、券売機、整理券の配り方など';
+
+  @override
+  String get shopMemoEdit => '攻略メモを書く';
+
+  @override
+  String shopMemoInline(String memo) {
+    return '攻略メモ: $memo';
+  }
+
+  @override
   String get statsBests => '自己ベスト';
 
   @override

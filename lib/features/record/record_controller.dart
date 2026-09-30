@@ -49,19 +49,29 @@ class RecordController extends Notifier<RecordState> {
   /// 並んでいる店があれば、その店を選んだ状態で始める。
   Future<void> _loadCheckin() async {
     try {
-      final checkin = await ref.read(recordRepositoryProvider).activeCheckin();
+      final repository = ref.read(recordRepositoryProvider);
+      final checkin = await repository.activeCheckin();
       if (!ref.mounted || checkin == null) return;
       if (isCheckinExpired(checkin, ref.read(clockProvider)())) return;
+      // 記録済みの店なら、攻略メモや営業の条件も引き継ぐため店から作る。
+      final known = checkin.shopId == null
+          ? null
+          : (await repository.allShops())
+                .where((shop) => shop.id == checkin.shopId)
+                .firstOrNull;
+      if (!ref.mounted) return;
       final latitude = checkin.latitude;
       final longitude = checkin.longitude;
-      final shop = ShopCandidate(
-        shopId: checkin.shopId,
-        osmId: checkin.osmId,
-        name: checkin.name,
-        location: latitude != null && longitude != null
-            ? GeoPoint(latitude, longitude)
-            : null,
-      );
+      final shop = known != null
+          ? ShopCandidate.fromShop(known)
+          : ShopCandidate(
+              shopId: checkin.shopId,
+              osmId: checkin.osmId,
+              name: checkin.name,
+              location: latitude != null && longitude != null
+                  ? GeoPoint(latitude, longitude)
+                  : null,
+            );
       state = state.copyWith(
         checkin: checkin,
         checkinShop: shop,

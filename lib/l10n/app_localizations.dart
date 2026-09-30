@@ -904,6 +904,36 @@ abstract class AppLocalizations {
   /// **'よく行く店'**
   String get statsFrequent;
 
+  /// No description provided for @shopMemoSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'この店の攻略メモ'**
+  String get shopMemoSection;
+
+  /// No description provided for @shopMemoEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだありません'**
+  String get shopMemoEmpty;
+
+  /// No description provided for @shopMemoHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'開店の何分前に着けばいいか、券売機、整理券の配り方など'**
+  String get shopMemoHint;
+
+  /// No description provided for @shopMemoEdit.
+  ///
+  /// In ja, this message translates to:
+  /// **'攻略メモを書く'**
+  String get shopMemoEdit;
+
+  /// No description provided for @shopMemoInline.
+  ///
+  /// In ja, this message translates to:
+  /// **'攻略メモ: {memo}'**
+  String shopMemoInline(String memo);
+
   /// No description provided for @statsBests.
   ///
   /// In ja, this message translates to:

@@ -12,6 +12,7 @@ class ShopCandidate {
     this.location,
     this.distanceMeters,
     this.hoursConditions,
+    this.strategyMemo = '',
   });
 
   factory ShopCandidate.fromShop(Shop shop, {double? distanceMeters}) {
@@ -26,6 +27,7 @@ class ShopCandidate {
           : null,
       distanceMeters: distanceMeters,
       hoursConditions: shop.hoursConditions,
+      strategyMemo: shop.strategyMemo,
     );
   }
 
@@ -38,6 +40,9 @@ class ShopCandidate {
 
   /// 記録済みの店の営業の条件。初めての店はnull。
   final Set<HoursCondition>? hoursConditions;
+
+  /// 記録済みの店の攻略メモ。
+  final String strategyMemo;
 }
 
 /// 2つの候補が同じ店を指すか。IDで比べられないときは、名前と近さで判断する。

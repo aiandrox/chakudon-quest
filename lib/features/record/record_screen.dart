@@ -293,6 +293,11 @@ class _ShopSection extends ConsumerWidget {
                 : null,
             onTap: () => onSelect(shop),
           ),
+        if (selected?.strategyMemo case final memo? when memo.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(l10n.shopMemoInline(memo), style: textTheme.bodyMedium),
+          ),
         if (message != null)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),

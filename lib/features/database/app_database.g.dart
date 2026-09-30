@@ -67,6 +67,18 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   ).withConverter<Set<HoursCondition>>($ShopsTable.$converterhoursConditions);
+  static const VerificationMeta _strategyMemoMeta = const VerificationMeta(
+    'strategyMemo',
+  );
+  @override
+  late final GeneratedColumn<String> strategyMemo = GeneratedColumn<String>(
+    'strategy_memo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -86,6 +98,7 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     longitude,
     osmId,
     hoursConditions,
+    strategyMemo,
     createdAt,
   ];
   @override
@@ -131,6 +144,15 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
         osmId.isAcceptableOrUnknown(data['osm_id']!, _osmIdMeta),
       );
     }
+    if (data.containsKey('strategy_memo')) {
+      context.handle(
+        _strategyMemoMeta,
+        strategyMemo.isAcceptableOrUnknown(
+          data['strategy_memo']!,
+          _strategyMemoMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -174,6 +196,10 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
           data['${effectivePrefix}hours_conditions'],
         )!,
       ),
+      strategyMemo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}strategy_memo'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -197,6 +223,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
   final Value<double?> longitude;
   final Value<String?> osmId;
   final Value<Set<HoursCondition>> hoursConditions;
+  final Value<String> strategyMemo;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const ShopsCompanion({
@@ -206,6 +233,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.longitude = const Value.absent(),
     this.osmId = const Value.absent(),
     this.hoursConditions = const Value.absent(),
+    this.strategyMemo = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -216,6 +244,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.longitude = const Value.absent(),
     this.osmId = const Value.absent(),
     this.hoursConditions = const Value.absent(),
+    this.strategyMemo = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -228,6 +257,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Expression<double>? longitude,
     Expression<String>? osmId,
     Expression<String>? hoursConditions,
+    Expression<String>? strategyMemo,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -238,6 +268,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       if (longitude != null) 'longitude': longitude,
       if (osmId != null) 'osm_id': osmId,
       if (hoursConditions != null) 'hours_conditions': hoursConditions,
+      if (strategyMemo != null) 'strategy_memo': strategyMemo,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -250,6 +281,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Value<double?>? longitude,
     Value<String?>? osmId,
     Value<Set<HoursCondition>>? hoursConditions,
+    Value<String>? strategyMemo,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -260,6 +292,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       longitude: longitude ?? this.longitude,
       osmId: osmId ?? this.osmId,
       hoursConditions: hoursConditions ?? this.hoursConditions,
+      strategyMemo: strategyMemo ?? this.strategyMemo,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -288,6 +321,9 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
         $ShopsTable.$converterhoursConditions.toSql(hoursConditions.value),
       );
     }
+    if (strategyMemo.present) {
+      map['strategy_memo'] = Variable<String>(strategyMemo.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -306,6 +342,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
           ..write('longitude: $longitude, ')
           ..write('osmId: $osmId, ')
           ..write('hoursConditions: $hoursConditions, ')
+          ..write('strategyMemo: $strategyMemo, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1274,6 +1311,7 @@ typedef $$ShopsTableCreateCompanionBuilder = ShopsCompanion Function({
   Value<double?> longitude,
   Value<String?> osmId,
   Value<Set<HoursCondition>> hoursConditions,
+  Value<String> strategyMemo,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -1284,6 +1322,7 @@ typedef $$ShopsTableUpdateCompanionBuilder = ShopsCompanion Function({
   Value<double?> longitude,
   Value<String?> osmId,
   Value<Set<HoursCondition>> hoursConditions,
+  Value<String> strategyMemo,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -1353,6 +1392,11 @@ class $$ShopsTableFilterComposer extends Composer<_$AppDatabase, $ShopsTable> {
   get hoursConditions => $composableBuilder(
     column: $table.hoursConditions,
     builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get strategyMemo => $composableBuilder(
+    column: $table.strategyMemo,
+    builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
@@ -1425,6 +1469,11 @@ class $$ShopsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get strategyMemo => $composableBuilder(
+    column: $table.strategyMemo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -1458,6 +1507,11 @@ class $$ShopsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<Set<HoursCondition>, String>
   get hoursConditions => $composableBuilder(
     column: $table.hoursConditions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get strategyMemo => $composableBuilder(
+    column: $table.strategyMemo,
     builder: (column) => column,
   );
 
@@ -1525,6 +1579,7 @@ class $$ShopsTableTableManager
                 Value<String?> osmId = const Value.absent(),
                 Value<Set<HoursCondition>> hoursConditions =
                     const Value.absent(),
+                Value<String> strategyMemo = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion(
@@ -1534,6 +1589,7 @@ class $$ShopsTableTableManager
                 longitude: longitude,
                 osmId: osmId,
                 hoursConditions: hoursConditions,
+                strategyMemo: strategyMemo,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -1546,6 +1602,7 @@ class $$ShopsTableTableManager
                 Value<String?> osmId = const Value.absent(),
                 Value<Set<HoursCondition>> hoursConditions =
                     const Value.absent(),
+                Value<String> strategyMemo = const Value.absent(),
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion.insert(
@@ -1555,6 +1612,7 @@ class $$ShopsTableTableManager
                 longitude: longitude,
                 osmId: osmId,
                 hoursConditions: hoursConditions,
+                strategyMemo: strategyMemo,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

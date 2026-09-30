@@ -13,6 +13,7 @@ import '../records/visit_history.dart';
 import '../records/visit_photo.dart';
 import '../records/wait_time.dart';
 import '../scoring/points_breakdown_view.dart';
+import '../shop/shop_memo_dialog.dart';
 import '../scoring/scoring_providers.dart';
 import 'visit_edit_screen.dart';
 
@@ -60,6 +61,24 @@ class VisitDetailScreen extends ConsumerWidget {
       await storage.delete(photoPath);
     } catch (e) {
       debugPrint('Photo delete failed: $e');
+    }
+  }
+
+  Future<void> _editShopMemo(
+    BuildContext context,
+    WidgetRef ref,
+    Shop shop,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final failed = AppLocalizations.of(context).editSaveFailed;
+    final repository = ref.read(recordRepositoryProvider);
+    final memo = await showShopMemoDialog(context, shop.strategyMemo);
+    if (memo == null) return;
+    try {
+      await repository.setShopMemo(shop.id, memo);
+    } catch (e) {
+      debugPrint('Shop memo save failed: $e');
+      messenger.showSnackBar(SnackBar(content: Text(failed)));
     }
   }
 
@@ -154,6 +173,28 @@ class VisitDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Text(visit.memo, style: textTheme.bodyLarge),
                 ],
+                const Divider(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.shopMemoSection,
+                        style: textTheme.titleMedium,
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: l10n.shopMemoEdit,
+                      icon: const Icon(Icons.edit_note),
+                      onPressed: () => _editShopMemo(context, ref, entry.shop),
+                    ),
+                  ],
+                ),
+                Text(
+                  entry.shop.strategyMemo.isEmpty
+                      ? l10n.shopMemoEmpty
+                      : entry.shop.strategyMemo,
+                  style: textTheme.bodyMedium,
+                ),
                 if (scored != null) ...[
                   const Divider(height: 32),
                   Row(
