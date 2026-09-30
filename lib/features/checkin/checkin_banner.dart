@@ -35,11 +35,13 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
     super.dispose();
   }
 
-  void _tick() {
-    if (isCheckinExpired(widget.checkin, ref.read(clockProvider)())) {
-      ref.read(recordRepositoryProvider).cancelCheckin();
-    } else {
-      setState(() {});
+  Future<void> _tick() async {
+    setState(() {});
+    if (!isCheckinExpired(widget.checkin, ref.read(clockProvider)())) return;
+    try {
+      await ref.read(recordRepositoryProvider).cancelCheckin();
+    } catch (e) {
+      debugPrint('Checkin auto-cancel failed: $e');
     }
   }
 

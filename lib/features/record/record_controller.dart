@@ -99,7 +99,8 @@ class RecordController extends Notifier<RecordState> {
   void _setPhoto(String path, {required bool fromCamera}) {
     state = state.copyWith(
       photoPath: path,
-      photoTakenAt: ref.read(clockProvider)(),
+      // 撮り直しても、待ち時間が食べている時間だけ延びないよう最初の時刻を残す。
+      photoTakenAt: state.photoTakenAt ?? ref.read(clockProvider)(),
       photoFromCamera: fromCamera,
       photoStepDone: true,
     );

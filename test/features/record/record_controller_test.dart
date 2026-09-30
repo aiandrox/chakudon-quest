@@ -367,6 +367,78 @@ void main() {
       );
     });
 
+    test('並んだ店を検索結果や名前の候補から選び直しても、待ち時間がつく', () async {
+      overpass.shops = const [
+        OverpassShop(
+          osmId: 'node/9',
+          name: '並んだ店',
+          location: GeoPoint(35.0, 139.0),
+        ),
+      ];
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().selectShop(state().candidates.single);
+
+      expect(state().isCheckinShopSelected, isTrue);
+      controller().setRating(4);
+      await controller().save();
+
+      final entry = (await visits()).single;
+      expect(entry.visit.checkedInAt, checkedInAt);
+      expect(
+        await container.read(recordRepositoryProvider).activeCheckin(),
+        isNull,
+      );
+    });
+
+    test('手入力でチェックインした店が検索結果に出たら、同じ店として扱う', () async {
+      await container
+          .read(recordRepositoryProvider)
+          .checkIn(
+            shop: const ShopInput(
+              name: '麺屋テスト',
+              latitude: 35.0,
+              longitude: 139.0,
+            ),
+            at: checkedInAt,
+          );
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().selectShop(state().candidates.single);
+
+      expect(state().candidates.single.osmId, 'node/1');
+      expect(state().isCheckinShopSelected, isTrue);
+    });
+
+    test('撮り直しても、最初に撮った時刻で待ち時間を計算する', () async {
+      var now = _photoTime;
+      container.updateOverrides([
+        appDatabaseProvider.overrideWithValue(
+          container.read(appDatabaseProvider),
+        ),
+        documentsDirectoryProvider.overrideWithValue(documents),
+        locationServiceProvider.overrideWithValue(location),
+        overpassClientProvider.overrideWithValue(overpass),
+        photoPickerProvider.overrideWithValue(picker),
+        clockProvider.overrideWithValue(() => now),
+      ]);
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      now = _photoTime.add(const Duration(minutes: 20));
+      await controller().takePhoto();
+      controller().setRating(4);
+      await controller().save();
+
+      final entry = (await visits()).single;
+      expect(entry.visit.eatenAt, _photoTime);
+      expect(waitMinutes(entry.visit), 35);
+    });
+
     test('3時間を超えたチェックインは使わない', () async {
       await checkIn(at: _photoTime.subtract(const Duration(hours: 4)));
 

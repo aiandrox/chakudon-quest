@@ -63,8 +63,13 @@ class RecordState {
       chosenHoursType ?? selectedShop?.hoursType ?? HoursType.normal;
 
   /// 並んでいる店を選んでいるか。このときだけ待ち時間を記録する。
-  bool get isCheckinShopSelected =>
-      checkinShop != null && identical(selectedShop, checkinShop);
+  bool get isCheckinShopSelected {
+    final selected = selectedShop;
+    final checkedIn = checkinShop;
+    return selected != null &&
+        checkedIn != null &&
+        isSameShop(selected, checkedIn);
+  }
 
   bool get hasShop => selectedShop != null || manualName.trim().isNotEmpty;
 
@@ -72,7 +77,7 @@ class RecordState {
       photoPath != null ||
       rating != null ||
       manualName.trim().isNotEmpty ||
-      (selectedShop != null && !isCheckinShopSelected);
+      (selectedShop != null && !identical(selectedShop, checkinShop));
 
   bool get canSave => hasShop && rating != null && !isSaving;
 

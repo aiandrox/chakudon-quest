@@ -242,13 +242,13 @@ class _ShopSection extends ConsumerWidget {
     final checkinShop = state.checkinShop;
     final candidates = [
       for (final shop in state.candidates)
-        if (checkinShop == null || !_isSameShop(shop, checkinShop)) shop,
+        if (checkinShop == null || !isSameShop(shop, checkinShop)) shop,
     ];
     final shops = [
       ?checkinShop,
       ...candidates,
       if (selected != null &&
-          !identical(selected, checkinShop) &&
+          !state.isCheckinShopSelected &&
           !candidates.contains(selected))
         selected,
     ];
@@ -270,7 +270,9 @@ class _ShopSection extends ConsumerWidget {
         for (final shop in shops)
           ShopTile(
             shop: shop,
-            selected: identical(shop, selected),
+            selected: identical(shop, checkinShop)
+                ? state.isCheckinShopSelected
+                : identical(shop, selected),
             note: checkin != null && identical(shop, checkinShop)
                 ? l10n.checkinWaiting(
                     checkinElapsedMinutes(
@@ -307,16 +309,6 @@ class _ShopSection extends ConsumerWidget {
           ShopTile(shop: shop, selected: false, onTap: () => onSelect(shop)),
       ],
     );
-  }
-
-  bool _isSameShop(ShopCandidate a, ShopCandidate b) {
-    if (a.shopId != null && a.shopId == b.shopId) return true;
-    if (a.osmId != null && a.osmId == b.osmId) return true;
-    return a.shopId == null &&
-        b.shopId == null &&
-        a.osmId == null &&
-        b.osmId == null &&
-        a.name == b.name;
   }
 
   String? _message(AppLocalizations l10n) {
