@@ -15,7 +15,7 @@ void main() {
   Future<Visit> save(
     ShopInput shop, {
     DateTime? eatenAt,
-    HoursType hoursType = HoursType.normal,
+    HoursType? hoursType,
   }) => repository.saveEatenVisit(
     shop: shop,
     hoursType: hoursType,
@@ -100,6 +100,56 @@ void main() {
     expect(second.shopId, first.shopId);
     expect(other.shopId, isNot(first.shopId));
     expect(await repository.allShops(), hasLength(2));
+  });
+
+  test('営業時間の種類を選ばずに保存しても、記録済みの店の値は変えない', () async {
+    await save(const ShopInput(name: '麺屋'), hoursType: HoursType.fewDays);
+    await save(const ShopInput(name: '麺屋'));
+
+    expect((await repository.allShops()).single.hoursType, HoursType.fewDays);
+  });
+
+  test('同じ名前でも300mより離れた手入力の店は別の店にする', () async {
+    const here = ShopInput(name: '一蘭', latitude: 35.0, longitude: 139.0);
+    const near = ShopInput(name: '一蘭', latitude: 35.002, longitude: 139.0);
+    const far = ShopInput(name: '一蘭', latitude: 35.01, longitude: 139.0);
+    final first = await save(here);
+
+    expect((await save(near)).shopId, first.shopId);
+    expect((await save(far)).shopId, isNot(first.shopId));
+    expect(await repository.allShops(), hasLength(2));
+  });
+
+  test('位置のわからない手入力の店は、同じ名前の店と同じ店として扱う', () async {
+    final first = await save(
+      const ShopInput(name: '麺屋', latitude: 35.0, longitude: 139.0),
+    );
+
+    expect((await save(const ShopInput(name: '麺屋'))).shopId, first.shopId);
+  });
+
+  test('手入力で記録した店をあとから検索結果で選ぶと、同じ店に位置とIDを補う', () async {
+    final first = await save(const ShopInput(name: '麺屋'));
+    final second = await save(
+      const ShopInput(
+        osmId: 'node/1',
+        name: '麺屋',
+        latitude: 35.0,
+        longitude: 139.0,
+      ),
+    );
+
+    final shop = (await repository.allShops()).single;
+    expect(second.shopId, first.shopId);
+    expect(shop.osmId, 'node/1');
+    expect(shop.latitude, 35.0);
+  });
+
+  test('同じ名前でも別のOSMの店は別の店にする', () async {
+    final first = await save(const ShopInput(osmId: 'node/1', name: '一風堂'));
+    final second = await save(const ShopInput(osmId: 'node/2', name: '一風堂'));
+
+    expect(second.shopId, isNot(first.shopId));
   });
 
   test('記録済みの店をIDで指定でき、営業時間の種類の変更は店に反映する', () async {

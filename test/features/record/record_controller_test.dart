@@ -233,6 +233,79 @@ void main() {
     expect(await visits(), hasLength(2));
   });
 
+  test('記録済みの店を選んだあと別の店にしても、営業時間の種類を引き継がない', () async {
+    await container
+        .read(recordRepositoryProvider)
+        .saveEatenVisit(
+          shop: const ShopInput(name: '週2日の店'),
+          hoursType: HoursType.fewDays,
+          eatenAt: DateTime(2026, 9, 1),
+          rating: 5,
+          now: DateTime(2026, 9, 1),
+        );
+    await controller().start();
+    await pumpEventQueue();
+
+    controller().setManualName('週2日');
+    controller().selectShop(state().nameMatches.single);
+    expect(state().hoursType, HoursType.fewDays);
+
+    controller().selectShop(state().candidates.single);
+    expect(state().hoursType, HoursType.normal);
+    controller().setRating(3);
+    await controller().save();
+
+    final shops = await container.read(recordRepositoryProvider).allShops();
+    expect(
+      {for (final shop in shops) shop.name: shop.hoursType},
+      {'週2日の店': HoursType.fewDays, '麺屋テスト': HoursType.normal},
+    );
+  });
+
+  test('記録済みの店の名前を最後まで手入力しても、営業時間の種類を変えない', () async {
+    final repository = container.read(recordRepositoryProvider);
+    await repository.saveEatenVisit(
+      shop: const ShopInput(name: '週2日の店'),
+      hoursType: HoursType.fewDays,
+      eatenAt: DateTime(2026, 9, 1),
+      rating: 5,
+      now: DateTime(2026, 9, 1),
+    );
+    await controller().start();
+    await pumpEventQueue();
+
+    controller().setManualName('週2日の店');
+    controller().setRating(3);
+    await controller().save();
+
+    final shops = await repository.allShops();
+    expect(shops.single.hoursType, HoursType.fewDays);
+  });
+
+  test('営業時間の種類を選んでから店名を入力しても、選んだ値で保存する', () async {
+    await controller().start();
+    await pumpEventQueue();
+
+    controller().setHoursType(HoursType.lunchOnly);
+    controller().setManualName('昼だけの店');
+    controller().setRating(3);
+    await controller().save();
+
+    expect((await visits()).single.shop.hoursType, HoursType.lunchOnly);
+  });
+
+  test('アプリが終了させられて取り戻した写真では、現在地を店の位置にしない', () async {
+    await controller().start(recoveredPhotoPath: picker.cameraPath);
+    await pumpEventQueue();
+    controller().setManualName('取り戻した写真の店');
+    controller().setRating(3);
+    await controller().save();
+
+    final entry = (await visits()).single;
+    expect(entry.visit.photoPath, isNotNull);
+    expect(entry.shop.latitude, isNull);
+  });
+
   test('店と★が揃うまでは保存しない', () async {
     await controller().start();
     await pumpEventQueue();

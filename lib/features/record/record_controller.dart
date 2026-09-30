@@ -37,7 +37,8 @@ class RecordController extends Notifier<RecordState> {
     if (!ref.mounted) return;
     if (locationReady) unawaited(searchShops(requestPermission: false));
     if (recoveredPhotoPath != null) {
-      _setPhoto(recoveredPhotoPath, fromCamera: true);
+      // 取り戻した写真はカメラとギャラリーのどちらのものか区別できない。
+      _setPhoto(recoveredPhotoPath, fromCamera: false);
     } else {
       await takePhoto();
     }
@@ -122,15 +123,17 @@ class RecordController extends Notifier<RecordState> {
       selectedShop: shop,
       manualName: '',
       nameMatches: const [],
-      hoursType: shop.hoursType ?? state.hoursType,
+      chosenHoursType: null,
     );
   }
 
   void setManualName(String name) {
     final query = name.trim().toLowerCase();
+    final deselects = query.isNotEmpty && state.selectedShop != null;
     state = state.copyWith(
       manualName: name,
-      selectedShop: query.isEmpty ? state.selectedShop : null,
+      selectedShop: deselects ? null : state.selectedShop,
+      chosenHoursType: deselects ? null : state.chosenHoursType,
       nameMatches: query.isEmpty
           ? const []
           : [
@@ -149,7 +152,8 @@ class RecordController extends Notifier<RecordState> {
 
   void setHasTicket(bool value) => state = state.copyWith(hasTicket: value);
 
-  void setHoursType(HoursType type) => state = state.copyWith(hoursType: type);
+  void setHoursType(HoursType type) =>
+      state = state.copyWith(chosenHoursType: type);
 
   void setMemo(String memo) => state = state.copyWith(memo: memo);
 
@@ -167,7 +171,7 @@ class RecordController extends Notifier<RecordState> {
           .read(recordRepositoryProvider)
           .saveEatenVisit(
             shop: _shopInput(draft),
-            hoursType: draft.hoursType,
+            hoursType: draft.chosenHoursType,
             eatenAt: draft.photoTakenAt ?? now,
             rating: draft.rating!,
             photoPath: savedPhoto,

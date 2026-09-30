@@ -23,7 +23,7 @@ class RecordState {
     this.style,
     this.isLimited = false,
     this.hasTicket = false,
-    this.hoursType = HoursType.normal,
+    this.chosenHoursType,
     this.memo = '',
     this.isSaving = false,
   });
@@ -48,9 +48,14 @@ class RecordState {
   final RamenStyle? style;
   final bool isLimited;
   final bool hasTicket;
-  final HoursType hoursType;
+
+  /// 利用者がこの画面で選んだ営業時間の種類。選んでいなければnull。
+  final HoursType? chosenHoursType;
   final String memo;
   final bool isSaving;
+
+  HoursType get hoursType =>
+      chosenHoursType ?? selectedShop?.hoursType ?? HoursType.normal;
 
   bool get hasShop => selectedShop != null || manualName.trim().isNotEmpty;
 
@@ -73,7 +78,7 @@ class RecordState {
     Object? style = _unset,
     bool? isLimited,
     bool? hasTicket,
-    HoursType? hoursType,
+    Object? chosenHoursType = _unset,
     String? memo,
     bool? isSaving,
   }) {
@@ -98,7 +103,9 @@ class RecordState {
       style: style == _unset ? this.style : style as RamenStyle?,
       isLimited: isLimited ?? this.isLimited,
       hasTicket: hasTicket ?? this.hasTicket,
-      hoursType: hoursType ?? this.hoursType,
+      chosenHoursType: chosenHoursType == _unset
+          ? this.chosenHoursType
+          : chosenHoursType as HoursType?,
       memo: memo ?? this.memo,
       isSaving: isSaving ?? this.isSaving,
     );

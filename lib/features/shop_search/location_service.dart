@@ -52,12 +52,20 @@ class GeolocatorLocationService implements LocationService {
         return GeoPoint(position.latitude, position.longitude);
       } on TimeoutException {
         final last = await Geolocator.getLastKnownPosition();
-        return last == null ? null : GeoPoint(last.latitude, last.longitude);
+        if (last == null || !isUsableLastKnownPosition(last, DateTime.now())) {
+          return null;
+        }
+        return GeoPoint(last.latitude, last.longitude);
       }
     } catch (_) {
       return null;
     }
   }
+
+  /// 古い・粗い位置だと別の場所の店が候補に出てしまうため、直近の正確なものだけ使う。
+  static bool isUsableLastKnownPosition(Position position, DateTime now) =>
+      now.difference(position.timestamp).abs() <= const Duration(minutes: 2) &&
+      position.accuracy <= 100;
 
   bool _isGranted(LocationPermission permission) =>
       permission == LocationPermission.whileInUse ||
