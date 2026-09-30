@@ -57,8 +57,8 @@ void main() {
     await tester.tap(find.text(ja.navQuests));
     await tester.pumpAndSettle();
 
-    expect(find.text(ja.questSummary(0, 8)), findsOneWidget);
-    expect(find.text('はじめての着丼'), findsOneWidget);
+    expect(find.text(ja.questStanding), findsOneWidget);
+    expect(find.text('着丼の道'), findsOneWidget);
 
     await tester.tap(find.text(ja.navStats));
     await tester.pumpAndSettle();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/emblem.dart';
+import '../quests/quest_visuals.dart';
 import 'rank_labels.dart';
 import 'ranks.dart';
 
@@ -14,7 +16,6 @@ class RankProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
     final rank = adventurerRankFor(totalPoints);
     final next = rank.next;
     final progress = next == null
@@ -27,12 +28,12 @@ class RankProgress extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.military_tech, color: colors.primary, size: 20),
-            const SizedBox(width: 4),
+            Emblem(icon: rankIcon(rank), tier: rankTier(rank), size: 36),
+            const SizedBox(width: 8),
             Expanded(
-              child: Text(
+              child: TitleLogo(
                 adventurerRankLabel(l10n, rank),
-                style: textTheme.titleMedium,
+                tier: rankTier(rank),
               ),
             ),
             Text(l10n.totalPoints(totalPoints), style: textTheme.bodyMedium),

@@ -101,8 +101,11 @@ void main() {
       second,
     ], second.visit.id)!;
 
-    expect(firstOutcome.achievedQuests.map((q) => q.id), ['first_bowl']);
-    expect(secondOutcome.achievedQuests.map((q) => q.id), ['queue_30']);
+    expect(firstOutcome.questLevelUps.map((l) => l.quest.id), [
+      'bowls',
+      'first_bowl',
+    ]);
+    expect(secondOutcome.questLevelUps.map((l) => l.quest.id), ['queue']);
   });
 
   test('撤退の記録ではクエストを達成しない', () {
@@ -115,7 +118,7 @@ void main() {
 
     final outcome = computeRecordOutcome([retreat], retreat.visit.id)!;
 
-    expect(outcome.achievedQuests, isEmpty);
+    expect(outcome.questLevelUps, isEmpty);
   });
 
   test('記録が見つからなければnull', () {

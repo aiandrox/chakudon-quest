@@ -11,87 +11,116 @@ DateTime _day(int d) => DateTime(2026, 1, 1, 12).add(Duration(days: d));
 QuestProgress _progress(String id, List<VisitWithShop> entries) =>
     evaluateQuests(scoreVisits(entries)).firstWhere((p) => p.quest.id == id);
 
-void main() {
-  final shop = buildShop(id: 'shop');
+List<VisitWithShop> _bowls(int count, {Shop? shop}) => [
+  for (var i = 0; i < count; i++)
+    buildEntry(
+      shop: shop ?? buildShop(id: 'shop'),
+      eatenAt: _day(i),
+    ),
+];
 
-  test('クエストは8件で、IDが重複しない', () {
-    expect(quests, hasLength(8));
-    expect(quests.map((q) => q.id).toSet(), hasLength(8));
-    expect(quests.map((q) => q.title), [
+void main() {
+  test('常設とスポットに分かれ、IDが重複しない。レベルの段階は小さい順', () {
+    expect(quests.map((q) => q.id).toSet(), hasLength(quests.length));
+    expect(
+      quests.where((q) => q.kind == QuestKind.standing).map((q) => q.title),
+      ['着丼の道', '開拓者', '行列の覇者', '限定ハンター', '不屈の挑戦者', '大物討伐', '系統の探究'],
+    );
+    expect(quests.where((q) => q.kind == QuestKind.spot).map((q) => q.title), [
       'はじめての着丼',
-      '行列に挑む者',
       '60分の試練',
-      '全系統制覇',
-      '限定を狩れ',
-      '再挑戦',
-      '大物討伐',
-      '百杯の道',
+      '90分の死闘',
+      '一日二杯',
+      '三度目の正直',
+      '幻の店',
     ]);
+    for (final quest in quests) {
+      final sorted = [...quest.thresholds]..sort();
+      expect(quest.thresholds, sorted, reason: quest.id);
+      if (quest.kind == QuestKind.spot) {
+        expect(quest.thresholds, hasLength(1), reason: quest.id);
+      }
+    }
   });
 
-  test('記録が無ければ、すべて未達成', () {
+  test('記録が無ければ、すべてレベル0（未達成）', () {
     final all = evaluateQuests(const []);
 
-    expect(all.map((p) => p.status).toSet(), {QuestStatus.notStarted});
-    expect(all.map((p) => p.current).toSet(), {0});
-    expect(all.map((p) => p.achievedAt).toSet(), {null});
+    expect(all.map((p) => p.level).toSet(), {0});
+    expect(all.map((p) => p.isAchieved).toSet(), {false});
   });
 
-  group('はじめての着丼', () {
-    test('食べた記録が1件で達成。達成日はその記録の日時', () {
-      final progress = _progress('first_bowl', [
-        buildEntry(shop: shop, eatenAt: _day(3)),
-        buildEntry(shop: shop, eatenAt: _day(5)),
+  group('着丼の道（常設）', () {
+    test('杯数の段階ごとにレベルが上がり、段階ごとの到達日を持つ', () {
+      final nine = _progress('bowls', _bowls(9));
+      final ten = _progress('bowls', _bowls(10));
+
+      expect(nine.level, 1);
+      expect(nine.nextThreshold, 10);
+      expect(ten.level, 2);
+      expect(ten.levelAchievedAt, [_day(0), _day(9)]);
+      expect(ten.nextThreshold, 30);
+    });
+
+    test('最高レベル（200杯）に届くと次の段階は無い', () {
+      final progress = _progress('bowls', _bowls(200));
+
+      expect(progress.level, 6);
+      expect(progress.isMaxLevel, isTrue);
+      expect(progress.nextThreshold, isNull);
+    });
+
+    test('撤退は数えない', () {
+      final progress = _progress('bowls', [
+        buildEntry(shop: buildShop(), result: VisitResult.retreated),
       ]);
 
-      expect(progress.status, QuestStatus.achieved);
-      expect(progress.current, 1);
-      expect(progress.achievedAt, _day(3));
-    });
-
-    test('撤退だけでは達成しない', () {
-      final progress = _progress('first_bowl', [
-        buildEntry(shop: shop, result: VisitResult.retreated),
-      ]);
-
-      expect(progress.status, QuestStatus.notStarted);
-    });
-  });
-
-  group('待ち時間のクエスト', () {
-    test('29分では「行列に挑む者」を達成せず、30分で達成する', () {
-      expect(
-        _progress('queue_30', [buildEntry(shop: shop, waitMinutes: 29)]).status,
-        QuestStatus.notStarted,
-      );
-      expect(
-        _progress('queue_30', [buildEntry(shop: shop, waitMinutes: 30)]).status,
-        QuestStatus.achieved,
-      );
-    });
-
-    test('59分では「60分の試練」を達成せず、60分で達成する', () {
-      expect(
-        _progress('queue_60', [buildEntry(shop: shop, waitMinutes: 59)]).status,
-        QuestStatus.notStarted,
-      );
-      expect(
-        _progress('queue_60', [buildEntry(shop: shop, waitMinutes: 60)]).status,
-        QuestStatus.achieved,
-      );
-    });
-
-    test('並んで撤退した記録は数えない', () {
-      final progress = _progress('queue_60', [
-        buildEntry(shop: shop, waitMinutes: 90, result: VisitResult.retreated),
-      ]);
-
-      expect(progress.status, QuestStatus.notStarted);
+      expect(progress.level, 0);
     });
   });
 
-  group('全系統制覇', () {
-    const sevenStyles = [
+  test('開拓者は、食べたことのある店の数で上がる（同じ店は1軒）', () {
+    final entries = [
+      for (var i = 0; i < 3; i++)
+        buildEntry(
+          shop: buildShop(id: 'shop$i'),
+          eatenAt: _day(i),
+        ),
+      buildEntry(
+        shop: buildShop(id: 'shop0'),
+        eatenAt: _day(5),
+      ),
+    ];
+
+    final progress = _progress('shops', entries);
+
+    expect(progress.current, 3);
+    expect(progress.level, 1);
+    expect(progress.levelAchievedAt, [_day(2)]);
+  });
+
+  test('行列の覇者は30分以上並んだ回数。29分は数えない', () {
+    final progress = _progress('queue', [
+      buildEntry(shop: buildShop(), eatenAt: _day(1), waitMinutes: 29),
+      buildEntry(shop: buildShop(), eatenAt: _day(2), waitMinutes: 30),
+    ]);
+
+    expect(progress.current, 1);
+    expect(progress.level, 1);
+  });
+
+  test('限定ハンターは4杯で Lv.1、5杯で Lv.2', () {
+    List<VisitWithShop> limited(int count) => [
+      for (var i = 0; i < count; i++)
+        buildEntry(shop: buildShop(), eatenAt: _day(i), isLimited: true),
+    ];
+
+    expect(_progress('limited', limited(4)).level, 1);
+    expect(_progress('limited', limited(5)).level, 2);
+  });
+
+  test('系統の探究は、「その他」を除く系統の数。7系統で最高レベル（全系統制覇）', () {
+    const styles = [
       RamenStyle.shoyu,
       RamenStyle.miso,
       RamenStyle.shio,
@@ -100,155 +129,153 @@ void main() {
       RamenStyle.jiro,
       RamenStyle.tsukemen,
     ];
+    final progress = _progress('styles', [
+      for (var i = 0; i < 7; i++)
+        buildEntry(shop: buildShop(), eatenAt: _day(i), style: styles[i]),
+      buildEntry(shop: buildShop(), eatenAt: _day(8), style: RamenStyle.other),
+    ]);
 
-    test('7系統すべてで達成。達成日は最後の系統を食べた日', () {
-      final progress = _progress('all_styles', [
-        for (var i = 0; i < 7; i++)
-          buildEntry(shop: shop, eatenAt: _day(i), style: sevenStyles[i]),
-        buildEntry(shop: shop, eatenAt: _day(10), style: RamenStyle.shoyu),
-      ]);
-
-      expect(progress.status, QuestStatus.achieved);
-      expect(progress.current, 7);
-      expect(progress.achievedAt, _day(6));
-    });
-
-    test('6系統では挑戦中。同じ系統・その他・系統なしは数えない', () {
-      final progress = _progress('all_styles', [
-        for (var i = 0; i < 6; i++)
-          buildEntry(shop: shop, eatenAt: _day(i), style: sevenStyles[i]),
-        buildEntry(shop: shop, eatenAt: _day(7), style: RamenStyle.shoyu),
-        buildEntry(shop: shop, eatenAt: _day(8), style: RamenStyle.other),
-        buildEntry(shop: shop, eatenAt: _day(9)),
-      ]);
-
-      expect(progress.status, QuestStatus.inProgress);
-      expect(progress.current, 6);
-      expect(progress.achievedAt, isNull);
-    });
+    expect(progress.level, 3);
+    expect(progress.isMaxLevel, isTrue);
+    expect(progress.levelAchievedAt, [_day(2), _day(4), _day(6)]);
   });
 
-  group('限定を狩れ', () {
-    List<VisitWithShop> limited(int count) => [
-      for (var i = 0; i < count; i++)
-        buildEntry(shop: shop, eatenAt: _day(i), isLimited: true),
-    ];
+  test('大物討伐は、1杯で60点以上のSランクの店の数', () {
+    final rare = buildShop(
+      id: 'rare',
+      hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+    );
+    // (10 + 10 + 20) × 2 = 80
+    final progress = _progress('boss', [
+      buildEntry(shop: rare, eatenAt: _day(1), isLimited: true),
+    ]);
 
-    test('4件では挑戦中、5件で達成', () {
-      final four = _progress('limited_5', limited(4));
-      final five = _progress('limited_5', limited(5));
-
-      expect(four.status, QuestStatus.inProgress);
-      expect(four.current, 4);
-      expect(five.status, QuestStatus.achieved);
-      expect(five.achievedAt, _day(4));
-    });
-
-    test('目標を超えても、表示する数は目標まで', () {
-      expect(_progress('limited_5', limited(8)).current, 5);
-    });
+    expect(progress.level, 1);
   });
 
-  group('再挑戦', () {
-    test('撤退した店で、そのあとに食べると達成', () {
-      final progress = _progress('retry', [
-        buildEntry(shop: shop, eatenAt: _day(1), result: VisitResult.retreated),
-        buildEntry(shop: shop, eatenAt: _day(2)),
-      ]);
+  group('スポット', () {
+    test('はじめての着丼は最初の1杯で達成', () {
+      final progress = _progress('first_bowl', _bowls(3));
 
-      expect(progress.status, QuestStatus.achieved);
-      expect(progress.achievedAt, _day(2));
+      expect(progress.isAchieved, isTrue);
+      expect(progress.isMaxLevel, isTrue);
+      expect(progress.levelAchievedAt, [_day(0)]);
     });
 
-    test('食べたあとに撤退しただけ、別の店で食べただけでは達成しない', () {
-      final other = buildShop(id: 'other');
-      final progress = _progress('retry', [
-        buildEntry(shop: shop, eatenAt: _day(1)),
-        buildEntry(shop: shop, eatenAt: _day(2), result: VisitResult.retreated),
-        buildEntry(shop: other, eatenAt: _day(3)),
-      ]);
+    test('60分の試練と90分の死闘は、待ち時間の境界で分かれる', () {
+      final entries = [buildEntry(shop: buildShop(), waitMinutes: 89)];
 
-      expect(progress.status, QuestStatus.notStarted);
-    });
-  });
-
-  group('大物討伐', () {
-    test('1杯で60点以上の店があると達成', () {
-      final rare = buildShop(
-        id: 'rare',
-        hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+      expect(_progress('queue_60', entries).isAchieved, isTrue);
+      expect(_progress('queue_90', entries).isAchieved, isFalse);
+      expect(
+        _progress('queue_90', [
+          buildEntry(shop: buildShop(), waitMinutes: 90),
+        ]).isAchieved,
+        isTrue,
       );
-      // (10 + 10 + 20) × 2 = 80
-      final progress = _progress('rank_s', [
-        buildEntry(shop: shop, eatenAt: _day(1)),
-        buildEntry(shop: rare, eatenAt: _day(2), isLimited: true),
-      ]);
-
-      expect(progress.status, QuestStatus.achieved);
-      expect(progress.achievedAt, _day(2));
     });
 
-    test('Aランクまでの店だけでは達成しない', () {
-      // 10 + 10 + 20 + 15 = 55
-      final progress = _progress('rank_s', [
-        buildEntry(shop: shop, isLimited: true, waitMinutes: 30),
-      ]);
-
-      expect(progress.status, QuestStatus.notStarted);
-    });
-  });
-
-  group('百杯の道', () {
-    List<VisitWithShop> bowls(int count) => [
-      for (var i = 0; i < count; i++) buildEntry(shop: shop, eatenAt: _day(i)),
-    ];
-
-    test('99杯では挑戦中、100杯で達成', () {
-      final ninetyNine = _progress('bowls_100', bowls(99));
-      final hundred = _progress('bowls_100', bowls(100));
-
-      expect(ninetyNine.status, QuestStatus.inProgress);
-      expect(ninetyNine.current, 99);
-      expect(hundred.status, QuestStatus.achieved);
-      expect(hundred.achievedAt, _day(99));
-    });
-  });
-
-  group('newlyAchievedQuests', () {
-    test('今回の記録で新しく達成したクエストだけを返す', () {
-      final before = [buildEntry(shop: shop, eatenAt: _day(1))];
-      final after = [
-        ...before,
-        buildEntry(shop: shop, eatenAt: _day(2), waitMinutes: 65),
+    test('一日二杯は、同じ日に2杯食べると達成（撤退は数えない）', () {
+      final shop = buildShop();
+      final sameDay = [
+        buildEntry(shop: shop, eatenAt: DateTime(2026, 9, 1, 11)),
+        buildEntry(shop: shop, eatenAt: DateTime(2026, 9, 1, 20)),
+      ];
+      final withRetreat = [
+        buildEntry(shop: shop, eatenAt: DateTime(2026, 9, 1, 11)),
+        buildEntry(
+          shop: shop,
+          eatenAt: DateTime(2026, 9, 1, 20),
+          result: VisitResult.retreated,
+        ),
+        buildEntry(shop: shop, eatenAt: DateTime(2026, 9, 2, 11)),
       ];
 
-      final achieved = newlyAchievedQuests(
+      expect(_progress('double_bowl', sameDay).isAchieved, isTrue);
+      expect(_progress('double_bowl', withRetreat).isAchieved, isFalse);
+    });
+
+    test('三度目の正直は、同じ店で2回撤退したあとに食べると達成', () {
+      final shop = buildShop();
+      VisitWithShop retreat(int d) => buildEntry(
+        shop: shop,
+        eatenAt: _day(d),
+        result: VisitResult.retreated,
+      );
+
+      expect(
+        _progress('third_time', [
+          retreat(1),
+          buildEntry(shop: shop, eatenAt: _day(2)),
+        ]).isAchieved,
+        isFalse,
+      );
+      expect(
+        _progress('third_time', [
+          retreat(1),
+          retreat(2),
+          buildEntry(shop: shop, eatenAt: _day(3)),
+        ]).levelAchievedAt,
+        [_day(3)],
+      );
+    });
+
+    test('幻の店は、営業の条件が2つ以上ある店で食べると達成', () {
+      final one = buildShop(
+        id: 'one',
+        hoursConditions: {HoursCondition.lunchOnly},
+      );
+      final two = buildShop(
+        id: 'two',
+        hoursConditions: {
+          HoursCondition.lunchOnly,
+          HoursCondition.weekdaysOnly,
+        },
+      );
+
+      expect(
+        _progress('rare_shop', [buildEntry(shop: one)]).isAchieved,
+        isFalse,
+      );
+      expect(
+        _progress('rare_shop', [buildEntry(shop: two)]).isAchieved,
+        isTrue,
+      );
+    });
+  });
+
+  group('newlyAchievedLevels', () {
+    test('新しく届いたレベルだけを返す', () {
+      final before = _bowls(9);
+      final after = _bowls(10);
+
+      final levelUps = newlyAchievedLevels(
         before: evaluateQuests(scoreVisits(before)),
         after: evaluateQuests(scoreVisits(after)),
       );
 
-      expect(achieved.map((q) => q.id), ['queue_30', 'queue_60']);
+      expect(levelUps.map((l) => (l.quest.id, l.level)), [('bowls', 2)]);
     });
 
-    test('最初の1杯では「はじめての着丼」を達成する', () {
-      final achieved = newlyAchievedQuests(
+    test('最初の1杯では、着丼の道 Lv.1 と「はじめての着丼」を知らせる', () {
+      final levelUps = newlyAchievedLevels(
         before: evaluateQuests(const []),
-        after: evaluateQuests(scoreVisits([buildEntry(shop: shop)])),
+        after: evaluateQuests(scoreVisits(_bowls(1))),
       );
 
-      expect(achieved.map((q) => q.id), ['first_bowl']);
+      expect(levelUps.map((l) => (l.quest.id, l.level)), [
+        ('bowls', 1),
+        ('first_bowl', 1),
+      ]);
     });
 
-    test('達成済みのクエストは、もう一度知らせない', () {
-      final before = [buildEntry(shop: shop, eatenAt: _day(1))];
-      final after = [...before, buildEntry(shop: shop, eatenAt: _day(2))];
-
-      final achieved = newlyAchievedQuests(
-        before: evaluateQuests(scoreVisits(before)),
-        after: evaluateQuests(scoreVisits(after)),
+    test('レベルが変わらなければ知らせない', () {
+      final levelUps = newlyAchievedLevels(
+        before: evaluateQuests(scoreVisits(_bowls(2))),
+        after: evaluateQuests(scoreVisits(_bowls(3))),
       );
 
-      expect(achieved, isEmpty);
+      expect(levelUps, isEmpty);
     });
   });
 }

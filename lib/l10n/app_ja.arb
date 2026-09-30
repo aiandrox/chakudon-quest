@@ -209,27 +209,58 @@
   "navRecords": "記録",
   "navQuests": "クエスト",
   "questTitle": "クエスト",
-  "questSummary": "達成 {achieved} / {total}",
-  "@questSummary": {
+  "questStanding": "常設クエスト",
+  "questStandingNote": "回数を重ねるほどレベルが上がります",
+  "questSpot": "スポットクエスト",
+  "questSpotNote": "1回達成すればクリアです",
+  "questLevelTotal": "レベル合計 {total}",
+  "@questLevelTotal": {
+    "placeholders": {
+      "total": {"type": "int"}
+    }
+  },
+  "questSpotSummary": "達成 {achieved} / {total}",
+  "@questSpotSummary": {
     "placeholders": {
       "achieved": {"type": "int"},
       "total": {"type": "int"}
     }
   },
-  "questStatusAchieved": "達成済み",
-  "questStatusInProgress": "挑戦中",
-  "questStatusNotStarted": "未達成",
+  "questLevel": "Lv.{level}",
+  "@questLevel": {
+    "placeholders": {
+      "level": {"type": "int"}
+    }
+  },
+  "questMaxLevel": "MAX",
+  "questCleared": "達成",
+  "questNext": "次のレベルまで {current} / {target}{unit}",
+  "@questNext": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "target": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
+  "questCount": "{count}{unit}",
+  "@questCount": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "unit": {"type": "String"}
+    }
+  },
   "questAchievedOn": "{date} 達成",
   "@questAchievedOn": {
     "placeholders": {
       "date": {"type": "String"}
     }
   },
-  "questProgress": "{current} / {target}",
-  "@questProgress": {
+  "questLevelUp": "クエスト レベルアップ！",
+  "questLevelReached": "{title} Lv.{level}",
+  "@questLevelReached": {
     "placeholders": {
-      "current": {"type": "int"},
-      "target": {"type": "int"}
+      "title": {"type": "String"},
+      "level": {"type": "int"}
     }
   },
   "questAchieved": "クエスト達成！",

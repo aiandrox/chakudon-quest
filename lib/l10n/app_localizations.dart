@@ -832,29 +832,71 @@ abstract class AppLocalizations {
   /// **'クエスト'**
   String get questTitle;
 
-  /// No description provided for @questSummary.
+  /// No description provided for @questStanding.
+  ///
+  /// In ja, this message translates to:
+  /// **'常設クエスト'**
+  String get questStanding;
+
+  /// No description provided for @questStandingNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'回数を重ねるほどレベルが上がります'**
+  String get questStandingNote;
+
+  /// No description provided for @questSpot.
+  ///
+  /// In ja, this message translates to:
+  /// **'スポットクエスト'**
+  String get questSpot;
+
+  /// No description provided for @questSpotNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'1回達成すればクリアです'**
+  String get questSpotNote;
+
+  /// No description provided for @questLevelTotal.
+  ///
+  /// In ja, this message translates to:
+  /// **'レベル合計 {total}'**
+  String questLevelTotal(int total);
+
+  /// No description provided for @questSpotSummary.
   ///
   /// In ja, this message translates to:
   /// **'達成 {achieved} / {total}'**
-  String questSummary(int achieved, int total);
+  String questSpotSummary(int achieved, int total);
 
-  /// No description provided for @questStatusAchieved.
+  /// No description provided for @questLevel.
   ///
   /// In ja, this message translates to:
-  /// **'達成済み'**
-  String get questStatusAchieved;
+  /// **'Lv.{level}'**
+  String questLevel(int level);
 
-  /// No description provided for @questStatusInProgress.
+  /// No description provided for @questMaxLevel.
   ///
   /// In ja, this message translates to:
-  /// **'挑戦中'**
-  String get questStatusInProgress;
+  /// **'MAX'**
+  String get questMaxLevel;
 
-  /// No description provided for @questStatusNotStarted.
+  /// No description provided for @questCleared.
   ///
   /// In ja, this message translates to:
-  /// **'未達成'**
-  String get questStatusNotStarted;
+  /// **'達成'**
+  String get questCleared;
+
+  /// No description provided for @questNext.
+  ///
+  /// In ja, this message translates to:
+  /// **'次のレベルまで {current} / {target}{unit}'**
+  String questNext(int current, int target, String unit);
+
+  /// No description provided for @questCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}{unit}'**
+  String questCount(int count, String unit);
 
   /// No description provided for @questAchievedOn.
   ///
@@ -862,11 +904,17 @@ abstract class AppLocalizations {
   /// **'{date} 達成'**
   String questAchievedOn(String date);
 
-  /// No description provided for @questProgress.
+  /// No description provided for @questLevelUp.
   ///
   /// In ja, this message translates to:
-  /// **'{current} / {target}'**
-  String questProgress(int current, int target);
+  /// **'クエスト レベルアップ！'**
+  String get questLevelUp;
+
+  /// No description provided for @questLevelReached.
+  ///
+  /// In ja, this message translates to:
+  /// **'{title} Lv.{level}'**
+  String questLevelReached(String title, int level);
 
   /// No description provided for @questAchieved.
   ///
