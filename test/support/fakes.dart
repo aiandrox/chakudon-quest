@@ -77,7 +77,7 @@ class FakePhotoPicker implements PhotoPicker {
 typedef VisitUpdate = ({
   String visitId,
   String shopName,
-  HoursType hoursType,
+  HoursType? hoursType,
   DateTime eatenAt,
   int? rating,
   RamenStyle? style,
@@ -97,7 +97,7 @@ class FakeRecordRepository implements RecordRepository {
   Future<void> updateVisit({
     required String visitId,
     required String shopName,
-    required HoursType hoursType,
+    required HoursType? hoursType,
     required DateTime eatenAt,
     required int? rating,
     required RamenStyle? style,

@@ -195,6 +195,19 @@ void main() {
     expect(update.isLimited, isTrue);
   });
 
+  testWidgets('営業時間の種類を変えずに保存したときは、変更なしとして渡す', (tester) async {
+    await pumpDetail(tester, [
+      entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
+    ], 'v');
+    await tester.tap(find.byTooltip(ja.edit));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
+    await tester.pumpAndSettle();
+
+    expect(repository.updates.single.hoursType, isNull);
+  });
+
   testWidgets('店名を空にすると保存できない', (tester) async {
     await pumpDetail(tester, [
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),

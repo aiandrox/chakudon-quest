@@ -168,7 +168,7 @@ void main() {
     Future<void> update(
       Visit visit, {
       required String shopName,
-      HoursType hoursType = HoursType.normal,
+      HoursType? hoursType,
       int? rating = 4,
       String memo = '',
     }) => repository.updateVisit(
@@ -255,6 +255,49 @@ void main() {
       final visits = await repository.watchVisits().first;
       expect(visits.map((v) => v.shop.id).toSet(), {known.shopId});
       expect(await repository.allShops(), hasLength(1));
+    });
+
+    test('営業時間の種類を変えずに別の店へ付け替えても、その店の値を変えない', () async {
+      await save(const ShopInput(name: '週2日の店'), hoursType: HoursType.fewDays);
+      await save(const ShopInput(name: '週2日の店'));
+      final typo = await save(const ShopInput(name: '週2日のみせ'));
+
+      await update(typo, shopName: '週2日の店');
+
+      final shop = (await repository.allShops()).single;
+      expect(shop.hoursType, HoursType.fewDays);
+    });
+
+    test('新しい店に付け替えるときは、元の店の営業時間の種類を引き継ぐ', () async {
+      await save(const ShopInput(name: '麺屋'), hoursType: HoursType.lunchOnly);
+      final second = await save(const ShopInput(name: '麺屋'));
+
+      await update(second, shopName: '別の店');
+
+      final shops = await repository.allShops();
+      expect(
+        {for (final shop in shops) shop.name: shop.hoursType},
+        {'麺屋': HoursType.lunchOnly, '別の店': HoursType.lunchOnly},
+      );
+    });
+
+    test('同じ名前の支店が複数あるときは、元の店に近い方へ付け替える', () async {
+      final far = await save(
+        const ShopInput(name: '一蘭', latitude: 35.05, longitude: 139.0),
+      );
+      final near = await save(
+        const ShopInput(name: '一蘭', latitude: 35.001, longitude: 139.0),
+      );
+      final typo = await save(
+        const ShopInput(name: 'いちらん', latitude: 35.0, longitude: 139.0),
+      );
+
+      await update(typo, shopName: '一蘭');
+
+      final visits = await repository.watchVisits().first;
+      final moved = visits.firstWhere((v) => v.visit.id == typo.id);
+      expect(moved.shop.id, near.shopId);
+      expect(moved.shop.id, isNot(far.shopId));
     });
 
     test('店名を空にしても元の店のままにする', () async {

@@ -108,11 +108,11 @@ class RecordRepository {
   }
 
   /// 店名を変えたときは、この記録だけを別の店に付け替える。ただし手入力の店でほかに記録が
-  /// 無ければ、位置を失わないよう店の名前を直す。
+  /// 無ければ、位置を失わないよう店の名前を直す。[hoursType]は利用者が変えたときだけ渡す。
   Future<void> updateVisit({
     required String visitId,
     required String shopName,
-    required HoursType hoursType,
+    required HoursType? hoursType,
     required DateTime eatenAt,
     required int? rating,
     required RamenStyle? style,
@@ -131,20 +131,32 @@ class RecordRepository {
       final name = shopName.trim();
       var shopId = shop.id;
       if (name.isNotEmpty && name != shop.name) {
-        final sameName = await _findShop(ShopInput(name: name));
+        final sameName = await _findShop(
+          ShopInput(
+            name: name,
+            latitude: shop.latitude,
+            longitude: shop.longitude,
+          ),
+        );
         final hasOtherVisits = await _visitCount(shop.id) > 1;
         if (sameName != null) {
           shopId = sameName.id;
         } else if (hasOtherVisits || shop.osmId != null) {
-          shopId = await _resolveShop(ShopInput(name: name), hoursType, now);
+          shopId = await _resolveShop(
+            ShopInput(name: name),
+            hoursType ?? shop.hoursType,
+            now,
+          );
         } else {
           await (_db.update(_db.shops)..where((s) => s.id.equals(shop.id)))
               .write(ShopsCompanion(name: Value(name)));
         }
       }
-      await (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
-        ShopsCompanion(hoursType: Value(hoursType)),
-      );
+      if (hoursType != null) {
+        await (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
+          ShopsCompanion(hoursType: Value(hoursType)),
+        );
+      }
       await (_db.update(_db.visits)..where((v) => v.id.equals(visitId))).write(
         VisitsCompanion(
           shopId: Value(shopId),

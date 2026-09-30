@@ -73,7 +73,9 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
           .updateVisit(
             visitId: widget.entry.visit.id,
             shopName: _nameController.text,
-            hoursType: _hoursType,
+            hoursType: _hoursType == widget.entry.shop.hoursType
+                ? null
+                : _hoursType,
             eatenAt: _eatenAt,
             rating: _rating,
             style: _style,
