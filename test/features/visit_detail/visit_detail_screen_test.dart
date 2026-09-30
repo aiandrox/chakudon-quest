@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
+import 'package:chakudon_quest/features/record/star_rating.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
@@ -90,11 +91,50 @@ void main() {
 
     expect(find.text('麺屋テスト'), findsWidgets);
     expect(find.text('2026/9/30 12:34'), findsOneWidget);
-    expect(stars(4), findsOneWidget);
+    expect(tester.widget<StarRating>(find.byType(StarRating)).rating, 4);
     expect(find.text(ja.styleShoyu), findsOneWidget);
     expect(find.text(ja.limitedBadge), findsOneWidget);
     expect(find.text('スープが濃い'), findsOneWidget);
     expect(find.text(ja.previousVisit), findsNothing);
+  });
+
+  testWidgets('★の無い記録は、詳細で★をタップして評価できる', (tester) async {
+    await pumpDetail(tester, [
+      VisitWithShop(
+        shop: shop,
+        visit: buildVisit(
+          id: 'v',
+          eatenAt: DateTime(2026, 9, 30),
+          rating: null,
+        ),
+      ),
+    ], 'v');
+
+    expect(find.text(ja.ratingTapToRate), findsOneWidget);
+
+    await tester.tap(find.byTooltip(ja.ratingStar(4)));
+    await tester.pump();
+
+    expect(repository.ratings, {'v': 4});
+  });
+
+  testWidgets('★の保存に失敗したら知らせる', (tester) async {
+    repository.ratingError = StateError('db');
+    await pumpDetail(tester, [
+      VisitWithShop(
+        shop: shop,
+        visit: buildVisit(
+          id: 'v',
+          eatenAt: DateTime(2026, 9, 30),
+          rating: null,
+        ),
+      ),
+    ], 'v');
+
+    await tester.tap(find.byTooltip(ja.ratingStar(4)));
+    await tester.pump();
+
+    expect(find.text(ja.editSaveFailed), findsOneWidget);
   });
 
   testWidgets('同じ店の2回目は、前回の日付・★・メモを表示する', (tester) async {

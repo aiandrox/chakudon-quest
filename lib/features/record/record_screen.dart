@@ -123,8 +123,13 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             onSelect: _selectShop,
           ),
           const SizedBox(height: 16),
-          Text(l10n.ratingSection, style: textTheme.titleMedium),
-          StarRating(rating: state.rating, onChanged: controller.setRating),
+          Text(l10n.ratingOptional, style: textTheme.titleMedium),
+          Center(
+            child: StarRating(
+              rating: state.rating,
+              onChanged: controller.setRating,
+            ),
+          ),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             title: Text(l10n.optionalSection),

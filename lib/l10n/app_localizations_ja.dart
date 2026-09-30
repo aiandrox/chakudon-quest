@@ -78,6 +78,20 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ratingSection => '評価';
 
   @override
+  String get ratingOptional => '評価（食べ終わってから、あとで付けてもOK）';
+
+  @override
+  String get ratingUnrated => '未評価';
+
+  @override
+  String ratingPrompt(String shop) {
+    return '$shop はどうでしたか？';
+  }
+
+  @override
+  String get ratingTapToRate => '★をタップして評価できます';
+
+  @override
   String ratingStar(int stars) {
     return '★$stars';
   }

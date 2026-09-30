@@ -7,11 +7,13 @@ import '../checkin/checkin_controller.dart';
 import '../checkin/checkin_screen.dart';
 import '../record/photo_picker.dart';
 import '../record/record_screen.dart';
+import '../records/clock.dart';
 import '../records/date_format.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_photo.dart';
 import '../scoring/rank_progress.dart';
+import 'rating_prompt.dart';
 import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
 
@@ -70,6 +72,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: RankProgress(totalPoints: ref.watch(totalPointsProvider)),
           ),
           if (checkin != null) CheckinBanner(checkin: checkin),
+          if (_ratingPromptTarget(visits.value) case final entry?)
+            RatingPrompt(entry: entry),
           Expanded(child: _buildVisits(l10n, visits)),
         ],
       ),
@@ -95,6 +99,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
     );
+  }
+
+  /// 食べてから12時間以内で、まだ★の無い最新の記録。
+  VisitWithShop? _ratingPromptTarget(List<VisitWithShop>? visits) {
+    final now = ref.watch(clockProvider)();
+    for (final entry in visits ?? const <VisitWithShop>[]) {
+      final visit = entry.visit;
+      if (visit.result != VisitResult.eaten) continue;
+      if (now.difference(visit.eatenAt) > const Duration(hours: 12)) break;
+      if (visit.rating == null) return entry;
+    }
+    return null;
   }
 
   Widget _buildVisits(
@@ -183,6 +199,8 @@ class _VisitTile extends ConsumerWidget {
                   [
                     formatDate(visit.eatenAt),
                     if (rating != null) l10n.ratingStar(rating),
+                    if (rating == null && visit.result == VisitResult.eaten)
+                      l10n.ratingUnrated,
                     if (points != null && visit.result == VisitResult.eaten)
                       l10n.pointsGained(points),
                   ].join('  '),

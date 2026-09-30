@@ -124,9 +124,11 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
           ),
           if (isEaten) ...[
             Text(l10n.ratingSection, style: textTheme.titleMedium),
-            StarRating(
-              rating: _rating,
-              onChanged: (rating) => setState(() => _rating = rating),
+            Center(
+              child: StarRating(
+                rating: _rating,
+                onChanged: (rating) => setState(() => _rating = rating),
+              ),
             ),
           ],
           const SizedBox(height: 8),

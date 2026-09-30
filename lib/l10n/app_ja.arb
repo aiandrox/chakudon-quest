@@ -27,6 +27,15 @@
   },
   "osmAttribution": "© OpenStreetMap contributors",
   "ratingSection": "評価",
+  "ratingOptional": "評価（食べ終わってから、あとで付けてもOK）",
+  "ratingUnrated": "未評価",
+  "ratingPrompt": "{shop} はどうでしたか？",
+  "@ratingPrompt": {
+    "placeholders": {
+      "shop": {"type": "String"}
+    }
+  },
+  "ratingTapToRate": "★をタップして評価できます",
   "ratingStar": "★{stars}",
   "@ratingStar": {
     "placeholders": {

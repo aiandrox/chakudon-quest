@@ -82,4 +82,42 @@ void main() {
     expect(find.text(ja.totalPoints(20)), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsNothing);
   });
+
+  testWidgets('食べてから12時間以内で★の無い記録は、一覧の上で評価を促す', (tester) async {
+    final shop = Shop(
+      id: 'shop',
+      name: '麺屋テスト',
+      hoursType: HoursType.normal,
+      createdAt: DateTime(2026, 9, 30),
+    );
+    Visit visit(String id, DateTime eatenAt) => Visit(
+      id: id,
+      shopId: 'shop',
+      result: VisitResult.eaten,
+      eatenAt: eatenAt,
+      isLimited: false,
+      hasTicket: false,
+      memo: '',
+      createdAt: eatenAt,
+    );
+    final now = DateTime.now();
+    await pumpApp(tester, [
+      VisitWithShop(
+        shop: shop,
+        visit: visit('recent', now.subtract(const Duration(hours: 1))),
+      ),
+    ]);
+
+    expect(find.text(ja.ratingPrompt('麺屋テスト')), findsOneWidget);
+    expect(find.textContaining(ja.ratingUnrated), findsOneWidget);
+
+    await pumpApp(tester, [
+      VisitWithShop(
+        shop: shop,
+        visit: visit('old', now.subtract(const Duration(hours: 13))),
+      ),
+    ]);
+
+    expect(find.text(ja.ratingPrompt('麺屋テスト')), findsNothing);
+  });
 }

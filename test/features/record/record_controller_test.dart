@@ -78,9 +78,8 @@ void main() {
     expect(state().canSave, isFalse);
 
     controller().selectShop(state().candidates.single);
-    expect(state().canSave, isFalse);
-    controller().setRating(4);
     expect(state().canSave, isTrue);
+    controller().setRating(4);
 
     expect(await controller().save(), isNotNull);
 
@@ -460,7 +459,7 @@ void main() {
     });
   });
 
-  test('店と★が揃うまでは保存しない', () async {
+  test('店が決まるまでは保存しない（★だけでは保存しない）', () async {
     await controller().start();
     await pumpEventQueue();
 
@@ -470,6 +469,20 @@ void main() {
     controller().setManualName('   ');
     expect(await controller().save(), isNull);
     expect(await visits(), isEmpty);
+  });
+
+  test('★を付けずに保存でき、あとから★を付けられる', () async {
+    await controller().start();
+    await pumpEventQueue();
+    controller().selectShop(state().candidates.single);
+
+    final visitId = await controller().save();
+
+    expect(visitId, isNotNull);
+    expect((await visits()).single.visit.rating, isNull);
+
+    await container.read(recordRepositoryProvider).setRating(visitId!, 5);
+    expect((await visits()).single.visit.rating, 5);
   });
 
   test('保存に失敗したら、コピーした写真を消して入力を続けられる', () async {

@@ -150,7 +150,7 @@ class RecordRepository {
     required ShopInput shop,
     HoursType? hoursType,
     required DateTime eatenAt,
-    required int rating,
+    int? rating,
     String? photoPath,
     DateTime? checkedInAt,
     RamenStyle? style,
@@ -180,6 +180,11 @@ class RecordRepository {
       return visit;
     });
   }
+
+  Future<void> setRating(String visitId, int rating) =>
+      (_db.update(_db.visits)..where((v) => v.id.equals(visitId))).write(
+        VisitsCompanion(rating: Value(rating)),
+      );
 
   /// 店名を変えたときは、この記録だけを別の店に付け替える。ただし手入力の店でほかに記録が
   /// 無ければ、位置を失わないよう店の名前を直す。[hoursType]は利用者が変えたときだけ渡す。

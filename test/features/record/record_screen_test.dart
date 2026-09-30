@@ -80,9 +80,11 @@ void main() {
     expect(tester.widget<FilledButton>(saveButton).onPressed, isNull);
 
     await tester.tap(find.text('麺屋テスト'));
+    await tester.pump();
+    // ★は食べ終わってから付けることが多いため、店が決まれば保存できる。
+    expect(tester.widget<FilledButton>(saveButton).onPressed, isNotNull);
     await tester.tap(find.byTooltip(ja.ratingStar(4)));
     await tester.pump();
-    expect(tester.widget<FilledButton>(saveButton).onPressed, isNotNull);
 
     await tester.runAsync(() async {
       await tester.tap(saveButton);
