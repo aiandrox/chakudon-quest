@@ -1,0 +1,329 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-09-30T14:20:35Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 1504865588,
+  "lat": 35.6898044,
+  "lon": 139.7022228,
+  "tags": {
+    "amenity": "fast_food",
+    "cuisine": "noodle;ramen",
+    "name": "海神",
+    "source": "Bing"
+  }
+},
+{
+  "type": "node",
+  "id": 1544570311,
+  "lat": 35.6887701,
+  "lon": 139.6984016,
+  "tags": {
+    "amenity": "fast_food",
+    "contact:phone": "+81 3-3349-0338",
+    "cuisine": "noodle;ramen",
+    "name": "山頭火 新宿南口店"
+  }
+},
+{
+  "type": "node",
+  "id": 2197384267,
+  "lat": 35.6927038,
+  "lon": 139.6995434,
+  "tags": {
+    "addr:postcode": "160-8484",
+    "amenity": "fast_food",
+    "cuisine": "ramen",
+    "name": "喜多方ラーメン",
+    "name:en": "Kitakata Ramen",
+    "opening_hours": "Mo-Su 10:00-23:00",
+    "source": "image,2013-03;Bing",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 2197501001,
+  "lat": 35.6934073,
+  "lon": 139.7011508,
+  "tags": {
+    "amenity": "fast_food",
+    "cuisine": "noodle;ramen",
+    "layer": "-1",
+    "level": "-1",
+    "name": "大勝軒",
+    "name:en": "Taishoken",
+    "source": "image,2013-03;Bing",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 2389061883,
+  "lat": 35.6893180,
+  "lon": 139.6979940,
+  "tags": {
+    "amenity": "fast_food",
+    "name": "白屋製麺"
+  }
+},
+{
+  "type": "node",
+  "id": 4457055698,
+  "lat": 35.6928535,
+  "lon": 139.7020769,
+  "tags": {
+    "addr:block_number": "21",
+    "addr:city": "新宿区",
+    "addr:housenumber": "2",
+    "addr:neighbourhood": "3",
+    "addr:postcode": "160-0022",
+    "addr:province": "東京都",
+    "addr:quarter": "新宿",
+    "amenity": "restaurant",
+    "branch": "新宿東口店",
+    "contact:facebook": "https://www.facebook.com/furyugroup/",
+    "cuisine": "ramen",
+    "level": "0",
+    "name": "とんこつラーメン博多風龍",
+    "phone": "+81-3-3352-9304",
+    "website": "https://fu-ryu.net/"
+  }
+},
+{
+  "type": "node",
+  "id": 4609284069,
+  "lat": 35.6931025,
+  "lon": 139.7022214,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "ramen",
+    "name": "桂花ラーメン",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 4609286392,
+  "lat": 35.6927227,
+  "lon": 139.7019183,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "ramen",
+    "name": "桂花ラーメン",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5294958114,
+  "lat": 35.6893342,
+  "lon": 139.6976108,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date": "2025-11-21",
+    "cuisine": "noodle;ramen",
+    "name": "一竜",
+    "name:en": "Ichiryu"
+  }
+},
+{
+  "type": "node",
+  "id": 6351684585,
+  "lat": 35.6912590,
+  "lon": 139.7010514,
+  "tags": {
+    "amenity": "restaurant",
+    "branch": "Lumine EST Ramen",
+    "brand": "一風堂",
+    "brand:en": "Ippudo",
+    "brand:ja": "一風堂",
+    "brand:wikidata": "Q6065417",
+    "brand:zh": "一風堂",
+    "cuisine": "ramen",
+    "name": "一風堂",
+    "name:en": "Ippudo",
+    "name:ja": "一風堂",
+    "name:zh": "一風堂"
+  }
+},
+{
+  "type": "node",
+  "id": 6512758490,
+  "lat": 35.6917023,
+  "lon": 139.7010933,
+  "tags": {
+    "amenity": "restaurant",
+    "branch": "Lumine EST Ramen",
+    "brand": "一風堂",
+    "brand:en": "Ippudo",
+    "brand:ja": "一風堂",
+    "brand:wikidata": "Q6065417",
+    "brand:zh": "一風堂",
+    "cuisine": "ramen",
+    "name": "一風堂",
+    "name:en": "Ippudo",
+    "name:ja": "一風堂",
+    "name:zh": "一風堂"
+  }
+},
+{
+  "type": "node",
+  "id": 8387584217,
+  "lat": 35.6934868,
+  "lon": 139.7004052,
+  "tags": {
+    "addr:block_number": "2",
+    "addr:city": "新宿区",
+    "addr:housenumber": "2",
+    "addr:neighbourhood": "歌舞伎町一丁目",
+    "addr:postcode": "160-0021",
+    "addr:province": "東京都",
+    "amenity": "restaurant",
+    "cuisine": "ramen",
+    "name": "AFURI辛紅 新宿サブナード",
+    "name:en": "Afuri Karakurenai Shinjuku Subnade",
+    "opening_hours": "Mo-Su 11:00-20:00",
+    "phone": "+81 3-6384-2467",
+    "website": "https://afuri.com/karakurenai/"
+  }
+},
+{
+  "type": "node",
+  "id": 10992454506,
+  "lat": 35.6903981,
+  "lon": 139.7027342,
+  "tags": {
+    "amenity": "restaurant",
+    "brand": "一蘭",
+    "brand:en": "Ichiran",
+    "brand:ja": "一蘭",
+    "brand:wikidata": "Q11266830",
+    "cuisine": "ramen",
+    "name": "一蘭",
+    "name:en": "Ichiran",
+    "name:ja": "一蘭"
+  }
+},
+{
+  "type": "node",
+  "id": 11287702869,
+  "lat": 35.6893288,
+  "lon": 139.6992356,
+  "tags": {
+    "amenity": "restaurant",
+    "brand": "AFURI",
+    "brand:wikidata": "Q109237427",
+    "cuisine": "ramen",
+    "diet:vegetarian": "yes",
+    "level": "-2",
+    "level:ref": "B2F",
+    "name": "AFURI",
+    "name:en": "Afuri Shinjuku Lumine",
+    "opening_hours": "Mo-Su 11:00-10:00"
+  }
+},
+{
+  "type": "node",
+  "id": 12087620039,
+  "lat": 35.6905980,
+  "lon": 139.7027580,
+  "tags": {
+    "amenity": "restaurant",
+    "brand": "一蘭",
+    "brand:en": "Ichiran",
+    "brand:ja": "一蘭",
+    "brand:wikidata": "Q11266830",
+    "cuisine": "ramen",
+    "level": "-1",
+    "name": "一蘭",
+    "name:en": "Ichiran",
+    "name:ja": "一蘭",
+    "website": "https://ichiran.com/shop/tokyo/shinjuku/",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 12087637793,
+  "lat": 35.6898183,
+  "lon": 139.6987090,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "ramen",
+    "level": "-1",
+    "level:ref": "B1F",
+    "name": "つけめんTETSU",
+    "name:en": "Tsukemen TETSU"
+  }
+},
+{
+  "type": "node",
+  "id": 12666339762,
+  "lat": 35.6928479,
+  "lon": 139.6988045,
+  "tags": {
+    "check_date": "2025-11-06",
+    "cuisine": "ramen",
+    "disused:amenity": "restaurant"
+  }
+},
+{
+  "type": "node",
+  "id": 13284323541,
+  "lat": 35.6928197,
+  "lon": 139.6987422,
+  "tags": {
+    "addr:floor": "1F",
+    "amenity": "restaurant",
+    "check_date": "2025-11-06",
+    "cuisine": "ramen",
+    "level": "0",
+    "name": "横浜道"
+  }
+},
+{
+  "type": "node",
+  "id": 14178244290,
+  "lat": 35.6916639,
+  "lon": 139.7024180,
+  "tags": {
+    "amenity": "restaurant",
+    "branch": "新宿ミニム店",
+    "name": "洋麺屋五右衛門"
+  }
+},
+{
+  "type": "relation",
+  "id": 17691793,
+  "center": {
+    "lat": 35.6908671,
+    "lon": 139.7003807
+  },
+  "tags": {
+    "amenity": "restaurant",
+    "area": "yes",
+    "branch": "イイトルミネ新宿店",
+    "capacity": "11",
+    "cuisine": "ramen",
+    "indoor": "area",
+    "layer": "-1",
+    "level": "-1",
+    "name": "らーめん鴨to葱",
+    "name:en": "KAMO TO NEGI",
+    "opening_hours": "08:00-23:00",
+    "phone": "+81-3-5315-0730",
+    "start_date": "2024-04-17",
+    "type": "multipolygon",
+    "website": "https://www.kamotonegi.com/"
+  }
+}
+
+  ]
+}

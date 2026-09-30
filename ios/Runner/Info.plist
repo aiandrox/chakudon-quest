@@ -66,5 +66,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>ラーメンの写真を撮るために使います</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>撮った写真を記録に使うために使います</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>近くのラーメン店を探すため、また並んだ店を確認するために使います</string>
 </dict>
 </plist>
