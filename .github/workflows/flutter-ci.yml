@@ -1,0 +1,45 @@
+name: Flutter CI
+
+on:
+  # スタックドPR運用のため、ベースブランチをmainに限定しない
+  # （PRはmain以外の未マージのfeature/*ブランチをベースにすることがある）。
+  # 一方でDartコード・依存関係に無関係な変更（ドキュメントのみ等）では走らせない
+  pull_request:
+    # squash mergeのためmainへのpushでは走らせない（PRで検証済みの内容と同じ）。
+    # editedはタイトル・本文の編集でも走るため含めない。baseの付け替え後に
+    # 再実行したい場合は手動でre-runする
+    paths:
+      - "lib/**"
+      - "test/**"
+      - "android/**"
+      - "ios/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - "analysis_options.yaml"
+      - "l10n.yaml"
+      - ".github/workflows/flutter-ci.yml"
+      - ".github/actions/setup-flutter/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-flutter
+
+      - run: flutter pub get
+
+      - run: dart format --output=none --set-exit-if-changed .
+
+      - run: flutter analyze
+
+      - run: flutter test

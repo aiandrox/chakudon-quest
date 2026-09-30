@@ -1,0 +1,19 @@
+name: Setup Flutter
+description: >-
+  Flutter SDKのセットアップ・pubキャッシュの復元をまとめる。checkoutは含めないため、
+  呼び出し側の最初のステップでactions/checkoutを済ませておくこと。
+
+runs:
+  using: composite
+  steps:
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: "3.47.4"
+        channel: "stable"
+        cache: true
+
+    - uses: actions/cache@v4
+      with:
+        path: ~/.pub-cache
+        key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}
+        restore-keys: ${{ runner.os }}-pub-
