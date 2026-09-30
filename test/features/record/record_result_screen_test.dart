@@ -61,6 +61,13 @@ void main() {
     expect(find.text(ja.totalPoints(82)), findsOneWidget);
     expect(find.text(ja.nextRank(ja.rankTraveler, 118)), findsOneWidget);
     expect(find.text(ja.rankUp), findsNothing);
+
+    // 最初の1杯で「はじめての着丼」、35分待ちで「行列に挑む者」、
+    // 1杯で60点以上（Sランク）なので「大物討伐」を達成する。
+    expect(find.text(ja.questAchieved), findsNWidgets(3));
+    expect(find.text('はじめての着丼'), findsOneWidget);
+    expect(find.text('行列に挑む者'), findsOneWidget);
+    expect(find.text('大物討伐'), findsOneWidget);
   });
 
   testWidgets('ランクが上がったら知らせる', (tester) async {

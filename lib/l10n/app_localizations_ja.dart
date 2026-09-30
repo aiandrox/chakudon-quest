@@ -356,4 +356,40 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get resultOk => 'OK';
+
+  @override
+  String get navRecords => '記録';
+
+  @override
+  String get navQuests => 'クエスト';
+
+  @override
+  String get questTitle => 'クエスト';
+
+  @override
+  String questSummary(int achieved, int total) {
+    return '達成 $achieved / $total';
+  }
+
+  @override
+  String get questStatusAchieved => '達成済み';
+
+  @override
+  String get questStatusInProgress => '挑戦中';
+
+  @override
+  String get questStatusNotStarted => '未達成';
+
+  @override
+  String questAchievedOn(String date) {
+    return '$date 達成';
+  }
+
+  @override
+  String questProgress(int current, int target) {
+    return '$current / $target';
+  }
+
+  @override
+  String get questAchieved => 'クエスト達成！';
 }

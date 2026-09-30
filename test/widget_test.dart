@@ -36,6 +36,16 @@ void main() {
     expect(find.text(ja.checkinButton), findsOneWidget);
   });
 
+  testWidgets('下のタブでクエストの一覧に切り替えられる', (tester) async {
+    await pumpApp(tester, const []);
+
+    await tester.tap(find.text(ja.navQuests));
+    await tester.pumpAndSettle();
+
+    expect(find.text(ja.questSummary(0, 8)), findsOneWidget);
+    expect(find.text('はじめての着丼'), findsOneWidget);
+  });
+
   testWidgets('記録があるときは店名・★・ポイントと、ランクを表示する', (tester) async {
     final shop = Shop(
       id: 'shop',

@@ -172,5 +172,32 @@
   "maxRank": "最高ランクに到達しました",
   "rankUp": "ランクアップ！",
   "resultTitle": "着丼！",
-  "resultOk": "OK"
+  "resultOk": "OK",
+  "navRecords": "記録",
+  "navQuests": "クエスト",
+  "questTitle": "クエスト",
+  "questSummary": "達成 {achieved} / {total}",
+  "@questSummary": {
+    "placeholders": {
+      "achieved": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "questStatusAchieved": "達成済み",
+  "questStatusInProgress": "挑戦中",
+  "questStatusNotStarted": "未達成",
+  "questAchievedOn": "{date} 達成",
+  "@questAchievedOn": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "questProgress": "{current} / {target}",
+  "@questProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "target": {"type": "int"}
+    }
+  },
+  "questAchieved": "クエスト達成！"
 }
