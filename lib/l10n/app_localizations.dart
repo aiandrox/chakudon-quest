@@ -735,6 +735,66 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'OK'**
   String get resultOk;
+
+  /// No description provided for @navRecords.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録'**
+  String get navRecords;
+
+  /// No description provided for @navQuests.
+  ///
+  /// In ja, this message translates to:
+  /// **'クエスト'**
+  String get navQuests;
+
+  /// No description provided for @questTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'クエスト'**
+  String get questTitle;
+
+  /// No description provided for @questSummary.
+  ///
+  /// In ja, this message translates to:
+  /// **'達成 {achieved} / {total}'**
+  String questSummary(int achieved, int total);
+
+  /// No description provided for @questStatusAchieved.
+  ///
+  /// In ja, this message translates to:
+  /// **'達成済み'**
+  String get questStatusAchieved;
+
+  /// No description provided for @questStatusInProgress.
+  ///
+  /// In ja, this message translates to:
+  /// **'挑戦中'**
+  String get questStatusInProgress;
+
+  /// No description provided for @questStatusNotStarted.
+  ///
+  /// In ja, this message translates to:
+  /// **'未達成'**
+  String get questStatusNotStarted;
+
+  /// No description provided for @questAchievedOn.
+  ///
+  /// In ja, this message translates to:
+  /// **'{date} 達成'**
+  String questAchievedOn(String date);
+
+  /// No description provided for @questProgress.
+  ///
+  /// In ja, this message translates to:
+  /// **'{current} / {target}'**
+  String questProgress(int current, int target);
+
+  /// No description provided for @questAchieved.
+  ///
+  /// In ja, this message translates to:
+  /// **'クエスト達成！'**
+  String get questAchieved;
 }
 
 class _AppLocalizationsDelegate

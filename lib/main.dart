@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'features/home/home_screen.dart';
+import 'features/home/app_shell.dart';
 import 'features/records/photo_storage.dart';
 import 'l10n/app_localizations.dart';
 import 'theme/app_theme.dart';
@@ -31,7 +31,7 @@ class ChakudonQuestApp extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       theme: buildAppTheme(),
       darkTheme: buildAppTheme(brightness: Brightness.dark),
-      home: const HomeScreen(),
+      home: const AppShell(),
     );
   }
 }

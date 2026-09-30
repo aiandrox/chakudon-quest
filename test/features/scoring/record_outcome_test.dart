@@ -85,6 +85,33 @@ void main() {
     expect(outcome.totalAfter, 0);
   });
 
+  test('この記録で新しく達成したクエストを返す', () {
+    final first = buildEntry(shop: shop, eatenAt: day(1));
+    final second = buildEntry(shop: shop, eatenAt: day(2), waitMinutes: 40);
+
+    final firstOutcome = computeRecordOutcome([first], first.visit.id)!;
+    final secondOutcome = computeRecordOutcome([
+      first,
+      second,
+    ], second.visit.id)!;
+
+    expect(firstOutcome.achievedQuests.map((q) => q.id), ['first_bowl']);
+    expect(secondOutcome.achievedQuests.map((q) => q.id), ['queue_30']);
+  });
+
+  test('撤退の記録ではクエストを達成しない', () {
+    final retreat = buildEntry(
+      shop: shop,
+      eatenAt: day(1),
+      result: VisitResult.retreated,
+      waitMinutes: 90,
+    );
+
+    final outcome = computeRecordOutcome([retreat], retreat.visit.id)!;
+
+    expect(outcome.achievedQuests, isEmpty);
+  });
+
   test('記録が見つからなければnull', () {
     expect(computeRecordOutcome(const [], 'missing'), isNull);
   });

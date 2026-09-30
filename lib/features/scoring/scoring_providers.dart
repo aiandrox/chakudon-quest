@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../quests/quests.dart';
 import '../records/record_repository.dart';
 import 'points.dart';
 
@@ -17,4 +18,9 @@ final scoredVisitByIdProvider = Provider<Map<String, ScoredVisit>>(
   (ref) => {
     for (final entry in ref.watch(scoredVisitsProvider)) entry.visit.id: entry,
   },
+);
+
+/// 全クエストの達成状況。保存せず、記録から毎回計算する。
+final questProgressProvider = Provider<List<QuestProgress>>(
+  (ref) => evaluateQuests(ref.watch(scoredVisitsProvider)),
 );

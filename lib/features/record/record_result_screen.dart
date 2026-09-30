@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../quests/quests.dart';
 import '../records/record_repository.dart';
 import '../scoring/points_breakdown_view.dart';
 import '../scoring/rank_labels.dart';
@@ -103,6 +104,10 @@ class _ResultBody extends StatelessWidget {
           const SizedBox(height: 16),
           _RankUpBanner(rankName: adventurerRankLabel(l10n, outcome.rankAfter)),
         ],
+        for (final quest in outcome.achievedQuests) ...[
+          const SizedBox(height: 16),
+          _QuestAchievedBanner(quest: quest),
+        ],
         const SizedBox(height: 24),
         RankProgress(totalPoints: outcome.totalAfter),
       ],
@@ -153,6 +158,39 @@ class _RankUpBanner extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuestAchievedBanner extends StatelessWidget {
+  const _QuestAchievedBanner({required this.quest});
+
+  final Quest quest;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
+
+    return Card(
+      elevation: 0,
+      color: colors.secondaryContainer,
+      child: ListTile(
+        leading: Icon(Icons.emoji_events, color: colors.onSecondaryContainer),
+        title: Text(
+          l10n.questAchieved,
+          style: textTheme.labelLarge?.copyWith(
+            color: colors.onSecondaryContainer,
+          ),
+        ),
+        subtitle: Text(
+          quest.title,
+          style: textTheme.titleMedium?.copyWith(
+            color: colors.onSecondaryContainer,
           ),
         ),
       ),

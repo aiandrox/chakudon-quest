@@ -1,3 +1,4 @@
+import '../quests/quests.dart';
 import '../records/models.dart';
 import 'points.dart';
 import 'ranks.dart';
@@ -8,11 +9,15 @@ class RecordOutcome {
     required this.scored,
     required this.totalBefore,
     required this.totalAfter,
+    this.achievedQuests = const [],
   });
 
   final ScoredVisit scored;
   final int totalBefore;
   final int totalAfter;
+
+  /// この記録で新しく達成したクエスト。
+  final List<Quest> achievedQuests;
 
   AdventurerRank get rankBefore => adventurerRankFor(totalBefore);
 
@@ -31,9 +36,14 @@ RecordOutcome? computeRecordOutcome(List<VisitWithShop> all, String visitId) {
     for (final entry in all)
       if (entry.visit.id != visitId) entry,
   ];
+  final scoredOthers = scoreVisits(others);
   return RecordOutcome(
     scored: scored,
-    totalBefore: totalPoints(scoreVisits(others)),
+    totalBefore: totalPoints(scoredOthers),
     totalAfter: totalPoints(scoredAll),
+    achievedQuests: newlyAchievedQuests(
+      before: evaluateQuests(scoredOthers),
+      after: evaluateQuests(scoredAll),
+    ),
   );
 }
