@@ -118,6 +118,25 @@ void main() {
     expect(repository.ratings, {'v': 4});
   });
 
+  testWidgets('★の保存に失敗したら知らせる', (tester) async {
+    repository.ratingError = StateError('db');
+    await pumpDetail(tester, [
+      VisitWithShop(
+        shop: shop,
+        visit: buildVisit(
+          id: 'v',
+          eatenAt: DateTime(2026, 9, 30),
+          rating: null,
+        ),
+      ),
+    ], 'v');
+
+    await tester.tap(find.byTooltip(ja.ratingStar(4)));
+    await tester.pump();
+
+    expect(find.text(ja.editSaveFailed), findsOneWidget);
+  });
+
   testWidgets('同じ店の2回目は、前回の日付・★・メモを表示する', (tester) async {
     await pumpDetail(tester, [
       entry(id: 'second', eatenAt: DateTime(2026, 9, 30, 12), rating: 3),

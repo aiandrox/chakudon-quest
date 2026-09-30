@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../home/rating_prompt.dart';
 import '../record/star_rating.dart';
 import '../records/date_format.dart';
 import '../records/labels.dart';
@@ -133,9 +134,8 @@ class VisitDetailScreen extends ConsumerWidget {
                     alignment: Alignment.centerLeft,
                     child: StarRating(
                       rating: visit.rating,
-                      onChanged: (rating) => ref
-                          .read(recordRepositoryProvider)
-                          .setRating(visit.id, rating),
+                      onChanged: (rating) =>
+                          saveRating(context, ref, visit.id, rating),
                     ),
                   ),
                   if (visit.rating == null)
