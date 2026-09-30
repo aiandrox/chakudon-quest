@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/backup/backup_codec.dart';
 import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/records/models.dart';
@@ -139,6 +140,15 @@ class FakeRecordRepository implements RecordRepository {
     final error = this.error;
     if (error != null) throw error;
     checkins.add(shop);
+  }
+
+  Object? importError;
+
+  @override
+  Future<int> importAll(BackupData data) async {
+    final error = importError;
+    if (error != null) throw error;
+    return data.visits.length;
   }
 
   final shopMemos = <String, String>{};

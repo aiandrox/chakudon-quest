@@ -20,6 +20,7 @@ final backupServiceProvider = Provider<BackupService>(
 );
 
 const _dataFileName = 'backup.json';
+const _fileNamePrefix = 'chakudon-quest-';
 const _photosDirectory = 'photos';
 
 class RestoreSummary {
@@ -44,9 +45,18 @@ class BackupService {
   Future<File> writeBackup(DateTime now) async {
     final data = await _repository.exportAll();
     final directory = await _temporaryDirectory();
+    // 前回までに書き出したファイルは共有が終わっているので消す。写真が全部入っていて大きいため。
+    await for (final old in directory.list()) {
+      final name = p.basename(old.path);
+      if (old is File &&
+          name.startsWith(_fileNamePrefix) &&
+          name.endsWith('.zip')) {
+        await old.delete();
+      }
+    }
     final path = p.join(
       directory.path,
-      'chakudon-quest-${DateFormat('yyyyMMdd-HHmm').format(now)}.zip',
+      '$_fileNamePrefix${DateFormat('yyyyMMdd-HHmm').format(now)}.zip',
     );
     final encoder = ZipFileEncoder()..create(path);
     try {
@@ -81,19 +91,29 @@ class BackupService {
       final data = decodeBackup(
         jsonDecode(utf8.decode(dataFile.readBytes() ?? const [])),
       );
-      for (final file in archive.files) {
-        final photoPath = _photoPathOf(file.name);
-        if (!file.isFile || photoPath == null) continue;
-        final destination = _photos.fileFor(photoPath);
-        if (await destination.exists()) continue;
-        await destination.parent.create(recursive: true);
-        await destination.writeAsBytes(file.readBytes() ?? const []);
+      final written = <File>[];
+      try {
+        for (final file in archive.files) {
+          final photoPath = _photoPathOf(file.name);
+          if (!file.isFile || photoPath == null) continue;
+          final destination = _photos.fileFor(photoPath);
+          if (await destination.exists()) continue;
+          await destination.parent.create(recursive: true);
+          await destination.writeAsBytes(file.readBytes() ?? const []);
+          written.add(destination);
+        }
+        final added = await _repository.importAll(data);
+        return RestoreSummary(
+          addedVisits: added,
+          totalVisits: data.visits.length,
+        );
+      } catch (_) {
+        // 記録を足せなかったら、書いた写真も消して読み込む前に戻す。
+        for (final file in written) {
+          if (await file.exists()) await file.delete();
+        }
+        rethrow;
       }
-      final added = await _repository.importAll(data);
-      return RestoreSummary(
-        addedVisits: added,
-        totalVisits: data.visits.length,
-      );
     } finally {
       await input.close();
     }

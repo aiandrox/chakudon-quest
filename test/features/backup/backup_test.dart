@@ -76,6 +76,43 @@ void main() {
       expect(restoredVisit.memo, 'うまい');
     });
 
+    test('日時はUTCで書き出し、読むときはその端末の時刻に直す', () {
+      final json = encodeBackup(
+        BackupData(
+          shops: [
+            Shop(id: 's', name: '麺屋', createdAt: DateTime(2026, 9, 1, 12)),
+          ],
+          visits: const [],
+        ),
+        exportedAt: _now,
+      );
+
+      final written = (json['shops']! as List).single as Map;
+      expect(written['createdAt'], endsWith('Z'));
+      final restored = decodeBackup(jsonDecode(jsonEncode(json)));
+      expect(restored.shops.single.createdAt, DateTime(2026, 9, 1, 12));
+      expect(restored.shops.single.createdAt.isUtc, isFalse);
+    });
+
+    test('項目の型が違うときも、壊れたバックアップとして扱う', () {
+      expect(
+        () => decodeBackup({
+          'format': backupFormat,
+          'version': backupVersion,
+          'shops': [
+            {
+              'id': 's',
+              'name': '麺屋',
+              'osmId': 123,
+              'createdAt': '2026-09-01T12:00:00.000Z',
+            },
+          ],
+          'visits': <Object?>[],
+        }),
+        throwsFormatException,
+      );
+    });
+
     test('ほかのアプリのファイルや、新しい版のバックアップは読まない', () {
       expect(() => decodeBackup({'format': 'other'}), throwsFormatException);
       expect(
@@ -190,6 +227,34 @@ void main() {
 
       expect(summary.addedVisits, 0);
       expect(await source.watchVisits().first, hasLength(2));
+    });
+
+    test('書き出すたびに、前回書き出したファイルを消す', () async {
+      final service = serviceFor(source, sourcePhotos);
+      final first = await service.writeBackup(_now);
+      final second = await service.writeBackup(
+        _now.add(const Duration(minutes: 5)),
+      );
+
+      expect(first.existsSync(), isFalse);
+      expect(second.existsSync(), isTrue);
+    });
+
+    test('記録を足せなかったら、書いた写真も消す', () async {
+      final backup = await serviceFor(source, sourcePhotos).writeBackup(_now);
+      final targetDocuments = createTempDirectory();
+      final failing = FakeRecordRepository()..importError = StateError('db');
+
+      await expectLater(
+        serviceFor(
+          failing,
+          PhotoStorage(targetDocuments),
+        ).restoreBackup(backup.path),
+        throwsStateError,
+      );
+
+      final photos = Directory(p.join(targetDocuments.path, 'photos'));
+      expect(photos.existsSync() ? photos.listSync() : const [], isEmpty);
     });
 
     test('バックアップでないzipは読み込まない', () async {

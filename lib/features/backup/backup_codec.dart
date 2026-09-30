@@ -17,7 +17,7 @@ Map<String, Object?> encodeBackup(
 }) => {
   'format': backupFormat,
   'version': backupVersion,
-  'exportedAt': exportedAt.toIso8601String(),
+  'exportedAt': exportedAt.toUtc().toIso8601String(),
   'shops': [
     for (final shop in data.shops)
       {
@@ -31,7 +31,7 @@ Map<String, Object?> encodeBackup(
             if (shop.hoursConditions.contains(condition)) condition.name,
         ],
         'strategyMemo': shop.strategyMemo,
-        'createdAt': shop.createdAt.toIso8601String(),
+        'createdAt': shop.createdAt.toUtc().toIso8601String(),
       },
   ],
   'visits': [
@@ -41,14 +41,14 @@ Map<String, Object?> encodeBackup(
         'shopId': visit.shopId,
         'result': visit.result.name,
         'photoPath': visit.photoPath,
-        'checkedInAt': visit.checkedInAt?.toIso8601String(),
-        'eatenAt': visit.eatenAt.toIso8601String(),
+        'checkedInAt': visit.checkedInAt?.toUtc().toIso8601String(),
+        'eatenAt': visit.eatenAt.toUtc().toIso8601String(),
         'style': visit.style?.name,
         'rating': visit.rating,
         'isLimited': visit.isLimited,
         'hasTicket': visit.hasTicket,
         'memo': visit.memo,
-        'createdAt': visit.createdAt.toIso8601String(),
+        'createdAt': visit.createdAt.toUtc().toIso8601String(),
       },
   ],
 };
@@ -77,12 +77,12 @@ Shop _decodeShop(Object? json) {
     name: _string(map['name']),
     latitude: _doubleOrNull(map['latitude']),
     longitude: _doubleOrNull(map['longitude']),
-    osmId: map['osmId'] as String?,
+    osmId: _stringOrNull(map['osmId']),
     hoursConditions: {
       for (final name in _list(map['hoursConditions'] ?? const []))
         ?byName[name],
     },
-    strategyMemo: map['strategyMemo'] as String? ?? '',
+    strategyMemo: _stringOrNull(map['strategyMemo']) ?? '',
     createdAt: _dateTime(map['createdAt']),
   );
 }
@@ -96,7 +96,7 @@ Visit _decodeVisit(Object? json) {
     id: _string(map['id']),
     shopId: _string(map['shopId']),
     result: result,
-    photoPath: map['photoPath'] as String?,
+    photoPath: _stringOrNull(map['photoPath']),
     checkedInAt: map['checkedInAt'] == null
         ? null
         : _dateTime(map['checkedInAt']),
@@ -105,7 +105,7 @@ Visit _decodeVisit(Object? json) {
     rating: rating is int && rating >= 1 && rating <= 5 ? rating : null,
     isLimited: map['isLimited'] == true,
     hasTicket: map['hasTicket'] == true,
-    memo: map['memo'] as String? ?? '',
+    memo: _stringOrNull(map['memo']) ?? '',
     createdAt: _dateTime(map['createdAt']),
   );
 }
@@ -125,10 +125,16 @@ String _string(Object? json) {
   throw const FormatException('文字列が読めません');
 }
 
+String? _stringOrNull(Object? json) {
+  if (json == null || json is String) return json as String?;
+  throw const FormatException('文字列が読めません');
+}
+
 double? _doubleOrNull(Object? json) => json is num ? json.toDouble() : null;
 
 DateTime _dateTime(Object? json) {
   final value = json is String ? DateTime.tryParse(json) : null;
   if (value == null) throw const FormatException('日時が読めません');
-  return value;
+  // 書き出しはUTC。機種変更先のタイムゾーンで、その土地の時刻に直す。
+  return value.toLocal();
 }
