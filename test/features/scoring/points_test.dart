@@ -11,7 +11,7 @@ PointsBreakdown _points({
   bool hasTicket = false,
   bool isFirstVisit = false,
   bool isRetrySuccess = false,
-  HoursType hoursType = HoursType.normal,
+  Set<HoursCondition> hoursConditions = const {},
   VisitResult result = VisitResult.eaten,
 }) => calculatePoints(
   visit: buildVisit(
@@ -20,7 +20,7 @@ PointsBreakdown _points({
     isLimited: isLimited,
     hasTicket: hasTicket,
   ),
-  hoursType: hoursType,
+  hoursConditions: hoursConditions,
   isFirstVisit: isFirstVisit,
   isRetrySuccess: isRetrySuccess,
 );
@@ -74,21 +74,65 @@ void main() {
       expect(points.total, 95);
     });
 
-    test('営業時間の倍率は合計にかける（昼のみ×1.5、週3日以下×2）', () {
-      expect(_points(hoursType: HoursType.lunchOnly).total, 15);
-      expect(_points(hoursType: HoursType.fewDays).total, 20);
-      expect(_points(isLimited: true, hoursType: HoursType.fewDays).total, 60);
+    test('営業の条件の倍率は合計にかける（1つ×1.5、2つ×2）', () {
+      expect(_points(hoursConditions: {HoursCondition.lunchOnly}).total, 15);
+      expect(
+        _points(
+          hoursConditions: {
+            HoursCondition.weekdaysOnly,
+            HoursCondition.fewDays,
+          },
+        ).total,
+        20,
+      );
+      expect(
+        _points(
+          isLimited: true,
+          hoursConditions: {
+            HoursCondition.weekdaysOnly,
+            HoursCondition.fewDays,
+          },
+        ).total,
+        60,
+      );
+    });
+
+    test('営業の条件の数で倍率が決まる（なし×1、1つ×1.5、2つ以上×2）', () {
+      PointsBreakdown withConditions(Set<HoursCondition> conditions) =>
+          calculatePoints(
+            visit: buildVisit(isLimited: true),
+            hoursConditions: conditions,
+            isFirstVisit: false,
+            isRetrySuccess: false,
+          );
+
+      // 10 + 20 = 30
+      expect(withConditions(const {}).total, 30);
+      expect(withConditions({HoursCondition.weekdaysOnly}).total, 45);
+      expect(withConditions({HoursCondition.fewDays}).total, 45);
+      expect(
+        withConditions({HoursCondition.lunchOnly, HoursCondition.weekdaysOnly})
+            .total,
+        60,
+      );
+      expect(withConditions(HoursCondition.values.toSet()).total, 60);
     });
 
     test('倍率をかけたあとの小数は切り捨てる', () {
       // (10 + 5) × 1.5 = 22.5
       expect(
-        _points(waitMinutes: 10, hoursType: HoursType.lunchOnly).total,
+        _points(
+          waitMinutes: 10,
+          hoursConditions: {HoursCondition.lunchOnly},
+        ).total,
         22,
       );
       // (10 + 15) × 1.5 = 37.5
       expect(
-        _points(isRetrySuccess: true, hoursType: HoursType.lunchOnly).total,
+        _points(
+          isRetrySuccess: true,
+          hoursConditions: {HoursCondition.lunchOnly},
+        ).total,
         37,
       );
     });
@@ -99,7 +143,7 @@ void main() {
         waitMinutes: 60,
         isLimited: true,
         hasTicket: true,
-        hoursType: HoursType.fewDays,
+        hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
       );
 
       expect(points.total, 0);
@@ -168,7 +212,10 @@ void main() {
     });
 
     test('店の営業時間の倍率を使い、累計ポイントを合計する', () {
-      final rare = buildShop(id: 'rare', hoursType: HoursType.fewDays);
+      final rare = buildShop(
+        id: 'rare',
+        hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+      );
       final scored = scoreVisits([
         buildEntry(shop: rare, eatenAt: day(1), waitMinutes: 30),
         buildEntry(shop: shopA, eatenAt: day(2)),

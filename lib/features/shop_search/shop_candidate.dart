@@ -11,7 +11,7 @@ class ShopCandidate {
     required this.name,
     this.location,
     this.distanceMeters,
-    this.hoursType,
+    this.hoursConditions,
   });
 
   factory ShopCandidate.fromShop(Shop shop, {double? distanceMeters}) {
@@ -25,7 +25,7 @@ class ShopCandidate {
           ? GeoPoint(latitude, longitude)
           : null,
       distanceMeters: distanceMeters,
-      hoursType: shop.hoursType,
+      hoursConditions: shop.hoursConditions,
     );
   }
 
@@ -36,8 +36,8 @@ class ShopCandidate {
   final GeoPoint? location;
   final double? distanceMeters;
 
-  /// 記録済みの店の営業時間の種類。初めての店はnull。
-  final HoursType? hoursType;
+  /// 記録済みの店の営業の条件。初めての店はnull。
+  final Set<HoursCondition>? hoursConditions;
 }
 
 /// 2つの候補が同じ店を指すか。IDで比べられないときは、名前と近さで判断する。

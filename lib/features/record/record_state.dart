@@ -24,7 +24,7 @@ class RecordState {
     this.style,
     this.isLimited = false,
     this.hasTicket = false,
-    this.chosenHoursType,
+    this.chosenHoursConditions,
     this.memo = '',
     this.isSaving = false,
   });
@@ -54,13 +54,13 @@ class RecordState {
   final bool isLimited;
   final bool hasTicket;
 
-  /// 利用者がこの画面で選んだ営業時間の種類。選んでいなければnull。
-  final HoursType? chosenHoursType;
+  /// 利用者がこの画面で選んだ営業の条件。選んでいなければnull。
+  final Set<HoursCondition>? chosenHoursConditions;
   final String memo;
   final bool isSaving;
 
-  HoursType get hoursType =>
-      chosenHoursType ?? selectedShop?.hoursType ?? HoursType.normal;
+  Set<HoursCondition> get hoursConditions =>
+      chosenHoursConditions ?? selectedShop?.hoursConditions ?? const {};
 
   /// 並んでいる店を選んでいるか。このときだけ待ち時間を記録する。
   bool get isCheckinShopSelected {
@@ -99,7 +99,7 @@ class RecordState {
     Object? style = _unset,
     bool? isLimited,
     bool? hasTicket,
-    Object? chosenHoursType = _unset,
+    Object? chosenHoursConditions = _unset,
     String? memo,
     bool? isSaving,
   }) {
@@ -126,9 +126,9 @@ class RecordState {
       style: style == _unset ? this.style : style as RamenStyle?,
       isLimited: isLimited ?? this.isLimited,
       hasTicket: hasTicket ?? this.hasTicket,
-      chosenHoursType: chosenHoursType == _unset
-          ? this.chosenHoursType
-          : chosenHoursType as HoursType?,
+      chosenHoursConditions: chosenHoursConditions == _unset
+          ? this.chosenHoursConditions
+          : chosenHoursConditions as Set<HoursCondition>?,
       memo: memo ?? this.memo,
       isSaving: isSaving ?? this.isSaving,
     );

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,7 +31,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
   late RamenStyle? _style = widget.entry.visit.style;
   late bool _isLimited = widget.entry.visit.isLimited;
   late bool _hasTicket = widget.entry.visit.hasTicket;
-  late HoursType _hoursType = widget.entry.shop.hoursType;
+  late Set<HoursCondition> _hoursConditions = widget.entry.shop.hoursConditions;
   bool _isSaving = false;
 
   @override
@@ -73,9 +74,10 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
           .updateVisit(
             visitId: widget.entry.visit.id,
             shopName: _nameController.text,
-            hoursType: _hoursType == widget.entry.shop.hoursType
+            hoursConditions:
+                setEquals(_hoursConditions, widget.entry.shop.hoursConditions)
                 ? null
-                : _hoursType,
+                : _hoursConditions,
             eatenAt: _eatenAt,
             rating: _rating,
             style: _style,
@@ -136,12 +138,13 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
             style: _style,
             isLimited: _isLimited,
             hasTicket: _hasTicket,
-            hoursType: _hoursType,
+            hoursConditions: _hoursConditions,
             memoController: _memoController,
             onStyleChanged: (style) => setState(() => _style = style),
             onLimitedChanged: (value) => setState(() => _isLimited = value),
             onHasTicketChanged: (value) => setState(() => _hasTicket = value),
-            onHoursTypeChanged: (type) => setState(() => _hoursType = type),
+            onHoursConditionsChanged: (conditions) =>
+                setState(() => _hoursConditions = conditions),
             onMemoChanged: (_) {},
           ),
         ],

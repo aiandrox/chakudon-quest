@@ -6,6 +6,24 @@ import '../records/models.dart';
 
 part 'app_database.g.dart';
 
+/// 営業時間の条件を、定義順の名前をカンマでつないだ文字列で保存する。
+class HoursConditionsConverter
+    extends TypeConverter<Set<HoursCondition>, String> {
+  const HoursConditionsConverter();
+
+  @override
+  Set<HoursCondition> fromSql(String fromDb) {
+    final byName = HoursCondition.values.asNameMap();
+    return {for (final name in fromDb.split(',')) ?byName[name]};
+  }
+
+  @override
+  String toSql(Set<HoursCondition> value) => [
+    for (final condition in HoursCondition.values)
+      if (value.contains(condition)) condition.name,
+  ].join(',');
+}
+
 @UseRowClass(Shop)
 class Shops extends Table {
   TextColumn get id => text()();
@@ -13,7 +31,9 @@ class Shops extends Table {
   RealColumn get latitude => real().nullable()();
   RealColumn get longitude => real().nullable()();
   TextColumn get osmId => text().nullable()();
-  TextColumn get hoursType => textEnum<HoursType>()();
+  TextColumn get hoursConditions => text()
+      .map(const HoursConditionsConverter())
+      .withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -61,12 +81,27 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'chakudon_quest'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) async {
       if (from < 2) await migrator.createTable(activeCheckins);
+      if (from < 3) {
+        // 営業時間の種類（1つだけ選ぶ）を、条件（いくつでも選べる）に置き換える。
+        await migrator.alterTable(
+          TableMigration(
+            shops,
+            columnTransformer: {
+              shops.hoursConditions: const CustomExpression<String>(
+                "CASE hours_type WHEN 'lunchOnly' THEN 'lunchOnly' "
+                "WHEN 'fewDays' THEN 'fewDays' ELSE '' END",
+              ),
+            },
+            newColumns: [shops.hoursConditions],
+          ),
+        );
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

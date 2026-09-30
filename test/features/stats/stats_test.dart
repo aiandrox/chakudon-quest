@@ -10,7 +10,11 @@ import '../../support/builders.dart';
 void main() {
   final shopA = buildShop(id: 'a', name: 'A店');
   final shopB = buildShop(id: 'b', name: 'B店');
-  final shopC = buildShop(id: 'c', name: 'C店', hoursType: HoursType.fewDays);
+  final shopC = buildShop(
+    id: 'c',
+    name: 'C店',
+    hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+  );
 
   group('杯数', () {
     final scored = scoreVisits([

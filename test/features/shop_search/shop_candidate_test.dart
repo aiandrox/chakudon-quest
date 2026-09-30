@@ -19,14 +19,14 @@ Shop _known(
   String name, {
   double? northDegrees,
   String? osmId,
-  HoursType hoursType = HoursType.normal,
+  Set<HoursCondition> hoursConditions = const {},
 }) => Shop(
   id: 'shop-$name',
   name: name,
   latitude: northDegrees == null ? null : 35.0 + northDegrees,
   longitude: northDegrees == null ? null : 139.0,
   osmId: osmId,
-  hoursType: hoursType,
+  hoursConditions: hoursConditions,
   createdAt: DateTime(2026),
 );
 
@@ -71,7 +71,14 @@ void main() {
         here: _here,
         found: const [],
         knownShops: [
-          _known('手入力の店', northDegrees: 0.001, hoursType: HoursType.fewDays),
+          _known(
+            '手入力の店',
+            northDegrees: 0.001,
+            hoursConditions: {
+              HoursCondition.weekdaysOnly,
+              HoursCondition.fewDays,
+            },
+          ),
           _known('位置のない店'),
           _known('遠くの店', northDegrees: 0.01),
         ],
@@ -79,7 +86,10 @@ void main() {
 
       expect(candidates.map((c) => c.name), ['手入力の店']);
       expect(candidates.single.shopId, 'shop-手入力の店');
-      expect(candidates.single.hoursType, HoursType.fewDays);
+      expect(candidates.single.hoursConditions, {
+        HoursCondition.weekdaysOnly,
+        HoursCondition.fewDays,
+      });
     });
 
     test('同じ店が検索結果と記録済みの両方にあるときは記録済みの方を残す', () {

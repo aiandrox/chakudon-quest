@@ -15,10 +15,10 @@ void main() {
   Future<Visit> save(
     ShopInput shop, {
     DateTime? eatenAt,
-    HoursType? hoursType,
+    Set<HoursCondition>? hoursConditions,
   }) => repository.saveEatenVisit(
     shop: shop,
-    hoursType: hoursType,
+    hoursConditions: hoursConditions,
     eatenAt: eatenAt ?? DateTime(2026, 9, 30, 12),
     rating: 4,
     now: DateTime(2026, 9, 30, 12, 5),
@@ -32,7 +32,7 @@ void main() {
         latitude: 35.0,
         longitude: 139.0,
       ),
-      hoursType: HoursType.lunchOnly,
+      hoursConditions: {HoursCondition.lunchOnly},
       eatenAt: DateTime(2026, 9, 30, 12),
       rating: 5,
       photoPath: 'photos/a.jpg',
@@ -48,7 +48,7 @@ void main() {
     expect(entry.shop.name, '麺屋テスト');
     expect(entry.shop.osmId, 'node/1');
     expect(entry.shop.latitude, 35.0);
-    expect(entry.shop.hoursType, HoursType.lunchOnly);
+    expect(entry.shop.hoursConditions, {HoursCondition.lunchOnly});
     expect(entry.visit.result, VisitResult.eaten);
     expect(entry.visit.photoPath, 'photos/a.jpg');
     expect(entry.visit.eatenAt, DateTime(2026, 9, 30, 12));
@@ -102,11 +102,17 @@ void main() {
     expect(await repository.allShops(), hasLength(2));
   });
 
-  test('営業時間の種類を選ばずに保存しても、記録済みの店の値は変えない', () async {
-    await save(const ShopInput(name: '麺屋'), hoursType: HoursType.fewDays);
+  test('営業の条件を選ばずに保存しても、記録済みの店の値は変えない', () async {
+    await save(
+      const ShopInput(name: '麺屋'),
+      hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+    );
     await save(const ShopInput(name: '麺屋'));
 
-    expect((await repository.allShops()).single.hoursType, HoursType.fewDays);
+    expect((await repository.allShops()).single.hoursConditions, {
+      HoursCondition.weekdaysOnly,
+      HoursCondition.fewDays,
+    });
   });
 
   test('同じ名前でも300mより離れた手入力の店は別の店にする', () async {
@@ -152,29 +158,32 @@ void main() {
     expect(second.shopId, isNot(first.shopId));
   });
 
-  test('記録済みの店をIDで指定でき、営業時間の種類の変更は店に反映する', () async {
+  test('記録済みの店をIDで指定でき、営業の条件の変更は店に反映する', () async {
     final first = await save(const ShopInput(name: '麺屋'));
     final second = await save(
       ShopInput(shopId: first.shopId, name: '麺屋'),
-      hoursType: HoursType.fewDays,
+      hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
 
     final shops = await repository.allShops();
     expect(second.shopId, first.shopId);
-    expect(shops.single.hoursType, HoursType.fewDays);
+    expect(shops.single.hoursConditions, {
+      HoursCondition.weekdaysOnly,
+      HoursCondition.fewDays,
+    });
   });
 
   group('updateVisit', () {
     Future<void> update(
       Visit visit, {
       required String shopName,
-      HoursType? hoursType,
+      Set<HoursCondition>? hoursConditions,
       int? rating = 4,
       String memo = '',
     }) => repository.updateVisit(
       visitId: visit.id,
       shopName: shopName,
-      hoursType: hoursType,
+      hoursConditions: hoursConditions,
       eatenAt: visit.eatenAt,
       rating: rating,
       style: visit.style,
@@ -184,13 +193,13 @@ void main() {
       now: DateTime(2026, 10, 1),
     );
 
-    test('記録の内容と店の営業時間の種類を書き換える', () async {
+    test('記録の内容と店の営業の条件を書き換える', () async {
       final visit = await save(const ShopInput(name: '麺屋'));
 
       await repository.updateVisit(
         visitId: visit.id,
         shopName: '麺屋',
-        hoursType: HoursType.lunchOnly,
+        hoursConditions: {HoursCondition.lunchOnly},
         eatenAt: DateTime(2026, 9, 29, 11),
         rating: 2,
         style: RamenStyle.miso,
@@ -208,7 +217,7 @@ void main() {
       expect(entry.visit.isLimited, isTrue);
       expect(entry.visit.hasTicket, isTrue);
       expect(entry.visit.memo, '書き直した');
-      expect(entry.shop.hoursType, HoursType.lunchOnly);
+      expect(entry.shop.hoursConditions, {HoursCondition.lunchOnly});
     });
 
     test('ほかに記録の無い手入力の店は、位置を残したまま名前を直す', () async {
@@ -257,27 +266,39 @@ void main() {
       expect(await repository.allShops(), hasLength(1));
     });
 
-    test('営業時間の種類を変えずに別の店へ付け替えても、その店の値を変えない', () async {
-      await save(const ShopInput(name: '週2日の店'), hoursType: HoursType.fewDays);
+    test('営業の条件を変えずに別の店へ付け替えても、その店の値を変えない', () async {
+      await save(
+        const ShopInput(name: '週2日の店'),
+        hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+      );
       await save(const ShopInput(name: '週2日の店'));
       final typo = await save(const ShopInput(name: '週2日のみせ'));
 
       await update(typo, shopName: '週2日の店');
 
       final shop = (await repository.allShops()).single;
-      expect(shop.hoursType, HoursType.fewDays);
+      expect(shop.hoursConditions, {
+        HoursCondition.weekdaysOnly,
+        HoursCondition.fewDays,
+      });
     });
 
-    test('新しい店に付け替えるときは、元の店の営業時間の種類を引き継ぐ', () async {
-      await save(const ShopInput(name: '麺屋'), hoursType: HoursType.lunchOnly);
+    test('新しい店に付け替えるときは、元の店の営業の条件を引き継ぐ', () async {
+      await save(
+        const ShopInput(name: '麺屋'),
+        hoursConditions: {HoursCondition.lunchOnly},
+      );
       final second = await save(const ShopInput(name: '麺屋'));
 
       await update(second, shopName: '別の店');
 
       final shops = await repository.allShops();
       expect(
-        {for (final shop in shops) shop.name: shop.hoursType},
-        {'麺屋': HoursType.lunchOnly, '別の店': HoursType.lunchOnly},
+        {for (final shop in shops) shop.name: shop.hoursConditions},
+        {
+          '麺屋': {HoursCondition.lunchOnly},
+          '別の店': {HoursCondition.lunchOnly},
+        },
       );
     });
 

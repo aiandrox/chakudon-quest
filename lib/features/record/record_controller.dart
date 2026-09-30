@@ -129,7 +129,7 @@ class RecordController extends Notifier<RecordState> {
       selectedShop: shop,
       manualName: '',
       nameMatches: const [],
-      chosenHoursType: null,
+      chosenHoursConditions: null,
     );
   }
 
@@ -139,7 +139,7 @@ class RecordController extends Notifier<RecordState> {
     state = state.copyWith(
       manualName: name,
       selectedShop: deselects ? null : state.selectedShop,
-      chosenHoursType: deselects ? null : state.chosenHoursType,
+      chosenHoursConditions: deselects ? null : state.chosenHoursConditions,
       nameMatches: query.isEmpty
           ? const []
           : [
@@ -158,8 +158,8 @@ class RecordController extends Notifier<RecordState> {
 
   void setHasTicket(bool value) => state = state.copyWith(hasTicket: value);
 
-  void setHoursType(HoursType type) =>
-      state = state.copyWith(chosenHoursType: type);
+  void setHoursConditions(Set<HoursCondition> conditions) =>
+      state = state.copyWith(chosenHoursConditions: conditions);
 
   void setMemo(String memo) => state = state.copyWith(memo: memo);
 
@@ -178,7 +178,7 @@ class RecordController extends Notifier<RecordState> {
           .read(recordRepositoryProvider)
           .saveEatenVisit(
             shop: _shopInput(draft),
-            hoursType: draft.chosenHoursType,
+            hoursConditions: draft.chosenHoursConditions,
             eatenAt: draft.photoTakenAt ?? now,
             rating: draft.rating,
             photoPath: savedPhoto,

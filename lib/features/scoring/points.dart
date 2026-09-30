@@ -10,7 +10,7 @@ class PointsBreakdown {
     required this.ticketBonus,
     required this.firstVisitBonus,
     required this.retryBonus,
-    required this.hoursType,
+    required this.hoursConditions,
   });
 
   static const zero = PointsBreakdown(
@@ -20,7 +20,7 @@ class PointsBreakdown {
     ticketBonus: 0,
     firstVisitBonus: 0,
     retryBonus: 0,
-    hoursType: HoursType.normal,
+    hoursConditions: {},
   );
 
   final int base;
@@ -29,7 +29,7 @@ class PointsBreakdown {
   final int ticketBonus;
   final int firstVisitBonus;
   final int retryBonus;
-  final HoursType hoursType;
+  final Set<HoursCondition> hoursConditions;
 
   int get subtotal =>
       base +
@@ -40,7 +40,7 @@ class PointsBreakdown {
       retryBonus;
 
   /// 倍率をかけたあとの小数は切り捨てる。
-  int get total => subtotal * _doubledMultiplier(hoursType) ~/ 2;
+  int get total => subtotal * _doubledMultiplier(hoursConditions) ~/ 2;
 }
 
 const basePoints = 10;
@@ -51,17 +51,20 @@ const firstVisitBonus = 10;
 const retryBonus = 15;
 
 /// 倍率（×1 / ×1.5 / ×2）を整数で扱うため2倍した値。
-int _doubledMultiplier(HoursType type) => switch (type) {
-  HoursType.normal => 2,
-  HoursType.lunchOnly => 3,
-  HoursType.fewDays => 4,
-};
+int _doubledMultiplier(Set<HoursCondition> conditions) =>
+    switch (conditions.length) {
+      0 => 2,
+      1 => 3,
+      _ => 4,
+    };
 
-double hoursMultiplier(HoursType type) => _doubledMultiplier(type) / 2;
+/// 営業の条件の数による倍率。なし ×1、1つ ×1.5、2つ以上 ×2。
+double hoursMultiplier(Set<HoursCondition> conditions) =>
+    _doubledMultiplier(conditions) / 2;
 
 PointsBreakdown calculatePoints({
   required Visit visit,
-  required HoursType hoursType,
+  required Set<HoursCondition> hoursConditions,
   required bool isFirstVisit,
   required bool isRetrySuccess,
 }) {
@@ -73,7 +76,7 @@ PointsBreakdown calculatePoints({
     ticketBonus: visit.hasTicket ? ticketBonus : 0,
     firstVisitBonus: isFirstVisit ? firstVisitBonus : 0,
     retryBonus: isRetrySuccess ? retryBonus : 0,
-    hoursType: hoursType,
+    hoursConditions: hoursConditions,
   );
 }
 
@@ -122,7 +125,7 @@ List<ScoredVisit> scoreVisits(List<VisitWithShop> entries) {
         shop: entry.shop,
         points: calculatePoints(
           visit: visit,
-          hoursType: entry.shop.hoursType,
+          hoursConditions: entry.shop.hoursConditions,
           isFirstVisit: isFirstVisit,
           isRetrySuccess: isRetrySuccess,
         ),

@@ -54,10 +54,14 @@
   "styleOther": "その他",
   "isLimited": "限定メニュー",
   "hasTicket": "整理券制",
-  "hoursSection": "店の営業時間",
-  "hoursNormal": "通常",
+  "hoursSection": "営業の条件（当てはまるものすべて）",
+  "hoursNote": "ポイントの倍率: 1つで×1.5、2つ以上で×2",
   "hoursLunchOnly": "昼のみ",
+  "hoursNightOnly": "夜のみ",
+  "hoursWeekdaysOnly": "平日のみ",
+  "hoursWeekendsOnly": "土日のみ",
   "hoursFewDays": "週3日以下",
+  "hoursIrregular": "不定休",
   "memoLabel": "メモ",
   "discardTitle": "記録をやめますか？",
   "discardMessage": "入力した内容は保存されません",
@@ -152,7 +156,7 @@
   },
   "pointsFirstVisit": "初訪問",
   "pointsRetry": "再挑戦成功",
-  "pointsHours": "営業時間（{label}）",
+  "pointsHours": "営業の条件（{label}）",
   "@pointsHours": {
     "placeholders": {
       "label": {"type": "String"}
