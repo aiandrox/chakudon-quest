@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../notifications/notification_service.dart';
 import '../quests/quests.dart';
 import '../records/record_repository.dart';
 import '../scoring/points_breakdown_view.dart';
@@ -22,6 +23,13 @@ class RecordResultScreen extends ConsumerStatefulWidget {
 class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
   /// 最初に求めた結果を持ち続ける。表示中に記録が変わっても、演出をやり直さないため。
   RecordOutcome? _outcome;
+
+  @override
+  void initState() {
+    super.initState();
+    // 連続記録が途切れそうなときに知らせるため、記録したこのときに通知の許可を尋ねる。
+    ref.read(notificationServiceProvider).requestPermission();
+  }
 
   @override
   Widget build(BuildContext context) {

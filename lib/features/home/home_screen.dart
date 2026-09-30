@@ -16,6 +16,7 @@ import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_photo.dart';
 import '../scoring/rank_progress.dart';
+import '../streak/streak.dart';
 import 'rating_prompt.dart';
 import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
@@ -31,7 +32,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _recoverLostPhoto());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _recoverLostPhoto();
+      // 通知の文言に画面の言語設定を使うため、最初の描画のあとで見張りはじめる。
+      if (mounted) _listenForNotifications();
+    });
+  }
+
+  void _listenForNotifications() {
     // チェックインの始め方・終わり方（記録・撤退・取り消し・期限切れ）によらず、
     // 並んでいる間だけ通知を出す。
     ref.listenManual<AsyncValue<Checkin?>>(activeCheckinProvider, (
@@ -57,6 +65,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           DateFormat.Hm().format(checkin.checkedInAt),
         ),
         checkedInAt: checkin.checkedInAt,
+      );
+    }, fireImmediately: true);
+    ref.listenManual<Streak>(streakProvider, (_, streak) {
+      final notifications = ref.read(notificationServiceProvider);
+      final now = ref.read(currentTimeProvider);
+      final remindAt = streakReminderTime(streak, now);
+      if (remindAt == null || !remindAt.isAfter(now)) {
+        notifications.cancelStreakReminder();
+        return;
+      }
+      final l10n = AppLocalizations.of(context);
+      notifications.scheduleStreakReminder(
+        at: remindAt,
+        title: l10n.streakReminderTitle(streak.weeks),
+        body: l10n.streakReminderBody,
       );
     }, fireImmediately: true);
   }
@@ -112,6 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: RankProgress(totalPoints: ref.watch(totalPointsProvider)),
           ),
+          const _StreakLine(),
           if (checkin != null) CheckinBanner(checkin: checkin),
           if (_ratingPromptTarget(visits.value) case final entry?)
             RatingPrompt(entry: entry),
@@ -260,6 +284,36 @@ class _VisitTile extends ConsumerWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StreakLine extends ConsumerWidget {
+  const _StreakLine();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final streak = ref.watch(streakProvider);
+    if (streak.weeks == 0) return const SizedBox.shrink();
+    final colors = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+      child: Row(
+        children: [
+          Icon(Icons.local_fire_department, size: 18, color: colors.primary),
+          const SizedBox(width: 4),
+          Text(l10n.streakWeeks(streak.weeks), style: textTheme.bodyMedium),
+          if (streak.isAtRisk) ...[
+            const SizedBox(width: 8),
+            Text(
+              l10n.streakAtRisk,
+              style: textTheme.bodyMedium?.copyWith(color: colors.error),
+            ),
+          ],
         ],
       ),
     );

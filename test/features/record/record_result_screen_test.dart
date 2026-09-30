@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/notifications/notification_service.dart';
 import 'package:chakudon_quest/features/record/record_result_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
 
 import '../../support/builders.dart';
+import '../../support/fakes.dart';
 import '../../support/l10n.dart';
 
 void main() {
   DateTime day(int d) => DateTime(2026, 9, d, 12);
+  late FakeNotificationService notifications;
+
+  setUp(() => notifications = FakeNotificationService());
 
   Future<void> pumpResult(
     WidgetTester tester,
@@ -22,7 +27,10 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [visitsProvider.overrideWithValue(AsyncData(visits))],
+        overrides: [
+          visitsProvider.overrideWithValue(AsyncData(visits)),
+          notificationServiceProvider.overrideWithValue(notifications),
+        ],
         child: localizedApp(home: RecordResultScreen(visitId: visitId)),
       ),
     );
@@ -68,6 +76,9 @@ void main() {
     expect(find.text('はじめての着丼'), findsOneWidget);
     expect(find.text('行列に挑む者'), findsOneWidget);
     expect(find.text('大物討伐'), findsOneWidget);
+
+    // 連続記録のお知らせのため、記録したときに通知の許可を尋ねる。
+    expect(notifications.permissionRequests, 1);
   });
 
   testWidgets('ランクが上がったら知らせる', (tester) async {
@@ -121,7 +132,10 @@ void main() {
   testWidgets('記録がまだ読み込まれていなければ待つ', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [visitsProvider.overrideWithValue(const AsyncData([]))],
+        overrides: [
+          visitsProvider.overrideWithValue(const AsyncData([])),
+          notificationServiceProvider.overrideWithValue(notifications),
+        ],
         child: localizedApp(home: const RecordResultScreen(visitId: 'v')),
       ),
     );

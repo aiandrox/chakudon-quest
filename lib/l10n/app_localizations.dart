@@ -574,6 +574,30 @@ abstract class AppLocalizations {
   /// **'{time} から並んでいます。着丼したら「＋」で記録しましょう'**
   String checkinNotificationBody(String time);
 
+  /// No description provided for @streakWeeks.
+  ///
+  /// In ja, this message translates to:
+  /// **'{weeks}週連続で着丼中'**
+  String streakWeeks(int weeks);
+
+  /// No description provided for @streakAtRisk.
+  ///
+  /// In ja, this message translates to:
+  /// **'今週はまだ'**
+  String get streakAtRisk;
+
+  /// No description provided for @streakReminderTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'{weeks}週連続の記録が途切れそう'**
+  String streakReminderTitle(int weeks);
+
+  /// No description provided for @streakReminderBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'今週はまだ着丼していません。日曜が終わるまでに一杯いかがですか？'**
+  String get streakReminderBody;
+
   /// No description provided for @checkinCancel.
   ///
   /// In ja, this message translates to:

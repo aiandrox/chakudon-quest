@@ -227,4 +227,27 @@ class FakeNotificationService implements NotificationService {
   Future<void> cancelCheckin() async {
     cancelCount++;
   }
+
+  int permissionRequests = 0;
+  final streakReminders = <DateTime>[];
+  int streakCancelCount = 0;
+
+  @override
+  Future<void> requestPermission() async {
+    permissionRequests++;
+  }
+
+  @override
+  Future<void> scheduleStreakReminder({
+    required DateTime at,
+    required String title,
+    required String body,
+  }) async {
+    streakReminders.add(at);
+  }
+
+  @override
+  Future<void> cancelStreakReminder() async {
+    streakCancelCount++;
+  }
 }
