@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../notifications/notification_service.dart';
+import '../../theme/emblem.dart';
+import '../quests/quest_visuals.dart';
 import '../quests/quests.dart';
+import '../scoring/ranks.dart';
 import '../records/record_repository.dart';
 import '../scoring/points_breakdown_view.dart';
 import '../scoring/rank_labels.dart';
@@ -110,11 +113,11 @@ class _ResultBody extends StatelessWidget {
         ),
         if (outcome.isRankUp) ...[
           const SizedBox(height: 16),
-          _RankUpBanner(rankName: adventurerRankLabel(l10n, outcome.rankAfter)),
+          _RankUpBanner(rank: outcome.rankAfter),
         ],
-        for (final quest in outcome.achievedQuests) ...[
-          const SizedBox(height: 16),
-          _QuestAchievedBanner(quest: quest),
+        for (final levelUp in outcome.questLevelUps) ...[
+          const SizedBox(height: 12),
+          _QuestAchievedBanner(levelUp: levelUp),
         ],
         const SizedBox(height: 24),
         RankProgress(totalPoints: outcome.totalAfter),
@@ -124,9 +127,9 @@ class _ResultBody extends StatelessWidget {
 }
 
 class _RankUpBanner extends StatelessWidget {
-  const _RankUpBanner({required this.rankName});
+  const _RankUpBanner({required this.rank});
 
-  final String rankName;
+  final AdventurerRank rank;
 
   @override
   Widget build(BuildContext context) {
@@ -142,28 +145,19 @@ class _RankUpBanner extends StatelessWidget {
           Transform.scale(scale: scale, child: child),
       child: Card(
         elevation: 0,
-        color: colors.tertiaryContainer,
+        color: colors.surfaceContainerHigh,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Icon(
-                Icons.military_tech,
-                size: 48,
-                color: colors.onTertiaryContainer,
-              ),
-              Text(
-                l10n.rankUp,
-                style: textTheme.titleLarge?.copyWith(
-                  color: colors.onTertiaryContainer,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                rankName,
-                style: textTheme.headlineSmall?.copyWith(
-                  color: colors.onTertiaryContainer,
-                ),
+              Text(l10n.rankUp, style: textTheme.titleMedium),
+              const SizedBox(height: 8),
+              Emblem(icon: rankIcon(rank), tier: rankTier(rank), size: 96),
+              const SizedBox(height: 8),
+              TitleLogo(
+                adventurerRankLabel(l10n, rank),
+                tier: rankTier(rank),
+                fontSize: 28,
               ),
             ],
           ),
@@ -174,32 +168,56 @@ class _RankUpBanner extends StatelessWidget {
 }
 
 class _QuestAchievedBanner extends StatelessWidget {
-  const _QuestAchievedBanner({required this.quest});
+  const _QuestAchievedBanner({required this.levelUp});
 
-  final Quest quest;
+  final QuestLevelUp levelUp;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
+    final quest = levelUp.quest;
+    final isSpot = quest.kind == QuestKind.spot;
 
     return Card(
       elevation: 0,
       color: colors.secondaryContainer,
-      child: ListTile(
-        leading: Icon(Icons.emoji_events, color: colors.onSecondaryContainer),
-        title: Text(
-          l10n.questAchieved,
-          style: textTheme.labelLarge?.copyWith(
-            color: colors.onSecondaryContainer,
-          ),
-        ),
-        subtitle: Text(
-          quest.title,
-          style: textTheme.titleMedium?.copyWith(
-            color: colors.onSecondaryContainer,
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Emblem(
+              icon: questIcon(quest),
+              tier: questTier(quest, levelUp.level),
+              size: 56,
+              label: isSpot
+                  ? l10n.questCleared
+                  : l10n.questLevel(levelUp.level),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isSpot ? l10n.questAchieved : l10n.questLevelUp,
+                    style: textTheme.labelLarge?.copyWith(
+                      color: colors.onSecondaryContainer,
+                    ),
+                  ),
+                  Text(
+                    isSpot
+                        ? quest.title
+                        : l10n.questLevelReached(quest.title, levelUp.level),
+                    style: textTheme.titleMedium?.copyWith(
+                      color: colors.onSecondaryContainer,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

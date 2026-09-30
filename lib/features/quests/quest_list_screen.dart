@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/emblem.dart';
 import '../records/date_format.dart';
 import '../scoring/scoring_providers.dart';
+import 'quest_visuals.dart';
 import 'quests.dart';
 
 class QuestListScreen extends ConsumerWidget {
@@ -12,22 +14,71 @@ class QuestListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final quests = ref.watch(questProgressProvider);
-    final achieved = quests
-        .where((progress) => progress.status == QuestStatus.achieved)
-        .length;
+    final all = ref.watch(questProgressProvider);
+    final standing = [
+      for (final progress in all)
+        if (progress.quest.kind == QuestKind.standing) progress,
+    ];
+    final spot = [
+      for (final progress in all)
+        if (progress.quest.kind == QuestKind.spot) progress,
+    ];
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.questTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         children: [
-          Text(
-            l10n.questSummary(achieved, quests.length),
-            style: Theme.of(context).textTheme.titleMedium,
+          _SectionHeader(
+            title: l10n.questStanding,
+            note: l10n.questStandingNote,
+            summary: l10n.questLevelTotal(
+              standing.fold(0, (sum, progress) => sum + progress.level),
+            ),
           ),
-          const SizedBox(height: 8),
-          for (final progress in quests) _QuestCard(progress: progress),
+          for (final progress in standing) _QuestCard(progress: progress),
+          const SizedBox(height: 24),
+          _SectionHeader(
+            title: l10n.questSpot,
+            note: l10n.questSpotNote,
+            summary: l10n.questSpotSummary(
+              spot.where((progress) => progress.isAchieved).length,
+              spot.length,
+            ),
+          ),
+          for (final progress in spot) _QuestCard(progress: progress),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.title,
+    required this.note,
+    required this.summary,
+  });
+
+  final String title;
+  final String note;
+  final String summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(title, style: textTheme.titleLarge)),
+              Text(summary, style: textTheme.titleSmall),
+            ],
+          ),
+          Text(note, style: textTheme.bodySmall),
         ],
       ),
     );
@@ -45,71 +96,68 @@ class _QuestCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     final quest = progress.quest;
-    final status = progress.status;
-    final isAchieved = status == QuestStatus.achieved;
-    final achievedAt = progress.achievedAt;
+    final isSpot = quest.kind == QuestKind.spot;
+    final next = progress.nextThreshold;
+    final previous = progress.level == 0
+        ? 0
+        : quest.thresholds[progress.level - 1];
+    final achievedAt = progress.levelAchievedAt.lastOrNull;
 
     return Card(
       elevation: 0,
-      color: isAchieved
-          ? colors.secondaryContainer
+      color: progress.isAchieved
+          ? colors.surfaceContainerHigh
           : colors.surfaceContainerLow,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              isAchieved ? Icons.emoji_events : Icons.emoji_events_outlined,
-              color: isAchieved ? colors.primary : colors.outline,
+            Emblem(
+              icon: questIcon(quest),
+              tier: questTier(quest, progress.level),
+              size: 52,
+              label: isSpot
+                  ? (progress.isAchieved ? l10n.questCleared : null)
+                  : progress.isMaxLevel
+                  ? l10n.questMaxLevel
+                  : l10n.questLevel(progress.level),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(quest.title, style: textTheme.titleMedium),
-                      ),
-                      Text(
-                        _statusLabel(l10n, status),
-                        style: textTheme.labelMedium,
-                      ),
-                    ],
-                  ),
+                  Text(quest.title, style: textTheme.titleMedium),
                   const SizedBox(height: 2),
-                  Text(quest.condition, style: textTheme.bodyMedium),
-                  if (isAchieved && achievedAt != null) ...[
+                  Text(quest.description, style: textTheme.bodyMedium),
+                  if (!isSpot && next != null) ...[
+                    const SizedBox(height: 8),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value:
+                            (progress.current - previous) / (next - previous),
+                        minHeight: 6,
+                      ),
+                    ),
                     const SizedBox(height: 4),
+                    Text(
+                      l10n.questNext(progress.current, next, quest.unit),
+                      style: textTheme.bodySmall,
+                    ),
+                  ],
+                  if (!isSpot && next == null)
+                    Text(
+                      l10n.questCount(progress.current, quest.unit),
+                      style: textTheme.bodySmall,
+                    ),
+                  if (achievedAt != null)
                     Text(
                       l10n.questAchievedOn(formatDate(achievedAt)),
                       style: textTheme.bodySmall,
                     ),
-                  ],
-                  if (!isAchieved && quest.target > 1) ...[
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: LinearProgressIndicator(
-                              value: progress.current / quest.target,
-                              minHeight: 6,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          l10n.questProgress(progress.current, quest.target),
-                          style: textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ],
                 ],
               ),
             ),
@@ -118,11 +166,4 @@ class _QuestCard extends StatelessWidget {
       ),
     );
   }
-
-  String _statusLabel(AppLocalizations l10n, QuestStatus status) =>
-      switch (status) {
-        QuestStatus.achieved => l10n.questStatusAchieved,
-        QuestStatus.inProgress => l10n.questStatusInProgress,
-        QuestStatus.notStarted => l10n.questStatusNotStarted,
-      };
 }

@@ -22,7 +22,7 @@ void main() {
     List<VisitWithShop> visits,
     String visitId,
   ) async {
-    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.physicalSize = const Size(1080, 4800);
     tester.view.devicePixelRatio = 2.5;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -70,12 +70,14 @@ void main() {
     expect(find.text(ja.nextRank(ja.rankTraveler, 118)), findsOneWidget);
     expect(find.text(ja.rankUp), findsNothing);
 
-    // 最初の1杯で「はじめての着丼」、35分待ちで「行列に挑む者」、
-    // 1杯で60点以上（Sランク）なので「大物討伐」を達成する。
-    expect(find.text(ja.questAchieved), findsNWidgets(3));
+    // スポット「はじめての着丼」の達成と、常設の Lv.1 到達
+    // （35分待ち・限定・1杯で60点以上のSランク）を知らせる。
+    expect(find.text(ja.questAchieved), findsOneWidget);
     expect(find.text('はじめての着丼'), findsOneWidget);
-    expect(find.text('行列に挑む者'), findsOneWidget);
-    expect(find.text('大物討伐'), findsOneWidget);
+    expect(find.text(ja.questLevelUp), findsNWidgets(3));
+    expect(find.text(ja.questLevelReached('行列の覇者', 1)), findsOneWidget);
+    expect(find.text(ja.questLevelReached('限定ハンター', 1)), findsOneWidget);
+    expect(find.text(ja.questLevelReached('大物討伐', 1)), findsOneWidget);
 
     // 連続記録のお知らせのため、記録したときに通知の許可を尋ねる。
     expect(notifications.permissionRequests, 1);

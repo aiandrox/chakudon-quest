@@ -9,15 +9,15 @@ class RecordOutcome {
     required this.scored,
     required this.totalBefore,
     required this.totalAfter,
-    this.achievedQuests = const [],
+    this.questLevelUps = const [],
   });
 
   final ScoredVisit scored;
   final int totalBefore;
   final int totalAfter;
 
-  /// この記録で新しく達成したクエスト。
-  final List<Quest> achievedQuests;
+  /// この記録で新しく達成・レベルアップしたクエスト。
+  final List<QuestLevelUp> questLevelUps;
 
   AdventurerRank get rankBefore => adventurerRankFor(totalBefore);
 
@@ -41,7 +41,7 @@ RecordOutcome? computeRecordOutcome(List<VisitWithShop> all, String visitId) {
     scored: scored,
     totalBefore: totalPoints(scoredOthers),
     totalAfter: totalPoints(scoredAll),
-    achievedQuests: newlyAchievedQuests(
+    questLevelUps: newlyAchievedLevels(
       before: evaluateQuests(scoredOthers),
       after: evaluateQuests(scoredAll),
     ),

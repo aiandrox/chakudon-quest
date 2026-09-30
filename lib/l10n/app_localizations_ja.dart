@@ -414,18 +414,47 @@ class AppLocalizationsJa extends AppLocalizations {
   String get questTitle => 'クエスト';
 
   @override
-  String questSummary(int achieved, int total) {
+  String get questStanding => '常設クエスト';
+
+  @override
+  String get questStandingNote => '回数を重ねるほどレベルが上がります';
+
+  @override
+  String get questSpot => 'スポットクエスト';
+
+  @override
+  String get questSpotNote => '1回達成すればクリアです';
+
+  @override
+  String questLevelTotal(int total) {
+    return 'レベル合計 $total';
+  }
+
+  @override
+  String questSpotSummary(int achieved, int total) {
     return '達成 $achieved / $total';
   }
 
   @override
-  String get questStatusAchieved => '達成済み';
+  String questLevel(int level) {
+    return 'Lv.$level';
+  }
 
   @override
-  String get questStatusInProgress => '挑戦中';
+  String get questMaxLevel => 'MAX';
 
   @override
-  String get questStatusNotStarted => '未達成';
+  String get questCleared => '達成';
+
+  @override
+  String questNext(int current, int target, String unit) {
+    return '次のレベルまで $current / $target$unit';
+  }
+
+  @override
+  String questCount(int count, String unit) {
+    return '$count$unit';
+  }
 
   @override
   String questAchievedOn(String date) {
@@ -433,8 +462,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String questProgress(int current, int target) {
-    return '$current / $target';
+  String get questLevelUp => 'クエスト レベルアップ！';
+
+  @override
+  String questLevelReached(String title, int level) {
+    return '$title Lv.$level';
   }
 
   @override
