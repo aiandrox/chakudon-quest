@@ -37,6 +37,23 @@ void main() {
     expect(find.text(ja.statsThisYear), findsNothing);
   });
 
+  testWidgets('記録を読み込めなかったときは、記録が無いとは表示しない', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          visitsProvider.overrideWithValue(
+            AsyncError(StateError('db'), StackTrace.empty),
+          ),
+        ],
+        child: localizedApp(home: const StatsScreen()),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.text(ja.homeLoadFailed), findsOneWidget);
+    expect(find.text(ja.statsEmpty), findsNothing);
+  });
+
   testWidgets('今年の杯数・系統の割合・よく行く店・店ランクを表示する', (tester) async {
     final often = buildShop(id: 'often', name: 'よく行く麺屋');
     final rare = buildShop(

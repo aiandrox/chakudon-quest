@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../records/clock.dart';
 import '../records/labels.dart';
+import '../records/record_repository.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/ranks.dart';
 import '../scoring/scoring_providers.dart';
@@ -16,13 +17,18 @@ class StatsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
+    final visits = ref.watch(visitsProvider);
     final scored = ref.watch(scoredVisitsProvider);
     final total = totalBowls(scored);
     final thisYear = bowlsInYear(scored, ref.watch(clockProvider)().year);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.statsTitle)),
-      body: total == 0
+      body: visits.hasError
+          ? Center(child: Text(l10n.homeLoadFailed))
+          : visits.isLoading && !visits.hasValue
+          ? const Center(child: CircularProgressIndicator())
+          : total == 0
           ? Center(child: Text(l10n.statsEmpty))
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
