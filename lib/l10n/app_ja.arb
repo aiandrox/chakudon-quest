@@ -109,6 +109,12 @@
       "minutes": {"type": "int"}
     }
   },
+  "checkinNotificationBody": "{time} から並んでいます。着丼したら「＋」で記録しましょう",
+  "@checkinNotificationBody": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
   "checkinCancel": "取り消す",
   "checkinCancelTitle": "チェックインを取り消しますか？",
   "checkinCancelMessage": "並んだ記録は残りません",
