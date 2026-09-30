@@ -187,6 +187,36 @@ void main() {
       expect(bests.mostRetreats!.entry.visit.eatenAt, day(6));
     });
 
+    test('撤退の回数が同じ店どうしでは、先にその回数に達した店を残す', () {
+      final bests = personalBests(
+        scoreVisits([
+          buildEntry(
+            shop: shopB,
+            eatenAt: day(1),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopA,
+            eatenAt: day(5),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopA,
+            eatenAt: day(10),
+            result: VisitResult.retreated,
+          ),
+          buildEntry(
+            shop: shopB,
+            eatenAt: day(20),
+            result: VisitResult.retreated,
+          ),
+        ]),
+      );
+
+      expect(bests.mostRetreats!.entry.shop.name, 'A店');
+      expect(bests.mostRetreats!.entry.visit.eatenAt, day(10));
+    });
+
     test('同じ値なら先に達成した記録を残す', () {
       final bests = personalBests(
         scoreVisits([

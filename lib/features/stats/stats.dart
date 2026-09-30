@@ -143,7 +143,7 @@ class PersonalBests {
   /// 1杯で最も高いポイントを得た記録。
   final PersonalBest? highestPoints;
 
-  /// 撤退の回数が最も多い店の、最後の撤退の記録（回数）。
+  /// 撤退の回数が最も多い店の、その回数に達した撤退の記録（回数）。
   final PersonalBest? mostRetreats;
 }
 
@@ -151,13 +151,18 @@ class PersonalBests {
 PersonalBests personalBests(List<ScoredVisit> scored) {
   PersonalBest? longestWait;
   PersonalBest? highestPoints;
+  PersonalBest? mostRetreats;
   final retreats = <String, int>{};
-  final lastRetreat = <String, ScoredVisit>{};
   for (final entry in scored) {
     if (entry.visit.result == VisitResult.retreated) {
-      final shopId = entry.visit.shopId;
-      retreats.update(shopId, (count) => count + 1, ifAbsent: () => 1);
-      lastRetreat[shopId] = entry;
+      final count = retreats.update(
+        entry.visit.shopId,
+        (count) => count + 1,
+        ifAbsent: () => 1,
+      );
+      if (count > (mostRetreats?.value ?? 0)) {
+        mostRetreats = PersonalBest(entry: entry, value: count);
+      }
       continue;
     }
     final wait = waitMinutes(entry.visit);
@@ -167,12 +172,6 @@ PersonalBests personalBests(List<ScoredVisit> scored) {
     final points = entry.points.total;
     if (points > (highestPoints?.value ?? -1)) {
       highestPoints = PersonalBest(entry: entry, value: points);
-    }
-  }
-  PersonalBest? mostRetreats;
-  for (final MapEntry(key: shopId, value: count) in retreats.entries) {
-    if (count > (mostRetreats?.value ?? 0)) {
-      mostRetreats = PersonalBest(entry: lastRetreat[shopId]!, value: count);
     }
   }
   return PersonalBests(
