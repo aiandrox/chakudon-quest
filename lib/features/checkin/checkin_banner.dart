@@ -95,7 +95,7 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
     final textTheme = Theme.of(context).textTheme;
     final minutes = checkinElapsedMinutes(
       widget.checkin,
-      ref.watch(clockProvider)(),
+      ref.watch(currentTimeProvider),
     );
 
     return Card(

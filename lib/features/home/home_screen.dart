@@ -103,7 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   /// 食べてから12時間以内で、まだ★の無い最新の記録。
   VisitWithShop? _ratingPromptTarget(List<VisitWithShop>? visits) {
-    final now = ref.watch(clockProvider)();
+    final now = ref.watch(currentTimeProvider);
     for (final entry in visits ?? const <VisitWithShop>[]) {
       final visit = entry.visit;
       if (visit.result != VisitResult.eaten) continue;
