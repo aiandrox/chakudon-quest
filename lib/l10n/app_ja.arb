@@ -235,6 +235,34 @@
   "statsFrequent": "よく行く店",
   "statsShopRanks": "店ランク",
   "statsShopRanksNote": "その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）",
+  "navMap": "地図",
+  "mapAttribution": "OpenStreetMap contributors",
+  "mapTitle": "行った店の地図",
+  "mapEmpty": "位置のわかる店がまだありません。カメラで撮って、近くの店の候補から選ぶと地図に出ます",
+  "mapShopBowls": "{count}杯",
+  "@mapShopBowls": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "mapShopRetreats": "撤退 {count}回",
+  "@mapShopRetreats": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "mapLastVisit": "最後に行った日 {date}",
+  "@mapLastVisit": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "mapShopRank": "店ランク {rank}",
+  "@mapShopRank": {
+    "placeholders": {
+      "rank": {"type": "String"}
+    }
+  },
   "statsBestPoints": "最高 {points} pt",
   "@statsBestPoints": {
     "placeholders": {

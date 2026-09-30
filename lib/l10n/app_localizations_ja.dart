@@ -461,6 +461,38 @@ class AppLocalizationsJa extends AppLocalizations {
       'その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）';
 
   @override
+  String get navMap => '地図';
+
+  @override
+  String get mapAttribution => 'OpenStreetMap contributors';
+
+  @override
+  String get mapTitle => '行った店の地図';
+
+  @override
+  String get mapEmpty => '位置のわかる店がまだありません。カメラで撮って、近くの店の候補から選ぶと地図に出ます';
+
+  @override
+  String mapShopBowls(int count) {
+    return '$count杯';
+  }
+
+  @override
+  String mapShopRetreats(int count) {
+    return '撤退 $count回';
+  }
+
+  @override
+  String mapLastVisit(String date) {
+    return '最後に行った日 $date';
+  }
+
+  @override
+  String mapShopRank(String rank) {
+    return '店ランク $rank';
+  }
+
+  @override
   String statsBestPoints(int points) {
     return '最高 $points pt';
   }
