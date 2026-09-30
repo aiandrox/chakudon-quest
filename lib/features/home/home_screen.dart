@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../checkin/checkin_banner.dart';
+import '../checkin/checkin_controller.dart';
+import '../checkin/checkin_screen.dart';
 import '../record/photo_picker.dart';
 import '../record/record_screen.dart';
 import '../records/date_format.dart';
@@ -42,36 +45,77 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  Future<void> _openCheckin() async {
+    final shopName = await Navigator.of(context)
+        .push<String>(MaterialPageRoute(builder: (_) => const CheckinScreen()));
+    if (shopName == null || !mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AppLocalizations.of(context).checkinDone(shopName)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final visits = ref.watch(visitsProvider);
+    final checkinState = ref.watch(activeCheckinProvider);
+    final checkin = checkinState.value;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.appName)),
-      body: switch (visits) {
-        AsyncData(:final value) when value.isEmpty => Center(
-          child: Text(l10n.homeEmpty, textAlign: TextAlign.center),
-        ),
-        AsyncData(:final value) => GridView.builder(
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 120),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
+      body: Column(
+        children: [
+          if (checkin != null) CheckinBanner(checkin: checkin),
+          Expanded(child: _buildVisits(l10n, visits)),
+        ],
+      ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (checkin == null && !checkinState.isLoading) ...[
+            FloatingActionButton.extended(
+              heroTag: 'checkin',
+              onPressed: _openCheckin,
+              icon: const Icon(Icons.groups),
+              label: Text(l10n.checkinButton),
+            ),
+            const SizedBox(height: 16),
+          ],
+          FloatingActionButton.large(
+            heroTag: 'record',
+            tooltip: l10n.addRecord,
+            onPressed: _openRecord,
+            child: const Icon(Icons.add),
           ),
-          itemCount: value.length,
-          itemBuilder: (context, index) => _VisitTile(entry: value[index]),
-        ),
-        AsyncError() => Center(child: Text(l10n.homeLoadFailed)),
-        _ => const Center(child: CircularProgressIndicator()),
-      },
-      floatingActionButton: FloatingActionButton.large(
-        tooltip: l10n.addRecord,
-        onPressed: _openRecord,
-        child: const Icon(Icons.add),
+        ],
       ),
     );
+  }
+
+  Widget _buildVisits(
+    AppLocalizations l10n,
+    AsyncValue<List<VisitWithShop>> visits,
+  ) {
+    return switch (visits) {
+      AsyncData(:final value) when value.isEmpty => Center(
+        child: Text(l10n.homeEmpty, textAlign: TextAlign.center),
+      ),
+      AsyncData(:final value) => GridView.builder(
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 200),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+        ),
+        itemCount: value.length,
+        itemBuilder: (context, index) => _VisitTile(entry: value[index]),
+      ),
+      AsyncError() => Center(child: Text(l10n.homeLoadFailed)),
+      _ => const Center(child: CircularProgressIndicator()),
+    };
   }
 }
 
@@ -101,6 +145,24 @@ class _VisitTile extends StatelessWidget {
               ),
             ),
           ),
+          if (visit.result == VisitResult.retreated)
+            Positioned(
+              left: 8,
+              top: 8,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  child: Text(l10n.retreatBadge, style: textStyle),
+                ),
+              ),
+            ),
           Positioned(
             left: 8,
             right: 8,

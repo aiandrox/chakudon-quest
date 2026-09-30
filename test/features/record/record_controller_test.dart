@@ -13,10 +13,12 @@ import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/records/wait_time.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
 import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
 
 import '../../support/fakes.dart';
 
@@ -305,6 +307,157 @@ void main() {
     final entry = (await visits()).single;
     expect(entry.visit.photoPath, isNotNull);
     expect(entry.shop.latitude, isNull);
+  });
+
+  group('チェックイン中', () {
+    final checkedInAt = _photoTime.subtract(const Duration(minutes: 35));
+
+    Future<void> checkIn({DateTime? at}) => container
+        .read(recordRepositoryProvider)
+        .checkIn(
+          shop: const ShopInput(
+            osmId: 'node/9',
+            name: '並んだ店',
+            latitude: 35.0,
+            longitude: 139.0,
+          ),
+          at: at ?? checkedInAt,
+        );
+
+    test('並んだ店が選ばれた状態で始まり、★だけで保存すると待ち時間がつく', () async {
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+
+      expect(state().selectedShop!.name, '並んだ店');
+      expect(state().isCheckinShopSelected, isTrue);
+
+      controller().setRating(5);
+      expect(await controller().save(), isTrue);
+
+      final entry = (await visits()).single;
+      expect(entry.shop.name, '並んだ店');
+      expect(entry.shop.osmId, 'node/9');
+      expect(entry.visit.checkedInAt, checkedInAt);
+      expect(entry.visit.eatenAt, _photoTime);
+      expect(waitMinutes(entry.visit), 35);
+      expect(
+        await container.read(recordRepositoryProvider).activeCheckin(),
+        isNull,
+      );
+    });
+
+    test('別の店を選んで保存すると待ち時間はつかず、チェックインは続く', () async {
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().selectShop(state().candidates.single);
+      expect(state().isCheckinShopSelected, isFalse);
+      controller().setRating(3);
+      await controller().save();
+
+      final entry = (await visits()).single;
+      expect(entry.shop.name, '麺屋テスト');
+      expect(entry.visit.checkedInAt, isNull);
+      expect(
+        (await container.read(recordRepositoryProvider).activeCheckin())!.name,
+        '並んだ店',
+      );
+    });
+
+    test('並んだ店を検索結果や名前の候補から選び直しても、待ち時間がつく', () async {
+      overpass.shops = const [
+        OverpassShop(
+          osmId: 'node/9',
+          name: '並んだ店',
+          location: GeoPoint(35.0, 139.0),
+        ),
+      ];
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().selectShop(state().candidates.single);
+
+      expect(state().isCheckinShopSelected, isTrue);
+      controller().setRating(4);
+      await controller().save();
+
+      final entry = (await visits()).single;
+      expect(entry.visit.checkedInAt, checkedInAt);
+      expect(
+        await container.read(recordRepositoryProvider).activeCheckin(),
+        isNull,
+      );
+    });
+
+    test('手入力でチェックインした店が検索結果に出たら、同じ店として扱う', () async {
+      await container
+          .read(recordRepositoryProvider)
+          .checkIn(
+            shop: const ShopInput(
+              name: '麺屋テスト',
+              latitude: 35.0,
+              longitude: 139.0,
+            ),
+            at: checkedInAt,
+          );
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().selectShop(state().candidates.single);
+
+      expect(state().candidates.single.osmId, 'node/1');
+      expect(state().isCheckinShopSelected, isTrue);
+    });
+
+    test('撮り直しても、最初に撮った時刻で待ち時間を計算する', () async {
+      var now = _photoTime;
+      container.updateOverrides([
+        appDatabaseProvider.overrideWithValue(
+          container.read(appDatabaseProvider),
+        ),
+        documentsDirectoryProvider.overrideWithValue(documents),
+        locationServiceProvider.overrideWithValue(location),
+        overpassClientProvider.overrideWithValue(overpass),
+        photoPickerProvider.overrideWithValue(picker),
+        clockProvider.overrideWithValue(() => now),
+      ]);
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      now = _photoTime.add(const Duration(minutes: 20));
+      await controller().takePhoto();
+      controller().setRating(4);
+      await controller().save();
+
+      final entry = (await visits()).single;
+      expect(entry.visit.eatenAt, _photoTime);
+      expect(waitMinutes(entry.visit), 35);
+    });
+
+    test('3時間を超えたチェックインは使わない', () async {
+      await checkIn(at: _photoTime.subtract(const Duration(hours: 4)));
+
+      await controller().start();
+      await pumpEventQueue();
+
+      expect(state().checkin, isNull);
+      expect(state().selectedShop, isNull);
+    });
+
+    test('並んだ店が選ばれているだけなら、確認なしで戻れる', () async {
+      picker.cameraPath = null;
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+
+      expect(state().hasInput, isFalse);
+    });
   });
 
   test('店と★が揃うまでは保存しない', () async {

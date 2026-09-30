@@ -40,6 +40,17 @@ class ShopCandidate {
   final HoursType? hoursType;
 }
 
+/// 2つの候補が同じ店を指すか。IDで比べられないときは、名前と近さで判断する。
+bool isSameShop(ShopCandidate a, ShopCandidate b) {
+  if (a.shopId != null && b.shopId != null) return a.shopId == b.shopId;
+  if (a.osmId != null && b.osmId != null) return a.osmId == b.osmId;
+  if (a.name != b.name) return false;
+  final aLocation = a.location;
+  final bLocation = b.location;
+  if (aLocation == null || bLocation == null) return true;
+  return distanceMeters(aLocation, bLocation) <= shopSearchRadiusMeters;
+}
+
 /// 検索結果と記録済みの店を合わせ、半径内のものを近い順に最大[limit]件返す。
 /// 同じ店が両方にあるときは記録済みの方を残す。
 List<ShopCandidate> rankShopCandidates({

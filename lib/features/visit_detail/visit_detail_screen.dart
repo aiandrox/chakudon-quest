@@ -9,6 +9,7 @@ import '../records/photo_storage.dart';
 import '../records/record_repository.dart';
 import '../records/visit_history.dart';
 import '../records/visit_photo.dart';
+import '../records/wait_time.dart';
 import 'visit_edit_screen.dart';
 
 class VisitDetailScreen extends ConsumerWidget {
@@ -73,7 +74,10 @@ class VisitDetailScreen extends ConsumerWidget {
     final previous = previousVisitAtShop(visits, visit);
     final textTheme = Theme.of(context).textTheme;
     final style = visit.style;
+    final waited = waitMinutes(visit);
     final tags = [
+      if (visit.result == VisitResult.retreated) l10n.retreatBadge,
+      if (waited != null) l10n.waitTime(waited),
       if (style != null) styleLabel(l10n, style),
       if (visit.isLimited) l10n.limitedBadge,
       if (visit.hasTicket) l10n.ticketBadge,

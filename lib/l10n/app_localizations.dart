@@ -184,6 +184,12 @@ abstract class AppLocalizations {
   /// **'店を検索できませんでした。店名を入力してください'**
   String get shopSearchFailed;
 
+  /// No description provided for @shopSearchPartial.
+  ///
+  /// In ja, this message translates to:
+  /// **'店を検索できなかったため、記録済みの店だけを表示しています'**
+  String get shopSearchPartial;
+
   /// No description provided for @shopNoCandidates.
   ///
   /// In ja, this message translates to:
@@ -447,6 +453,174 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'整理券'**
   String get ticketBadge;
+
+  /// No description provided for @checkinButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'並んだ'**
+  String get checkinButton;
+
+  /// No description provided for @checkinTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'並んだ店を選ぶ'**
+  String get checkinTitle;
+
+  /// No description provided for @checkinDone.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shop} に並びました'**
+  String checkinDone(String shop);
+
+  /// No description provided for @checkinFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'チェックインできませんでした。もう一度お試しください'**
+  String get checkinFailed;
+
+  /// No description provided for @checkinTooFar.
+  ///
+  /// In ja, this message translates to:
+  /// **'100m以内に近づくとチェックインできます'**
+  String get checkinTooFar;
+
+  /// No description provided for @checkinNoLocation.
+  ///
+  /// In ja, this message translates to:
+  /// **'現在地がわからないため、チェックインできません。位置情報をオンにして、もう一度お試しください'**
+  String get checkinNoLocation;
+
+  /// No description provided for @checkinSearchFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'店を検索できませんでした。店名を入力してチェックインできます'**
+  String get checkinSearchFailed;
+
+  /// No description provided for @checkinNoCandidates.
+  ///
+  /// In ja, this message translates to:
+  /// **'近くに候補が見つかりませんでした。店名を入力してチェックインできます'**
+  String get checkinNoCandidates;
+
+  /// No description provided for @checkinRetry.
+  ///
+  /// In ja, this message translates to:
+  /// **'もう一度探す'**
+  String get checkinRetry;
+
+  /// No description provided for @checkinManualButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'この店名でチェックイン'**
+  String get checkinManualButton;
+
+  /// No description provided for @checkinBanner.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shop} に並び中'**
+  String checkinBanner(String shop);
+
+  /// No description provided for @checkinWaiting.
+  ///
+  /// In ja, this message translates to:
+  /// **'並び始めてから {minutes}分'**
+  String checkinWaiting(int minutes);
+
+  /// No description provided for @checkinCancel.
+  ///
+  /// In ja, this message translates to:
+  /// **'取り消す'**
+  String get checkinCancel;
+
+  /// No description provided for @checkinCancelTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'チェックインを取り消しますか？'**
+  String get checkinCancelTitle;
+
+  /// No description provided for @checkinCancelMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'並んだ記録は残りません'**
+  String get checkinCancelMessage;
+
+  /// No description provided for @checkinKeep.
+  ///
+  /// In ja, this message translates to:
+  /// **'並び続ける'**
+  String get checkinKeep;
+
+  /// No description provided for @retreat.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退'**
+  String get retreat;
+
+  /// No description provided for @retreatTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退を記録しますか？'**
+  String get retreatTitle;
+
+  /// No description provided for @retreatMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'食べられなかった記録として残します。次に同じ店で食べると「再挑戦成功」になります'**
+  String get retreatMessage;
+
+  /// No description provided for @retreatReasonSoldOut.
+  ///
+  /// In ja, this message translates to:
+  /// **'売り切れ'**
+  String get retreatReasonSoldOut;
+
+  /// No description provided for @retreatReasonClosed.
+  ///
+  /// In ja, this message translates to:
+  /// **'臨時休業'**
+  String get retreatReasonClosed;
+
+  /// No description provided for @retreatReasonNoTime.
+  ///
+  /// In ja, this message translates to:
+  /// **'時間切れ'**
+  String get retreatReasonNoTime;
+
+  /// No description provided for @retreatMemoLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'メモ（任意）'**
+  String get retreatMemoLabel;
+
+  /// No description provided for @retreatConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退を記録'**
+  String get retreatConfirm;
+
+  /// No description provided for @retreatSaved.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退を記録しました。次こそ着丼！'**
+  String get retreatSaved;
+
+  /// No description provided for @retreatFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録できませんでした。もう一度お試しください'**
+  String get retreatFailed;
+
+  /// No description provided for @retreatBadge.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退'**
+  String get retreatBadge;
+
+  /// No description provided for @waitTime.
+  ///
+  /// In ja, this message translates to:
+  /// **'待ち時間 {minutes}分'**
+  String waitTime(int minutes);
 }
 
 class _AppLocalizationsDelegate

@@ -104,4 +104,67 @@ void main() {
       ]);
     });
   });
+
+  group('isSameShop', () {
+    const here = GeoPoint(35.0, 139.0);
+    const far = GeoPoint(35.01, 139.0);
+
+    test('記録済みの店どうしはIDで比べる', () {
+      expect(
+        isSameShop(
+          const ShopCandidate(shopId: 'a', name: '麺屋'),
+          const ShopCandidate(shopId: 'a', name: '別の名前'),
+        ),
+        isTrue,
+      );
+      expect(
+        isSameShop(
+          const ShopCandidate(shopId: 'a', name: '麺屋'),
+          const ShopCandidate(shopId: 'b', name: '麺屋'),
+        ),
+        isFalse,
+      );
+    });
+
+    test('OSMの店どうしはOSMのIDで比べる', () {
+      expect(
+        isSameShop(
+          const ShopCandidate(osmId: 'node/1', name: '一風堂'),
+          const ShopCandidate(osmId: 'node/1', name: '一風堂'),
+        ),
+        isTrue,
+      );
+      expect(
+        isSameShop(
+          const ShopCandidate(osmId: 'node/1', name: '一風堂'),
+          const ShopCandidate(osmId: 'node/2', name: '一風堂'),
+        ),
+        isFalse,
+      );
+    });
+
+    test('IDで比べられないときは、同じ名前で近ければ同じ店', () {
+      const manual = ShopCandidate(name: '麺屋', location: here);
+
+      expect(
+        isSameShop(
+          manual,
+          const ShopCandidate(osmId: 'node/1', name: '麺屋', location: here),
+        ),
+        isTrue,
+      );
+      expect(
+        isSameShop(
+          manual,
+          const ShopCandidate(osmId: 'node/1', name: '麺屋', location: far),
+        ),
+        isFalse,
+      );
+      expect(isSameShop(manual, const ShopCandidate(name: '麺屋')), isTrue);
+      expect(
+        isSameShop(manual, const ShopCandidate(name: '別の店', location: here)),
+        isFalse,
+      );
+    });
+  });
 }

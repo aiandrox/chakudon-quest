@@ -339,4 +339,100 @@ void main() {
       expect(await repository.deleteVisit('missing'), isNull);
     });
   });
+
+  group('チェックイン', () {
+    final checkedInAt = DateTime(2026, 9, 30, 11, 20);
+    const shop = ShopInput(
+      osmId: 'node/1',
+      name: '麺屋',
+      latitude: 35.0,
+      longitude: 139.0,
+    );
+
+    test('チェックインすると並んでいる店と時刻を読み出せ、取り消すと無くなる', () async {
+      expect(await repository.activeCheckin(), isNull);
+
+      await repository.checkIn(shop: shop, at: checkedInAt);
+
+      final checkin = (await repository.activeCheckin())!;
+      expect(checkin.name, '麺屋');
+      expect(checkin.osmId, 'node/1');
+      expect(checkin.latitude, 35.0);
+      expect(checkin.checkedInAt, checkedInAt);
+      expect((await repository.watchActiveCheckin().first)!.name, '麺屋');
+      // チェックインだけでは店も記録も増やさない。
+      expect(await repository.allShops(), isEmpty);
+
+      await repository.cancelCheckin();
+      expect(await repository.activeCheckin(), isNull);
+      expect(await repository.watchActiveCheckin().first, isNull);
+    });
+
+    test('チェックイン中に別の店へチェックインすると置き換える', () async {
+      await repository.checkIn(shop: shop, at: checkedInAt);
+      await repository.checkIn(
+        shop: const ShopInput(name: '別の店'),
+        at: checkedInAt.add(const Duration(minutes: 5)),
+      );
+
+      expect((await repository.activeCheckin())!.name, '別の店');
+    });
+
+    test('チェックイン時刻つきで食べた記録を保存すると、チェックインを終える', () async {
+      await repository.checkIn(shop: shop, at: checkedInAt);
+
+      final visit = await repository.saveEatenVisit(
+        shop: shop,
+        eatenAt: checkedInAt.add(const Duration(minutes: 35)),
+        checkedInAt: checkedInAt,
+        rating: 4,
+        now: checkedInAt.add(const Duration(minutes: 40)),
+      );
+
+      expect(visit.checkedInAt, checkedInAt);
+      expect(await repository.activeCheckin(), isNull);
+      final saved = (await repository.watchVisits().first).single.visit;
+      expect(saved.checkedInAt, checkedInAt);
+    });
+
+    test('チェックイン時刻なしで別の店の記録を保存しても、チェックインは続く', () async {
+      await repository.checkIn(shop: shop, at: checkedInAt);
+
+      await save(const ShopInput(name: '別の店'));
+
+      expect((await repository.activeCheckin())!.name, '麺屋');
+    });
+
+    test('撤退すると、食べられなかった記録を残してチェックインを終える', () async {
+      await repository.checkIn(shop: shop, at: checkedInAt);
+      final checkin = (await repository.activeCheckin())!;
+      final now = checkedInAt.add(const Duration(minutes: 50));
+
+      await repository.saveRetreat(checkin: checkin, memo: '売り切れ', now: now);
+
+      final entry = (await repository.watchVisits().first).single;
+      expect(entry.visit.result, VisitResult.retreated);
+      expect(entry.visit.checkedInAt, checkedInAt);
+      expect(entry.visit.eatenAt, now);
+      expect(entry.visit.rating, isNull);
+      expect(entry.visit.photoPath, isNull);
+      expect(entry.visit.memo, '売り切れ');
+      expect(entry.shop.name, '麺屋');
+      expect(entry.shop.osmId, 'node/1');
+      expect(await repository.activeCheckin(), isNull);
+    });
+
+    test('撤退した店で次に食べると、同じ店の記録になる', () async {
+      await repository.checkIn(shop: shop, at: checkedInAt);
+      final retreat = await repository.saveRetreat(
+        checkin: (await repository.activeCheckin())!,
+        now: checkedInAt,
+      );
+
+      final eaten = await save(shop);
+
+      expect(eaten.shopId, retreat.shopId);
+      expect(await repository.allShops(), hasLength(1));
+    });
+  });
 }
