@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../records/clock.dart';
+import '../records/date_format.dart';
 import '../records/labels.dart';
 import '../records/record_repository.dart';
 import '../scoring/rank_labels.dart';
@@ -50,6 +51,7 @@ class StatsScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
+                ..._bests(l10n, textTheme, personalBests(scored)),
                 const SizedBox(height: 24),
                 Text(l10n.statsStyles, style: textTheme.titleMedium),
                 const SizedBox(height: 8),
@@ -86,6 +88,51 @@ class StatsScreen extends ConsumerWidget {
             ),
     );
   }
+}
+
+List<Widget> _bests(
+  AppLocalizations l10n,
+  TextTheme textTheme,
+  PersonalBests bests,
+) {
+  ListTile row(IconData icon, String label, PersonalBest best, String value) =>
+      ListTile(
+        contentPadding: EdgeInsets.zero,
+        dense: true,
+        leading: Icon(icon),
+        title: Text(label),
+        subtitle: Text(
+          l10n.bestDetail(
+            best.entry.shop.name,
+            formatDate(best.entry.visit.eatenAt),
+          ),
+        ),
+        trailing: Text(value, style: textTheme.titleMedium),
+      );
+  final rows = [
+    if (bests.longestWait case final best?)
+      row(
+        Icons.hourglass_bottom,
+        l10n.bestLongestWait,
+        best,
+        l10n.minutes(best.value),
+      ),
+    if (bests.highestPoints case final best?)
+      row(Icons.star, l10n.bestHighestPoints, best, l10n.points(best.value)),
+    if (bests.mostRetreats case final best?)
+      row(
+        Icons.shield,
+        l10n.bestMostRetreats,
+        best,
+        l10n.retreatCount(best.value),
+      ),
+  ];
+  if (rows.isEmpty) return const [];
+  return [
+    const SizedBox(height: 24),
+    Text(l10n.statsBests, style: textTheme.titleMedium),
+    ...rows,
+  ];
 }
 
 class _CountCard extends StatelessWidget {

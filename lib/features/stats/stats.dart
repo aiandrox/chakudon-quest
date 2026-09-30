@@ -1,4 +1,5 @@
 import '../records/models.dart';
+import '../records/wait_time.dart';
 import '../scoring/points.dart';
 import '../scoring/ranks.dart';
 
@@ -120,4 +121,63 @@ List<RankedShop> rankedShops(List<ScoredVisit> scored) {
     return byPoints != 0 ? byPoints : a.shop.name.compareTo(b.shop.name);
   });
   return ranked;
+}
+
+class PersonalBest {
+  const PersonalBest({required this.entry, required this.value});
+
+  final ScoredVisit entry;
+  final int value;
+}
+
+class PersonalBests {
+  const PersonalBests({
+    this.longestWait,
+    this.highestPoints,
+    this.mostRetreats,
+  });
+
+  /// 待ち時間が最も長かった記録（分）。
+  final PersonalBest? longestWait;
+
+  /// 1杯で最も高いポイントを得た記録。
+  final PersonalBest? highestPoints;
+
+  /// 撤退の回数が最も多い店の、最後の撤退の記録（回数）。
+  final PersonalBest? mostRetreats;
+}
+
+/// 自分の記録の中の最高。同じ値なら先に達成した記録を残す。
+PersonalBests personalBests(List<ScoredVisit> scored) {
+  PersonalBest? longestWait;
+  PersonalBest? highestPoints;
+  final retreats = <String, int>{};
+  final lastRetreat = <String, ScoredVisit>{};
+  for (final entry in scored) {
+    if (entry.visit.result == VisitResult.retreated) {
+      final shopId = entry.visit.shopId;
+      retreats.update(shopId, (count) => count + 1, ifAbsent: () => 1);
+      lastRetreat[shopId] = entry;
+      continue;
+    }
+    final wait = waitMinutes(entry.visit);
+    if (wait != null && wait > (longestWait?.value ?? -1)) {
+      longestWait = PersonalBest(entry: entry, value: wait);
+    }
+    final points = entry.points.total;
+    if (points > (highestPoints?.value ?? -1)) {
+      highestPoints = PersonalBest(entry: entry, value: points);
+    }
+  }
+  PersonalBest? mostRetreats;
+  for (final MapEntry(key: shopId, value: count) in retreats.entries) {
+    if (count > (mostRetreats?.value ?? 0)) {
+      mostRetreats = PersonalBest(entry: lastRetreat[shopId]!, value: count);
+    }
+  }
+  return PersonalBests(
+    longestWait: longestWait,
+    highestPoints: highestPoints,
+    mostRetreats: mostRetreats,
+  );
 }

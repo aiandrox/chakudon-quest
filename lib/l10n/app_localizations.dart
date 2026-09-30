@@ -904,6 +904,48 @@ abstract class AppLocalizations {
   /// **'よく行く店'**
   String get statsFrequent;
 
+  /// No description provided for @statsBests.
+  ///
+  /// In ja, this message translates to:
+  /// **'自己ベスト'**
+  String get statsBests;
+
+  /// No description provided for @bestLongestWait.
+  ///
+  /// In ja, this message translates to:
+  /// **'最長の待ち時間'**
+  String get bestLongestWait;
+
+  /// No description provided for @bestHighestPoints.
+  ///
+  /// In ja, this message translates to:
+  /// **'1杯の最高ポイント'**
+  String get bestHighestPoints;
+
+  /// No description provided for @bestMostRetreats.
+  ///
+  /// In ja, this message translates to:
+  /// **'いちばん手ごわい店'**
+  String get bestMostRetreats;
+
+  /// No description provided for @minutes.
+  ///
+  /// In ja, this message translates to:
+  /// **'{minutes}分'**
+  String minutes(int minutes);
+
+  /// No description provided for @retreatCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退 {count}回'**
+  String retreatCount(int count);
+
+  /// No description provided for @bestDetail.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shop}（{date}）'**
+  String bestDetail(String shop, String date);
+
   /// No description provided for @statsShopRanks.
   ///
   /// In ja, this message translates to:

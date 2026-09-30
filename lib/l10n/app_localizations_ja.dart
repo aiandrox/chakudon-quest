@@ -454,6 +454,33 @@ class AppLocalizationsJa extends AppLocalizations {
   String get statsFrequent => 'よく行く店';
 
   @override
+  String get statsBests => '自己ベスト';
+
+  @override
+  String get bestLongestWait => '最長の待ち時間';
+
+  @override
+  String get bestHighestPoints => '1杯の最高ポイント';
+
+  @override
+  String get bestMostRetreats => 'いちばん手ごわい店';
+
+  @override
+  String minutes(int minutes) {
+    return '$minutes分';
+  }
+
+  @override
+  String retreatCount(int count) {
+    return '撤退 $count回';
+  }
+
+  @override
+  String bestDetail(String shop, String date) {
+    return '$shop（$date）';
+  }
+
+  @override
   String get statsShopRanks => '店ランク';
 
   @override

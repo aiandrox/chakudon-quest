@@ -100,5 +100,12 @@ void main() {
     expect(find.text('C'), findsOneWidget);
     expect(find.text(ja.statsBestPoints(80)), findsOneWidget);
     expect(find.text(ja.statsBestPoints(20)), findsOneWidget);
+
+    expect(find.text(ja.statsBests), findsOneWidget);
+    expect(find.text(ja.bestHighestPoints), findsOneWidget);
+    expect(find.text(ja.bestDetail('週2日の店', '2026/9/3')), findsOneWidget);
+    // 並んだ記録も撤退も無いので、その2つは出さない。
+    expect(find.text(ja.bestLongestWait), findsNothing);
+    expect(find.text(ja.bestMostRetreats), findsNothing);
   });
 }
