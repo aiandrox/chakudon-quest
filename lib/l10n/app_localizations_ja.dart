@@ -265,6 +265,22 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String streakWeeks(int weeks) {
+    return '$weeks週連続で着丼中';
+  }
+
+  @override
+  String get streakAtRisk => '今週はまだ';
+
+  @override
+  String streakReminderTitle(int weeks) {
+    return '$weeks週連続の記録が途切れそう';
+  }
+
+  @override
+  String get streakReminderBody => '今週はまだ着丼していません。日曜が終わるまでに一杯いかがですか？';
+
+  @override
   String get checkinCancel => '取り消す';
 
   @override

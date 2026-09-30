@@ -115,6 +115,20 @@
       "time": {"type": "String"}
     }
   },
+  "streakWeeks": "{weeks}週連続で着丼中",
+  "@streakWeeks": {
+    "placeholders": {
+      "weeks": {"type": "int"}
+    }
+  },
+  "streakAtRisk": "今週はまだ",
+  "streakReminderTitle": "{weeks}週連続の記録が途切れそう",
+  "@streakReminderTitle": {
+    "placeholders": {
+      "weeks": {"type": "int"}
+    }
+  },
+  "streakReminderBody": "今週はまだ着丼していません。日曜が終わるまでに一杯いかがですか？",
   "checkinCancel": "取り消す",
   "checkinCancelTitle": "チェックインを取り消しますか？",
   "checkinCancelMessage": "並んだ記録は残りません",

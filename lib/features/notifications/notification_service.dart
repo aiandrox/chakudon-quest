@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../checkin/checkin_rules.dart';
 
@@ -17,9 +20,22 @@ abstract class NotificationService {
   });
 
   Future<void> cancelCheckin();
+
+  /// 通知の許可を尋ねる（まだ尋ねていないときだけ、OSが画面を出す）。
+  Future<void> requestPermission();
+
+  /// 連続記録が途切れそうなことを[at]に知らせる。前の予約は置き換える。
+  Future<void> scheduleStreakReminder({
+    required DateTime at,
+    required String title,
+    required String body,
+  });
+
+  Future<void> cancelStreakReminder();
 }
 
 const _checkinNotificationId = 1;
+const _streakNotificationId = 2;
 
 int? _remainingUntilTimeout(DateTime checkedInAt) {
   final remaining = checkedInAt
@@ -103,6 +119,65 @@ class LocalNotificationService implements NotificationService {
       );
     } catch (e) {
       debugPrint('Checkin notification failed: $e');
+    }
+  }
+
+  @override
+  Future<void> requestPermission() async {
+    try {
+      await _initialize();
+      await _requestPermission();
+    } catch (e) {
+      debugPrint('Notification permission request failed: $e');
+    }
+  }
+
+  Future<void>? _timeZoneSetup;
+
+  /// 時刻を指定する通知には、端末のタイムゾーンが要る。
+  Future<void> _setUpTimeZone() => _timeZoneSetup ??= () async {
+    tz.initializeTimeZones();
+    final local = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(local.identifier));
+  }();
+
+  @override
+  Future<void> scheduleStreakReminder({
+    required DateTime at,
+    required String title,
+    required String body,
+  }) async {
+    try {
+      await _initialize();
+      await _setUpTimeZone();
+      await _plugin.zonedSchedule(
+        id: _streakNotificationId,
+        scheduledDate: tz.TZDateTime.from(at, tz.local),
+        title: title,
+        body: body,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'streak',
+            '連続記録',
+            channelDescription: '連続記録が途切れそうなときのお知らせ',
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        // 正確な時刻の予約には追加の許可が要るため、多少ずれてもよい方式にする。
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      );
+    } catch (e) {
+      debugPrint('Streak reminder schedule failed: $e');
+    }
+  }
+
+  @override
+  Future<void> cancelStreakReminder() async {
+    try {
+      await _initialize();
+      await _plugin.cancel(id: _streakNotificationId);
+    } catch (e) {
+      debugPrint('Streak reminder cancel failed: $e');
     }
   }
 

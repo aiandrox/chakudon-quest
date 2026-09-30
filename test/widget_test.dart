@@ -7,6 +7,7 @@ import 'package:chakudon_quest/features/checkin/checkin_controller.dart';
 import 'package:chakudon_quest/features/map/map_screen.dart';
 import 'package:chakudon_quest/features/notifications/notification_service.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
+import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
@@ -16,7 +17,15 @@ import 'support/fakes.dart';
 import 'support/l10n.dart';
 
 void main() {
-  Future<void> pumpApp(WidgetTester tester, List<VisitWithShop> visits) async {
+  late FakeNotificationService notifications;
+
+  setUp(() => notifications = FakeNotificationService());
+
+  Future<void> pumpApp(
+    WidgetTester tester,
+    List<VisitWithShop> visits, {
+    DateTime? now,
+  }) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -24,6 +33,8 @@ void main() {
           activeCheckinProvider.overrideWithValue(const AsyncData(null)),
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           photoPickerProvider.overrideWithValue(FakePhotoPicker()),
+          notificationServiceProvider.overrideWithValue(notifications),
+          if (now != null) clockProvider.overrideWithValue(() => now),
         ],
         child: const ChakudonQuestApp(),
       ),
@@ -135,7 +146,6 @@ void main() {
   testWidgets('並んでいる間だけ通知を出し、並び終えたら消す', (tester) async {
     final checkins = StreamController<Checkin?>();
     addTearDown(checkins.close);
-    final notifications = FakeNotificationService();
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -168,5 +178,54 @@ void main() {
     checkins.addError(StateError('db'));
     await tester.pumpAndSettle();
     expect(notifications.cancelCount, 3);
+  });
+
+  group('連続記録', () {
+    // 2026-10-01 は木曜。
+    final thursday = DateTime(2026, 10, 1, 12);
+    final shop = Shop(id: 'shop', name: '麺屋テスト', createdAt: DateTime(2026));
+    VisitWithShop eatenAt(DateTime at) => VisitWithShop(
+      shop: shop,
+      visit: Visit(
+        id: at.toIso8601String(),
+        shopId: 'shop',
+        result: VisitResult.eaten,
+        eatenAt: at,
+        rating: 3,
+        isLimited: false,
+        hasTicket: false,
+        memo: '',
+        createdAt: at,
+      ),
+    );
+
+    testWidgets('今週まだ食べていなければ「今週はまだ」と出し、日曜18時に知らせる', (tester) async {
+      await pumpApp(tester, [
+        eatenAt(DateTime(2026, 9, 22, 12)),
+        eatenAt(DateTime(2026, 9, 15, 12)),
+      ], now: thursday);
+
+      expect(find.text(ja.streakWeeks(2)), findsOneWidget);
+      expect(find.text(ja.streakAtRisk), findsOneWidget);
+      expect(notifications.streakReminders, [DateTime(2026, 10, 4, 18)]);
+    });
+
+    testWidgets('今週すでに食べていれば、知らせる予約を消す', (tester) async {
+      await pumpApp(tester, [
+        eatenAt(DateTime(2026, 9, 30, 12)),
+        eatenAt(DateTime(2026, 9, 22, 12)),
+      ], now: thursday);
+
+      expect(find.text(ja.streakWeeks(2)), findsOneWidget);
+      expect(find.text(ja.streakAtRisk), findsNothing);
+      expect(notifications.streakReminders, isEmpty);
+      expect(notifications.streakCancelCount, greaterThan(0));
+    });
+
+    testWidgets('連続記録が無ければ表示しない', (tester) async {
+      await pumpApp(tester, [eatenAt(DateTime(2026, 9, 1, 12))], now: thursday);
+
+      expect(find.textContaining('週連続'), findsNothing);
+    });
   });
 }
