@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../record/star_rating.dart';
 import '../records/date_format.dart';
 import '../records/labels.dart';
 import '../records/models.dart';
@@ -126,9 +127,19 @@ class VisitDetailScreen extends ConsumerWidget {
                   formatDateTime(visit.eatenAt),
                   style: textTheme.bodyMedium,
                 ),
-                if (visit.rating != null) ...[
-                  const SizedBox(height: 8),
-                  _Stars(rating: visit.rating!),
+                if (visit.result == VisitResult.eaten) ...[
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: StarRating(
+                      rating: visit.rating,
+                      onChanged: (rating) => ref
+                          .read(recordRepositoryProvider)
+                          .setRating(visit.id, rating),
+                    ),
+                  ),
+                  if (visit.rating == null)
+                    Text(l10n.ratingTapToRate, style: textTheme.bodySmall),
                 ],
                 if (tags.isNotEmpty) ...[
                   const SizedBox(height: 12),

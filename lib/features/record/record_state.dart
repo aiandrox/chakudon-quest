@@ -79,7 +79,8 @@ class RecordState {
       manualName.trim().isNotEmpty ||
       (selectedShop != null && !identical(selectedShop, checkinShop));
 
-  bool get canSave => hasShop && rating != null && !isSaving;
+  /// ★は食べ終わってから付けることが多いため、店さえ決まれば保存できる。
+  bool get canSave => hasShop && !isSaving;
 
   RecordState copyWith({
     Object? photoPath = _unset,

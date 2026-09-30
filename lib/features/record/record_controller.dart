@@ -180,7 +180,7 @@ class RecordController extends Notifier<RecordState> {
             shop: _shopInput(draft),
             hoursType: draft.chosenHoursType,
             eatenAt: draft.photoTakenAt ?? now,
-            rating: draft.rating!,
+            rating: draft.rating,
             photoPath: savedPhoto,
             checkedInAt: draft.isCheckinShopSelected
                 ? draft.checkin?.checkedInAt

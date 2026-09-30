@@ -226,6 +226,30 @@ abstract class AppLocalizations {
   /// **'評価'**
   String get ratingSection;
 
+  /// No description provided for @ratingOptional.
+  ///
+  /// In ja, this message translates to:
+  /// **'評価（食べ終わってから、あとで付けてもOK）'**
+  String get ratingOptional;
+
+  /// No description provided for @ratingUnrated.
+  ///
+  /// In ja, this message translates to:
+  /// **'未評価'**
+  String get ratingUnrated;
+
+  /// No description provided for @ratingPrompt.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shop} はどうでしたか？'**
+  String ratingPrompt(String shop);
+
+  /// No description provided for @ratingTapToRate.
+  ///
+  /// In ja, this message translates to:
+  /// **'★をタップして評価できます'**
+  String get ratingTapToRate;
+
   /// No description provided for @ratingStar.
   ///
   /// In ja, this message translates to:

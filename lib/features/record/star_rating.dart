@@ -13,6 +13,7 @@ class StarRating extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final color = Theme.of(context).colorScheme.primary;
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (var stars = 1; stars <= 5; stars++)
