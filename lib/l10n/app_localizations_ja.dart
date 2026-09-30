@@ -144,4 +144,49 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get discardCancel => '続ける';
+
+  @override
+  String get cancel => 'キャンセル';
+
+  @override
+  String get edit => '編集';
+
+  @override
+  String get delete => '削除';
+
+  @override
+  String get deleteConfirmTitle => 'この記録を削除しますか？';
+
+  @override
+  String get deleteConfirmMessage => '写真も削除されます。元に戻せません';
+
+  @override
+  String get deleteFailed => '削除できませんでした';
+
+  @override
+  String get previousVisit => '前回の記録';
+
+  @override
+  String get visitNotFound => '記録が見つかりません';
+
+  @override
+  String get editTitle => '記録を編集';
+
+  @override
+  String get editSave => '保存';
+
+  @override
+  String get editSaveFailed => '保存できませんでした。もう一度お試しください';
+
+  @override
+  String get editShopName => '店名';
+
+  @override
+  String get editEatenAt => '食べた日時';
+
+  @override
+  String get limitedBadge => '限定';
+
+  @override
+  String get ticketBadge => '整理券';
 }

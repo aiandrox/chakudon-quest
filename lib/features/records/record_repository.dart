@@ -107,6 +107,97 @@ class RecordRepository {
     });
   }
 
+  /// 店名を変えたときは、この記録だけを別の店に付け替える。ただし手入力の店でほかに記録が
+  /// 無ければ、位置を失わないよう店の名前を直す。[hoursType]は利用者が変えたときだけ渡す。
+  Future<void> updateVisit({
+    required String visitId,
+    required String shopName,
+    required HoursType? hoursType,
+    required DateTime eatenAt,
+    required int? rating,
+    required RamenStyle? style,
+    required bool isLimited,
+    required bool hasTicket,
+    required String memo,
+    required DateTime now,
+  }) {
+    return _db.transaction(() async {
+      final visit = await (_db.select(
+        _db.visits,
+      )..where((v) => v.id.equals(visitId))).getSingle();
+      final shop = await (_db.select(
+        _db.shops,
+      )..where((s) => s.id.equals(visit.shopId))).getSingle();
+      final name = shopName.trim();
+      var shopId = shop.id;
+      if (name.isNotEmpty && name != shop.name) {
+        final sameName = await _findShop(
+          ShopInput(
+            name: name,
+            latitude: shop.latitude,
+            longitude: shop.longitude,
+          ),
+        );
+        final hasOtherVisits = await _visitCount(shop.id) > 1;
+        if (sameName != null) {
+          shopId = sameName.id;
+        } else if (hasOtherVisits || shop.osmId != null) {
+          shopId = await _resolveShop(
+            ShopInput(name: name),
+            hoursType ?? shop.hoursType,
+            now,
+          );
+        } else {
+          await (_db.update(_db.shops)..where((s) => s.id.equals(shop.id)))
+              .write(ShopsCompanion(name: Value(name)));
+        }
+      }
+      if (hoursType != null) {
+        await (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
+          ShopsCompanion(hoursType: Value(hoursType)),
+        );
+      }
+      await (_db.update(_db.visits)..where((v) => v.id.equals(visitId))).write(
+        VisitsCompanion(
+          shopId: Value(shopId),
+          eatenAt: Value(eatenAt),
+          rating: Value(rating),
+          style: Value(style),
+          isLimited: Value(isLimited),
+          hasTicket: Value(hasTicket),
+          memo: Value(memo),
+        ),
+      );
+      if (shopId != shop.id) await _deleteShopIfUnused(shop.id);
+    });
+  }
+
+  /// 削除した記録の写真のパスを返す（ファイルの削除は呼び出し側で行う）。
+  Future<String?> deleteVisit(String visitId) {
+    return _db.transaction(() async {
+      final visit = await (_db.select(
+        _db.visits,
+      )..where((v) => v.id.equals(visitId))).getSingleOrNull();
+      if (visit == null) return null;
+      await (_db.delete(_db.visits)..where((v) => v.id.equals(visitId))).go();
+      await _deleteShopIfUnused(visit.shopId);
+      return visit.photoPath;
+    });
+  }
+
+  Future<int> _visitCount(String shopId) async {
+    final count = _db.visits.id.count();
+    final query = _db.selectOnly(_db.visits)
+      ..addColumns([count])
+      ..where(_db.visits.shopId.equals(shopId));
+    return await query.map((row) => row.read(count)).getSingle() ?? 0;
+  }
+
+  Future<void> _deleteShopIfUnused(String shopId) async {
+    if (await _visitCount(shopId) > 0) return;
+    await (_db.delete(_db.shops)..where((s) => s.id.equals(shopId))).go();
+  }
+
   Future<String> _resolveShop(
     ShopInput input,
     HoursType? hoursType,

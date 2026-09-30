@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../record/photo_picker.dart';
 import '../record/record_screen.dart';
+import '../records/date_format.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_photo.dart';
+import '../visit_detail/visit_detail_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -52,8 +53,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         AsyncData(:final value) when value.isEmpty => Center(
           child: Text(l10n.homeEmpty, textAlign: TextAlign.center),
         ),
-        AsyncData(:final value) => ListView.builder(
-          padding: const EdgeInsets.only(bottom: 88),
+        AsyncData(:final value) => GridView.builder(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 120),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+          ),
           itemCount: value.length,
           itemBuilder: (context, index) => _VisitTile(entry: value[index]),
         ),
@@ -69,8 +75,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-final _dateFormat = DateFormat('yyyy/M/d HH:mm');
-
 class _VisitTile extends StatelessWidget {
   const _VisitTile({required this.entry});
 
@@ -81,20 +85,56 @@ class _VisitTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final visit = entry.visit;
     final rating = visit.rating;
-    return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: SizedBox.square(
-          dimension: 56,
-          child: VisitPhoto(photoPath: visit.photoPath, cacheWidth: 168),
-        ),
-      ),
-      title: Text(entry.shop.name),
-      subtitle: Text(
-        [
-          _dateFormat.format(visit.eatenAt),
-          if (rating != null) l10n.ratingStar(rating),
-        ].join('  '),
+    const textStyle = TextStyle(color: Colors.white, height: 1.2);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          VisitPhoto(photoPath: visit.photoPath, cacheWidth: 600),
+          const DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.center,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black87],
+              ),
+            ),
+          ),
+          Positioned(
+            left: 8,
+            right: 8,
+            bottom: 8,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  entry.shop.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: textStyle.copyWith(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  [
+                    formatDate(visit.eatenAt),
+                    if (rating != null) l10n.ratingStar(rating),
+                  ].join('  '),
+                  style: textStyle.copyWith(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => VisitDetailScreen(visitId: visit.id),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -357,6 +357,96 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'続ける'**
   String get discardCancel;
+
+  /// No description provided for @cancel.
+  ///
+  /// In ja, this message translates to:
+  /// **'キャンセル'**
+  String get cancel;
+
+  /// No description provided for @edit.
+  ///
+  /// In ja, this message translates to:
+  /// **'編集'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In ja, this message translates to:
+  /// **'削除'**
+  String get delete;
+
+  /// No description provided for @deleteConfirmTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'この記録を削除しますか？'**
+  String get deleteConfirmTitle;
+
+  /// No description provided for @deleteConfirmMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'写真も削除されます。元に戻せません'**
+  String get deleteConfirmMessage;
+
+  /// No description provided for @deleteFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'削除できませんでした'**
+  String get deleteFailed;
+
+  /// No description provided for @previousVisit.
+  ///
+  /// In ja, this message translates to:
+  /// **'前回の記録'**
+  String get previousVisit;
+
+  /// No description provided for @visitNotFound.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録が見つかりません'**
+  String get visitNotFound;
+
+  /// No description provided for @editTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録を編集'**
+  String get editTitle;
+
+  /// No description provided for @editSave.
+  ///
+  /// In ja, this message translates to:
+  /// **'保存'**
+  String get editSave;
+
+  /// No description provided for @editSaveFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'保存できませんでした。もう一度お試しください'**
+  String get editSaveFailed;
+
+  /// No description provided for @editShopName.
+  ///
+  /// In ja, this message translates to:
+  /// **'店名'**
+  String get editShopName;
+
+  /// No description provided for @editEatenAt.
+  ///
+  /// In ja, this message translates to:
+  /// **'食べた日時'**
+  String get editEatenAt;
+
+  /// No description provided for @limitedBadge.
+  ///
+  /// In ja, this message translates to:
+  /// **'限定'**
+  String get limitedBadge;
+
+  /// No description provided for @ticketBadge.
+  ///
+  /// In ja, this message translates to:
+  /// **'整理券'**
+  String get ticketBadge;
 }
 
 class _AppLocalizationsDelegate
