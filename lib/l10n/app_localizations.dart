@@ -103,8 +103,260 @@ abstract class AppLocalizations {
   /// No description provided for @homeEmpty.
   ///
   /// In ja, this message translates to:
-  /// **'まだ記録がありません'**
+  /// **'まだ記録がありません\n「＋」から最初の一杯を記録しましょう'**
   String get homeEmpty;
+
+  /// No description provided for @homeLoadFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録を読み込めませんでした'**
+  String get homeLoadFailed;
+
+  /// No description provided for @addRecord.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録する'**
+  String get addRecord;
+
+  /// No description provided for @recordTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録する'**
+  String get recordTitle;
+
+  /// No description provided for @recordSaved.
+  ///
+  /// In ja, this message translates to:
+  /// **'着丼！記録しました'**
+  String get recordSaved;
+
+  /// No description provided for @recordSaveFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'保存できませんでした。もう一度お試しください'**
+  String get recordSaveFailed;
+
+  /// No description provided for @save.
+  ///
+  /// In ja, this message translates to:
+  /// **'着丼！'**
+  String get save;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In ja, this message translates to:
+  /// **'カメラで撮る'**
+  String get takePhoto;
+
+  /// No description provided for @retakePhoto.
+  ///
+  /// In ja, this message translates to:
+  /// **'撮り直す'**
+  String get retakePhoto;
+
+  /// No description provided for @pickFromGallery.
+  ///
+  /// In ja, this message translates to:
+  /// **'ギャラリーから選ぶ'**
+  String get pickFromGallery;
+
+  /// No description provided for @shopSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'店'**
+  String get shopSection;
+
+  /// No description provided for @shopSearching.
+  ///
+  /// In ja, this message translates to:
+  /// **'近くの店を探しています…'**
+  String get shopSearching;
+
+  /// No description provided for @shopNoLocation.
+  ///
+  /// In ja, this message translates to:
+  /// **'現在地がわかりませんでした。店名を入力してください'**
+  String get shopNoLocation;
+
+  /// No description provided for @shopSearchFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'店を検索できませんでした。店名を入力してください'**
+  String get shopSearchFailed;
+
+  /// No description provided for @shopNoCandidates.
+  ///
+  /// In ja, this message translates to:
+  /// **'近くに候補が見つかりませんでした。店名を入力してください'**
+  String get shopNoCandidates;
+
+  /// No description provided for @shopNameLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'店名を入力'**
+  String get shopNameLabel;
+
+  /// No description provided for @shopNameHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'候補にないときはここに入力'**
+  String get shopNameHint;
+
+  /// No description provided for @shopVisited.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録あり'**
+  String get shopVisited;
+
+  /// No description provided for @distanceMeters.
+  ///
+  /// In ja, this message translates to:
+  /// **'{meters}m'**
+  String distanceMeters(int meters);
+
+  /// No description provided for @osmAttribution.
+  ///
+  /// In ja, this message translates to:
+  /// **'© OpenStreetMap contributors'**
+  String get osmAttribution;
+
+  /// No description provided for @ratingSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'評価'**
+  String get ratingSection;
+
+  /// No description provided for @ratingStar.
+  ///
+  /// In ja, this message translates to:
+  /// **'★{stars}'**
+  String ratingStar(int stars);
+
+  /// No description provided for @optionalSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'くわしく（任意）'**
+  String get optionalSection;
+
+  /// No description provided for @styleSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'系統'**
+  String get styleSection;
+
+  /// No description provided for @styleShoyu.
+  ///
+  /// In ja, this message translates to:
+  /// **'醤油'**
+  String get styleShoyu;
+
+  /// No description provided for @styleMiso.
+  ///
+  /// In ja, this message translates to:
+  /// **'味噌'**
+  String get styleMiso;
+
+  /// No description provided for @styleShio.
+  ///
+  /// In ja, this message translates to:
+  /// **'塩'**
+  String get styleShio;
+
+  /// No description provided for @styleTonkotsu.
+  ///
+  /// In ja, this message translates to:
+  /// **'豚骨'**
+  String get styleTonkotsu;
+
+  /// No description provided for @styleIekei.
+  ///
+  /// In ja, this message translates to:
+  /// **'家系'**
+  String get styleIekei;
+
+  /// No description provided for @styleJiro.
+  ///
+  /// In ja, this message translates to:
+  /// **'二郎系'**
+  String get styleJiro;
+
+  /// No description provided for @styleTsukemen.
+  ///
+  /// In ja, this message translates to:
+  /// **'つけ麺'**
+  String get styleTsukemen;
+
+  /// No description provided for @styleOther.
+  ///
+  /// In ja, this message translates to:
+  /// **'その他'**
+  String get styleOther;
+
+  /// No description provided for @isLimited.
+  ///
+  /// In ja, this message translates to:
+  /// **'限定メニュー'**
+  String get isLimited;
+
+  /// No description provided for @hasTicket.
+  ///
+  /// In ja, this message translates to:
+  /// **'整理券制'**
+  String get hasTicket;
+
+  /// No description provided for @hoursSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'店の営業時間'**
+  String get hoursSection;
+
+  /// No description provided for @hoursNormal.
+  ///
+  /// In ja, this message translates to:
+  /// **'通常'**
+  String get hoursNormal;
+
+  /// No description provided for @hoursLunchOnly.
+  ///
+  /// In ja, this message translates to:
+  /// **'昼のみ'**
+  String get hoursLunchOnly;
+
+  /// No description provided for @hoursFewDays.
+  ///
+  /// In ja, this message translates to:
+  /// **'週3日以下'**
+  String get hoursFewDays;
+
+  /// No description provided for @memoLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'メモ'**
+  String get memoLabel;
+
+  /// No description provided for @discardTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録をやめますか？'**
+  String get discardTitle;
+
+  /// No description provided for @discardMessage.
+  ///
+  /// In ja, this message translates to:
+  /// **'入力した内容は保存されません'**
+  String get discardMessage;
+
+  /// No description provided for @discardConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'やめる'**
+  String get discardConfirm;
+
+  /// No description provided for @discardCancel.
+  ///
+  /// In ja, this message translates to:
+  /// **'続ける'**
+  String get discardCancel;
 }
 
 class _AppLocalizationsDelegate

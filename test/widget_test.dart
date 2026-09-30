@@ -1,16 +1,64 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/record/photo_picker.dart';
+import 'package:chakudon_quest/features/records/models.dart';
+import 'package:chakudon_quest/features/records/photo_storage.dart';
+import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/main.dart';
 
+import 'support/fakes.dart';
 import 'support/l10n.dart';
 
 void main() {
-  testWidgets('起動すると最初の画面が表示される', (WidgetTester tester) async {
-    await tester.pumpWidget(const ProviderScope(child: ChakudonQuestApp()));
+  Future<void> pumpApp(WidgetTester tester, List<VisitWithShop> visits) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          visitsProvider.overrideWithValue(AsyncData(visits)),
+          documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
+          photoPickerProvider.overrideWithValue(FakePhotoPicker()),
+        ],
+        child: const ChakudonQuestApp(),
+      ),
+    );
     await tester.pumpAndSettle();
+  }
+
+  testWidgets('記録が無いときは最初の記録を促す', (tester) async {
+    await pumpApp(tester, const []);
 
     expect(find.text(ja.appName), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsOneWidget);
+    expect(find.byTooltip(ja.addRecord), findsOneWidget);
+  });
+
+  testWidgets('記録があるときは店名と★を一覧に表示する', (tester) async {
+    final shop = Shop(
+      id: 'shop',
+      name: '麺屋テスト',
+      hoursType: HoursType.normal,
+      createdAt: DateTime(2026, 9, 30),
+    );
+    await pumpApp(tester, [
+      VisitWithShop(
+        shop: shop,
+        visit: Visit(
+          id: 'visit',
+          shopId: 'shop',
+          result: VisitResult.eaten,
+          eatenAt: DateTime(2026, 9, 30, 12, 34),
+          rating: 4,
+          isLimited: false,
+          hasTicket: false,
+          memo: '',
+          createdAt: DateTime(2026, 9, 30, 12, 40),
+        ),
+      ),
+    ]);
+
+    expect(find.text('麺屋テスト'), findsOneWidget);
+    expect(find.text('2026/9/30 12:34  ★4'), findsOneWidget);
+    expect(find.text(ja.homeEmpty), findsNothing);
   });
 }

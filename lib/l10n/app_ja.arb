@@ -1,5 +1,57 @@
 {
   "@@locale": "ja",
   "appName": "着丼クエスト",
-  "homeEmpty": "まだ記録がありません"
+  "homeEmpty": "まだ記録がありません\n「＋」から最初の一杯を記録しましょう",
+  "homeLoadFailed": "記録を読み込めませんでした",
+  "addRecord": "記録する",
+  "recordTitle": "記録する",
+  "recordSaved": "着丼！記録しました",
+  "recordSaveFailed": "保存できませんでした。もう一度お試しください",
+  "save": "着丼！",
+  "takePhoto": "カメラで撮る",
+  "retakePhoto": "撮り直す",
+  "pickFromGallery": "ギャラリーから選ぶ",
+  "shopSection": "店",
+  "shopSearching": "近くの店を探しています…",
+  "shopNoLocation": "現在地がわかりませんでした。店名を入力してください",
+  "shopSearchFailed": "店を検索できませんでした。店名を入力してください",
+  "shopNoCandidates": "近くに候補が見つかりませんでした。店名を入力してください",
+  "shopNameLabel": "店名を入力",
+  "shopNameHint": "候補にないときはここに入力",
+  "shopVisited": "記録あり",
+  "distanceMeters": "{meters}m",
+  "@distanceMeters": {
+    "placeholders": {
+      "meters": {"type": "int"}
+    }
+  },
+  "osmAttribution": "© OpenStreetMap contributors",
+  "ratingSection": "評価",
+  "ratingStar": "★{stars}",
+  "@ratingStar": {
+    "placeholders": {
+      "stars": {"type": "int"}
+    }
+  },
+  "optionalSection": "くわしく（任意）",
+  "styleSection": "系統",
+  "styleShoyu": "醤油",
+  "styleMiso": "味噌",
+  "styleShio": "塩",
+  "styleTonkotsu": "豚骨",
+  "styleIekei": "家系",
+  "styleJiro": "二郎系",
+  "styleTsukemen": "つけ麺",
+  "styleOther": "その他",
+  "isLimited": "限定メニュー",
+  "hasTicket": "整理券制",
+  "hoursSection": "店の営業時間",
+  "hoursNormal": "通常",
+  "hoursLunchOnly": "昼のみ",
+  "hoursFewDays": "週3日以下",
+  "memoLabel": "メモ",
+  "discardTitle": "記録をやめますか？",
+  "discardMessage": "入力した内容は保存されません",
+  "discardConfirm": "やめる",
+  "discardCancel": "続ける"
 }
