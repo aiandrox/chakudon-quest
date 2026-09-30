@@ -600,10 +600,38 @@ class AppLocalizationsJa extends AppLocalizations {
   String get mapAttribution => 'OpenStreetMap contributors';
 
   @override
-  String get mapTitle => '行った店の地図';
+  String get mapTitle => 'ラーメン地図';
 
   @override
-  String get mapEmpty => '位置のわかる店がまだありません。カメラで撮って、近くの店の候補から選ぶと地図に出ます';
+  String get mapEmpty => '行った店はまだ地図にありません。「このあたりのラーメン店を探す」で、まわりの店を探せます';
+
+  @override
+  String get mapSearchHere => 'このあたりのラーメン店を探す';
+
+  @override
+  String get mapMyLocation => '現在地';
+
+  @override
+  String get mapNoLocation => '現在地がわかりませんでした。位置情報をオンにしてください';
+
+  @override
+  String mapNearbyFound(int count) {
+    return 'まだ行っていない店が $count軒 見つかりました';
+  }
+
+  @override
+  String get mapNearbyNone => 'このあたりに、まだ行っていないラーメン店は見つかりませんでした';
+
+  @override
+  String get mapSearchFailed => '店を検索できませんでした。少し待ってから、もう一度お試しください';
+
+  @override
+  String get mapUnvisited => 'まだ行っていない店';
+
+  @override
+  String mapDistanceFromHere(int meters) {
+    return '現在地から ${meters}m';
+  }
 
   @override
   String mapShopBowls(int count) {

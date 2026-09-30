@@ -1147,14 +1147,62 @@ abstract class AppLocalizations {
   /// No description provided for @mapTitle.
   ///
   /// In ja, this message translates to:
-  /// **'行った店の地図'**
+  /// **'ラーメン地図'**
   String get mapTitle;
 
   /// No description provided for @mapEmpty.
   ///
   /// In ja, this message translates to:
-  /// **'位置のわかる店がまだありません。カメラで撮って、近くの店の候補から選ぶと地図に出ます'**
+  /// **'行った店はまだ地図にありません。「このあたりのラーメン店を探す」で、まわりの店を探せます'**
   String get mapEmpty;
+
+  /// No description provided for @mapSearchHere.
+  ///
+  /// In ja, this message translates to:
+  /// **'このあたりのラーメン店を探す'**
+  String get mapSearchHere;
+
+  /// No description provided for @mapMyLocation.
+  ///
+  /// In ja, this message translates to:
+  /// **'現在地'**
+  String get mapMyLocation;
+
+  /// No description provided for @mapNoLocation.
+  ///
+  /// In ja, this message translates to:
+  /// **'現在地がわかりませんでした。位置情報をオンにしてください'**
+  String get mapNoLocation;
+
+  /// No description provided for @mapNearbyFound.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだ行っていない店が {count}軒 見つかりました'**
+  String mapNearbyFound(int count);
+
+  /// No description provided for @mapNearbyNone.
+  ///
+  /// In ja, this message translates to:
+  /// **'このあたりに、まだ行っていないラーメン店は見つかりませんでした'**
+  String get mapNearbyNone;
+
+  /// No description provided for @mapSearchFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'店を検索できませんでした。少し待ってから、もう一度お試しください'**
+  String get mapSearchFailed;
+
+  /// No description provided for @mapUnvisited.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだ行っていない店'**
+  String get mapUnvisited;
+
+  /// No description provided for @mapDistanceFromHere.
+  ///
+  /// In ja, this message translates to:
+  /// **'現在地から {meters}m'**
+  String mapDistanceFromHere(int meters);
 
   /// No description provided for @mapShopBowls.
   ///

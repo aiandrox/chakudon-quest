@@ -4,6 +4,8 @@ import 'package:chakudon_quest/features/map/shop_pins.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/scoring/points.dart';
 import 'package:chakudon_quest/features/scoring/ranks.dart';
+import 'package:chakudon_quest/features/shop_search/geo.dart';
+import 'package:chakudon_quest/features/shop_search/overpass.dart';
 
 import '../../support/builders.dart';
 
@@ -53,5 +55,38 @@ void main() {
 
   test('記録が無ければピンも無い', () {
     expect(shopPins(const []), isEmpty);
+  });
+
+  test('周辺の検索結果から、食べたことのある店を除く（OSMのIDか、同じ名前で近い店）', () {
+    final shops = unvisitedShops(
+      found: const [
+        OverpassShop(
+          osmId: 'node/1',
+          name: 'OSMの店',
+          location: GeoPoint(35.0, 139.0),
+        ),
+        OverpassShop(
+          osmId: 'node/2',
+          name: '手入力で記録した店',
+          location: GeoPoint(35.001, 139.0),
+        ),
+        OverpassShop(
+          osmId: 'node/3',
+          name: '初めての店',
+          location: GeoPoint(35.002, 139.0),
+        ),
+      ],
+      eatenShops: [
+        buildShop(id: 'a', name: 'OSMの店', osmId: 'node/1'),
+        buildShop(
+          id: 'b',
+          name: '手入力で記録した店',
+          latitude: 35.001,
+          longitude: 139.0,
+        ),
+      ],
+    );
+
+    expect(shops.map((s) => s.name), ['初めての店']);
   });
 }
