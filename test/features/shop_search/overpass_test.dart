@@ -47,6 +47,15 @@ void main() {
       expect(shops.single.osmId, 'node/1');
     });
 
+    test('サーバー側で時間切れになった応答は、0件ではなく失敗にする', () {
+      expect(
+        () => parseOverpassResponse(
+          '{"elements": [], "remark": "runtime error: Query timed out in \\"query\\" at line 1 after 26 seconds."}',
+        ),
+        throwsFormatException,
+      );
+    });
+
     test('候補が0件の応答は空のリストになる', () {
       expect(parseOverpassResponse('{"elements": []}'), isEmpty);
     });

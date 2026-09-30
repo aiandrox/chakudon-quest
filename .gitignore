@@ -60,3 +60,7 @@ app.*.map.json
 /ios/Podfile
 /ios/Podfile.lock
 /ios/Pods/
+
+# 店舗データの比較スクリプトの結果と、公開しない地点（tool/place_benchmark）
+/tool/place_benchmark/results/
+/tool/place_benchmark/points.local.json

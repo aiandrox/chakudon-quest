@@ -39,6 +39,12 @@ List<OverpassShop> parseOverpassResponse(String body) {
   if (decoded is! Map<String, dynamic>) {
     throw const FormatException('Overpassの応答がオブジェクトではありません');
   }
+  // サーバー側で時間切れになると、HTTP 200 のまま remark に理由が入り、結果は空になる。
+  // 「近くに店が無い」と取り違えないよう、失敗として扱う。
+  final remark = decoded['remark'];
+  if (remark is String && remark.contains('error')) {
+    throw FormatException('Overpassの検索が失敗しました: $remark');
+  }
   final elements = decoded['elements'];
   if (elements is! List) {
     throw const FormatException('Overpassの応答にelementsがありません');
