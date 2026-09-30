@@ -33,11 +33,13 @@ class PointsBreakdownView extends StatelessWidget {
       children: [
         for (final (label, value) in rows)
           if (value > 0) _Row(label: label, value: l10n.pointsGained(value)),
-        if (points.hoursType != HoursType.normal)
+        if (points.hoursConditions.isNotEmpty)
           _Row(
-            label: l10n.pointsHours(hoursTypeLabel(l10n, points.hoursType)),
+            label: l10n.pointsHours(
+              hoursConditionsLabel(l10n, points.hoursConditions),
+            ),
             value: l10n.pointsMultiplier(
-              _format(hoursMultiplier(points.hoursType)),
+              _format(hoursMultiplier(points.hoursConditions)),
             ),
           ),
       ],

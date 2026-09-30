@@ -63,7 +63,8 @@ void main() {
 
     final entry = (await repository.watchVisits().first).single;
     expect(entry.shop.name, '麺屋');
-    expect(entry.shop.hoursType, HoursType.fewDays);
+    // 以前の「週3日以下」は、条件「週3日以下」に引き継ぐ。
+    expect(entry.shop.hoursConditions, {HoursCondition.fewDays});
     expect(entry.visit.photoPath, 'photos/a.jpg');
     expect(entry.visit.eatenAt, eatenAt);
     expect(entry.visit.style, RamenStyle.shoyu);
@@ -76,5 +77,40 @@ void main() {
       at: eatenAt,
     );
     expect((await repository.activeCheckin())!.name, '麺屋');
+  });
+
+  test('バージョン2の「昼のみ」「通常」の店を、営業の条件に引き継ぐ', () async {
+    final seconds = DateTime(2026, 9, 30).millisecondsSinceEpoch ~/ 1000;
+    final database = AppDatabase(
+      NativeDatabase.memory(
+        setup: (raw) {
+          for (final statement in _v1Schema) {
+            raw.execute(statement);
+          }
+          raw.execute(
+            'CREATE TABLE active_checkins (id INTEGER NOT NULL, '
+            'shop_id TEXT, osm_id TEXT, name TEXT NOT NULL, latitude REAL, '
+            'longitude REAL, checked_in_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(
+            'INSERT INTO shops VALUES '
+            "('lunch', '昼の店', NULL, NULL, NULL, 'lunchOnly', $seconds), "
+            "('normal', '普通の店', NULL, NULL, NULL, 'normal', $seconds)",
+          );
+          raw.execute('PRAGMA user_version = 2');
+        },
+      ),
+    );
+    addTearDown(database.close);
+
+    final shops = await RecordRepository(database).allShops();
+
+    expect(
+      {for (final shop in shops) shop.name: shop.hoursConditions},
+      {
+        '昼の店': {HoursCondition.lunchOnly},
+        '普通の店': <HoursCondition>{},
+      },
+    );
   });
 }

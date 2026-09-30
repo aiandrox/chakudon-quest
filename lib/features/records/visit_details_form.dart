@@ -4,31 +4,31 @@ import '../../l10n/app_localizations.dart';
 import 'labels.dart';
 import 'models.dart';
 
-/// 系統・限定・整理券・営業時間・メモの入力欄。記録画面と編集画面で共有する。
+/// 系統・限定・整理券・営業の条件・メモの入力欄。記録画面と編集画面で共有する。
 class VisitDetailsForm extends StatelessWidget {
   const VisitDetailsForm({
     super.key,
     required this.style,
     required this.isLimited,
     required this.hasTicket,
-    required this.hoursType,
+    required this.hoursConditions,
     required this.memoController,
     required this.onStyleChanged,
     required this.onLimitedChanged,
     required this.onHasTicketChanged,
-    required this.onHoursTypeChanged,
+    required this.onHoursConditionsChanged,
     required this.onMemoChanged,
   });
 
   final RamenStyle? style;
   final bool isLimited;
   final bool hasTicket;
-  final HoursType hoursType;
+  final Set<HoursCondition> hoursConditions;
   final TextEditingController memoController;
   final ValueChanged<RamenStyle?> onStyleChanged;
   final ValueChanged<bool> onLimitedChanged;
   final ValueChanged<bool> onHasTicketChanged;
-  final ValueChanged<HoursType> onHoursTypeChanged;
+  final ValueChanged<Set<HoursCondition>> onHoursConditionsChanged;
   final ValueChanged<String> onMemoChanged;
 
   @override
@@ -67,18 +67,21 @@ class VisitDetailsForm extends StatelessWidget {
         const SizedBox(height: 8),
         Text(l10n.hoursSection, style: textTheme.labelLarge),
         const SizedBox(height: 4),
-        SegmentedButton<HoursType>(
-          showSelectedIcon: false,
-          segments: [
-            for (final type in HoursType.values)
-              ButtonSegment(
-                value: type,
-                label: Text(hoursTypeLabel(l10n, type)),
+        Text(l10n.hoursNote, style: textTheme.bodySmall),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final condition in HoursCondition.values)
+              FilterChip(
+                label: Text(hoursConditionLabel(l10n, condition)),
+                selected: hoursConditions.contains(condition),
+                onSelected: (selected) => onHoursConditionsChanged({
+                  for (final other in hoursConditions)
+                    if (other != condition) other,
+                  if (selected) condition,
+                }),
               ),
           ],
-          selected: {hoursType},
-          onSelectionChanged: (selection) =>
-              onHoursTypeChanged(selection.first),
         ),
         const SizedBox(height: 16),
         TextField(

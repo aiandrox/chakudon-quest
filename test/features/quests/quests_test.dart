@@ -174,7 +174,10 @@ void main() {
 
   group('大物討伐', () {
     test('1杯で60点以上の店があると達成', () {
-      final rare = buildShop(id: 'rare', hoursType: HoursType.fewDays);
+      final rare = buildShop(
+        id: 'rare',
+        hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+      );
       // (10 + 10 + 20) × 2 = 80
       final progress = _progress('rank_s', [
         buildEntry(shop: shop, eatenAt: _day(1)),

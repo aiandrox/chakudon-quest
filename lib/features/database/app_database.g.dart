@@ -58,14 +58,15 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     requiredDuringInsert: false,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<HoursType, String> hoursType =
-      GeneratedColumn<String>(
-        'hours_type',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<HoursType>($ShopsTable.$converterhoursType);
+  late final GeneratedColumnWithTypeConverter<Set<HoursCondition>, String>
+  hoursConditions = GeneratedColumn<String>(
+    'hours_conditions',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  ).withConverter<Set<HoursCondition>>($ShopsTable.$converterhoursConditions);
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -84,7 +85,7 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     latitude,
     longitude,
     osmId,
-    hoursType,
+    hoursConditions,
     createdAt,
   ];
   @override
@@ -167,10 +168,10 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
         DriftSqlType.string,
         data['${effectivePrefix}osm_id'],
       ),
-      hoursType: $ShopsTable.$converterhoursType.fromSql(
+      hoursConditions: $ShopsTable.$converterhoursConditions.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
-          data['${effectivePrefix}hours_type'],
+          data['${effectivePrefix}hours_conditions'],
         )!,
       ),
       createdAt: attachedDatabase.typeMapping.read(
@@ -185,8 +186,8 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     return $ShopsTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<HoursType, String, String> $converterhoursType =
-      const EnumNameConverter<HoursType>(HoursType.values);
+  static TypeConverter<Set<HoursCondition>, String> $converterhoursConditions =
+      const HoursConditionsConverter();
 }
 
 class ShopsCompanion extends UpdateCompanion<Shop> {
@@ -195,7 +196,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
   final Value<double?> latitude;
   final Value<double?> longitude;
   final Value<String?> osmId;
-  final Value<HoursType> hoursType;
+  final Value<Set<HoursCondition>> hoursConditions;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const ShopsCompanion({
@@ -204,7 +205,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
     this.osmId = const Value.absent(),
-    this.hoursType = const Value.absent(),
+    this.hoursConditions = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -214,12 +215,11 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
     this.osmId = const Value.absent(),
-    required HoursType hoursType,
+    this.hoursConditions = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
-       hoursType = Value(hoursType),
        createdAt = Value(createdAt);
   static Insertable<Shop> custom({
     Expression<String>? id,
@@ -227,7 +227,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Expression<double>? latitude,
     Expression<double>? longitude,
     Expression<String>? osmId,
-    Expression<String>? hoursType,
+    Expression<String>? hoursConditions,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -237,7 +237,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
       if (osmId != null) 'osm_id': osmId,
-      if (hoursType != null) 'hours_type': hoursType,
+      if (hoursConditions != null) 'hours_conditions': hoursConditions,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -249,7 +249,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Value<double?>? latitude,
     Value<double?>? longitude,
     Value<String?>? osmId,
-    Value<HoursType>? hoursType,
+    Value<Set<HoursCondition>>? hoursConditions,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -259,7 +259,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       osmId: osmId ?? this.osmId,
-      hoursType: hoursType ?? this.hoursType,
+      hoursConditions: hoursConditions ?? this.hoursConditions,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -283,9 +283,9 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     if (osmId.present) {
       map['osm_id'] = Variable<String>(osmId.value);
     }
-    if (hoursType.present) {
-      map['hours_type'] = Variable<String>(
-        $ShopsTable.$converterhoursType.toSql(hoursType.value),
+    if (hoursConditions.present) {
+      map['hours_conditions'] = Variable<String>(
+        $ShopsTable.$converterhoursConditions.toSql(hoursConditions.value),
       );
     }
     if (createdAt.present) {
@@ -305,7 +305,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
           ..write('osmId: $osmId, ')
-          ..write('hoursType: $hoursType, ')
+          ..write('hoursConditions: $hoursConditions, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1273,7 +1273,7 @@ typedef $$ShopsTableCreateCompanionBuilder = ShopsCompanion Function({
   Value<double?> latitude,
   Value<double?> longitude,
   Value<String?> osmId,
-  required HoursType hoursType,
+  Value<Set<HoursCondition>> hoursConditions,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -1283,7 +1283,7 @@ typedef $$ShopsTableUpdateCompanionBuilder = ShopsCompanion Function({
   Value<double?> latitude,
   Value<double?> longitude,
   Value<String?> osmId,
-  Value<HoursType> hoursType,
+  Value<Set<HoursCondition>> hoursConditions,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -1345,11 +1345,15 @@ class $$ShopsTableFilterComposer extends Composer<_$AppDatabase, $ShopsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<HoursType, HoursType, String> get hoursType =>
-      $composableBuilder(
-        column: $table.hoursType,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
+  ColumnWithTypeConverterFilters<
+    Set<HoursCondition>,
+    Set<HoursCondition>,
+    String
+  >
+  get hoursConditions => $composableBuilder(
+    column: $table.hoursConditions,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
@@ -1416,8 +1420,8 @@ class $$ShopsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get hoursType => $composableBuilder(
-    column: $table.hoursType,
+  ColumnOrderings<String> get hoursConditions => $composableBuilder(
+    column: $table.hoursConditions,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1451,8 +1455,11 @@ class $$ShopsTableAnnotationComposer
   GeneratedColumn<String> get osmId =>
       $composableBuilder(column: $table.osmId, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<HoursType, String> get hoursType =>
-      $composableBuilder(column: $table.hoursType, builder: (column) => column);
+  GeneratedColumnWithTypeConverter<Set<HoursCondition>, String>
+  get hoursConditions => $composableBuilder(
+    column: $table.hoursConditions,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -1516,7 +1523,8 @@ class $$ShopsTableTableManager
                 Value<double?> latitude = const Value.absent(),
                 Value<double?> longitude = const Value.absent(),
                 Value<String?> osmId = const Value.absent(),
-                Value<HoursType> hoursType = const Value.absent(),
+                Value<Set<HoursCondition>> hoursConditions =
+                    const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion(
@@ -1525,7 +1533,7 @@ class $$ShopsTableTableManager
                 latitude: latitude,
                 longitude: longitude,
                 osmId: osmId,
-                hoursType: hoursType,
+                hoursConditions: hoursConditions,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -1536,7 +1544,8 @@ class $$ShopsTableTableManager
                 Value<double?> latitude = const Value.absent(),
                 Value<double?> longitude = const Value.absent(),
                 Value<String?> osmId = const Value.absent(),
-                required HoursType hoursType,
+                Value<Set<HoursCondition>> hoursConditions =
+                    const Value.absent(),
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion.insert(
@@ -1545,7 +1554,7 @@ class $$ShopsTableTableManager
                 latitude: latitude,
                 longitude: longitude,
                 osmId: osmId,
-                hoursType: hoursType,
+                hoursConditions: hoursConditions,
                 createdAt: createdAt,
                 rowid: rowid,
               ),

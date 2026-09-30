@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
@@ -144,11 +145,11 @@ class RecordRepository {
         ),
       );
 
-  /// [hoursType]は利用者が選んだときだけ渡す。nullなら記録済みの店の値を変えず、
-  /// 初めての店は「通常」にする。[checkedInAt]を渡すと、チェックインを終える。
+  /// [hoursConditions]は利用者が選んだときだけ渡す。nullなら記録済みの店の値を変えず、
+  /// 初めての店は条件なしにする。[checkedInAt]を渡すと、チェックインを終える。
   Future<Visit> saveEatenVisit({
     required ShopInput shop,
-    HoursType? hoursType,
+    Set<HoursCondition>? hoursConditions,
     required DateTime eatenAt,
     int? rating,
     String? photoPath,
@@ -160,7 +161,7 @@ class RecordRepository {
     required DateTime now,
   }) {
     return _db.transaction(() async {
-      final shopId = await _resolveShop(shop, hoursType, now);
+      final shopId = await _resolveShop(shop, hoursConditions, now);
       final visit = Visit(
         id: _uuid.v4(),
         shopId: shopId,
@@ -187,11 +188,11 @@ class RecordRepository {
       );
 
   /// 店名を変えたときは、この記録だけを別の店に付け替える。ただし手入力の店でほかに記録が
-  /// 無ければ、位置を失わないよう店の名前を直す。[hoursType]は利用者が変えたときだけ渡す。
+  /// 無ければ、位置を失わないよう店の名前を直す。[hoursConditions]は利用者が変えたときだけ渡す。
   Future<void> updateVisit({
     required String visitId,
     required String shopName,
-    required HoursType? hoursType,
+    required Set<HoursCondition>? hoursConditions,
     required DateTime eatenAt,
     required int? rating,
     required RamenStyle? style,
@@ -223,7 +224,7 @@ class RecordRepository {
         } else if (hasOtherVisits || shop.osmId != null) {
           shopId = await _resolveShop(
             ShopInput(name: name),
-            hoursType ?? shop.hoursType,
+            hoursConditions ?? shop.hoursConditions,
             now,
           );
         } else {
@@ -231,9 +232,9 @@ class RecordRepository {
               .write(ShopsCompanion(name: Value(name)));
         }
       }
-      if (hoursType != null) {
+      if (hoursConditions != null) {
         await (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
-          ShopsCompanion(hoursType: Value(hoursType)),
+          ShopsCompanion(hoursConditions: Value(hoursConditions)),
         );
       }
       await (_db.update(_db.visits)..where((v) => v.id.equals(visitId))).write(
@@ -279,14 +280,16 @@ class RecordRepository {
 
   Future<String> _resolveShop(
     ShopInput input,
-    HoursType? hoursType,
+    Set<HoursCondition>? hoursConditions,
     DateTime now,
   ) async {
     final existing = await _findShop(input);
     if (existing != null) {
       // 手入力で記録した店をあとから検索結果で選んだときは、同じ店として位置とIDを補う。
       final adoptsOsm = existing.osmId == null && input.osmId != null;
-      final changesHours = hoursType != null && existing.hoursType != hoursType;
+      final changesHours =
+          hoursConditions != null &&
+          !setEquals(existing.hoursConditions, hoursConditions);
       if (adoptsOsm || changesHours) {
         await (_db.update(
           _db.shops,
@@ -297,7 +300,9 @@ class RecordRepository {
             longitude: adoptsOsm
                 ? Value(input.longitude)
                 : const Value.absent(),
-            hoursType: changesHours ? Value(hoursType) : const Value.absent(),
+            hoursConditions: changesHours
+                ? Value(hoursConditions)
+                : const Value.absent(),
           ),
         );
       }
@@ -313,7 +318,7 @@ class RecordRepository {
             latitude: Value(input.latitude),
             longitude: Value(input.longitude),
             osmId: Value(input.osmId),
-            hoursType: hoursType ?? HoursType.normal,
+            hoursConditions: Value(hoursConditions ?? const {}),
             createdAt: now,
           ),
         );

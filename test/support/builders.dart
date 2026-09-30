@@ -3,7 +3,7 @@ import 'package:chakudon_quest/features/records/models.dart';
 Shop buildShop({
   String id = 'shop',
   String? name,
-  HoursType hoursType = HoursType.normal,
+  Set<HoursCondition> hoursConditions = const {},
   double? latitude,
   double? longitude,
   String? osmId,
@@ -13,7 +13,7 @@ Shop buildShop({
   latitude: latitude,
   longitude: longitude,
   osmId: osmId,
-  hoursType: hoursType,
+  hoursConditions: hoursConditions,
   createdAt: DateTime(2026),
 );
 

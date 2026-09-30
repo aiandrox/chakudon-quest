@@ -59,7 +59,7 @@ void main() {
     final rare = buildShop(
       id: 'rare',
       name: '週2日の店',
-      hoursType: HoursType.fewDays,
+      hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
     await pumpStats(tester, [
       buildEntry(

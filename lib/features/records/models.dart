@@ -1,4 +1,12 @@
-enum HoursType { normal, lunchOnly, fewDays }
+/// 営業時間の「攻略しにくさ」。店ごとに当てはまるものをいくつでも付ける。
+enum HoursCondition {
+  lunchOnly,
+  nightOnly,
+  weekdaysOnly,
+  weekendsOnly,
+  fewDays,
+  irregular,
+}
 
 enum VisitResult { eaten, retreated }
 
@@ -11,7 +19,7 @@ class Shop {
     this.latitude,
     this.longitude,
     this.osmId,
-    required this.hoursType,
+    this.hoursConditions = const {},
     required this.createdAt,
   });
 
@@ -20,7 +28,7 @@ class Shop {
   final double? latitude;
   final double? longitude;
   final String? osmId;
-  final HoursType hoursType;
+  final Set<HoursCondition> hoursConditions;
   final DateTime createdAt;
 }
 

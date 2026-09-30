@@ -218,7 +218,15 @@ void main() {
       find.widgetWithText(TextField, ja.memoLabel),
       ' 書き直した ',
     );
-    await tester.tap(find.text(ja.hoursFewDays));
+    final fewDays = find.widgetWithText(FilterChip, ja.hoursFewDays);
+    await tester.ensureVisible(fewDays);
+    await tester.pumpAndSettle();
+    await tester.tap(fewDays);
+    await tester.pump();
+    final lunchOnly = find.widgetWithText(FilterChip, ja.hoursLunchOnly);
+    await tester.ensureVisible(lunchOnly);
+    await tester.pumpAndSettle();
+    await tester.tap(lunchOnly);
     await tester.pump();
     await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
     await tester.pumpAndSettle();
@@ -229,13 +237,16 @@ void main() {
     expect(update.shopName, '麺屋テスト');
     expect(update.rating, 2);
     expect(update.memo, '書き直した');
-    expect(update.hoursType, HoursType.fewDays);
+    expect(update.hoursConditions, {
+      HoursCondition.lunchOnly,
+      HoursCondition.fewDays,
+    });
     expect(update.eatenAt, DateTime(2026, 9, 30, 12));
     expect(update.style, RamenStyle.shoyu);
     expect(update.isLimited, isTrue);
   });
 
-  testWidgets('営業時間の種類を変えずに保存したときは、変更なしとして渡す', (tester) async {
+  testWidgets('営業の条件を変えずに保存したときは、変更なしとして渡す', (tester) async {
     await pumpDetail(tester, [
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
     ], 'v');
@@ -245,7 +256,7 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
     await tester.pumpAndSettle();
 
-    expect(repository.updates.single.hoursType, isNull);
+    expect(repository.updates.single.hoursConditions, isNull);
   });
 
   testWidgets('店名を空にすると保存できない', (tester) async {

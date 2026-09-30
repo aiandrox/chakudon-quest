@@ -33,7 +33,7 @@ void main() {
     final lunch = buildShop(
       id: 'lunch',
       name: '昼だけの店',
-      hoursType: HoursType.lunchOnly,
+      hoursConditions: {HoursCondition.lunchOnly},
     );
     // (10 + 15 + 20 + 10) × 1.5 = 82.5 → 82
     final entry = buildEntry(
@@ -71,7 +71,10 @@ void main() {
   });
 
   testWidgets('ランクが上がったら知らせる', (tester) async {
-    final rare = buildShop(id: 'rare', hoursType: HoursType.fewDays);
+    final rare = buildShop(
+      id: 'rare',
+      hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+    );
     // (10 + 10 + 20 + 20 + 30) × 2 = 180
     final big = buildEntry(
       shop: rare,
@@ -93,7 +96,10 @@ void main() {
   });
 
   testWidgets('最高ランクでは、次のランクの代わりに到達を表示する', (tester) async {
-    final rare = buildShop(id: 'rare', hoursType: HoursType.fewDays);
+    final rare = buildShop(
+      id: 'rare',
+      hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+    );
     // 1杯目 180、以降 (10 + 20 + 20 + 30) × 2 = 160 ずつ
     final entries = [
       for (var d = 1; d <= 10; d++)

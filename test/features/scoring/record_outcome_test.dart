@@ -23,7 +23,10 @@ void main() {
   });
 
   test('累計が200点に届くとランクアップ。届かなければしない', () {
-    final rare = buildShop(id: 'rare', hoursType: HoursType.fewDays);
+    final rare = buildShop(
+      id: 'rare',
+      hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+    );
     // (10 + 10 + 20 + 20 + 30) × 2 = 180
     final big = buildEntry(
       shop: rare,
@@ -44,7 +47,10 @@ void main() {
 
     // 昼のみの店の初訪問 (10 + 10) × 1.5 = 30 → 累計 180 + 15 には届かない例として、
     // 2回目の「昼のみ」の店 10 × 1.5 = 15 → 累計 195
-    final lunch = buildShop(id: 'lunch', hoursType: HoursType.lunchOnly);
+    final lunch = buildShop(
+      id: 'lunch',
+      hoursConditions: {HoursCondition.lunchOnly},
+    );
     final lunchFirst = buildEntry(shop: lunch, eatenAt: day(1));
     final lunchAgain = buildEntry(shop: lunch, eatenAt: day(3));
     final bigOnly = computeRecordOutcome([big], big.visit.id)!;

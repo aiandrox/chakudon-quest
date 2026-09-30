@@ -331,14 +331,14 @@ abstract class AppLocalizations {
   /// No description provided for @hoursSection.
   ///
   /// In ja, this message translates to:
-  /// **'店の営業時間'**
+  /// **'営業の条件（当てはまるものすべて）'**
   String get hoursSection;
 
-  /// No description provided for @hoursNormal.
+  /// No description provided for @hoursNote.
   ///
   /// In ja, this message translates to:
-  /// **'通常'**
-  String get hoursNormal;
+  /// **'ポイントの倍率: 1つで×1.5、2つ以上で×2'**
+  String get hoursNote;
 
   /// No description provided for @hoursLunchOnly.
   ///
@@ -346,11 +346,35 @@ abstract class AppLocalizations {
   /// **'昼のみ'**
   String get hoursLunchOnly;
 
+  /// No description provided for @hoursNightOnly.
+  ///
+  /// In ja, this message translates to:
+  /// **'夜のみ'**
+  String get hoursNightOnly;
+
+  /// No description provided for @hoursWeekdaysOnly.
+  ///
+  /// In ja, this message translates to:
+  /// **'平日のみ'**
+  String get hoursWeekdaysOnly;
+
+  /// No description provided for @hoursWeekendsOnly.
+  ///
+  /// In ja, this message translates to:
+  /// **'土日のみ'**
+  String get hoursWeekendsOnly;
+
   /// No description provided for @hoursFewDays.
   ///
   /// In ja, this message translates to:
   /// **'週3日以下'**
   String get hoursFewDays;
+
+  /// No description provided for @hoursIrregular.
+  ///
+  /// In ja, this message translates to:
+  /// **'不定休'**
+  String get hoursIrregular;
 
   /// No description provided for @memoLabel.
   ///
@@ -709,7 +733,7 @@ abstract class AppLocalizations {
   /// No description provided for @pointsHours.
   ///
   /// In ja, this message translates to:
-  /// **'営業時間（{label}）'**
+  /// **'営業の条件（{label}）'**
   String pointsHours(String label);
 
   /// No description provided for @pointsMultiplier.

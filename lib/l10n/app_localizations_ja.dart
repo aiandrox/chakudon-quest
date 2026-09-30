@@ -133,16 +133,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hasTicket => '整理券制';
 
   @override
-  String get hoursSection => '店の営業時間';
+  String get hoursSection => '営業の条件（当てはまるものすべて）';
 
   @override
-  String get hoursNormal => '通常';
+  String get hoursNote => 'ポイントの倍率: 1つで×1.5、2つ以上で×2';
 
   @override
   String get hoursLunchOnly => '昼のみ';
 
   @override
+  String get hoursNightOnly => '夜のみ';
+
+  @override
+  String get hoursWeekdaysOnly => '平日のみ';
+
+  @override
+  String get hoursWeekendsOnly => '土日のみ';
+
+  @override
   String get hoursFewDays => '週3日以下';
+
+  @override
+  String get hoursIrregular => '不定休';
 
   @override
   String get memoLabel => 'メモ';
@@ -338,7 +350,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String pointsHours(String label) {
-    return '営業時間（$label）';
+    return '営業の条件（$label）';
   }
 
   @override

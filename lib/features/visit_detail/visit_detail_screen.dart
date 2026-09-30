@@ -86,8 +86,9 @@ class VisitDetailScreen extends ConsumerWidget {
       if (style != null) styleLabel(l10n, style),
       if (visit.isLimited) l10n.limitedBadge,
       if (visit.hasTicket) l10n.ticketBadge,
-      if (entry.shop.hoursType != HoursType.normal)
-        hoursTypeLabel(l10n, entry.shop.hoursType),
+      for (final condition in HoursCondition.values)
+        if (entry.shop.hoursConditions.contains(condition))
+          hoursConditionLabel(l10n, condition),
     ];
 
     return Scaffold(
