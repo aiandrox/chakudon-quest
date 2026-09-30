@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../backup/backup_screen.dart';
 import '../checkin/checkin_banner.dart';
 import '../checkin/checkin_controller.dart';
 import '../checkin/checkin_screen.dart';
+import '../notifications/notification_service.dart';
 import '../record/photo_picker.dart';
 import '../record/record_screen.dart';
 import '../records/clock.dart';
@@ -30,6 +32,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _recoverLostPhoto());
+    // チェックインの始め方・終わり方（記録・撤退・取り消し・期限切れ）によらず、
+    // 並んでいる間だけ通知を出す。
+    ref.listenManual<AsyncValue<Checkin?>>(activeCheckinProvider, (
+      previous,
+      next,
+    ) {
+      if (next.isLoading) return;
+      final checkin = next.value;
+      final notifications = ref.read(notificationServiceProvider);
+      if (checkin == null || next.hasError) {
+        // 起動時に期限切れで取り消された場合なども、前の通知が残らないよう必ず消す。
+        notifications.cancelCheckin();
+        return;
+      }
+      if (previous?.value?.checkedInAt == checkin.checkedInAt &&
+          previous?.value?.name == checkin.name) {
+        return;
+      }
+      final l10n = AppLocalizations.of(context);
+      notifications.showCheckin(
+        title: l10n.checkinBanner(checkin.name),
+        body: l10n.checkinNotificationBody(
+          DateFormat.Hm().format(checkin.checkedInAt),
+        ),
+        checkedInAt: checkin.checkedInAt,
+      );
+    }, fireImmediately: true);
   }
 
   Future<void> _recoverLostPhoto() async {

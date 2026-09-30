@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/backup/backup_codec.dart';
 import 'package:chakudon_quest/features/database/app_database.dart';
+import 'package:chakudon_quest/features/notifications/notification_service.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
@@ -207,4 +208,23 @@ class FakeShopSearchService implements ShopSearchService {
   @override
   Future<ShopSearchResult> search({required bool requestPermission}) async =>
       result;
+}
+
+class FakeNotificationService implements NotificationService {
+  final shown = <String>[];
+  int cancelCount = 0;
+
+  @override
+  Future<void> showCheckin({
+    required String title,
+    required String body,
+    required DateTime checkedInAt,
+  }) async {
+    shown.add(title);
+  }
+
+  @override
+  Future<void> cancelCheckin() async {
+    cancelCount++;
+  }
 }

@@ -568,6 +568,12 @@ abstract class AppLocalizations {
   /// **'並び始めてから {minutes}分'**
   String checkinWaiting(int minutes);
 
+  /// No description provided for @checkinNotificationBody.
+  ///
+  /// In ja, this message translates to:
+  /// **'{time} から並んでいます。着丼したら「＋」で記録しましょう'**
+  String checkinNotificationBody(String time);
+
   /// No description provided for @checkinCancel.
   ///
   /// In ja, this message translates to:

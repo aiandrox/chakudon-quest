@@ -260,6 +260,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String checkinNotificationBody(String time) {
+    return '$time から並んでいます。着丼したら「＋」で記録しましょう';
+  }
+
+  @override
   String get checkinCancel => '取り消す';
 
   @override

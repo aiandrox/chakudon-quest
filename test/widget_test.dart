@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/checkin/checkin_controller.dart';
 import 'package:chakudon_quest/features/map/map_screen.dart';
+import 'package:chakudon_quest/features/notifications/notification_service.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
@@ -127,5 +130,43 @@ void main() {
     ]);
 
     expect(find.text(ja.ratingPrompt('麺屋テスト')), findsNothing);
+  });
+
+  testWidgets('並んでいる間だけ通知を出し、並び終えたら消す', (tester) async {
+    final checkins = StreamController<Checkin?>();
+    addTearDown(checkins.close);
+    final notifications = FakeNotificationService();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          visitsProvider.overrideWithValue(const AsyncData([])),
+          activeCheckinProvider.overrideWith((ref) => checkins.stream),
+          documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
+          photoPickerProvider.overrideWithValue(FakePhotoPicker()),
+          notificationServiceProvider.overrideWithValue(notifications),
+        ],
+        child: const ChakudonQuestApp(),
+      ),
+    );
+
+    // 起動時に並んでいなければ、前回の通知が残っていないよう消す。
+    checkins.add(null);
+    await tester.pumpAndSettle();
+    expect(notifications.shown, isEmpty);
+    expect(notifications.cancelCount, 1);
+
+    checkins.add(
+      Checkin(name: '麺屋テスト', checkedInAt: DateTime(2026, 10, 1, 11)),
+    );
+    await tester.pumpAndSettle();
+    expect(notifications.shown, [ja.checkinBanner('麺屋テスト')]);
+
+    checkins.add(null);
+    await tester.pumpAndSettle();
+    expect(notifications.cancelCount, 2);
+
+    checkins.addError(StateError('db'));
+    await tester.pumpAndSettle();
+    expect(notifications.cancelCount, 3);
   });
 }
