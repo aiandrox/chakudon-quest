@@ -182,6 +182,11 @@ class RecordRepository {
     });
   }
 
+  Future<void> setShopMemo(String shopId, String memo) =>
+      (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
+        ShopsCompanion(strategyMemo: Value(memo.trim())),
+      );
+
   Future<void> setRating(String visitId, int rating) =>
       (_db.update(_db.visits)..where((v) => v.id.equals(visitId))).write(
         VisitsCompanion(rating: Value(rating)),

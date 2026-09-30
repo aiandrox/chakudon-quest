@@ -113,4 +113,40 @@ void main() {
       },
     );
   });
+
+  test('バージョン3の店に、攻略メモの列を足す', () async {
+    final seconds = DateTime(2026, 10, 1).millisecondsSinceEpoch ~/ 1000;
+    final database = AppDatabase(
+      NativeDatabase.memory(
+        setup: (raw) {
+          raw.execute(
+            'CREATE TABLE shops (id TEXT NOT NULL, name TEXT NOT NULL, '
+            'latitude REAL, longitude REAL, osm_id TEXT, '
+            "hours_conditions TEXT NOT NULL DEFAULT '', "
+            'created_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(_v1Schema[1]);
+          raw.execute(
+            'CREATE TABLE active_checkins (id INTEGER NOT NULL, '
+            'shop_id TEXT, osm_id TEXT, name TEXT NOT NULL, latitude REAL, '
+            'longitude REAL, checked_in_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(
+            'INSERT INTO shops VALUES '
+            "('shop', '麺屋', NULL, NULL, NULL, 'weekdaysOnly', $seconds)",
+          );
+          raw.execute('PRAGMA user_version = 3');
+        },
+      ),
+    );
+    addTearDown(database.close);
+    final repository = RecordRepository(database);
+
+    final shop = (await repository.allShops()).single;
+    expect(shop.hoursConditions, {HoursCondition.weekdaysOnly});
+    expect(shop.strategyMemo, '');
+
+    await repository.setShopMemo('shop', '平日の昼だけ');
+    expect((await repository.allShops()).single.strategyMemo, '平日の昼だけ');
+  });
 }

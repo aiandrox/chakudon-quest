@@ -93,6 +93,15 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
     final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final shopId = widget.checkin.shopId;
+    final memo = shopId == null
+        ? ''
+        : (ref.watch(visitsProvider).value ?? const [])
+                  .where((entry) => entry.shop.id == shopId)
+                  .firstOrNull
+                  ?.shop
+                  .strategyMemo ??
+              '';
     final minutes = checkinElapsedMinutes(
       widget.checkin,
       ref.watch(currentTimeProvider),
@@ -125,6 +134,14 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
                         l10n.checkinWaiting(minutes),
                         style: textTheme.bodyMedium,
                       ),
+                      if (memo.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            l10n.shopMemoInline(memo),
+                            style: textTheme.bodySmall,
+                          ),
+                        ),
                     ],
                   ),
                 ),

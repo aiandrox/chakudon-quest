@@ -24,6 +24,7 @@ void main() {
     WidgetTester tester,
     Widget home, {
     ShopSearchResult search = const ShopSearchResult(),
+    List<VisitWithShop> visits = const [],
   }) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.5;
@@ -32,6 +33,7 @@ void main() {
       ProviderScope(
         overrides: [
           recordRepositoryProvider.overrideWithValue(repository),
+          visitsProvider.overrideWithValue(AsyncData(visits)),
           shopSearchServiceProvider.overrideWithValue(
             FakeShopSearchService(search),
           ),
@@ -118,6 +120,40 @@ void main() {
       checkedInAt: now.subtract(const Duration(minutes: 35)),
     );
     final banner = Scaffold(body: CheckinBanner(checkin: checkin));
+
+    testWidgets('並んでいる店の攻略メモがあれば一緒に出す', (tester) async {
+      final shop = Shop(
+        id: 'shop',
+        name: '麺屋テスト',
+        strategyMemo: '開店30分前で1巡目',
+        createdAt: now,
+      );
+      await pump(
+        tester,
+        Scaffold(
+          body: CheckinBanner(
+            checkin: Checkin(shopId: 'shop', name: '麺屋テスト', checkedInAt: now),
+          ),
+        ),
+        visits: [
+          VisitWithShop(
+            shop: shop,
+            visit: Visit(
+              id: 'v',
+              shopId: 'shop',
+              result: VisitResult.eaten,
+              eatenAt: now,
+              isLimited: false,
+              hasTicket: false,
+              memo: '',
+              createdAt: now,
+            ),
+          ),
+        ],
+      );
+
+      expect(find.text(ja.shopMemoInline('開店30分前で1巡目')), findsOneWidget);
+    });
 
     testWidgets('並んでいる店と経過時間を表示する', (tester) async {
       await pump(tester, banner);
