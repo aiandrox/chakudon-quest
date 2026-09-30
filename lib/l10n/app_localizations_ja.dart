@@ -471,6 +471,42 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get backupTitle => 'バックアップ';
+
+  @override
+  String get backupDescription =>
+      '記録と写真を1つのファイル（zip）にまとめて書き出します。機種変更のときは、新しいスマホでこのファイルを読み込んでください。';
+
+  @override
+  String get backupExport => '書き出す';
+
+  @override
+  String get backupExportNote => '書き出したファイルは、「ファイル」アプリやクラウド、メールなどに保存してください';
+
+  @override
+  String get backupImport => '読み込む';
+
+  @override
+  String get backupImportNote => '書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません';
+
+  @override
+  String get backupExportFailed => '書き出せませんでした。もう一度お試しください';
+
+  @override
+  String backupImportDone(int added, int total) {
+    return '$added件の記録を読み込みました（ファイルの記録 $total件のうち、このスマホに無かったもの）';
+  }
+
+  @override
+  String get backupImportInvalid => '着丼クエストのバックアップとして読めないファイルです';
+
+  @override
+  String get backupImportFailed => '読み込めませんでした。もう一度お試しください';
+
+  @override
+  String get backupFileType => 'バックアップ（zip）';
+
+  @override
   String get statsBests => '自己ベスト';
 
   @override

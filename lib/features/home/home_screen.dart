@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../backup/backup_screen.dart';
 import '../checkin/checkin_banner.dart';
 import '../checkin/checkin_controller.dart';
 import '../checkin/checkin_screen.dart';
@@ -64,7 +65,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final checkin = checkinState.value;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appName)),
+      appBar: AppBar(
+        title: Text(l10n.appName),
+        actions: [
+          IconButton(
+            tooltip: l10n.backupTitle,
+            icon: const Icon(Icons.settings_backup_restore),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const BackupScreen()),
+            ),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(

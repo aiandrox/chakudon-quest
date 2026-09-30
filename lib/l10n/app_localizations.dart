@@ -934,6 +934,72 @@ abstract class AppLocalizations {
   /// **'攻略メモ: {memo}'**
   String shopMemoInline(String memo);
 
+  /// No description provided for @backupTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'バックアップ'**
+  String get backupTitle;
+
+  /// No description provided for @backupDescription.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録と写真を1つのファイル（zip）にまとめて書き出します。機種変更のときは、新しいスマホでこのファイルを読み込んでください。'**
+  String get backupDescription;
+
+  /// No description provided for @backupExport.
+  ///
+  /// In ja, this message translates to:
+  /// **'書き出す'**
+  String get backupExport;
+
+  /// No description provided for @backupExportNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'書き出したファイルは、「ファイル」アプリやクラウド、メールなどに保存してください'**
+  String get backupExportNote;
+
+  /// No description provided for @backupImport.
+  ///
+  /// In ja, this message translates to:
+  /// **'読み込む'**
+  String get backupImport;
+
+  /// No description provided for @backupImportNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません'**
+  String get backupImportNote;
+
+  /// No description provided for @backupExportFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'書き出せませんでした。もう一度お試しください'**
+  String get backupExportFailed;
+
+  /// No description provided for @backupImportDone.
+  ///
+  /// In ja, this message translates to:
+  /// **'{added}件の記録を読み込みました（ファイルの記録 {total}件のうち、このスマホに無かったもの）'**
+  String backupImportDone(int added, int total);
+
+  /// No description provided for @backupImportInvalid.
+  ///
+  /// In ja, this message translates to:
+  /// **'着丼クエストのバックアップとして読めないファイルです'**
+  String get backupImportInvalid;
+
+  /// No description provided for @backupImportFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'読み込めませんでした。もう一度お試しください'**
+  String get backupImportFailed;
+
+  /// No description provided for @backupFileType.
+  ///
+  /// In ja, this message translates to:
+  /// **'バックアップ（zip）'**
+  String get backupFileType;
+
   /// No description provided for @statsBests.
   ///
   /// In ja, this message translates to:
