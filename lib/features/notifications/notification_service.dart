@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../checkin/checkin_rules.dart';
@@ -132,15 +130,6 @@ class LocalNotificationService implements NotificationService {
     }
   }
 
-  Future<void>? _timeZoneSetup;
-
-  /// 時刻を指定する通知には、端末のタイムゾーンが要る。
-  Future<void> _setUpTimeZone() => _timeZoneSetup ??= () async {
-    tz.initializeTimeZones();
-    final local = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(local.identifier));
-  }();
-
   @override
   Future<void> scheduleStreakReminder({
     required DateTime at,
@@ -149,10 +138,11 @@ class LocalNotificationService implements NotificationService {
   }) async {
     try {
       await _initialize();
-      await _setUpTimeZone();
       await _plugin.zonedSchedule(
         id: _streakNotificationId,
-        scheduledDate: tz.TZDateTime.from(at, tz.local),
+        // 1回きりの通知は時刻そのもの（瞬間）で決まるので、端末のタイムゾーン名を
+        // 調べなくてもUTCで表せば端末の[at]どおりに届く。
+        scheduledDate: tz.TZDateTime.from(at, tz.UTC),
         title: title,
         body: body,
         notificationDetails: const NotificationDetails(

@@ -69,9 +69,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }, fireImmediately: true);
     ref.listenManual<Streak>(streakProvider, (_, streak) {
       final notifications = ref.read(notificationServiceProvider);
-      final remindAt = streakReminderTimeOf(ref.read(currentTimeProvider));
-      if (!streak.isAtRisk ||
-          !remindAt.isAfter(ref.read(currentTimeProvider))) {
+      final now = ref.read(currentTimeProvider);
+      final remindAt = streakReminderTime(streak, now);
+      if (remindAt == null || !remindAt.isAfter(now)) {
         notifications.cancelStreakReminder();
         return;
       }

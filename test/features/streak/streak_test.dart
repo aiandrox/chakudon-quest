@@ -16,12 +16,16 @@ void main() {
     expect(weekStartOf(DateTime(2027, 1, 1)), DateTime(2026, 12, 28));
   });
 
-  test('知らせるのは今週の日曜18時', () {
-    expect(streakReminderTimeOf(thursday), DateTime(2026, 10, 4, 18));
+  test('今週まだなら今週の日曜18時、今週食べていれば来週の日曜18時に知らせる', () {
     expect(
-      streakReminderTimeOf(DateTime(2026, 10, 4, 20)),
+      streakReminderTime(const Streak(weeks: 2, thisWeekDone: false), thursday),
       DateTime(2026, 10, 4, 18),
     );
+    expect(
+      streakReminderTime(const Streak(weeks: 2, thisWeekDone: true), thursday),
+      DateTime(2026, 10, 11, 18),
+    );
+    expect(streakReminderTime(Streak.none, thursday), isNull);
   });
 
   test('今週を含めて続いている週を数える', () {

@@ -210,7 +210,7 @@ void main() {
       expect(notifications.streakReminders, [DateTime(2026, 10, 4, 18)]);
     });
 
-    testWidgets('今週すでに食べていれば、知らせる予約を消す', (tester) async {
+    testWidgets('今週すでに食べていれば、来週の日曜18時に知らせる予約をしておく', (tester) async {
       await pumpApp(tester, [
         eatenAt(DateTime(2026, 9, 30, 12)),
         eatenAt(DateTime(2026, 9, 22, 12)),
@@ -218,14 +218,15 @@ void main() {
 
       expect(find.text(ja.streakWeeks(2)), findsOneWidget);
       expect(find.text(ja.streakAtRisk), findsNothing);
-      expect(notifications.streakReminders, isEmpty);
-      expect(notifications.streakCancelCount, greaterThan(0));
+      expect(notifications.streakReminders, [DateTime(2026, 10, 11, 18)]);
     });
 
-    testWidgets('連続記録が無ければ表示しない', (tester) async {
+    testWidgets('連続記録が無ければ表示せず、知らせる予約も消す', (tester) async {
       await pumpApp(tester, [eatenAt(DateTime(2026, 9, 1, 12))], now: thursday);
 
       expect(find.textContaining('週連続'), findsNothing);
+      expect(notifications.streakReminders, isEmpty);
+      expect(notifications.streakCancelCount, greaterThan(0));
     });
   });
 }
