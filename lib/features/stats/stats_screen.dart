@@ -21,7 +21,7 @@ class StatsScreen extends ConsumerWidget {
     final visits = ref.watch(visitsProvider);
     final scored = ref.watch(scoredVisitsProvider);
     final total = totalBowls(scored);
-    final thisYear = bowlsInYear(scored, ref.watch(clockProvider)().year);
+    final thisYear = bowlsInYear(scored, ref.watch(currentTimeProvider).year);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.statsTitle)),

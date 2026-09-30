@@ -287,7 +287,7 @@ class _ShopSection extends ConsumerWidget {
                 ? l10n.checkinWaiting(
                     checkinElapsedMinutes(
                       checkin,
-                      state.photoTakenAt ?? ref.watch(clockProvider)(),
+                      state.photoTakenAt ?? ref.watch(currentTimeProvider),
                     ),
                   )
                 : null,
