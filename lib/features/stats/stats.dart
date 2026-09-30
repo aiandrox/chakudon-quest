@@ -1,0 +1,123 @@
+import '../records/models.dart';
+import '../scoring/points.dart';
+import '../scoring/ranks.dart';
+
+class StyleShare {
+  const StyleShare({
+    required this.style,
+    required this.count,
+    required this.ratio,
+  });
+
+  /// 系統。系統をつけていない記録はnullにまとめる。
+  final RamenStyle? style;
+  final int count;
+
+  /// 食べた記録全体に占める割合（0〜1）。
+  final double ratio;
+}
+
+class FrequentShop {
+  const FrequentShop({required this.shop, required this.count});
+
+  final Shop shop;
+  final int count;
+}
+
+class RankedShop {
+  const RankedShop({
+    required this.shop,
+    required this.rank,
+    required this.bestPoints,
+    required this.count,
+  });
+
+  final Shop shop;
+  final ShopRank rank;
+
+  /// その店で1杯に得た最高ポイント。
+  final int bestPoints;
+  final int count;
+}
+
+Iterable<ScoredVisit> _eaten(List<ScoredVisit> scored) =>
+    scored.where((entry) => entry.visit.result == VisitResult.eaten);
+
+int totalBowls(List<ScoredVisit> scored) => _eaten(scored).length;
+
+int bowlsInYear(List<ScoredVisit> scored, int year) =>
+    _eaten(scored).where((entry) => entry.visit.eatenAt.year == year).length;
+
+/// 系統ごとの杯数と割合。杯数の多い順。
+List<StyleShare> styleShares(List<ScoredVisit> scored) {
+  final counts = <RamenStyle?, int>{};
+  var total = 0;
+  for (final entry in _eaten(scored)) {
+    counts.update(entry.visit.style, (count) => count + 1, ifAbsent: () => 1);
+    total++;
+  }
+  final shares = [
+    for (final MapEntry(key: style, value: count) in counts.entries)
+      StyleShare(style: style, count: count, ratio: count / total),
+  ];
+  // 同数のときは、系統の定義順（系統なしは最後）にして並びを安定させる。
+  int order(RamenStyle? style) => style?.index ?? RamenStyle.values.length;
+  shares.sort((a, b) {
+    final byCount = b.count.compareTo(a.count);
+    return byCount != 0 ? byCount : order(a.style).compareTo(order(b.style));
+  });
+  return shares;
+}
+
+/// 食べた回数の多い店。同数なら、最近行った店を先にする。
+List<FrequentShop> frequentShops(List<ScoredVisit> scored, {int limit = 5}) {
+  final counts = <String, int>{};
+  final lastVisit = <String, DateTime>{};
+  final shops = <String, Shop>{};
+  for (final entry in _eaten(scored)) {
+    final shopId = entry.visit.shopId;
+    counts.update(shopId, (count) => count + 1, ifAbsent: () => 1);
+    shops[shopId] = entry.shop;
+    final last = lastVisit[shopId];
+    if (last == null || entry.visit.eatenAt.isAfter(last)) {
+      lastVisit[shopId] = entry.visit.eatenAt;
+    }
+  }
+  final ids = counts.keys.toList()
+    ..sort((a, b) {
+      final byCount = counts[b]!.compareTo(counts[a]!);
+      return byCount != 0 ? byCount : lastVisit[b]!.compareTo(lastVisit[a]!);
+    });
+  return [
+    for (final id in ids.take(limit))
+      FrequentShop(shop: shops[id]!, count: counts[id]!),
+  ];
+}
+
+/// 食べたことのある店を、ランクの高い順（同じランクなら最高ポイントの高い順）に返す。
+List<RankedShop> rankedShops(List<ScoredVisit> scored) {
+  final best = <String, int>{};
+  final counts = <String, int>{};
+  final shops = <String, Shop>{};
+  for (final entry in _eaten(scored)) {
+    final shopId = entry.visit.shopId;
+    final points = entry.points.total;
+    if (points > (best[shopId] ?? -1)) best[shopId] = points;
+    counts.update(shopId, (count) => count + 1, ifAbsent: () => 1);
+    shops[shopId] = entry.shop;
+  }
+  final ranked = [
+    for (final MapEntry(key: shopId, value: points) in best.entries)
+      RankedShop(
+        shop: shops[shopId]!,
+        rank: shopRankFor(points),
+        bestPoints: points,
+        count: counts[shopId]!,
+      ),
+  ];
+  ranked.sort((a, b) {
+    final byPoints = b.bestPoints.compareTo(a.bestPoints);
+    return byPoints != 0 ? byPoints : a.shop.name.compareTo(b.shop.name);
+  });
+  return ranked;
+}

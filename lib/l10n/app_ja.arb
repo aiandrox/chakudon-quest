@@ -199,5 +199,33 @@
       "target": {"type": "int"}
     }
   },
-  "questAchieved": "クエスト達成！"
+  "questAchieved": "クエスト達成！",
+  "navStats": "統計",
+  "statsTitle": "統計",
+  "statsEmpty": "記録が増えると、ここに統計が出ます",
+  "statsThisYear": "今年の杯数",
+  "statsTotal": "累計の杯数",
+  "bowls": "{count}杯",
+  "@bowls": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "statsStyles": "系統の割合",
+  "styleUnset": "系統なし",
+  "percent": "{percent}%",
+  "@percent": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "statsFrequent": "よく行く店",
+  "statsShopRanks": "店ランク",
+  "statsShopRanksNote": "その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）",
+  "statsBestPoints": "最高 {points} pt",
+  "@statsBestPoints": {
+    "placeholders": {
+      "points": {"type": "int"}
+    }
+  }
 }

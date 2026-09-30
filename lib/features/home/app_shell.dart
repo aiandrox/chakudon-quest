@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../quests/quest_list_screen.dart';
+import '../stats/stats_screen.dart';
 import 'home_screen.dart';
 
-/// 下のタブで画面を切り替える、アプリの外枠。
+/// 下のタブ（記録・クエスト・統計）で画面を切り替える、アプリの外枠。
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
@@ -21,7 +22,7 @@ class _AppShellState extends State<AppShell> {
     return Scaffold(
       body: IndexedStack(
         index: _index,
-        children: const [HomeScreen(), QuestListScreen()],
+        children: const [HomeScreen(), QuestListScreen(), StatsScreen()],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
@@ -34,6 +35,10 @@ class _AppShellState extends State<AppShell> {
           NavigationDestination(
             icon: const Icon(Icons.emoji_events),
             label: l10n.navQuests,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.bar_chart),
+            label: l10n.navStats,
           ),
         ],
       ),
