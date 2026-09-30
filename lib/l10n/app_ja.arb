@@ -243,6 +243,23 @@
       "memo": {"type": "String"}
     }
   },
+  "backupTitle": "バックアップ",
+  "backupDescription": "記録と写真を1つのファイル（zip）にまとめて書き出します。機種変更のときは、新しいスマホでこのファイルを読み込んでください。",
+  "backupExport": "書き出す",
+  "backupExportNote": "書き出したファイルは、「ファイル」アプリやクラウド、メールなどに保存してください",
+  "backupImport": "読み込む",
+  "backupImportNote": "書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません",
+  "backupExportFailed": "書き出せませんでした。もう一度お試しください",
+  "backupImportDone": "{added}件の記録を読み込みました（ファイルの記録 {total}件のうち、このスマホに無かったもの）",
+  "@backupImportDone": {
+    "placeholders": {
+      "added": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "backupImportInvalid": "着丼クエストのバックアップとして読めないファイルです",
+  "backupImportFailed": "読み込めませんでした。もう一度お試しください",
+  "backupFileType": "バックアップ（zip）",
   "statsBests": "自己ベスト",
   "bestLongestWait": "最長の待ち時間",
   "bestHighestPoints": "1杯の最高ポイント",

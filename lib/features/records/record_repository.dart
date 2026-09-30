@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../backup/backup_codec.dart';
 import '../database/app_database.dart';
 import '../shop_search/geo.dart';
 import 'models.dart';
@@ -54,6 +55,50 @@ class RecordRepository {
   }
 
   Future<List<Shop>> allShops() => _db.select(_db.shops).get();
+
+  Future<BackupData> exportAll() async => BackupData(
+    shops: await _db.select(_db.shops).get(),
+    visits: await _db.select(_db.visits).get(),
+  );
+
+  /// バックアップの記録を足す。同じIDの店・記録がすでにあれば、端末の方を残す。
+  /// 足した記録の件数を返す。
+  Future<int> importAll(BackupData data) {
+    return _db.transaction(() async {
+      final shopIds = {
+        for (final shop in await _db.select(_db.shops).get()) shop.id,
+      };
+      for (final shop in data.shops) {
+        if (!shopIds.add(shop.id)) continue;
+        await _db
+            .into(_db.shops)
+            .insert(
+              ShopsCompanion.insert(
+                id: shop.id,
+                name: shop.name,
+                latitude: Value(shop.latitude),
+                longitude: Value(shop.longitude),
+                osmId: Value(shop.osmId),
+                hoursConditions: Value(shop.hoursConditions),
+                strategyMemo: Value(shop.strategyMemo),
+                createdAt: shop.createdAt,
+              ),
+            );
+      }
+      final visitIds = {
+        for (final visit in await _db.select(_db.visits).get()) visit.id,
+      };
+      var added = 0;
+      for (final visit in data.visits) {
+        if (!shopIds.contains(visit.shopId) || !visitIds.add(visit.id)) {
+          continue;
+        }
+        await _insertVisit(visit);
+        added++;
+      }
+      return added;
+    });
+  }
 
   Stream<Checkin?> watchActiveCheckin() => _db
       .select(_db.activeCheckins)
