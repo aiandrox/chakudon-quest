@@ -32,6 +32,10 @@ void main() {
     expect(nameMatches('麺屋・藤ろう', '麺屋藤ろう'), isTrue);
     expect(nameMatches('一風堂', '一蘭'), isFalse);
     expect(nameMatches('', '豚山'), isFalse);
+    // 短い店名が正解に含まれるだけでは、同じ店とみなさない。
+    expect(nameMatches('麺屋', '麺屋藤ろう'), isFalse);
+    // 長音記号は消さない（「ラーメン」と「ラメン」を取り違えない）。
+    expect(normalizeName('ラーメン'), 'ラーメン');
   });
 
   test('地点の設定を読み込める', () {
@@ -61,6 +65,19 @@ void main() {
     expect(summary.closedCount, 1);
     expect(summary.medianElapsed, const Duration(milliseconds: 3000));
     expect(summary.failures, 1);
+  });
+
+  test('回によって返る店が違うときは、どれかの回で出れば「出た」と数える', () {
+    final summary = summarize(
+      [_point],
+      [
+        _run([_place('ほかの店')]),
+        _run([_place('ラーメン豚山')]),
+      ],
+    ).single;
+
+    expect(summary.hits, ['豚山']);
+    expect(summary.places, hasLength(2));
   });
 
   test('表には、全部失敗した組み合わせを「取得失敗」と出す', () {

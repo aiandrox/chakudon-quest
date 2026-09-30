@@ -68,6 +68,7 @@ class OsmProvider implements PlaceProvider {
     if (response.statusCode != 200) {
       throw http.ClientException('HTTP ${response.statusCode}');
     }
+    // サーバー側の時間切れ（HTTP 200 のまま remark に理由）は parseOverpassResponse が失敗にする。
     return [
       for (final shop in parseOverpassResponse(utf8.decode(response.bodyBytes)))
         FoundPlace(

@@ -99,7 +99,7 @@ String normalizeName(String name) {
     // 全角の英数字・記号（！〜～）を半角に。
     if (code >= 0xFF01 && code <= 0xFF5E) code -= 0xFEE0;
     final char = String.fromCharCode(code).toLowerCase();
-    if (RegExp(r'[\s　・･\-ー－‐_.,、。()（）「」『』\[\]【】!?!？&＆/]').hasMatch(char)) {
+    if (RegExp(r'[\s　・･\-－‐_.,、。()（）「」『』\[\]【】!?!？&＆/]').hasMatch(char)) {
       continue;
     }
     buffer.write(char);
@@ -107,11 +107,13 @@ String normalizeName(String name) {
   return buffer.toString();
 }
 
+/// 見つかった店名に、正解リストの店名が含まれていれば同じ店とみなす。
+/// 逆向き（短い店名が正解に含まれる）は、「麺屋」だけで「麺屋藤ろう」に当たってしまうので数えない。
 bool nameMatches(String found, String expected) {
   final a = normalizeName(found);
   final b = normalizeName(expected);
   if (a.isEmpty || b.isEmpty) return false;
-  return a.contains(b) || b.contains(a);
+  return a.contains(b);
 }
 
 /// 地点×半径×提供元ごとの集計。
@@ -135,13 +137,19 @@ class RunSummary {
 
   int get failures => runs.length - _succeeded.length;
 
-  /// 成功した回のうち、いちばん多く返った回の店（件数の比較に使う）。
+  /// 成功したすべての回で返った店を合わせたもの（同じ店名・ほぼ同じ位置は1軒）。
   List<FoundPlace> get places {
-    final succeeded = _succeeded;
-    if (succeeded.isEmpty) return const [];
-    return succeeded
-        .reduce((a, b) => b.places.length > a.places.length ? b : a)
-        .places;
+    final seen = <String>{};
+    return [
+      for (final run in _succeeded)
+        for (final place in run.places)
+          if (seen.add(
+            '${normalizeName(place.name)}@'
+            '${place.latitude.toStringAsFixed(4)},'
+            '${place.longitude.toStringAsFixed(4)}',
+          ))
+            place,
+    ];
   }
 
   /// 正解リストのうち、この半径で出てきた店名。

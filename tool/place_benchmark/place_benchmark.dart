@@ -76,10 +76,12 @@ Future<ProviderRun> _run(
   BenchmarkPoint point,
   int radius,
 ) async {
-  final watch = Stopwatch()..start();
+  // 応答時間は最後の1回だけを測る（やり直しの前の待ち時間を含めない）。
+  var watch = Stopwatch()..start();
   try {
     final places = await _withRetry(
       () => provider.search(client, point, radius),
+      onRetry: () => watch = Stopwatch()..start(),
     );
     return ProviderRun(
       provider: provider.id,
@@ -100,12 +102,16 @@ Future<ProviderRun> _run(
 }
 
 /// 混雑（429・5xx）での失敗は、少し待って1回だけやり直す。やり直しても失敗なら失敗として数える。
-Future<T> _withRetry<T>(Future<T> Function() body) async {
+Future<T> _withRetry<T>(
+  Future<T> Function() body, {
+  required void Function() onRetry,
+}) async {
   try {
     return await body();
   } on http.ClientException catch (e) {
     if (!RegExp(r'HTTP (429|5\d\d)').hasMatch(e.message)) rethrow;
     await Future<void>.delayed(const Duration(seconds: 10));
+    onRetry();
     return body();
   }
 }
