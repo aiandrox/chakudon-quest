@@ -38,11 +38,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       previous,
       next,
     ) {
-      if (!next.hasValue) return;
+      if (next.isLoading) return;
       final checkin = next.value;
       final notifications = ref.read(notificationServiceProvider);
-      if (checkin == null) {
-        if (previous?.value != null) notifications.cancelCheckin();
+      if (checkin == null || next.hasError) {
+        // 起動時に期限切れで取り消された場合なども、前の通知が残らないよう必ず消す。
+        notifications.cancelCheckin();
         return;
       }
       if (previous?.value?.checkedInAt == checkin.checkedInAt &&

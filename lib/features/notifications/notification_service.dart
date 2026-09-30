@@ -92,7 +92,13 @@ class LocalNotificationService implements NotificationService {
             // アプリを開かないまま3時間を過ぎても、自動の取り消しに合わせて消えるようにする。
             timeoutAfter: _remainingUntilTimeout(checkedInAt),
           ),
-          iOS: const DarwinNotificationDetails(presentSound: false),
+          // アプリを開いている最中に出すので、上から出るバナーは出さず通知センターにだけ置く。
+          iOS: const DarwinNotificationDetails(
+            presentAlert: false,
+            presentBanner: false,
+            presentSound: false,
+            presentList: true,
+          ),
         ),
       );
     } catch (e) {

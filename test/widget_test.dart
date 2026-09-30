@@ -149,10 +149,11 @@ void main() {
       ),
     );
 
+    // 起動時に並んでいなければ、前回の通知が残っていないよう消す。
     checkins.add(null);
     await tester.pumpAndSettle();
     expect(notifications.shown, isEmpty);
-    expect(notifications.cancelCount, 0);
+    expect(notifications.cancelCount, 1);
 
     checkins.add(
       Checkin(name: '麺屋テスト', checkedInAt: DateTime(2026, 10, 1, 11)),
@@ -162,6 +163,10 @@ void main() {
 
     checkins.add(null);
     await tester.pumpAndSettle();
-    expect(notifications.cancelCount, 1);
+    expect(notifications.cancelCount, 2);
+
+    checkins.addError(StateError('db'));
+    await tester.pumpAndSettle();
+    expect(notifications.cancelCount, 3);
   });
 }
