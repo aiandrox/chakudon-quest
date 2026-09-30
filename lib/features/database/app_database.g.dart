@@ -804,16 +804,467 @@ class VisitsCompanion extends UpdateCompanion<Visit> {
   }
 }
 
+class $ActiveCheckinsTable extends ActiveCheckins
+    with TableInfo<$ActiveCheckinsTable, ActiveCheckin> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ActiveCheckinsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _shopIdMeta = const VerificationMeta('shopId');
+  @override
+  late final GeneratedColumn<String> shopId = GeneratedColumn<String>(
+    'shop_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _osmIdMeta = const VerificationMeta('osmId');
+  @override
+  late final GeneratedColumn<String> osmId = GeneratedColumn<String>(
+    'osm_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _checkedInAtMeta = const VerificationMeta(
+    'checkedInAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkedInAt = GeneratedColumn<DateTime>(
+    'checked_in_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    shopId,
+    osmId,
+    name,
+    latitude,
+    longitude,
+    checkedInAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'active_checkins';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ActiveCheckin> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('shop_id')) {
+      context.handle(
+        _shopIdMeta,
+        shopId.isAcceptableOrUnknown(data['shop_id']!, _shopIdMeta),
+      );
+    }
+    if (data.containsKey('osm_id')) {
+      context.handle(
+        _osmIdMeta,
+        osmId.isAcceptableOrUnknown(data['osm_id']!, _osmIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
+    if (data.containsKey('checked_in_at')) {
+      context.handle(
+        _checkedInAtMeta,
+        checkedInAt.isAcceptableOrUnknown(
+          data['checked_in_at']!,
+          _checkedInAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedInAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ActiveCheckin map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ActiveCheckin(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      shopId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shop_id'],
+      ),
+      osmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}osm_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      checkedInAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_in_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ActiveCheckinsTable createAlias(String alias) {
+    return $ActiveCheckinsTable(attachedDatabase, alias);
+  }
+}
+
+class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
+  final int id;
+  final String? shopId;
+  final String? osmId;
+  final String name;
+  final double? latitude;
+  final double? longitude;
+  final DateTime checkedInAt;
+  const ActiveCheckin({
+    required this.id,
+    this.shopId,
+    this.osmId,
+    required this.name,
+    this.latitude,
+    this.longitude,
+    required this.checkedInAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || shopId != null) {
+      map['shop_id'] = Variable<String>(shopId);
+    }
+    if (!nullToAbsent || osmId != null) {
+      map['osm_id'] = Variable<String>(osmId);
+    }
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    map['checked_in_at'] = Variable<DateTime>(checkedInAt);
+    return map;
+  }
+
+  ActiveCheckinsCompanion toCompanion(bool nullToAbsent) {
+    return ActiveCheckinsCompanion(
+      id: Value(id),
+      shopId: shopId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shopId),
+      osmId: osmId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(osmId),
+      name: Value(name),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      checkedInAt: Value(checkedInAt),
+    );
+  }
+
+  factory ActiveCheckin.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ActiveCheckin(
+      id: serializer.fromJson<int>(json['id']),
+      shopId: serializer.fromJson<String?>(json['shopId']),
+      osmId: serializer.fromJson<String?>(json['osmId']),
+      name: serializer.fromJson<String>(json['name']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      checkedInAt: serializer.fromJson<DateTime>(json['checkedInAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'shopId': serializer.toJson<String?>(shopId),
+      'osmId': serializer.toJson<String?>(osmId),
+      'name': serializer.toJson<String>(name),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+      'checkedInAt': serializer.toJson<DateTime>(checkedInAt),
+    };
+  }
+
+  ActiveCheckin copyWith({
+    int? id,
+    Value<String?> shopId = const Value.absent(),
+    Value<String?> osmId = const Value.absent(),
+    String? name,
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
+    DateTime? checkedInAt,
+  }) => ActiveCheckin(
+    id: id ?? this.id,
+    shopId: shopId.present ? shopId.value : this.shopId,
+    osmId: osmId.present ? osmId.value : this.osmId,
+    name: name ?? this.name,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
+    checkedInAt: checkedInAt ?? this.checkedInAt,
+  );
+  ActiveCheckin copyWithCompanion(ActiveCheckinsCompanion data) {
+    return ActiveCheckin(
+      id: data.id.present ? data.id.value : this.id,
+      shopId: data.shopId.present ? data.shopId.value : this.shopId,
+      osmId: data.osmId.present ? data.osmId.value : this.osmId,
+      name: data.name.present ? data.name.value : this.name,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      checkedInAt: data.checkedInAt.present
+          ? data.checkedInAt.value
+          : this.checkedInAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActiveCheckin(')
+          ..write('id: $id, ')
+          ..write('shopId: $shopId, ')
+          ..write('osmId: $osmId, ')
+          ..write('name: $name, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('checkedInAt: $checkedInAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, shopId, osmId, name, latitude, longitude, checkedInAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ActiveCheckin &&
+          other.id == this.id &&
+          other.shopId == this.shopId &&
+          other.osmId == this.osmId &&
+          other.name == this.name &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.checkedInAt == this.checkedInAt);
+}
+
+class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
+  final Value<int> id;
+  final Value<String?> shopId;
+  final Value<String?> osmId;
+  final Value<String> name;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<DateTime> checkedInAt;
+  const ActiveCheckinsCompanion({
+    this.id = const Value.absent(),
+    this.shopId = const Value.absent(),
+    this.osmId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.checkedInAt = const Value.absent(),
+  });
+  ActiveCheckinsCompanion.insert({
+    this.id = const Value.absent(),
+    this.shopId = const Value.absent(),
+    this.osmId = const Value.absent(),
+    required String name,
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    required DateTime checkedInAt,
+  }) : name = Value(name),
+       checkedInAt = Value(checkedInAt);
+  static Insertable<ActiveCheckin> custom({
+    Expression<int>? id,
+    Expression<String>? shopId,
+    Expression<String>? osmId,
+    Expression<String>? name,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<DateTime>? checkedInAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shopId != null) 'shop_id': shopId,
+      if (osmId != null) 'osm_id': osmId,
+      if (name != null) 'name': name,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (checkedInAt != null) 'checked_in_at': checkedInAt,
+    });
+  }
+
+  ActiveCheckinsCompanion copyWith({
+    Value<int>? id,
+    Value<String?>? shopId,
+    Value<String?>? osmId,
+    Value<String>? name,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<DateTime>? checkedInAt,
+  }) {
+    return ActiveCheckinsCompanion(
+      id: id ?? this.id,
+      shopId: shopId ?? this.shopId,
+      osmId: osmId ?? this.osmId,
+      name: name ?? this.name,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      checkedInAt: checkedInAt ?? this.checkedInAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (shopId.present) {
+      map['shop_id'] = Variable<String>(shopId.value);
+    }
+    if (osmId.present) {
+      map['osm_id'] = Variable<String>(osmId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (checkedInAt.present) {
+      map['checked_in_at'] = Variable<DateTime>(checkedInAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActiveCheckinsCompanion(')
+          ..write('id: $id, ')
+          ..write('shopId: $shopId, ')
+          ..write('osmId: $osmId, ')
+          ..write('name: $name, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('checkedInAt: $checkedInAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ShopsTable shops = $ShopsTable(this);
   late final $VisitsTable visits = $VisitsTable(this);
+  late final $ActiveCheckinsTable activeCheckins = $ActiveCheckinsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [shops, visits];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    shops,
+    visits,
+    activeCheckins,
+  ];
 }
 
 typedef $$ShopsTableCreateCompanionBuilder = ShopsCompanion Function({
@@ -1598,6 +2049,251 @@ typedef $$VisitsTableProcessedTableManager =
       Visit,
       PrefetchHooks Function({bool shopId})
     >;
+typedef $$ActiveCheckinsTableCreateCompanionBuilder =
+    ActiveCheckinsCompanion Function({
+      Value<int> id,
+      Value<String?> shopId,
+      Value<String?> osmId,
+      required String name,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      required DateTime checkedInAt,
+    });
+typedef $$ActiveCheckinsTableUpdateCompanionBuilder =
+    ActiveCheckinsCompanion Function({
+      Value<int> id,
+      Value<String?> shopId,
+      Value<String?> osmId,
+      Value<String> name,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      Value<DateTime> checkedInAt,
+    });
+
+class $$ActiveCheckinsTableFilterComposer
+    extends Composer<_$AppDatabase, $ActiveCheckinsTable> {
+  $$ActiveCheckinsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get osmId => $composableBuilder(
+    column: $table.osmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkedInAt => $composableBuilder(
+    column: $table.checkedInAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ActiveCheckinsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ActiveCheckinsTable> {
+  $$ActiveCheckinsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get osmId => $composableBuilder(
+    column: $table.osmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkedInAt => $composableBuilder(
+    column: $table.checkedInAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ActiveCheckinsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ActiveCheckinsTable> {
+  $$ActiveCheckinsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get shopId =>
+      $composableBuilder(column: $table.shopId, builder: (column) => column);
+
+  GeneratedColumn<String> get osmId =>
+      $composableBuilder(column: $table.osmId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get checkedInAt => $composableBuilder(
+    column: $table.checkedInAt,
+    builder: (column) => column,
+  );
+}
+
+class $$ActiveCheckinsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ActiveCheckinsTable,
+          ActiveCheckin,
+          $$ActiveCheckinsTableFilterComposer,
+          $$ActiveCheckinsTableOrderingComposer,
+          $$ActiveCheckinsTableAnnotationComposer,
+          $$ActiveCheckinsTableCreateCompanionBuilder,
+          $$ActiveCheckinsTableUpdateCompanionBuilder,
+          (
+            ActiveCheckin,
+            BaseReferences<_$AppDatabase, $ActiveCheckinsTable, ActiveCheckin>,
+          ),
+          ActiveCheckin,
+          PrefetchHooks Function()
+        > {
+  $$ActiveCheckinsTableTableManager(
+    _$AppDatabase db,
+    $ActiveCheckinsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ActiveCheckinsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ActiveCheckinsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ActiveCheckinsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> shopId = const Value.absent(),
+                Value<String?> osmId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<DateTime> checkedInAt = const Value.absent(),
+              }) => ActiveCheckinsCompanion(
+                id: id,
+                shopId: shopId,
+                osmId: osmId,
+                name: name,
+                latitude: latitude,
+                longitude: longitude,
+                checkedInAt: checkedInAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> shopId = const Value.absent(),
+                Value<String?> osmId = const Value.absent(),
+                required String name,
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                required DateTime checkedInAt,
+              }) => ActiveCheckinsCompanion.insert(
+                id: id,
+                shopId: shopId,
+                osmId: osmId,
+                name: name,
+                latitude: latitude,
+                longitude: longitude,
+                checkedInAt: checkedInAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ActiveCheckinsTable, ActiveCheckin>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ActiveCheckinsTable,
+                    ActiveCheckin
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ActiveCheckinsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ActiveCheckinsTable,
+      ActiveCheckin,
+      $$ActiveCheckinsTableFilterComposer,
+      $$ActiveCheckinsTableOrderingComposer,
+      $$ActiveCheckinsTableAnnotationComposer,
+      $$ActiveCheckinsTableCreateCompanionBuilder,
+      $$ActiveCheckinsTableUpdateCompanionBuilder,
+      (
+        ActiveCheckin,
+        BaseReferences<_$AppDatabase, $ActiveCheckinsTable, ActiveCheckin>,
+      ),
+      ActiveCheckin,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1606,4 +2302,6 @@ class $AppDatabaseManager {
       $$ShopsTableTableManager(_db, _db.shops);
   $$VisitsTableTableManager get visits =>
       $$VisitsTableTableManager(_db, _db.visits);
+  $$ActiveCheckinsTableTableManager get activeCheckins =>
+      $$ActiveCheckinsTableTableManager(_db, _db.activeCheckins);
 }

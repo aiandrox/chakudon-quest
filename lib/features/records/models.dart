@@ -56,6 +56,25 @@ class Visit {
   final DateTime createdAt;
 }
 
+/// 並んでいる最中の店。記録がまだ無い店のこともあるため、店の情報をそのまま持つ。
+class Checkin {
+  const Checkin({
+    this.shopId,
+    this.osmId,
+    required this.name,
+    this.latitude,
+    this.longitude,
+    required this.checkedInAt,
+  });
+
+  final String? shopId;
+  final String? osmId;
+  final String name;
+  final double? latitude;
+  final double? longitude;
+  final DateTime checkedInAt;
+}
+
 class VisitWithShop {
   const VisitWithShop({required this.visit, required this.shop});
 

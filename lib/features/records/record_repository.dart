@@ -54,8 +54,98 @@ class RecordRepository {
 
   Future<List<Shop>> allShops() => _db.select(_db.shops).get();
 
+  Stream<Checkin?> watchActiveCheckin() => _db
+      .select(_db.activeCheckins)
+      .watchSingleOrNull()
+      .map((row) => row == null ? null : _toCheckin(row));
+
+  Future<Checkin?> activeCheckin() async {
+    final row = await _db.select(_db.activeCheckins).getSingleOrNull();
+    return row == null ? null : _toCheckin(row);
+  }
+
+  Checkin _toCheckin(ActiveCheckin row) => Checkin(
+    shopId: row.shopId,
+    osmId: row.osmId,
+    name: row.name,
+    latitude: row.latitude,
+    longitude: row.longitude,
+    checkedInAt: row.checkedInAt,
+  );
+
+  /// 並び始める。すでにチェックイン中なら置き換える。
+  Future<void> checkIn({required ShopInput shop, required DateTime at}) {
+    return _db
+        .into(_db.activeCheckins)
+        .insertOnConflictUpdate(
+          ActiveCheckinsCompanion.insert(
+            id: const Value(activeCheckinId),
+            shopId: Value(shop.shopId),
+            osmId: Value(shop.osmId),
+            name: shop.name.trim(),
+            latitude: Value(shop.latitude),
+            longitude: Value(shop.longitude),
+            checkedInAt: at,
+          ),
+        );
+  }
+
+  Future<void> cancelCheckin() => _db.delete(_db.activeCheckins).go();
+
+  /// 並んだが食べられなかった記録を残し、チェックインを終える。
+  Future<Visit> saveRetreat({
+    required Checkin checkin,
+    String memo = '',
+    required DateTime now,
+  }) {
+    return _db.transaction(() async {
+      final shopId = await _resolveShop(_shopInputOf(checkin), null, now);
+      final visit = Visit(
+        id: _uuid.v4(),
+        shopId: shopId,
+        result: VisitResult.retreated,
+        checkedInAt: checkin.checkedInAt,
+        eatenAt: now,
+        isLimited: false,
+        hasTicket: false,
+        memo: memo,
+        createdAt: now,
+      );
+      await _insertVisit(visit);
+      await cancelCheckin();
+      return visit;
+    });
+  }
+
+  ShopInput _shopInputOf(Checkin checkin) => ShopInput(
+    shopId: checkin.shopId,
+    osmId: checkin.osmId,
+    name: checkin.name,
+    latitude: checkin.latitude,
+    longitude: checkin.longitude,
+  );
+
+  Future<void> _insertVisit(Visit visit) => _db
+      .into(_db.visits)
+      .insert(
+        VisitsCompanion.insert(
+          id: visit.id,
+          shopId: visit.shopId,
+          result: visit.result,
+          photoPath: Value(visit.photoPath),
+          checkedInAt: Value(visit.checkedInAt),
+          eatenAt: visit.eatenAt,
+          style: Value(visit.style),
+          rating: Value(visit.rating),
+          isLimited: Value(visit.isLimited),
+          hasTicket: Value(visit.hasTicket),
+          memo: Value(visit.memo),
+          createdAt: visit.createdAt,
+        ),
+      );
+
   /// [hoursType]は利用者が選んだときだけ渡す。nullなら記録済みの店の値を変えず、
-  /// 初めての店は「通常」にする。
+  /// 初めての店は「通常」にする。[checkedInAt]を渡すと、チェックインを終える。
   Future<Visit> saveEatenVisit({
     required ShopInput shop,
     HoursType? hoursType,
@@ -85,24 +175,8 @@ class RecordRepository {
         memo: memo,
         createdAt: now,
       );
-      await _db
-          .into(_db.visits)
-          .insert(
-            VisitsCompanion.insert(
-              id: visit.id,
-              shopId: visit.shopId,
-              result: visit.result,
-              photoPath: Value(visit.photoPath),
-              checkedInAt: Value(visit.checkedInAt),
-              eatenAt: visit.eatenAt,
-              style: Value(visit.style),
-              rating: Value(visit.rating),
-              isLimited: Value(visit.isLimited),
-              hasTicket: Value(visit.hasTicket),
-              memo: Value(visit.memo),
-              createdAt: visit.createdAt,
-            ),
-          );
+      await _insertVisit(visit);
+      if (checkedInAt != null) await cancelCheckin();
       return visit;
     });
   }

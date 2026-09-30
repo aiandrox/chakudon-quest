@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../checkin/checkin_rules.dart';
 import '../records/clock.dart';
 import '../records/models.dart';
 import '../records/photo_storage.dart';
 import '../records/record_repository.dart';
 import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
-import '../shop_search/overpass.dart';
-import '../shop_search/overpass_client.dart';
 import '../shop_search/shop_candidate.dart';
+import '../shop_search/shop_search_service.dart';
 import 'photo_picker.dart';
 import 'record_state.dart';
 
@@ -22,7 +22,6 @@ final recordControllerProvider =
 
 class RecordController extends Notifier<RecordState> {
   List<Shop> _knownShops = const [];
-  Future<void>? _knownShopsLoad;
   GeoPoint? _here;
 
   @override
@@ -31,7 +30,9 @@ class RecordController extends Notifier<RecordState> {
   /// カメラを開き、並行して近くの店を探す。位置情報が未許可のときは、許可ダイアログが
   /// カメラに重ならないよう、撮り終えてから尋ねる。
   Future<void> start({String? recoveredPhotoPath}) async {
-    _knownShopsLoad = _loadKnownShops();
+    unawaited(_loadKnownShops());
+    await _loadCheckin();
+    if (!ref.mounted) return;
     final locationReady = await ref.read(locationServiceProvider).isReady();
     if (!ref.mounted) return;
     if (locationReady) unawaited(searchShops(requestPermission: false));
@@ -43,6 +44,32 @@ class RecordController extends Notifier<RecordState> {
     }
     if (!ref.mounted) return;
     if (!locationReady) await searchShops(requestPermission: true);
+  }
+
+  /// 並んでいる店があれば、その店を選んだ状態で始める。
+  Future<void> _loadCheckin() async {
+    try {
+      final checkin = await ref.read(recordRepositoryProvider).activeCheckin();
+      if (!ref.mounted || checkin == null) return;
+      if (isCheckinExpired(checkin, ref.read(clockProvider)())) return;
+      final latitude = checkin.latitude;
+      final longitude = checkin.longitude;
+      final shop = ShopCandidate(
+        shopId: checkin.shopId,
+        osmId: checkin.osmId,
+        name: checkin.name,
+        location: latitude != null && longitude != null
+            ? GeoPoint(latitude, longitude)
+            : null,
+      );
+      state = state.copyWith(
+        checkin: checkin,
+        checkinShop: shop,
+        selectedShop: shop,
+      );
+    } catch (e) {
+      debugPrint('Checkin load failed: $e');
+    }
   }
 
   Future<void> _loadKnownShops() async {
@@ -84,36 +111,15 @@ class RecordController extends Notifier<RecordState> {
       searchStatus: ShopSearchStatus.searching,
       searchFailure: null,
     );
-    final here = await ref
-        .read(locationServiceProvider)
-        .currentPosition(requestPermission: requestPermission);
+    final result = await ref
+        .read(shopSearchServiceProvider)
+        .search(requestPermission: requestPermission);
     if (!ref.mounted) return;
-    if (here == null) {
-      state = state.copyWith(
-        searchStatus: ShopSearchStatus.done,
-        searchFailure: ShopSearchFailure.noLocation,
-      );
-      return;
-    }
-    _here = here;
-    var found = const <OverpassShop>[];
-    ShopSearchFailure? failure;
-    try {
-      found = await ref.read(overpassClientProvider).searchNearby(here);
-    } catch (e) {
-      debugPrint('Shop search failed: $e');
-      failure = ShopSearchFailure.searchFailed;
-    }
-    await _knownShopsLoad;
-    if (!ref.mounted) return;
+    _here = result.here;
     state = state.copyWith(
       searchStatus: ShopSearchStatus.done,
-      searchFailure: failure,
-      candidates: rankShopCandidates(
-        here: here,
-        found: found,
-        knownShops: _knownShops,
-      ),
+      searchFailure: result.failure,
+      candidates: result.candidates,
     );
   }
 
@@ -174,6 +180,9 @@ class RecordController extends Notifier<RecordState> {
             eatenAt: draft.photoTakenAt ?? now,
             rating: draft.rating!,
             photoPath: savedPhoto,
+            checkedInAt: draft.isCheckinShopSelected
+                ? draft.checkin?.checkedInAt
+                : null,
             style: draft.style,
             isLimited: draft.isLimited,
             hasTicket: draft.hasTicket,

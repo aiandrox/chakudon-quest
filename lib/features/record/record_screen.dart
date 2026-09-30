@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../checkin/checkin_rules.dart';
+import '../records/clock.dart';
 import '../records/visit_details_form.dart';
 import '../shop_search/shop_candidate.dart';
+import '../shop_search/shop_search_service.dart';
+import '../shop_search/shop_tile.dart';
 import 'record_controller.dart';
 import 'record_state.dart';
 import 'star_rating.dart';
@@ -235,10 +239,20 @@ class _ShopSection extends ConsumerWidget {
     final controller = ref.read(recordControllerProvider.notifier);
     final textTheme = Theme.of(context).textTheme;
     final selected = state.selectedShop;
-    final shops = [
-      ...state.candidates,
-      if (selected != null && !state.candidates.contains(selected)) selected,
+    final checkinShop = state.checkinShop;
+    final candidates = [
+      for (final shop in state.candidates)
+        if (checkinShop == null || !_isSameShop(shop, checkinShop)) shop,
     ];
+    final shops = [
+      ?checkinShop,
+      ...candidates,
+      if (selected != null &&
+          !identical(selected, checkinShop) &&
+          !candidates.contains(selected))
+        selected,
+    ];
+    final checkin = state.checkin;
     final message = _message(l10n);
 
     return Column(
@@ -254,9 +268,17 @@ class _ShopSection extends ConsumerWidget {
             title: Text(l10n.shopSearching),
           ),
         for (final shop in shops)
-          _ShopTile(
+          ShopTile(
             shop: shop,
             selected: identical(shop, selected),
+            note: checkin != null && identical(shop, checkinShop)
+                ? l10n.checkinWaiting(
+                    checkinElapsedMinutes(
+                      checkin,
+                      state.photoTakenAt ?? ref.watch(clockProvider)(),
+                    ),
+                  )
+                : null,
             onTap: () => onSelect(shop),
           ),
         if (message != null)
@@ -282,9 +304,19 @@ class _ShopSection extends ConsumerWidget {
           onChanged: controller.setManualName,
         ),
         for (final shop in state.nameMatches)
-          _ShopTile(shop: shop, selected: false, onTap: () => onSelect(shop)),
+          ShopTile(shop: shop, selected: false, onTap: () => onSelect(shop)),
       ],
     );
+  }
+
+  bool _isSameShop(ShopCandidate a, ShopCandidate b) {
+    if (a.shopId != null && a.shopId == b.shopId) return true;
+    if (a.osmId != null && a.osmId == b.osmId) return true;
+    return a.shopId == null &&
+        b.shopId == null &&
+        a.osmId == null &&
+        b.osmId == null &&
+        a.name == b.name;
   }
 
   String? _message(AppLocalizations l10n) {
@@ -293,45 +325,9 @@ class _ShopSection extends ConsumerWidget {
       ShopSearchFailure.noLocation => l10n.shopNoLocation,
       ShopSearchFailure.searchFailed when state.candidates.isEmpty =>
         l10n.shopSearchFailed,
+      ShopSearchFailure.searchFailed => l10n.shopSearchPartial,
       null when state.candidates.isEmpty => l10n.shopNoCandidates,
       _ => null,
     };
-  }
-}
-
-class _ShopTile extends StatelessWidget {
-  const _ShopTile({
-    required this.shop,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final ShopCandidate shop;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
-    final distance = shop.distanceMeters;
-    final details = [
-      if (distance != null) l10n.distanceMeters(distance.round()),
-      if (shop.shopId != null) l10n.shopVisited,
-    ];
-    return Card(
-      elevation: 0,
-      color: selected ? colors.primaryContainer : colors.surfaceContainerLow,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: ListTile(
-        leading: Icon(
-          selected ? Icons.check_circle : Icons.storefront,
-          color: selected ? colors.primary : null,
-        ),
-        title: Text(shop.name),
-        subtitle: details.isEmpty ? null : Text(details.join('・')),
-        onTap: onTap,
-      ),
-    );
   }
 }

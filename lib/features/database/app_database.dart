@@ -39,16 +39,35 @@ class Visits extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Shops, Visits])
+/// 並んでいる最中のチェックイン。同時に1件だけなので、`id`は常に[activeCheckinId]。
+class ActiveCheckins extends Table {
+  IntColumn get id => integer()();
+  TextColumn get shopId => text().nullable()();
+  TextColumn get osmId => text().nullable()();
+  TextColumn get name => text()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  DateTimeColumn get checkedInAt => dateTime()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+const activeCheckinId = 1;
+
+@DriftDatabase(tables: [Shops, Visits, ActiveCheckins])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
     : super(executor ?? driftDatabase(name: 'chakudon_quest'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (migrator, from, to) async {
+      if (from < 2) await migrator.createTable(activeCheckins);
+    },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },

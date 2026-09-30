@@ -1,9 +1,8 @@
 import '../records/models.dart';
 import '../shop_search/shop_candidate.dart';
+import '../shop_search/shop_search_service.dart';
 
 enum ShopSearchStatus { idle, searching, done }
-
-enum ShopSearchFailure { noLocation, searchFailed }
 
 const _unset = Object();
 
@@ -17,6 +16,8 @@ class RecordState {
     this.searchFailure,
     this.candidates = const [],
     this.nameMatches = const [],
+    this.checkin,
+    this.checkinShop,
     this.selectedShop,
     this.manualName = '',
     this.rating,
@@ -42,6 +43,10 @@ class RecordState {
 
   /// 手入力中の店名に合う、記録済みの店。
   final List<ShopCandidate> nameMatches;
+
+  /// 並んでいる最中のチェックインと、その店。
+  final Checkin? checkin;
+  final ShopCandidate? checkinShop;
   final ShopCandidate? selectedShop;
   final String manualName;
   final int? rating;
@@ -57,9 +62,17 @@ class RecordState {
   HoursType get hoursType =>
       chosenHoursType ?? selectedShop?.hoursType ?? HoursType.normal;
 
+  /// 並んでいる店を選んでいるか。このときだけ待ち時間を記録する。
+  bool get isCheckinShopSelected =>
+      checkinShop != null && identical(selectedShop, checkinShop);
+
   bool get hasShop => selectedShop != null || manualName.trim().isNotEmpty;
 
-  bool get hasInput => photoPath != null || hasShop || rating != null;
+  bool get hasInput =>
+      photoPath != null ||
+      rating != null ||
+      manualName.trim().isNotEmpty ||
+      (selectedShop != null && !isCheckinShopSelected);
 
   bool get canSave => hasShop && rating != null && !isSaving;
 
@@ -72,6 +85,8 @@ class RecordState {
     Object? searchFailure = _unset,
     List<ShopCandidate>? candidates,
     List<ShopCandidate>? nameMatches,
+    Checkin? checkin,
+    ShopCandidate? checkinShop,
     Object? selectedShop = _unset,
     String? manualName,
     Object? rating = _unset,
@@ -95,6 +110,8 @@ class RecordState {
           : searchFailure as ShopSearchFailure?,
       candidates: candidates ?? this.candidates,
       nameMatches: nameMatches ?? this.nameMatches,
+      checkin: checkin ?? this.checkin,
+      checkinShop: checkinShop ?? this.checkinShop,
       selectedShop: selectedShop == _unset
           ? this.selectedShop
           : selectedShop as ShopCandidate?,

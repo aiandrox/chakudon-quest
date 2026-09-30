@@ -13,10 +13,12 @@ import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/records/wait_time.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
 import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
 
 import '../../support/fakes.dart';
 
@@ -305,6 +307,85 @@ void main() {
     final entry = (await visits()).single;
     expect(entry.visit.photoPath, isNotNull);
     expect(entry.shop.latitude, isNull);
+  });
+
+  group('チェックイン中', () {
+    final checkedInAt = _photoTime.subtract(const Duration(minutes: 35));
+
+    Future<void> checkIn({DateTime? at}) => container
+        .read(recordRepositoryProvider)
+        .checkIn(
+          shop: const ShopInput(
+            osmId: 'node/9',
+            name: '並んだ店',
+            latitude: 35.0,
+            longitude: 139.0,
+          ),
+          at: at ?? checkedInAt,
+        );
+
+    test('並んだ店が選ばれた状態で始まり、★だけで保存すると待ち時間がつく', () async {
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+
+      expect(state().selectedShop!.name, '並んだ店');
+      expect(state().isCheckinShopSelected, isTrue);
+
+      controller().setRating(5);
+      expect(await controller().save(), isTrue);
+
+      final entry = (await visits()).single;
+      expect(entry.shop.name, '並んだ店');
+      expect(entry.shop.osmId, 'node/9');
+      expect(entry.visit.checkedInAt, checkedInAt);
+      expect(entry.visit.eatenAt, _photoTime);
+      expect(waitMinutes(entry.visit), 35);
+      expect(
+        await container.read(recordRepositoryProvider).activeCheckin(),
+        isNull,
+      );
+    });
+
+    test('別の店を選んで保存すると待ち時間はつかず、チェックインは続く', () async {
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().selectShop(state().candidates.single);
+      expect(state().isCheckinShopSelected, isFalse);
+      controller().setRating(3);
+      await controller().save();
+
+      final entry = (await visits()).single;
+      expect(entry.shop.name, '麺屋テスト');
+      expect(entry.visit.checkedInAt, isNull);
+      expect(
+        (await container.read(recordRepositoryProvider).activeCheckin())!.name,
+        '並んだ店',
+      );
+    });
+
+    test('3時間を超えたチェックインは使わない', () async {
+      await checkIn(at: _photoTime.subtract(const Duration(hours: 4)));
+
+      await controller().start();
+      await pumpEventQueue();
+
+      expect(state().checkin, isNull);
+      expect(state().selectedShop, isNull);
+    });
+
+    test('並んだ店が選ばれているだけなら、確認なしで戻れる', () async {
+      picker.cameraPath = null;
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+
+      expect(state().hasInput, isFalse);
+    });
   });
 
   test('店と★が揃うまでは保存しない', () async {

@@ -55,6 +55,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shopSearchFailed => '店を検索できませんでした。店名を入力してください';
 
   @override
+  String get shopSearchPartial => '店を検索できなかったため、記録済みの店だけを表示しています';
+
+  @override
   String get shopNoCandidates => '近くに候補が見つかりませんでした。店名を入力してください';
 
   @override
@@ -189,4 +192,97 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get ticketBadge => '整理券';
+
+  @override
+  String get checkinButton => '並んだ';
+
+  @override
+  String get checkinTitle => '並んだ店を選ぶ';
+
+  @override
+  String checkinDone(String shop) {
+    return '$shop に並びました';
+  }
+
+  @override
+  String get checkinFailed => 'チェックインできませんでした。もう一度お試しください';
+
+  @override
+  String get checkinTooFar => '100m以内に近づくとチェックインできます';
+
+  @override
+  String get checkinNoLocation =>
+      '現在地がわからないため、チェックインできません。位置情報をオンにして、もう一度お試しください';
+
+  @override
+  String get checkinSearchFailed => '店を検索できませんでした。店名を入力してチェックインできます';
+
+  @override
+  String get checkinNoCandidates => '近くに候補が見つかりませんでした。店名を入力してチェックインできます';
+
+  @override
+  String get checkinRetry => 'もう一度探す';
+
+  @override
+  String get checkinManualButton => 'この店名でチェックイン';
+
+  @override
+  String checkinBanner(String shop) {
+    return '$shop に並び中';
+  }
+
+  @override
+  String checkinWaiting(int minutes) {
+    return '並び始めてから $minutes分';
+  }
+
+  @override
+  String get checkinCancel => '取り消す';
+
+  @override
+  String get checkinCancelTitle => 'チェックインを取り消しますか？';
+
+  @override
+  String get checkinCancelMessage => '並んだ記録は残りません';
+
+  @override
+  String get checkinKeep => '並び続ける';
+
+  @override
+  String get retreat => '撤退';
+
+  @override
+  String get retreatTitle => '撤退を記録しますか？';
+
+  @override
+  String get retreatMessage => '食べられなかった記録として残します。次に同じ店で食べると「再挑戦成功」になります';
+
+  @override
+  String get retreatReasonSoldOut => '売り切れ';
+
+  @override
+  String get retreatReasonClosed => '臨時休業';
+
+  @override
+  String get retreatReasonNoTime => '時間切れ';
+
+  @override
+  String get retreatMemoLabel => 'メモ（任意）';
+
+  @override
+  String get retreatConfirm => '撤退を記録';
+
+  @override
+  String get retreatSaved => '撤退を記録しました。次こそ着丼！';
+
+  @override
+  String get retreatFailed => '記録できませんでした。もう一度お試しください';
+
+  @override
+  String get retreatBadge => '撤退';
+
+  @override
+  String waitTime(int minutes) {
+    return '待ち時間 $minutes分';
+  }
 }

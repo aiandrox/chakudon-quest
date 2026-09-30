@@ -11,6 +11,7 @@ import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
 import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
 
 AppDatabase createTestDatabase() {
   final database = AppDatabase(NativeDatabase.memory());
@@ -129,6 +130,54 @@ class FakeRecordRepository implements RecordRepository {
     return deletedPhotoPath;
   }
 
+  final checkins = <ShopInput>[];
+  final retreatMemos = <String>[];
+  int cancelCount = 0;
+
+  @override
+  Future<void> checkIn({required ShopInput shop, required DateTime at}) async {
+    final error = this.error;
+    if (error != null) throw error;
+    checkins.add(shop);
+  }
+
+  @override
+  Future<void> cancelCheckin() async {
+    cancelCount++;
+  }
+
+  @override
+  Future<Visit> saveRetreat({
+    required Checkin checkin,
+    String memo = '',
+    required DateTime now,
+  }) async {
+    final error = this.error;
+    if (error != null) throw error;
+    retreatMemos.add(memo);
+    return Visit(
+      id: 'retreat',
+      shopId: 'shop',
+      result: VisitResult.retreated,
+      checkedInAt: checkin.checkedInAt,
+      eatenAt: now,
+      isLimited: false,
+      hasTicket: false,
+      memo: memo,
+      createdAt: now,
+    );
+  }
+
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class FakeShopSearchService implements ShopSearchService {
+  FakeShopSearchService(this.result);
+
+  ShopSearchResult result;
+
+  @override
+  Future<ShopSearchResult> search({required bool requestPermission}) async =>
+      result;
 }

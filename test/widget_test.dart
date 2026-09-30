@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/checkin/checkin_controller.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
@@ -16,6 +17,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(AsyncData(visits)),
+          activeCheckinProvider.overrideWithValue(const AsyncData(null)),
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           photoPickerProvider.overrideWithValue(FakePhotoPicker()),
         ],
@@ -31,6 +33,7 @@ void main() {
     expect(find.text(ja.appName), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsOneWidget);
     expect(find.byTooltip(ja.addRecord), findsOneWidget);
+    expect(find.text(ja.checkinButton), findsOneWidget);
   });
 
   testWidgets('記録があるときは店名と★を一覧に表示する', (tester) async {

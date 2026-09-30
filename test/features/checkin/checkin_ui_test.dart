@@ -1,0 +1,172 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:chakudon_quest/features/checkin/checkin_banner.dart';
+import 'package:chakudon_quest/features/checkin/checkin_screen.dart';
+import 'package:chakudon_quest/features/records/clock.dart';
+import 'package:chakudon_quest/features/records/models.dart';
+import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/shop_search/geo.dart';
+import 'package:chakudon_quest/features/shop_search/shop_candidate.dart';
+import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
+
+import '../../support/fakes.dart';
+import '../../support/l10n.dart';
+
+void main() {
+  late FakeRecordRepository repository;
+  final now = DateTime(2026, 9, 30, 12);
+
+  setUp(() => repository = FakeRecordRepository());
+
+  Future<void> pump(
+    WidgetTester tester,
+    Widget home, {
+    ShopSearchResult search = const ShopSearchResult(),
+  }) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 2.5;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          recordRepositoryProvider.overrideWithValue(repository),
+          shopSearchServiceProvider.overrideWithValue(
+            FakeShopSearchService(search),
+          ),
+          clockProvider.overrideWithValue(() => now),
+        ],
+        child: localizedApp(home: home),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  group('CheckinScreen', () {
+    const nearAndFar = ShopSearchResult(
+      here: GeoPoint(35.0, 139.0),
+      candidates: [
+        ShopCandidate(osmId: 'node/near', name: '近い店', distanceMeters: 56),
+        ShopCandidate(osmId: 'node/far', name: '遠い店', distanceMeters: 222),
+      ],
+    );
+
+    testWidgets('100mより遠い店は選べず、近づくよう案内する', (tester) async {
+      await pump(tester, const CheckinScreen(), search: nearAndFar);
+
+      expect(find.text('56m'), findsOneWidget);
+      expect(find.text('222m・${ja.checkinTooFar}'), findsOneWidget);
+      expect(find.text(ja.osmAttribution), findsOneWidget);
+
+      await tester.tap(find.text('遠い店'));
+      await tester.pumpAndSettle();
+
+      expect(repository.checkins, isEmpty);
+      expect(find.byType(CheckinScreen), findsOneWidget);
+    });
+
+    testWidgets('近い店をタップするとチェックインする', (tester) async {
+      await pump(tester, const CheckinScreen(), search: nearAndFar);
+
+      await tester.tap(find.text('近い店'));
+      await tester.pumpAndSettle();
+
+      expect(repository.checkins.single.osmId, 'node/near');
+    });
+
+    testWidgets('候補が無くても、店名を入力してチェックインできる', (tester) async {
+      await pump(
+        tester,
+        const CheckinScreen(),
+        search: const ShopSearchResult(
+          here: GeoPoint(35.0, 139.0),
+          failure: ShopSearchFailure.searchFailed,
+        ),
+      );
+
+      expect(find.text(ja.checkinSearchFailed), findsOneWidget);
+      final button = find.widgetWithText(FilledButton, ja.checkinManualButton);
+      expect(tester.widget<FilledButton>(button).onPressed, isNull);
+
+      await tester.enterText(find.byType(TextField), '電波のない店');
+      await tester.pump();
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+
+      final checkin = repository.checkins.single;
+      expect(checkin.name, '電波のない店');
+      expect(checkin.latitude, 35.0);
+    });
+
+    testWidgets('現在地がわからないときは、手入力の欄を出さず再検索を促す', (tester) async {
+      await pump(
+        tester,
+        const CheckinScreen(),
+        search: const ShopSearchResult(failure: ShopSearchFailure.noLocation),
+      );
+
+      expect(find.text(ja.checkinNoLocation), findsOneWidget);
+      expect(find.text(ja.checkinRetry), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+    });
+  });
+
+  group('CheckinBanner', () {
+    final checkin = Checkin(
+      name: '麺屋テスト',
+      checkedInAt: now.subtract(const Duration(minutes: 35)),
+    );
+    final banner = Scaffold(body: CheckinBanner(checkin: checkin));
+
+    testWidgets('並んでいる店と経過時間を表示する', (tester) async {
+      await pump(tester, banner);
+
+      expect(find.text(ja.checkinBanner('麺屋テスト')), findsOneWidget);
+      expect(find.text(ja.checkinWaiting(35)), findsOneWidget);
+    });
+
+    testWidgets('取り消しは確認してから行う', (tester) async {
+      await pump(tester, banner);
+
+      await tester.tap(find.text(ja.checkinCancel));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(ja.checkinKeep));
+      await tester.pumpAndSettle();
+      expect(repository.cancelCount, 0);
+
+      await tester.tap(find.text(ja.checkinCancel));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(TextButton, ja.checkinCancel).last);
+      await tester.pumpAndSettle();
+      expect(repository.cancelCount, 1);
+    });
+
+    testWidgets('撤退は理由を選んで記録できる', (tester) async {
+      await pump(tester, banner);
+
+      await tester.tap(find.text(ja.retreat));
+      await tester.pumpAndSettle();
+      expect(find.text(ja.retreatTitle), findsOneWidget);
+
+      await tester.tap(find.text(ja.retreatReasonSoldOut));
+      await tester.pump();
+      await tester.tap(find.text(ja.retreatConfirm));
+      await tester.pumpAndSettle();
+
+      expect(repository.retreatMemos, [ja.retreatReasonSoldOut]);
+      expect(find.text(ja.retreatSaved), findsOneWidget);
+    });
+
+    testWidgets('撤退をキャンセルすると何も記録しない', (tester) async {
+      await pump(tester, banner);
+
+      await tester.tap(find.text(ja.retreat));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(ja.cancel));
+      await tester.pumpAndSettle();
+
+      expect(repository.retreatMemos, isEmpty);
+    });
+  });
+}
