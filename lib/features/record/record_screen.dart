@@ -11,10 +11,11 @@ import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
 import '../shop_search/shop_tile.dart';
 import 'record_controller.dart';
+import 'record_result_screen.dart';
 import 'record_state.dart';
 import 'star_rating.dart';
 
-/// 保存できたら`true`を返して閉じる。
+/// 保存できたら、得たポイントを見せる画面に切り替わる。
 class RecordScreen extends ConsumerStatefulWidget {
   const RecordScreen({super.key, this.recoveredPhotoPath});
 
@@ -47,10 +48,14 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   }
 
   Future<void> _save() async {
-    final saved = await ref.read(recordControllerProvider.notifier).save();
+    final visitId = await ref.read(recordControllerProvider.notifier).save();
     if (!mounted) return;
-    if (saved) {
-      Navigator.of(context).pop(true);
+    if (visitId != null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (_) => RecordResultScreen(visitId: visitId),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).recordSaveFailed)),
@@ -312,7 +317,10 @@ class _ShopSection extends ConsumerWidget {
   }
 
   String? _message(AppLocalizations l10n) {
-    if (state.searchStatus != ShopSearchStatus.done) return null;
+    // 店が決まっていれば、店名の入力を促す案内は要らない。
+    if (state.searchStatus != ShopSearchStatus.done || state.hasShop) {
+      return null;
+    }
     return switch (state.searchFailure) {
       ShopSearchFailure.noLocation => l10n.shopNoLocation,
       ShopSearchFailure.searchFailed when state.candidates.isEmpty =>

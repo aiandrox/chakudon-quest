@@ -25,9 +25,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get recordTitle => '記録する';
 
   @override
-  String get recordSaved => '着丼！記録しました';
-
-  @override
   String get recordSaveFailed => '保存できませんでした。もう一度お試しください';
 
   @override
@@ -285,4 +282,78 @@ class AppLocalizationsJa extends AppLocalizations {
   String waitTime(int minutes) {
     return '待ち時間 $minutes分';
   }
+
+  @override
+  String get rankApprentice => '見習い冒険者';
+
+  @override
+  String get rankTraveler => '麺の旅人';
+
+  @override
+  String get rankHero => '行列の勇者';
+
+  @override
+  String get rankLegend => '伝説の麺道士';
+
+  @override
+  String points(int points) {
+    return '$points pt';
+  }
+
+  @override
+  String pointsGained(int points) {
+    return '+$points pt';
+  }
+
+  @override
+  String get pointsSection => '獲得ポイント';
+
+  @override
+  String get pointsBase => '基本';
+
+  @override
+  String pointsWait(int minutes) {
+    return '待ち時間 $minutes分';
+  }
+
+  @override
+  String get pointsFirstVisit => '初訪問';
+
+  @override
+  String get pointsRetry => '再挑戦成功';
+
+  @override
+  String pointsHours(String label) {
+    return '営業時間（$label）';
+  }
+
+  @override
+  String pointsMultiplier(String multiplier) {
+    return '×$multiplier';
+  }
+
+  @override
+  String get pointsRetreat => '撤退の記録にポイントはつきません';
+
+  @override
+  String totalPoints(int points) {
+    return '累計 $points pt';
+  }
+
+  @override
+  String nextRank(String rank, int points) {
+    return '「$rank」まで あと $points pt';
+  }
+
+  @override
+  String get maxRank => '最高ランクに到達しました';
+
+  @override
+  String get rankUp => 'ランクアップ！';
+
+  @override
+  String get resultTitle => '着丼！';
+
+  @override
+  String get resultOk => 'OK';
 }

@@ -36,7 +36,7 @@ void main() {
     expect(find.text(ja.checkinButton), findsOneWidget);
   });
 
-  testWidgets('記録があるときは店名と★を一覧に表示する', (tester) async {
+  testWidgets('記録があるときは店名・★・ポイントと、ランクを表示する', (tester) async {
     final shop = Shop(
       id: 'shop',
       name: '麺屋テスト',
@@ -61,7 +61,10 @@ void main() {
     ]);
 
     expect(find.text('麺屋テスト'), findsOneWidget);
-    expect(find.text('2026/9/30  ★4'), findsOneWidget);
+    // 初訪問の1杯は 10 + 10 = 20点。
+    expect(find.text('2026/9/30  ★4  +20 pt'), findsOneWidget);
+    expect(find.text(ja.rankApprentice), findsOneWidget);
+    expect(find.text(ja.totalPoints(20)), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsNothing);
   });
 }

@@ -163,9 +163,10 @@ class RecordController extends Notifier<RecordState> {
 
   void setMemo(String memo) => state = state.copyWith(memo: memo);
 
-  Future<bool> save() async {
+  /// 保存できたら記録のID、できなければnullを返す。
+  Future<String?> save() async {
     final draft = state;
-    if (!draft.canSave) return false;
+    if (!draft.canSave) return null;
     state = draft.copyWith(isSaving: true);
     final storage = ref.read(photoStorageProvider);
     String? savedPhoto;
@@ -173,7 +174,7 @@ class RecordController extends Notifier<RecordState> {
       final photoPath = draft.photoPath;
       if (photoPath != null) savedPhoto = await storage.save(photoPath);
       final now = ref.read(clockProvider)();
-      await ref
+      final visit = await ref
           .read(recordRepositoryProvider)
           .saveEatenVisit(
             shop: _shopInput(draft),
@@ -190,7 +191,7 @@ class RecordController extends Notifier<RecordState> {
             memo: draft.memo.trim(),
             now: now,
           );
-      return true;
+      return visit.id;
     } catch (e) {
       debugPrint('Record save failed: $e');
       if (savedPhoto != null) {
@@ -199,7 +200,7 @@ class RecordController extends Notifier<RecordState> {
         } catch (_) {}
       }
       if (ref.mounted) state = state.copyWith(isSaving: false);
-      return false;
+      return null;
     }
   }
 
