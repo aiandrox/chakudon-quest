@@ -15,6 +15,8 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
+  static const _mapIndex = 3;
+
   int _index = 0;
 
   @override
@@ -23,11 +25,16 @@ class _AppShellState extends State<AppShell> {
     return Scaffold(
       body: IndexedStack(
         index: _index,
-        children: const [
-          HomeScreen(),
-          QuestListScreen(),
-          StatsScreen(),
-          MapScreen(),
+        children: [
+          const HomeScreen(),
+          const QuestListScreen(),
+          const StatsScreen(),
+          // 地図は開いたときだけ作る。開くたびに全部のピンが入る範囲に合わせ直し、
+          // 地図を見ていないときにタイルを取りに行かないようにするため。
+          if (_index == _mapIndex)
+            const MapScreen()
+          else
+            const SizedBox.shrink(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
