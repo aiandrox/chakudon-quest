@@ -51,9 +51,16 @@ class FakeOverpassClient implements OverpassClient {
   Object? error;
   int calls = 0;
 
+  final radii = <int>[];
+
   @override
-  Future<List<OverpassShop>> searchNearby(GeoPoint center) async {
+  Future<List<OverpassShop>> searchNearby(
+    GeoPoint center, {
+    int radiusMeters = shopSearchRadiusMeters,
+    Duration timeout = OverpassClient.timeout,
+  }) async {
     calls++;
+    radii.add(radiusMeters);
     final error = this.error;
     if (error != null) throw error;
     return shops;

@@ -18,9 +18,13 @@ class OverpassShop {
   final GeoPoint location;
 }
 
-String buildOverpassQuery(GeoPoint center, {int timeoutSeconds = 10}) {
+String buildOverpassQuery(
+  GeoPoint center, {
+  int radiusMeters = shopSearchRadiusMeters,
+  int timeoutSeconds = 10,
+}) {
   final around =
-      '(around:$shopSearchRadiusMeters,${center.latitude},${center.longitude})';
+      '(around:$radiusMeters,${center.latitude},${center.longitude})';
   return '[out:json][timeout:$timeoutSeconds];'
       '('
       'nwr["cuisine"~"ramen"]$around;'

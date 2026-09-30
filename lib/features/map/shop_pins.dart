@@ -1,6 +1,8 @@
 import '../records/models.dart';
 import '../scoring/points.dart';
 import '../scoring/ranks.dart';
+import '../shop_search/overpass.dart';
+import '../shop_search/shop_candidate.dart';
 
 class ShopPin {
   const ShopPin({
@@ -49,5 +51,27 @@ List<ShopPin> shopPins(List<ScoredVisit> scored) {
               .reduce((a, b) => a.isAfter(b) ? a : b),
           rank: ranks[entries.first.visit.shopId],
         ),
+  ];
+}
+
+/// 周辺の検索結果のうち、まだ食べたことのない店。記録済みの店と同じ店は除く。
+List<OverpassShop> unvisitedShops({
+  required List<OverpassShop> found,
+  required List<Shop> eatenShops,
+}) {
+  final known = [for (final shop in eatenShops) ShopCandidate.fromShop(shop)];
+  return [
+    for (final shop in found)
+      if (!known.any(
+        (candidate) => isSameShop(
+          candidate,
+          ShopCandidate(
+            osmId: shop.osmId,
+            name: shop.name,
+            location: shop.location,
+          ),
+        ),
+      ))
+        shop,
   ];
 }

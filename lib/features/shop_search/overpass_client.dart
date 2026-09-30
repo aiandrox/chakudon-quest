@@ -21,7 +21,11 @@ class OverpassClient {
   final Uri _endpoint;
 
   /// 通信の失敗・タイムアウト・想定外の応答は例外にする。呼び出し側で手入力に切り替える。
-  Future<List<OverpassShop>> searchNearby(GeoPoint center) async {
+  Future<List<OverpassShop>> searchNearby(
+    GeoPoint center, {
+    int radiusMeters = shopSearchRadiusMeters,
+    Duration timeout = OverpassClient.timeout,
+  }) async {
     final response = await _client
         .post(
           _endpoint,
@@ -32,7 +36,9 @@ class OverpassClient {
           body: {
             'data': buildOverpassQuery(
               center,
-              timeoutSeconds: timeout.inSeconds,
+              radiusMeters: radiusMeters,
+              // サーバーが制限時間いっぱいまで探しても、返事を受け取る時間を残す。
+              timeoutSeconds: timeout.inSeconds - 2,
             ),
           },
         )
