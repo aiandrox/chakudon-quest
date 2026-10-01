@@ -734,4 +734,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get resultStamped => '印をいただきました';
+
+  @override
+  String recordPhotoDate(String date) {
+    return '食べた日時: $date（写真の撮影日時）';
+  }
 }

@@ -27,7 +27,8 @@ class ShopSearchResult {
   final ShopSearchFailure? failure;
 }
 
-/// 現在地の近くの店を、検索結果と記録済みの店から探す。失敗は例外にせず結果で返す。
+/// 現在地（または[near]）の近くの店を、検索結果と記録済みの店から探す。
+/// 失敗は例外にせず結果で返す。
 class ShopSearchService {
   ShopSearchService({
     required this._location,
@@ -39,10 +40,13 @@ class ShopSearchService {
   final OverpassClient _overpass;
   final RecordRepository _repository;
 
-  Future<ShopSearchResult> search({required bool requestPermission}) async {
-    final here = await _location.currentPosition(
-      requestPermission: requestPermission,
-    );
+  Future<ShopSearchResult> search({
+    required bool requestPermission,
+    GeoPoint? near,
+  }) async {
+    final here =
+        near ??
+        await _location.currentPosition(requestPermission: requestPermission);
     if (here == null) {
       return const ShopSearchResult(failure: ShopSearchFailure.noLocation);
     }

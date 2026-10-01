@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:chakudon_quest/features/database/app_database.dart';
+import 'package:chakudon_quest/features/record/photo_metadata.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/record/record_controller.dart';
 import 'package:chakudon_quest/features/record/record_state.dart';
@@ -30,6 +31,7 @@ void main() {
   late FakeLocationService location;
   late FakeOverpassClient overpass;
   late FakePhotoPicker picker;
+  late FakePhotoMetadataReader metadata;
   late ProviderContainer container;
 
   setUp(() {
@@ -47,6 +49,7 @@ void main() {
       ],
     );
     picker = FakePhotoPicker(cameraPath: photo.path, galleryPath: photo.path);
+    metadata = FakePhotoMetadataReader();
     container = ProviderContainer(
       overrides: [
         appDatabaseProvider.overrideWithValue(createTestDatabase()),
@@ -54,6 +57,7 @@ void main() {
         locationServiceProvider.overrideWithValue(location),
         overpassClientProvider.overrideWithValue(overpass),
         photoPickerProvider.overrideWithValue(picker),
+        photoMetadataReaderProvider.overrideWithValue(metadata),
         clockProvider.overrideWithValue(() => _photoTime),
       ],
     );
@@ -201,6 +205,82 @@ void main() {
     final entry = (await visits()).single;
     expect(entry.visit.photoPath, isNotNull);
     expect(entry.shop.latitude, isNull);
+  });
+
+  group('過去の写真から記録する', () {
+    final takenAt = DateTime(2026, 9, 20, 12, 34);
+    const shopPlace = GeoPoint(35.6, 139.7);
+
+    test('ギャラリーの写真に撮影日時があれば、それを食べた日時にする', () async {
+      picker.cameraPath = null;
+      metadata.metadata = PhotoMetadata(takenAt: takenAt);
+
+      await controller().start();
+      await controller().pickFromGallery();
+      await pumpEventQueue();
+
+      expect(state().photoTakenAt, takenAt);
+      expect(state().photoDateFromPhoto, isTrue);
+      controller().setManualName('昔の店');
+      await controller().save();
+
+      expect((await visits()).single.visit.eatenAt, takenAt);
+    });
+
+    test('撮影日時が無い写真は、今の時刻で記録する', () async {
+      picker.cameraPath = null;
+
+      await controller().start();
+      await controller().pickFromGallery();
+
+      expect(state().photoTakenAt, _photoTime);
+      expect(state().photoDateFromPhoto, isFalse);
+    });
+
+    test('撮影場所があれば、そこで店を探し、手入力の店の位置にもする', () async {
+      picker.cameraPath = null;
+      metadata.metadata = PhotoMetadata(takenAt: takenAt, location: shopPlace);
+
+      await controller().start();
+      await pumpEventQueue();
+      expect(overpass.centers.last.latitude, _here.latitude);
+      final locationRequests = location.requests.length;
+
+      await controller().pickFromGallery();
+      await pumpEventQueue();
+
+      expect(overpass.centers.last.latitude, shopPlace.latitude);
+      expect(location.requests, hasLength(locationRequests));
+      expect(state().searchStatus, ShopSearchStatus.done);
+
+      controller().setManualName('写真の場所の店');
+      await controller().save();
+
+      final shop = (await visits()).single.shop;
+      expect(shop.latitude, shopPlace.latitude);
+      expect(shop.longitude, shopPlace.longitude);
+    });
+
+    test('昔の写真のあとにカメラで撮り直すと、今の時刻と現在地に戻る', () async {
+      metadata.metadata = PhotoMetadata(takenAt: takenAt, location: shopPlace);
+
+      await controller().start();
+      await controller().pickFromGallery();
+      await pumpEventQueue();
+      await controller().takePhoto();
+      await pumpEventQueue();
+
+      expect(state().photoTakenAt, _photoTime);
+      expect(state().photoDateFromPhoto, isFalse);
+      expect(state().photoLocation, isNull);
+      expect(overpass.centers.last.latitude, _here.latitude);
+    });
+
+    test('カメラで撮った写真は、撮影日時を読まない', () async {
+      await controller().start();
+
+      expect(metadata.paths, isEmpty);
+    });
   });
 
   test('店名を入力すると候補の選択は外れ、記録済みの店が名前の候補に出る', () async {
@@ -367,6 +447,21 @@ void main() {
       );
     });
 
+    test('並んでいる最中に、並ぶ前に撮った写真で記録しても待ち時間はつけない', () async {
+      await checkIn();
+      metadata.metadata = PhotoMetadata(
+        takenAt: checkedInAt.subtract(const Duration(days: 1)),
+      );
+
+      await controller().start();
+      await controller().pickFromGallery();
+      await pumpEventQueue();
+      expect(state().isCheckinShopSelected, isTrue);
+      expect(await controller().save(), isNotNull);
+
+      expect((await visits()).single.visit.checkedInAt, isNull);
+    });
+
     test('別の店を選んで保存すると待ち時間はつかず、チェックインは続く', () async {
       await checkIn();
 
@@ -442,6 +537,7 @@ void main() {
         locationServiceProvider.overrideWithValue(location),
         overpassClientProvider.overrideWithValue(overpass),
         photoPickerProvider.overrideWithValue(picker),
+        photoMetadataReaderProvider.overrideWithValue(metadata),
         clockProvider.overrideWithValue(() => now),
       ]);
       await checkIn();
