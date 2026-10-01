@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/washi.dart';
 import '../checkin/checkin_rules.dart';
 import '../records/clock.dart';
 import '../records/visit_details_form.dart';
@@ -158,8 +159,12 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
           child: FilledButton(
             style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(56),
-              textStyle: textTheme.titleLarge,
+              minimumSize: const Size.fromHeight(60),
+              textStyle: const TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 26,
+                letterSpacing: 4,
+              ),
             ),
             onPressed: state.canSave ? _save : null,
             child: state.isSaving

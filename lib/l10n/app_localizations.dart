@@ -337,7 +337,7 @@ abstract class AppLocalizations {
   /// No description provided for @hoursNote.
   ///
   /// In ja, this message translates to:
-  /// **'ポイントの倍率: 1つで×1.5、2つ以上で×2'**
+  /// **'修行点の倍率: 1つで×1.5、2つ以上で×2'**
   String get hoursNote;
 
   /// No description provided for @hoursLunchOnly.
@@ -697,43 +697,43 @@ abstract class AppLocalizations {
   /// No description provided for @rankApprentice.
   ///
   /// In ja, this message translates to:
-  /// **'見習い冒険者'**
+  /// **'入門'**
   String get rankApprentice;
 
   /// No description provided for @rankTraveler.
   ///
   /// In ja, this message translates to:
-  /// **'麺の旅人'**
+  /// **'初段'**
   String get rankTraveler;
 
   /// No description provided for @rankHero.
   ///
   /// In ja, this message translates to:
-  /// **'行列の勇者'**
+  /// **'師範代'**
   String get rankHero;
 
   /// No description provided for @rankLegend.
   ///
   /// In ja, this message translates to:
-  /// **'伝説の麺道士'**
+  /// **'免許皆伝'**
   String get rankLegend;
 
   /// No description provided for @points.
   ///
   /// In ja, this message translates to:
-  /// **'{points} pt'**
+  /// **'{points}点'**
   String points(int points);
 
   /// No description provided for @pointsGained.
   ///
   /// In ja, this message translates to:
-  /// **'+{points} pt'**
+  /// **'+{points}点'**
   String pointsGained(int points);
 
   /// No description provided for @pointsSection.
   ///
   /// In ja, this message translates to:
-  /// **'獲得ポイント'**
+  /// **'修行点'**
   String get pointsSection;
 
   /// No description provided for @pointsBase.
@@ -775,31 +775,31 @@ abstract class AppLocalizations {
   /// No description provided for @pointsRetreat.
   ///
   /// In ja, this message translates to:
-  /// **'撤退の記録にポイントはつきません'**
+  /// **'撤退の記録に修行点はつきません'**
   String get pointsRetreat;
 
   /// No description provided for @totalPoints.
   ///
   /// In ja, this message translates to:
-  /// **'累計 {points} pt'**
+  /// **'修行点 {points}'**
   String totalPoints(int points);
 
   /// No description provided for @nextRank.
   ///
   /// In ja, this message translates to:
-  /// **'「{rank}」まで あと {points} pt'**
+  /// **'{rank}まで あと {points}点'**
   String nextRank(String rank, int points);
 
   /// No description provided for @maxRank.
   ///
   /// In ja, this message translates to:
-  /// **'最高ランクに到達しました'**
+  /// **'免許皆伝に至りました'**
   String get maxRank;
 
   /// No description provided for @rankUp.
   ///
   /// In ja, this message translates to:
-  /// **'ランクアップ！'**
+  /// **'昇段！'**
   String get rankUp;
 
   /// No description provided for @resultTitle.
@@ -811,13 +811,13 @@ abstract class AppLocalizations {
   /// No description provided for @resultOk.
   ///
   /// In ja, this message translates to:
-  /// **'OK'**
+  /// **'印帳にもどる'**
   String get resultOk;
 
   /// No description provided for @navRecords.
   ///
   /// In ja, this message translates to:
-  /// **'記録'**
+  /// **'印帳'**
   String get navRecords;
 
   /// No description provided for @navQuests.
@@ -1093,7 +1093,7 @@ abstract class AppLocalizations {
   /// No description provided for @bestHighestPoints.
   ///
   /// In ja, this message translates to:
-  /// **'1杯の最高ポイント'**
+  /// **'1杯の最高の修行点'**
   String get bestHighestPoints;
 
   /// No description provided for @bestMostRetreats.
@@ -1129,7 +1129,7 @@ abstract class AppLocalizations {
   /// No description provided for @statsShopRanksNote.
   ///
   /// In ja, this message translates to:
-  /// **'その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）'**
+  /// **'その店で1杯に得た最高の修行点で決まります（極 60以上 / 特 40以上 / 上 25以上 / 並）'**
   String get statsShopRanksNote;
 
   /// No description provided for @navMap.
@@ -1231,8 +1231,146 @@ abstract class AppLocalizations {
   /// No description provided for @statsBestPoints.
   ///
   /// In ja, this message translates to:
-  /// **'最高 {points} pt'**
+  /// **'最高 {points}点'**
   String statsBestPoints(int points);
+
+  /// No description provided for @shopRankS.
+  ///
+  /// In ja, this message translates to:
+  /// **'極'**
+  String get shopRankS;
+
+  /// No description provided for @shopRankA.
+  ///
+  /// In ja, this message translates to:
+  /// **'特'**
+  String get shopRankA;
+
+  /// No description provided for @shopRankB.
+  ///
+  /// In ja, this message translates to:
+  /// **'上'**
+  String get shopRankB;
+
+  /// No description provided for @shopRankC.
+  ///
+  /// In ja, this message translates to:
+  /// **'並'**
+  String get shopRankC;
+
+  /// No description provided for @inkanEaten.
+  ///
+  /// In ja, this message translates to:
+  /// **'一本'**
+  String get inkanEaten;
+
+  /// No description provided for @inkanRetry.
+  ///
+  /// In ja, this message translates to:
+  /// **'雪辱'**
+  String get inkanRetry;
+
+  /// No description provided for @inkanRetreat.
+  ///
+  /// In ja, this message translates to:
+  /// **'敗'**
+  String get inkanRetreat;
+
+  /// No description provided for @inkanTop.
+  ///
+  /// In ja, this message translates to:
+  /// **'{rank}　{kind}'**
+  String inkanTop(String rank, String kind);
+
+  /// No description provided for @inkanStyleShoyu.
+  ///
+  /// In ja, this message translates to:
+  /// **'醤'**
+  String get inkanStyleShoyu;
+
+  /// No description provided for @inkanStyleMiso.
+  ///
+  /// In ja, this message translates to:
+  /// **'味'**
+  String get inkanStyleMiso;
+
+  /// No description provided for @inkanStyleShio.
+  ///
+  /// In ja, this message translates to:
+  /// **'塩'**
+  String get inkanStyleShio;
+
+  /// No description provided for @inkanStyleTonkotsu.
+  ///
+  /// In ja, this message translates to:
+  /// **'豚'**
+  String get inkanStyleTonkotsu;
+
+  /// No description provided for @inkanStyleIekei.
+  ///
+  /// In ja, this message translates to:
+  /// **'家'**
+  String get inkanStyleIekei;
+
+  /// No description provided for @inkanStyleJiro.
+  ///
+  /// In ja, this message translates to:
+  /// **'郎'**
+  String get inkanStyleJiro;
+
+  /// No description provided for @inkanStyleTsukemen.
+  ///
+  /// In ja, this message translates to:
+  /// **'沾'**
+  String get inkanStyleTsukemen;
+
+  /// No description provided for @inkanStyleOther.
+  ///
+  /// In ja, this message translates to:
+  /// **'麺'**
+  String get inkanStyleOther;
+
+  /// No description provided for @kanjiMonthDay.
+  ///
+  /// In ja, this message translates to:
+  /// **'{month}月{day}日'**
+  String kanjiMonthDay(String month, String day);
+
+  /// No description provided for @inchoTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'印帳'**
+  String get inchoTitle;
+
+  /// No description provided for @inchoCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'集めた印 {stamps}　道場 {shops}'**
+  String inchoCount(int stamps, int shops);
+
+  /// No description provided for @inchoMetaWait.
+  ///
+  /// In ja, this message translates to:
+  /// **'待 {minutes}分'**
+  String inchoMetaWait(int minutes);
+
+  /// No description provided for @inchoMetaUnrated.
+  ///
+  /// In ja, this message translates to:
+  /// **'★ まだ'**
+  String get inchoMetaUnrated;
+
+  /// No description provided for @shopStamps.
+  ///
+  /// In ja, this message translates to:
+  /// **'この道場の印'**
+  String get shopStamps;
+
+  /// No description provided for @resultStamped.
+  ///
+  /// In ja, this message translates to:
+  /// **'印をいただきました'**
+  String get resultStamped;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -12,6 +15,10 @@ import '../scoring/points_breakdown_view.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/rank_progress.dart';
 import '../scoring/record_outcome.dart';
+import '../inkan/inkan_stamp.dart';
+import '../records/visit_photo.dart';
+import '../scoring/points.dart';
+import '../../theme/washi.dart';
 
 /// 保存した記録で得たポイントの内訳と、累計・ランクの変化を見せる。
 class RecordResultScreen extends ConsumerStatefulWidget {
@@ -44,24 +51,54 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
         : computeRecordOutcome(visits, widget.visitId);
     final outcome = _outcome;
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(l10n.resultTitle),
+    final base = Theme.of(context);
+    final night = base.copyWith(
+      scaffoldBackgroundColor: Washi.ink,
+      colorScheme: base.colorScheme.copyWith(
+        primary: Washi.shuLight,
+        onPrimary: Washi.ink,
+        surface: Washi.ink,
+        onSurface: Washi.paper,
+        onSurfaceVariant: Washi.nightSoft,
       ),
-      body: switch (outcome) {
-        final outcome? => _ResultBody(outcome: outcome),
-        null when visitsState.hasError => Center(
-          child: Text(l10n.homeLoadFailed),
+      textTheme: base.textTheme.apply(
+        bodyColor: Washi.paper,
+        displayColor: Washi.paper,
+      ),
+      appBarTheme: base.appBarTheme.copyWith(
+        backgroundColor: Washi.ink,
+        foregroundColor: Washi.paper,
+        titleTextStyle: base.appBarTheme.titleTextStyle?.copyWith(
+          color: Washi.paper,
         ),
-        null => const Center(child: CircularProgressIndicator()),
-      },
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        child: FilledButton(
-          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(56)),
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.resultOk),
+      ),
+    );
+
+    return Theme(
+      data: night,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(l10n.resultTitle),
+        ),
+        body: switch (outcome) {
+          final outcome? => _ResultBody(outcome: outcome),
+          null when visitsState.hasError => Center(
+            child: Text(l10n.homeLoadFailed),
+          ),
+          null => const Center(child: CircularProgressIndicator()),
+        },
+        bottomNavigationBar: SafeArea(
+          minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size.fromHeight(56),
+              foregroundColor: Washi.paper,
+              side: const BorderSide(color: Washi.paper),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.resultOk),
+          ),
         ),
       ),
     );
@@ -81,36 +118,43 @@ class _ResultBody extends StatelessWidget {
     final scored = outcome.scored;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
       children: [
         Text(
-          scored.shop.name,
-          style: textTheme.titleLarge,
+          l10n.resultStamped,
+          style: textTheme.bodySmall?.copyWith(
+            color: Washi.nightSoft,
+            letterSpacing: 4,
+          ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
-        TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: scored.points.total.toDouble()),
-          duration: const Duration(milliseconds: 900),
-          curve: Curves.easeOutCubic,
-          builder: (context, value, _) => Text(
-            l10n.pointsGained(value.round()),
-            style: textTheme.displayMedium?.copyWith(
-              color: colors.primary,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
+        const SizedBox(height: 12),
+        _StampedPage(scored: scored),
         const SizedBox(height: 16),
-        Card(
-          elevation: 0,
-          color: colors.surfaceContainerLow,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: PointsBreakdownView(scored: scored),
-          ),
+        PointsBreakdownView(scored: scored),
+        const Divider(height: 20, color: Washi.inkSoft),
+        Row(
+          children: [
+            Expanded(
+              child: Text(l10n.pointsSection, style: textTheme.bodyLarge),
+            ),
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: scored.points.total.toDouble()),
+              duration: const Duration(milliseconds: 900),
+              curve: Curves.easeOutCubic,
+              builder: (context, value, _) => Text(
+                l10n.pointsGained(value.round()),
+                style: TextStyle(
+                  fontFamily: Washi.brush,
+                  fontSize: 36,
+                  color: colors.primary,
+                ),
+              ),
+            ),
+          ],
         ),
+        const SizedBox(height: 12),
+        RankProgress(totalPoints: outcome.totalAfter),
         if (outcome.isRankUp) ...[
           const SizedBox(height: 16),
           _RankUpBanner(rank: outcome.rankAfter),
@@ -119,9 +163,90 @@ class _ResultBody extends StatelessWidget {
           const SizedBox(height: 12),
           _QuestAchievedBanner(levelUp: levelUp),
         ],
-        const SizedBox(height: 24),
-        RankProgress(totalPoints: outcome.totalAfter),
       ],
+    );
+  }
+}
+
+/// 白いページに、印が上からポンと押される。
+class _StampedPage extends StatefulWidget {
+  const _StampedPage({required this.scored});
+
+  final ScoredVisit scored;
+
+  @override
+  State<_StampedPage> createState() => _StampedPageState();
+}
+
+class _StampedPageState extends State<_StampedPage> {
+  static const _delay = Duration(milliseconds: 350);
+  static const _press = Duration(milliseconds: 380);
+
+  bool _pressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(_delay, () {
+      if (!mounted) return;
+      setState(() => _pressed = true);
+      Future<void>.delayed(_press, HapticFeedback.mediumImpact);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scored = widget.scored;
+    return DecoratedBox(
+      decoration: const BoxDecoration(color: Washi.page),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            VerticalText(
+              scored.shop.name,
+              maxChars: 9,
+              style: const TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 26,
+                color: Washi.ink,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PastedPhoto(
+                  angle: -2 * math.pi / 180,
+                  border: 5,
+                  child: SizedBox(
+                    width: 150,
+                    height: 112,
+                    child: VisitPhoto(
+                      photoPath: scored.visit.photoPath,
+                      cacheWidth: 400,
+                    ),
+                  ),
+                ),
+                Transform.translate(
+                  offset: const Offset(0, -20),
+                  child: AnimatedScale(
+                    scale: _pressed ? 1 : 1.8,
+                    duration: _press,
+                    curve: Curves.easeInCubic,
+                    child: AnimatedOpacity(
+                      opacity: _pressed ? 1 : 0,
+                      duration: _press,
+                      child: InkanStamp(scored: scored, size: 136),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -135,7 +260,6 @@ class _RankUpBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
 
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.6, end: 1),
@@ -143,21 +267,18 @@ class _RankUpBanner extends StatelessWidget {
       curve: Curves.elasticOut,
       builder: (context, scale, child) =>
           Transform.scale(scale: scale, child: child),
-      child: Card(
-        elevation: 0,
-        color: colors.surfaceContainerHigh,
+      child: DecoratedBox(
+        decoration: BoxDecoration(border: Border.all(color: Washi.shuLight)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
               Text(l10n.rankUp, style: textTheme.titleMedium),
-              const SizedBox(height: 8),
-              Emblem(icon: rankIcon(rank), tier: rankTier(rank), size: 96),
-              const SizedBox(height: 8),
-              TitleLogo(
-                adventurerRankLabel(l10n, rank),
-                tier: rankTier(rank),
-                fontSize: 28,
+              const SizedBox(height: 12),
+              RankSeal(
+                label: adventurerRankLabel(l10n, rank),
+                fontSize: 32,
+                color: Washi.shuLight,
               ),
             ],
           ),

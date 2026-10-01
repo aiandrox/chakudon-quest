@@ -15,6 +15,10 @@ import '../records/date_format.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_photo.dart';
+import '../records/wait_time.dart';
+import '../inkan/inkan.dart';
+import '../inkan/inkan_stamp.dart';
+import '../../theme/washi.dart';
 import '../scoring/rank_progress.dart';
 import '../streak/streak.dart';
 import 'rating_prompt.dart';
@@ -132,7 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
             child: RankProgress(totalPoints: ref.watch(totalPointsProvider)),
           ),
           const _StreakLine(),
@@ -149,6 +153,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           if (checkin == null && !checkinState.isLoading) ...[
             FloatingActionButton.extended(
               heroTag: 'checkin',
+              backgroundColor: Washi.paper,
+              foregroundColor: Washi.ink,
+              shape: const RoundedRectangleBorder(
+                side: BorderSide(color: Washi.ink),
+                borderRadius: BorderRadius.all(Radius.circular(2)),
+              ),
               onPressed: _openCheckin,
               icon: const Icon(Icons.groups),
               label: Text(l10n.checkinButton),
@@ -186,15 +196,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       AsyncData(:final value) when value.isEmpty => Center(
         child: Text(l10n.homeEmpty, textAlign: TextAlign.center),
       ),
-      AsyncData(:final value) => GridView.builder(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 200),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
+      AsyncData(:final value) => ColoredBox(
+        color: Washi.desk,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: _InchoHeader(visits: value)),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 200),
+              sliver: SliverGrid.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 220,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  mainAxisExtent: 272,
+                ),
+                itemCount: value.length,
+                itemBuilder: (context, index) =>
+                    _VisitPage(entry: value[index]),
+              ),
+            ),
+          ],
         ),
-        itemCount: value.length,
-        itemBuilder: (context, index) => _VisitTile(entry: value[index]),
       ),
       AsyncError() => Center(child: Text(l10n.homeLoadFailed)),
       _ => const Center(child: CircularProgressIndicator()),
@@ -202,89 +224,135 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
-class _VisitTile extends ConsumerWidget {
-  const _VisitTile({required this.entry});
+class _InchoHeader extends StatelessWidget {
+  const _InchoHeader({required this.visits});
+
+  final List<VisitWithShop> visits;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final eaten = visits.where((e) => e.visit.result == VisitResult.eaten);
+    final shops = {for (final entry in eaten) entry.shop.id};
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Expanded(
+            child: Text(
+              l10n.inchoTitle,
+              style: textTheme.titleMedium?.copyWith(fontFamily: Washi.brush),
+            ),
+          ),
+          Text(
+            l10n.inchoCount(eaten.length, shops.length),
+            style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 印帳の1ページ（1杯）。貼った写真と、縦書きの店名と印。
+class _VisitPage extends ConsumerWidget {
+  const _VisitPage({required this.entry});
 
   final VisitWithShop entry;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
     final visit = entry.visit;
     final rating = visit.rating;
-    final points = ref.watch(scoredVisitByIdProvider)[visit.id]?.points.total;
-    const textStyle = TextStyle(color: Colors.white, height: 1.2);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          VisitPhoto(photoPath: visit.photoPath, cacheWidth: 600),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.center,
-                end: Alignment.bottomCenter,
-                colors: [Colors.transparent, Colors.black87],
-              ),
-            ),
+    final waited = waitMinutes(visit);
+    final isRetreat = visit.result == VisitResult.retreated;
+    final scored = ref.watch(scoredVisitByIdProvider)[visit.id];
+    final points = scored?.points.total;
+    final meta = [
+      formatMonthDay(visit.eatenAt),
+      if (isRetreat) l10n.retreatBadge,
+      if (waited != null) l10n.inchoMetaWait(waited),
+      if (!isRetreat && rating != null) l10n.ratingStar(rating),
+      if (!isRetreat && rating == null) l10n.inchoMetaUnrated,
+      if (!isRetreat && points != null) l10n.pointsGained(points),
+    ].join('  ');
+
+    return Material(
+      color: isRetreat ? const Color(0xFFF6F1E6) : Washi.page,
+      shape: const RoundedRectangleBorder(side: BorderSide(color: Washi.line)),
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => VisitDetailScreen(visitId: visit.id),
           ),
-          if (visit.result == VisitResult.retreated)
-            Positioned(
-              left: 8,
-              top: 8,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 12, 10, 8),
+          child: Column(
+            children: [
+              if (isRetreat && visit.photoPath == null)
+                SizedBox(
+                  height: 116,
+                  width: double.infinity,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Washi.line),
+                    ),
+                    child: Center(
+                      child: Text(
+                        l10n.retreatBadge,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: Washi.faded,
+                        ),
+                      ),
+                    ),
                   ),
-                  child: Text(l10n.retreatBadge, style: textStyle),
+                )
+              else
+                PastedPhoto(
+                  angle: inkanAngle(visit.id) * 0.3,
+                  child: SizedBox(
+                    height: 108,
+                    width: double.infinity,
+                    child: VisitPhoto(
+                      photoPath: visit.photoPath,
+                      cacheWidth: 400,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    VerticalText(
+                      entry.shop.name,
+                      maxChars: 6,
+                      style: TextStyle(
+                        fontFamily: Washi.brush,
+                        fontSize: 17,
+                        color: isRetreat ? Washi.inkSoft : Washi.ink,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    if (scored != null) InkanStamp(scored: scored, size: 84),
+                  ],
                 ),
               ),
-            ),
-          Positioned(
-            left: 8,
-            right: 8,
-            bottom: 8,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  entry.shop.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: textStyle.copyWith(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  [
-                    formatDate(visit.eatenAt),
-                    if (rating != null) l10n.ratingStar(rating),
-                    if (rating == null && visit.result == VisitResult.eaten)
-                      l10n.ratingUnrated,
-                    if (points != null && visit.result == VisitResult.eaten)
-                      l10n.pointsGained(points),
-                  ].join('  '),
-                  style: textStyle.copyWith(fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => VisitDetailScreen(visitId: visit.id),
-                ),
+              Text(
+                meta,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.labelSmall?.copyWith(color: Washi.inkSoft),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

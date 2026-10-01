@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,17 +14,28 @@ import '../records/record_repository.dart';
 import '../records/visit_history.dart';
 import '../records/visit_photo.dart';
 import '../records/wait_time.dart';
+import '../inkan/inkan_stamp.dart';
+import '../scoring/points.dart';
 import '../scoring/points_breakdown_view.dart';
+import '../../theme/washi.dart';
 import '../shop/shop_memo_dialog.dart';
 import '../scoring/scoring_providers.dart';
 import 'visit_edit_screen.dart';
 
-class VisitDetailScreen extends ConsumerWidget {
+/// 1つの店のページ。開いた1杯を大きく見せ、この店で集めた印をタップすると切り替わる。
+class VisitDetailScreen extends ConsumerStatefulWidget {
   const VisitDetailScreen({super.key, required this.visitId});
 
   final String visitId;
 
-  Future<void> _delete(BuildContext context, WidgetRef ref) async {
+  @override
+  ConsumerState<VisitDetailScreen> createState() => _VisitDetailScreenState();
+}
+
+class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
+  late String _visitId = widget.visitId;
+
+  Future<void> _delete(String visitId) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
@@ -41,7 +54,7 @@ class VisitDetailScreen extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed != true || !context.mounted) return;
+    if (confirmed != true || !mounted) return;
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
     // 画面を閉じたあとは`ref`を使えないため、先に取り出しておく。
@@ -64,11 +77,7 @@ class VisitDetailScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _editShopMemo(
-    BuildContext context,
-    WidgetRef ref,
-    Shop shop,
-  ) async {
+  Future<void> _editShopMemo(Shop shop) async {
     final messenger = ScaffoldMessenger.of(context);
     final failed = AppLocalizations.of(context).editSaveFailed;
     final repository = ref.read(recordRepositoryProvider);
@@ -83,10 +92,10 @@ class VisitDetailScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final visits = ref.watch(visitsProvider).value ?? const [];
-    final entry = visits.where((e) => e.visit.id == visitId).firstOrNull;
+    final entry = visits.where((e) => e.visit.id == _visitId).firstOrNull;
     if (entry == null) {
       return Scaffold(
         appBar: AppBar(),
@@ -96,6 +105,10 @@ class VisitDetailScreen extends ConsumerWidget {
     final visit = entry.visit;
     final previous = previousVisitAtShop(visits, visit);
     final scored = ref.watch(scoredVisitByIdProvider)[visit.id];
+    final shopStamps = [
+      for (final stamp in ref.watch(scoredVisitsProvider))
+        if (stamp.visit.shopId == entry.shop.id) stamp,
+    ];
     final textTheme = Theme.of(context).textTheme;
     final style = visit.style;
     final waited = waitMinutes(visit);
@@ -126,24 +139,32 @@ class VisitDetailScreen extends ConsumerWidget {
           IconButton(
             tooltip: l10n.delete,
             icon: const Icon(Icons.delete),
-            onPressed: () => _delete(context, ref),
+            onPressed: () => _delete(visit.id),
           ),
         ],
       ),
+      backgroundColor: Washi.desk,
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [
-          AspectRatio(
-            aspectRatio: 4 / 3,
-            child: VisitPhoto(photoPath: visit.photoPath),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+            child: _ShopPage(entry: entry, scored: scored),
           ),
+          if (shopStamps.length > 1)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: _ShopStamps(
+                stamps: shopStamps,
+                selectedId: visit.id,
+                onSelect: (id) => setState(() => _visitId = id),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(entry.shop.name, style: textTheme.headlineSmall),
-                const SizedBox(height: 4),
                 Text(
                   formatDateTime(visit.eatenAt),
                   style: textTheme.bodyMedium,
@@ -185,7 +206,7 @@ class VisitDetailScreen extends ConsumerWidget {
                     IconButton(
                       tooltip: l10n.shopMemoEdit,
                       icon: const Icon(Icons.edit_note),
-                      onPressed: () => _editShopMemo(context, ref, entry.shop),
+                      onPressed: () => _editShopMemo(entry.shop),
                     ),
                   ],
                 ),
@@ -225,6 +246,145 @@ class VisitDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// 台紙に貼った写真と、写真の端にかぶせて押した印、縦書きの店名。
+class _ShopPage extends StatelessWidget {
+  const _ShopPage({required this.entry, required this.scored});
+
+  final VisitWithShop entry;
+  final ScoredVisit? scored;
+
+  @override
+  Widget build(BuildContext context) {
+    final scored = this.scored;
+    final visit = entry.visit;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Washi.page,
+        border: Border.all(color: Washi.line),
+        boxShadow: const [BoxShadow(color: Washi.line, offset: Offset(0, 2))],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 18, 12, 16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 48),
+                    child: PastedPhoto(
+                      angle: -1.5 * math.pi / 180,
+                      border: 6,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: VisitPhoto(photoPath: visit.photoPath),
+                      ),
+                    ),
+                  ),
+                  if (scored != null)
+                    Positioned(
+                      right: 4,
+                      bottom: 0,
+                      child: InkanStamp(scored: scored, size: 108),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.only(left: 10),
+              decoration: const BoxDecoration(
+                border: Border(left: BorderSide(color: Washi.line)),
+              ),
+              child: VerticalText(
+                entry.shop.name,
+                maxChars: 11,
+                style: const TextStyle(
+                  fontFamily: Washi.brush,
+                  fontSize: 28,
+                  color: Washi.ink,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// この店で集めた印（古い順）。タップするとその1杯に切り替わる。
+class _ShopStamps extends StatelessWidget {
+  const _ShopStamps({
+    required this.stamps,
+    required this.selectedId,
+    required this.onSelect,
+  });
+
+  final List<ScoredVisit> stamps;
+  final String selectedId;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.shopStamps,
+          style: textTheme.titleMedium?.copyWith(fontFamily: Washi.brush),
+        ),
+        const SizedBox(height: 8),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              for (final stamp in stamps)
+                Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: Material(
+                    color: stamp.visit.id == selectedId
+                        ? Washi.page
+                        : Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: stamp.visit.id == selectedId
+                            ? Washi.shu
+                            : Colors.transparent,
+                      ),
+                    ),
+                    child: InkWell(
+                      onTap: () => onSelect(stamp.visit.id),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Column(
+                          children: [
+                            InkanStamp(scored: stamp, size: 64),
+                            const SizedBox(height: 2),
+                            Text(
+                              formatDate(stamp.visit.eatenAt),
+                              style: textTheme.labelSmall?.copyWith(
+                                color: Washi.inkSoft,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

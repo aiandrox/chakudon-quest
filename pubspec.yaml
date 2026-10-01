@@ -78,6 +78,18 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/fonts/ShipporiMincho-OFL.txt
+    - assets/fonts/YujiSyuku-OFL.txt
+
+  fonts:
+    - family: ShipporiMincho
+      fonts:
+        - asset: assets/fonts/ShipporiMincho-Regular.ttf
+    - family: YujiSyuku
+      fonts:
+        - asset: assets/fonts/YujiSyuku-Regular.ttf
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

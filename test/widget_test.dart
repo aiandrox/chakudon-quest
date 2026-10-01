@@ -11,10 +11,16 @@ import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/inkan/inkan_stamp.dart';
 import 'package:chakudon_quest/main.dart';
+import 'package:chakudon_quest/theme/washi.dart';
 
 import 'support/fakes.dart';
 import 'support/l10n.dart';
+
+Finder verticalText(String text) => find.byWidgetPredicate(
+  (widget) => widget is VerticalText && widget.text == text,
+);
 
 void main() {
   late FakeNotificationService notifications;
@@ -97,9 +103,13 @@ void main() {
       ),
     ]);
 
-    expect(find.text('麺屋テスト'), findsOneWidget);
+    expect(verticalText('麺屋テスト'), findsOneWidget);
     // 初訪問の1杯は 10 + 10 = 20点。
-    expect(find.text('2026/9/30  ★4  +20 pt'), findsOneWidget);
+    expect(
+      find.text('9/30  ${ja.ratingStar(4)}  ${ja.pointsGained(20)}'),
+      findsOneWidget,
+    );
+    expect(find.byType(InkanStamp), findsOneWidget);
     expect(find.text(ja.rankApprentice), findsOneWidget);
     expect(find.text(ja.totalPoints(20)), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsNothing);
@@ -131,7 +141,7 @@ void main() {
     ]);
 
     expect(find.text(ja.ratingPrompt('麺屋テスト')), findsOneWidget);
-    expect(find.textContaining(ja.ratingUnrated), findsOneWidget);
+    expect(find.textContaining(ja.inchoMetaUnrated), findsOneWidget);
 
     await pumpApp(tester, [
       VisitWithShop(

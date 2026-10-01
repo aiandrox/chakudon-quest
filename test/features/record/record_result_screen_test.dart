@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/inkan/inkan_stamp.dart';
 import 'package:chakudon_quest/features/notifications/notification_service.dart';
 import 'package:chakudon_quest/features/record/record_result_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/theme/washi.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
@@ -52,7 +54,13 @@ void main() {
     );
     await pumpResult(tester, [entry], entry.visit.id);
 
-    expect(find.text('昼だけの店'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is VerticalText && widget.text == '昼だけの店',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byType(InkanStamp), findsOneWidget);
     expect(find.text(ja.pointsGained(82)), findsOneWidget);
     expect(find.text(ja.pointsBase), findsOneWidget);
     expect(find.text(ja.pointsWait(35)), findsOneWidget);
