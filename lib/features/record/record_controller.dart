@@ -12,6 +12,7 @@ import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
+import 'photo_metadata.dart';
 import 'photo_picker.dart';
 import 'record_state.dart';
 
@@ -23,6 +24,7 @@ final recordControllerProvider =
 class RecordController extends Notifier<RecordState> {
   List<Shop> _knownShops = const [];
   GeoPoint? _here;
+  int _searchGeneration = 0;
 
   @override
   RecordState build() => const RecordState();
@@ -38,7 +40,7 @@ class RecordController extends Notifier<RecordState> {
     if (locationReady) unawaited(searchShops(requestPermission: false));
     if (recoveredPhotoPath != null) {
       // 取り戻した写真はカメラとギャラリーのどちらのものか区別できない。
-      _setPhoto(recoveredPhotoPath, fromCamera: false);
+      await _setGalleryPhoto(recoveredPhotoPath);
     } else {
       await takePhoto();
     }
@@ -103,29 +105,60 @@ class RecordController extends Notifier<RecordState> {
   Future<void> pickFromGallery() async {
     final path = await ref.read(photoPickerProvider).pickFromGallery();
     if (!ref.mounted || path == null) return;
-    _setPhoto(path, fromCamera: false);
+    await _setGalleryPhoto(path);
   }
 
-  void _setPhoto(String path, {required bool fromCamera}) {
+  /// 過去の写真から記録できるよう、写真の撮影日時を食べた日時にし、撮影場所で店を探す。
+  Future<void> _setGalleryPhoto(String path) async {
+    final metadata = await ref.read(photoMetadataReaderProvider).read(path);
+    if (!ref.mounted) return;
+    _setPhoto(path, fromCamera: false, metadata: metadata);
+  }
+
+  void _setPhoto(
+    String path, {
+    required bool fromCamera,
+    PhotoMetadata metadata = PhotoMetadata.empty,
+  }) {
+    final previousLocation = state.photoLocation;
+    final takenAt = metadata.takenAt;
+    final now = ref.read(clockProvider)();
     state = state.copyWith(
       photoPath: path,
       // 撮り直しても、待ち時間が食べている時間だけ延びないよう最初の時刻を残す。
-      photoTakenAt: state.photoTakenAt ?? ref.read(clockProvider)(),
+      // 前の写真の撮影日時を使っていたときは、今撮ったので今の時刻にする。
+      photoTakenAt:
+          takenAt ??
+          (state.photoDateFromPhoto ? now : state.photoTakenAt ?? now),
+      photoDateFromPhoto: takenAt != null,
+      photoLocation: metadata.location,
       photoFromCamera: fromCamera,
       photoStepDone: true,
     );
+    final location = metadata.location;
+    if (location != null || previousLocation != null) {
+      unawaited(searchShops(requestPermission: false, force: true));
+    }
   }
 
-  Future<void> searchShops({required bool requestPermission}) async {
-    if (state.searchStatus == ShopSearchStatus.searching) return;
+  /// 写真に撮影場所があればそこで、無ければ現在地で探す。
+  Future<void> searchShops({
+    required bool requestPermission,
+    bool force = false,
+  }) async {
+    if (!force && state.searchStatus == ShopSearchStatus.searching) return;
+    final generation = ++_searchGeneration;
+    final near = state.photoLocation;
+    // 前の写真の場所が、探し終えるまでの間に手入力の店の位置にならないよう消しておく。
+    _here = null;
     state = state.copyWith(
       searchStatus: ShopSearchStatus.searching,
       searchFailure: null,
     );
     final result = await ref
         .read(shopSearchServiceProvider)
-        .search(requestPermission: requestPermission);
-    if (!ref.mounted) return;
+        .search(requestPermission: requestPermission, near: near);
+    if (!ref.mounted || generation != _searchGeneration) return;
     _here = result.here;
     state = state.copyWith(
       searchStatus: ShopSearchStatus.done,
@@ -192,9 +225,7 @@ class RecordController extends Notifier<RecordState> {
             eatenAt: draft.photoTakenAt ?? now,
             rating: draft.rating,
             photoPath: savedPhoto,
-            checkedInAt: draft.isCheckinShopSelected
-                ? draft.checkin?.checkedInAt
-                : null,
+            checkedInAt: _checkedInAt(draft, draft.photoTakenAt ?? now),
             style: draft.style,
             isLimited: draft.isLimited,
             hasTicket: draft.hasTicket,
@@ -214,6 +245,14 @@ class RecordController extends Notifier<RecordState> {
     }
   }
 
+  /// 並んだ店を選んでいて、並び始めたあとに食べたときだけ待ち時間をつける
+  /// （並んでいる最中に、昔の写真から別の日の記録をすることもあるため）。
+  DateTime? _checkedInAt(RecordState draft, DateTime eatenAt) {
+    final checkedInAt = draft.checkin?.checkedInAt;
+    if (!draft.isCheckinShopSelected || checkedInAt == null) return null;
+    return eatenAt.isBefore(checkedInAt) ? null : checkedInAt;
+  }
+
   ShopInput _shopInput(RecordState draft) {
     final selected = draft.selectedShop;
     if (selected != null) {
@@ -226,7 +265,8 @@ class RecordController extends Notifier<RecordState> {
       );
     }
     // ギャラリーの写真は店にいるときに選んだとは限らないため、現在地を店の位置にしない。
-    final here = draft.photoFromCamera ? _here : null;
+    // 写真に撮影場所があれば、そこを店の位置にする。
+    final here = draft.photoLocation ?? (draft.photoFromCamera ? _here : null);
     return ShopInput(
       name: draft.manualName,
       latitude: here?.latitude,

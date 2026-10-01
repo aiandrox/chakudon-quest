@@ -1,4 +1,5 @@
 import '../records/models.dart';
+import '../shop_search/geo.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
 
@@ -11,6 +12,8 @@ class RecordState {
     this.photoPath,
     this.photoTakenAt,
     this.photoFromCamera = false,
+    this.photoDateFromPhoto = false,
+    this.photoLocation,
     this.photoStepDone = false,
     this.searchStatus = ShopSearchStatus.idle,
     this.searchFailure,
@@ -33,6 +36,12 @@ class RecordState {
   final String? photoPath;
   final DateTime? photoTakenAt;
   final bool photoFromCamera;
+
+  /// [photoTakenAt]が写真に記録された撮影日時か（過去の写真から記録するとき）。
+  final bool photoDateFromPhoto;
+
+  /// 写真に記録された撮影場所。あれば、現在地ではなくここで店を探す。
+  final GeoPoint? photoLocation;
 
   /// 最初のカメラ起動が終わったか（撮った・キャンセルしたのどちらでも）。
   final bool photoStepDone;
@@ -86,6 +95,8 @@ class RecordState {
     Object? photoPath = _unset,
     Object? photoTakenAt = _unset,
     bool? photoFromCamera,
+    bool? photoDateFromPhoto,
+    Object? photoLocation = _unset,
     bool? photoStepDone,
     ShopSearchStatus? searchStatus,
     Object? searchFailure = _unset,
@@ -109,6 +120,10 @@ class RecordState {
           ? this.photoTakenAt
           : photoTakenAt as DateTime?,
       photoFromCamera: photoFromCamera ?? this.photoFromCamera,
+      photoDateFromPhoto: photoDateFromPhoto ?? this.photoDateFromPhoto,
+      photoLocation: photoLocation == _unset
+          ? this.photoLocation
+          : photoLocation as GeoPoint?,
       photoStepDone: photoStepDone ?? this.photoStepDone,
       searchStatus: searchStatus ?? this.searchStatus,
       searchFailure: searchFailure == _unset

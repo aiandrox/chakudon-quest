@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chakudon_quest/features/backup/backup_codec.dart';
 import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/notifications/notification_service.dart';
+import 'package:chakudon_quest/features/record/photo_metadata.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
@@ -52,6 +53,7 @@ class FakeOverpassClient implements OverpassClient {
   int calls = 0;
 
   final radii = <int>[];
+  final centers = <GeoPoint>[];
 
   @override
   Future<List<OverpassShop>> searchNearby(
@@ -61,6 +63,7 @@ class FakeOverpassClient implements OverpassClient {
   }) async {
     calls++;
     radii.add(radiusMeters);
+    centers.add(center);
     final error = this.error;
     if (error != null) throw error;
     return shops;
@@ -212,9 +215,18 @@ class FakeShopSearchService implements ShopSearchService {
 
   ShopSearchResult result;
 
+  /// 写真の場所で探したときの結果。nullなら[result]を返す。
+  ShopSearchResult? resultNear;
+  final nearPoints = <GeoPoint?>[];
+
   @override
-  Future<ShopSearchResult> search({required bool requestPermission}) async =>
-      result;
+  Future<ShopSearchResult> search({
+    required bool requestPermission,
+    GeoPoint? near,
+  }) async {
+    nearPoints.add(near);
+    return near != null ? resultNear ?? result : result;
+  }
 }
 
 class FakeNotificationService implements NotificationService {
@@ -256,5 +268,16 @@ class FakeNotificationService implements NotificationService {
   @override
   Future<void> cancelStreakReminder() async {
     streakCancelCount++;
+  }
+}
+
+class FakePhotoMetadataReader implements PhotoMetadataReader {
+  PhotoMetadata metadata = PhotoMetadata.empty;
+  final paths = <String>[];
+
+  @override
+  Future<PhotoMetadata> read(String path) async {
+    paths.add(path);
+    return metadata;
   }
 }

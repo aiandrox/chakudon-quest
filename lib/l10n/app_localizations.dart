@@ -1371,6 +1371,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'印をいただきました'**
   String get resultStamped;
+
+  /// No description provided for @recordPhotoDate.
+  ///
+  /// In ja, this message translates to:
+  /// **'食べた日時: {date}（写真の撮影日時）'**
+  String recordPhotoDate(String date);
 }
 
 class _AppLocalizationsDelegate

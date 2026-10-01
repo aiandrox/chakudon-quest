@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
 import '../checkin/checkin_rules.dart';
 import '../records/clock.dart';
+import '../records/date_format.dart';
 import '../records/visit_details_form.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
@@ -232,6 +233,13 @@ class _PhotoSection extends ConsumerWidget {
               ),
             ],
           ),
+        if (state.photoDateFromPhoto)
+          if (state.photoTakenAt case final takenAt?)
+            Text(
+              l10n.recordPhotoDate(formatDateTime(takenAt)),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
       ],
     );
   }
