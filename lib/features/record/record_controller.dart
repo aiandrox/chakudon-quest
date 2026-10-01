@@ -29,23 +29,19 @@ class RecordController extends Notifier<RecordState> {
   @override
   RecordState build() => const RecordState();
 
-  /// カメラを開き、並行して近くの店を探す。位置情報が未許可のときは、許可ダイアログが
-  /// カメラに重ならないよう、撮り終えてから尋ねる。
+  /// 近くの店を探しはじめる。カメラは自動では開かず、利用者が写真の欄から選ぶ。
   Future<void> start({String? recoveredPhotoPath}) async {
     unawaited(_loadKnownShops());
     await _loadCheckin();
     if (!ref.mounted) return;
-    final locationReady = await ref.read(locationServiceProvider).isReady();
-    if (!ref.mounted) return;
-    if (locationReady) unawaited(searchShops(requestPermission: false));
     if (recoveredPhotoPath != null) {
       // 取り戻した写真はカメラとギャラリーのどちらのものか区別できない。
       await _setGalleryPhoto(recoveredPhotoPath);
-    } else {
-      await takePhoto();
+      if (!ref.mounted) return;
     }
+    final locationReady = await ref.read(locationServiceProvider).isReady();
     if (!ref.mounted) return;
-    if (!locationReady) await searchShops(requestPermission: true);
+    await searchShops(requestPermission: !locationReady);
   }
 
   /// 並んでいる店があれば、その店を選んだ状態で始める。
@@ -95,11 +91,7 @@ class RecordController extends Notifier<RecordState> {
   Future<void> takePhoto() async {
     final path = await ref.read(photoPickerProvider).takePhoto();
     if (!ref.mounted) return;
-    if (path == null) {
-      state = state.copyWith(photoStepDone: true);
-    } else {
-      _setPhoto(path, fromCamera: true);
-    }
+    if (path != null) _setPhoto(path, fromCamera: true);
   }
 
   Future<void> pickFromGallery() async {
@@ -133,7 +125,6 @@ class RecordController extends Notifier<RecordState> {
       photoDateFromPhoto: takenAt != null,
       photoLocation: metadata.location,
       photoFromCamera: fromCamera,
-      photoStepDone: true,
     );
     final location = metadata.location;
     if (location != null || previousLocation != null) {

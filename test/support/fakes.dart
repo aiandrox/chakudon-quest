@@ -76,9 +76,13 @@ class FakePhotoPicker implements PhotoPicker {
   String? cameraPath;
   String? galleryPath;
   String? lostPath;
+  int cameraOpens = 0;
 
   @override
-  Future<String?> takePhoto() async => cameraPath;
+  Future<String?> takePhoto() async {
+    cameraOpens++;
+    return cameraPath;
+  }
 
   @override
   Future<String?> pickFromGallery() async => galleryPath;

@@ -14,7 +14,6 @@ class RecordState {
     this.photoFromCamera = false,
     this.photoDateFromPhoto = false,
     this.photoLocation,
-    this.photoStepDone = false,
     this.searchStatus = ShopSearchStatus.idle,
     this.searchFailure,
     this.candidates = const [],
@@ -42,9 +41,6 @@ class RecordState {
 
   /// 写真に記録された撮影場所。あれば、現在地ではなくここで店を探す。
   final GeoPoint? photoLocation;
-
-  /// 最初のカメラ起動が終わったか（撮った・キャンセルしたのどちらでも）。
-  final bool photoStepDone;
 
   final ShopSearchStatus searchStatus;
   final ShopSearchFailure? searchFailure;
@@ -99,7 +95,6 @@ class RecordState {
     bool? photoFromCamera,
     bool? photoDateFromPhoto,
     Object? photoLocation = _unset,
-    bool? photoStepDone,
     ShopSearchStatus? searchStatus,
     Object? searchFailure = _unset,
     List<ShopCandidate>? candidates,
@@ -126,7 +121,6 @@ class RecordState {
       photoLocation: photoLocation == _unset
           ? this.photoLocation
           : photoLocation as GeoPoint?,
-      photoStepDone: photoStepDone ?? this.photoStepDone,
       searchStatus: searchStatus ?? this.searchStatus,
       searchFailure: searchFailure == _unset
           ? this.searchFailure

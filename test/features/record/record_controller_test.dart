@@ -74,6 +74,7 @@ void main() {
 
   test('写真を撮ると近くの店が候補に出て、選んで★をつければ保存できる', () async {
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     expect(state().photoPath, isNotNull);
@@ -101,6 +102,7 @@ void main() {
     overpass.error = const SocketException('offline');
 
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     expect(state().searchStatus, ShopSearchStatus.done);
@@ -122,6 +124,7 @@ void main() {
     overpass.error = TimeoutException('timeout');
 
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
     controller().setManualName('遅い回線の店');
     controller().setRating(3);
@@ -137,6 +140,7 @@ void main() {
       ..position = null;
 
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     expect(location.requests, [true]);
@@ -154,6 +158,7 @@ void main() {
 
   test('位置情報が許可済みなら、許可を尋ねずにカメラと並行して検索する', () async {
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     expect(location.requests, [false]);
@@ -164,6 +169,7 @@ void main() {
     overpass.shops = const [];
 
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     expect(state().candidates, isEmpty);
@@ -178,10 +184,10 @@ void main() {
     picker.cameraPath = null;
 
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     expect(state().photoPath, isNull);
-    expect(state().photoStepDone, isTrue);
 
     controller().setManualName('写真なしの店');
     controller().setRating(3);
@@ -196,6 +202,7 @@ void main() {
     picker.cameraPath = null;
 
     await controller().start();
+    await controller().takePhoto();
     await controller().pickFromGallery();
     await pumpEventQueue();
     controller().setManualName('家で記録した店');
@@ -210,6 +217,7 @@ void main() {
   group('待ち時間をあとから入れる', () {
     test('入れた分だけ前を並んだ時刻にして保存する', () async {
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       controller().setManualName('並んだ店');
       controller().setWaitMinutes(25);
@@ -225,6 +233,7 @@ void main() {
 
     test('空にすれば待ち時間なし', () async {
       await controller().start();
+      await controller().takePhoto();
       controller().setManualName('並ばなかった店');
       controller().setWaitMinutes(25);
       controller().setWaitMinutes(null);
@@ -243,6 +252,7 @@ void main() {
       metadata.metadata = PhotoMetadata(takenAt: takenAt);
 
       await controller().start();
+      await controller().takePhoto();
       await controller().pickFromGallery();
       await pumpEventQueue();
 
@@ -258,6 +268,7 @@ void main() {
       picker.cameraPath = null;
 
       await controller().start();
+      await controller().takePhoto();
       await controller().pickFromGallery();
 
       expect(state().photoTakenAt, _photoTime);
@@ -269,6 +280,7 @@ void main() {
       metadata.metadata = PhotoMetadata(takenAt: takenAt, location: shopPlace);
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       expect(overpass.centers.last.latitude, _here.latitude);
       final locationRequests = location.requests.length;
@@ -292,6 +304,7 @@ void main() {
       metadata.metadata = PhotoMetadata(takenAt: takenAt, location: shopPlace);
 
       await controller().start();
+      await controller().takePhoto();
       await controller().pickFromGallery();
       await pumpEventQueue();
       await controller().takePhoto();
@@ -305,6 +318,7 @@ void main() {
 
     test('カメラで撮った写真は、撮影日時を読まない', () async {
       await controller().start();
+      await controller().takePhoto();
 
       expect(metadata.paths, isEmpty);
     });
@@ -325,6 +339,7 @@ void main() {
         );
 
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
     controller().selectShop(state().candidates.single);
     controller().setManualName('行きつけ');
@@ -362,6 +377,7 @@ void main() {
           now: DateTime(2026, 9, 1),
         );
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     controller().setManualName('週2日');
@@ -396,6 +412,7 @@ void main() {
       now: DateTime(2026, 9, 1),
     );
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     controller().setManualName('週2日の店');
@@ -411,6 +428,7 @@ void main() {
 
   test('営業の条件を選んでから店名を入力しても、選んだ値で保存する', () async {
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     controller().setHoursConditions({HoursCondition.lunchOnly});
@@ -454,6 +472,7 @@ void main() {
       await checkIn();
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
 
       expect(state().selectedShop!.name, '並んだ店');
@@ -481,6 +500,7 @@ void main() {
       );
 
       await controller().start();
+      await controller().takePhoto();
       await controller().pickFromGallery();
       await pumpEventQueue();
       expect(state().isCheckinShopSelected, isTrue);
@@ -493,6 +513,7 @@ void main() {
       await checkIn();
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       controller().setManualName('別の店');
       controller().setWaitMinutes(10);
@@ -509,6 +530,7 @@ void main() {
       await checkIn();
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       controller().setWaitMinutes(99);
       await controller().save();
@@ -520,6 +542,7 @@ void main() {
       await checkIn();
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       controller().selectShop(state().candidates.single);
       expect(state().isCheckinShopSelected, isFalse);
@@ -546,6 +569,7 @@ void main() {
       await checkIn();
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       controller().selectShop(state().candidates.single);
 
@@ -574,6 +598,7 @@ void main() {
           );
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       controller().selectShop(state().candidates.single);
 
@@ -597,6 +622,7 @@ void main() {
       await checkIn();
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
       now = _photoTime.add(const Duration(minutes: 20));
       await controller().takePhoto();
@@ -623,6 +649,7 @@ void main() {
       );
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
 
       expect(state().isCheckinShopSelected, isTrue);
@@ -634,6 +661,7 @@ void main() {
       await checkIn(at: _photoTime.subtract(const Duration(hours: 4)));
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
 
       expect(state().checkin, isNull);
@@ -645,6 +673,7 @@ void main() {
       await checkIn();
 
       await controller().start();
+      await controller().takePhoto();
       await pumpEventQueue();
 
       expect(state().hasInput, isFalse);
@@ -653,6 +682,7 @@ void main() {
 
   test('店が決まるまでは保存しない（★だけでは保存しない）', () async {
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
 
     expect(await controller().save(), isNull);
@@ -665,6 +695,7 @@ void main() {
 
   test('★を付けずに保存でき、あとから★を付けられる', () async {
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
     controller().selectShop(state().candidates.single);
 
@@ -679,6 +710,7 @@ void main() {
 
   test('保存に失敗したら、コピーした写真を消して入力を続けられる', () async {
     await controller().start();
+    await controller().takePhoto();
     await pumpEventQueue();
     controller().setManualName('麺屋');
     controller().setRating(3);
