@@ -48,9 +48,18 @@ class ExifPhotoMetadataReader implements PhotoMetadataReader {
 /// EXIFのタグ（文字列、または分数を小数にした一覧）から撮影日時と場所を取り出す。
 PhotoMetadata photoMetadataFromExif(Map<String, Object> tags) {
   final takenAt =
-      parseExifDateTime(tags['EXIF DateTimeOriginal']) ??
-      parseExifDateTime(tags['EXIF DateTimeDigitized']) ??
-      parseExifDateTime(tags['Image DateTime']);
+      parseExifDateTime(
+        tags['EXIF DateTimeOriginal'],
+        offset: tags['EXIF OffsetTimeOriginal'],
+      ) ??
+      parseExifDateTime(
+        tags['EXIF DateTimeDigitized'],
+        offset: tags['EXIF OffsetTimeDigitized'],
+      ) ??
+      parseExifDateTime(
+        tags['Image DateTime'],
+        offset: tags['EXIF OffsetTime'],
+      );
   final latitude = exifDegrees(
     tags['GPS GPSLatitude'],
     tags['GPS GPSLatitudeRef'],
@@ -76,8 +85,11 @@ final _exifDateTime = RegExp(
   r'^(\d{4}):(\d{2}):(\d{2}) (\d{2}):(\d{2}):(\d{2})',
 );
 
-/// 「2026:09:20 12:34:56」を端末の時刻として読む。読めなければnull。
-DateTime? parseExifDateTime(Object? value) {
+final _exifOffset = RegExp(r'^([+-])(\d{2}):(\d{2})$');
+
+/// 「2026:09:20 12:34:56」を読む。時差（「+09:00」）があれば端末の時刻に直し、
+/// 無ければ端末の時刻として扱う。読めなければnull。
+DateTime? parseExifDateTime(Object? value, {Object? offset}) {
   if (value is! String) return null;
   final match = _exifDateTime.firstMatch(value.trim());
   if (match == null) return null;
@@ -87,7 +99,25 @@ DateTime? parseExifDateTime(Object? value) {
   if (year < 1990 || month < 1 || month > 12 || day < 1 || day > 31) {
     return null;
   }
-  return DateTime(year, month, day, hour, minute, second);
+  final offsetMatch = offset is String
+      ? _exifOffset.firstMatch(offset.trim())
+      : null;
+  if (offsetMatch == null) {
+    return DateTime(year, month, day, hour, minute, second);
+  }
+  final sign = offsetMatch.group(1) == '-' ? -1 : 1;
+  final shift = Duration(
+    hours: int.parse(offsetMatch.group(2)!),
+    minutes: int.parse(offsetMatch.group(3)!),
+  );
+  return DateTime.utc(
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second,
+  ).subtract(shift * sign).toLocal();
 }
 
 /// 度・分・秒の3つの値と、N/S/E/W から緯度経度（南と西はマイナス）を求める。

@@ -149,6 +149,8 @@ class RecordController extends Notifier<RecordState> {
     if (!force && state.searchStatus == ShopSearchStatus.searching) return;
     final generation = ++_searchGeneration;
     final near = state.photoLocation;
+    // 前の写真の場所が、探し終えるまでの間に手入力の店の位置にならないよう消しておく。
+    _here = null;
     state = state.copyWith(
       searchStatus: ShopSearchStatus.searching,
       searchFailure: null,

@@ -11,6 +11,21 @@ void main() {
       );
     });
 
+    test('時差が書かれていれば、端末の時刻に直す', () {
+      expect(
+        parseExifDateTime('2026:09:20 12:00:00', offset: '+09:00'),
+        DateTime.utc(2026, 9, 20, 3).toLocal(),
+      );
+      expect(
+        parseExifDateTime('2026:09:20 12:00:00', offset: '-05:30'),
+        DateTime.utc(2026, 9, 20, 17, 30).toLocal(),
+      );
+      expect(
+        parseExifDateTime('2026:09:20 12:00:00', offset: 'bad'),
+        DateTime(2026, 9, 20, 12),
+      );
+    });
+
     test('読めない値はnull', () {
       expect(parseExifDateTime(null), isNull);
       expect(parseExifDateTime(''), isNull);
