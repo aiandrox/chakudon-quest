@@ -336,6 +336,34 @@ void main() {
     expect(repository.updates.single.checkedInAt, isNull);
   });
 
+  testWidgets('待ち時間に触らずに日時だけ変えると、並んだ時刻も一緒にずらす', (tester) async {
+    await pumpDetail(tester, [
+      VisitWithShop(
+        shop: shop,
+        visit: buildVisit(
+          id: 'v',
+          eatenAt: DateTime(2026, 9, 30, 12),
+          waitMinutes: 0,
+        ),
+      ),
+    ], 'v');
+    await tester.tap(find.byTooltip(ja.edit));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(ja.editEatenAt));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('29'));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
+    await tester.pumpAndSettle();
+
+    final update = repository.updates.single;
+    expect(update.eatenAt, DateTime(2026, 9, 29, 12));
+    expect(update.checkedInAt, DateTime(2026, 9, 29, 12));
+  });
+
   testWidgets('営業の条件を変えずに保存したときは、変更なしとして渡す', (tester) async {
     await pumpDetail(tester, [
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
