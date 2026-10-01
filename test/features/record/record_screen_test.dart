@@ -21,6 +21,7 @@ import '../../support/l10n.dart';
 void main() {
   late AppDatabase database;
   late FakeOverpassClient overpass;
+  late FakePhotoPicker picker;
 
   Future<void> pumpScreen(WidgetTester tester) async {
     database = createTestDatabase();
@@ -38,7 +39,7 @@ void main() {
             FakeLocationService(position: const GeoPoint(35.0, 139.0)),
           ),
           overpassClientProvider.overrideWithValue(overpass),
-          photoPickerProvider.overrideWithValue(FakePhotoPicker()),
+          photoPickerProvider.overrideWithValue(picker),
         ],
         child: localizedApp(
           home: Builder(
@@ -59,6 +60,7 @@ void main() {
   }
 
   setUp(() {
+    picker = FakePhotoPicker();
     overpass = FakeOverpassClient(
       shops: const [
         OverpassShop(
@@ -101,6 +103,18 @@ void main() {
     );
     expect(visits!.single.shop.name, '麺屋テスト');
     expect(visits.single.visit.rating, 4);
+  });
+
+  testWidgets('開いただけではカメラを起動せず、ボタンを押すと起動する。くわしくは最初から開いている', (tester) async {
+    await pumpScreen(tester);
+
+    expect(picker.cameraOpens, 0);
+    expect(find.text(ja.memoLabel), findsOneWidget);
+
+    await tester.tap(find.text(ja.takePhoto));
+    await tester.pumpAndSettle();
+
+    expect(picker.cameraOpens, 1);
   });
 
   testWidgets('検索に失敗しても、店名を入力して保存できる', (tester) async {

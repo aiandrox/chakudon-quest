@@ -135,6 +135,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             ),
           ),
           ExpansionTile(
+            initiallyExpanded: true,
             tilePadding: EdgeInsets.zero,
             title: Text(l10n.optionalSection),
             children: [
@@ -201,32 +202,21 @@ class _PhotoSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: SizedBox(
-            height: 200,
-            child: hasPhoto
-                ? Image.file(File(photoPath), fit: BoxFit.cover)
-                : ColoredBox(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest,
-                    child: Center(
-                      child: state.photoStepDone
-                          ? const Icon(Icons.ramen_dining, size: 48)
-                          : const CircularProgressIndicator(),
-                    ),
-                  ),
+        if (hasPhoto) ...[
+          PastedPhoto(
+            border: 6,
+            child: SizedBox(
+              height: 220,
+              child: Image.file(File(photoPath), fit: BoxFit.cover),
+            ),
           ),
-        ),
-        if (state.photoStepDone)
           Row(
             children: [
               Expanded(
                 child: TextButton.icon(
                   onPressed: controller.takePhoto,
                   icon: const Icon(Icons.photo_camera),
-                  label: Text(hasPhoto ? l10n.retakePhoto : l10n.takePhoto),
+                  label: Text(l10n.retakePhoto),
                 ),
               ),
               Expanded(
@@ -234,6 +224,27 @@ class _PhotoSection extends ConsumerWidget {
                   onPressed: controller.pickFromGallery,
                   icon: const Icon(Icons.photo_library),
                   label: Text(l10n.pickFromGallery),
+                ),
+              ),
+            ],
+          ),
+        ] else
+          // 写真は任意。片手で押しやすいよう、大きなボタンを2つ並べる。
+          Row(
+            children: [
+              Expanded(
+                child: _PhotoButton(
+                  icon: Icons.photo_camera,
+                  label: l10n.takePhoto,
+                  onPressed: controller.takePhoto,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _PhotoButton(
+                  icon: Icons.photo_library,
+                  label: l10n.pickFromGallery,
+                  onPressed: controller.pickFromGallery,
                 ),
               ),
             ],
@@ -246,6 +257,38 @@ class _PhotoSection extends ConsumerWidget {
               style: Theme.of(context).textTheme.bodySmall,
             ),
       ],
+    );
+  }
+}
+
+class _PhotoButton extends StatelessWidget {
+  const _PhotoButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(120),
+        backgroundColor: Washi.page,
+        side: const BorderSide(color: Washi.line),
+      ),
+      onPressed: onPressed,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 40),
+          const SizedBox(height: 8),
+          Text(label, textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 }
