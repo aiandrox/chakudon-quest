@@ -29,6 +29,9 @@ String kanjiNumber(int value) {
       '${ones == 0 ? '' : _kanjiDigits[ones]}';
 }
 
+/// 令和の年（2019年が1）。
+int reiwaYear(DateTime date) => date.year - 2018;
+
 /// 印の傾き（ラジアン）。押すたびに少しずつ違うよう、記録のIDから決める。
 double inkanAngle(String visitId) {
   final hash = visitId.codeUnits.fold<int>(

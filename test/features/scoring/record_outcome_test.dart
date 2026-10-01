@@ -27,13 +27,12 @@ void main() {
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // (10 + 10 + 20 + 20 + 30) × 2 = 180
+    // (10 + 10 + 20 + 50) × 2 = 180
     final big = buildEntry(
       shop: rare,
       eatenAt: day(1),
       isLimited: true,
-      hasTicket: true,
-      waitMinutes: 60,
+      waitMinutes: 100,
     );
     // 初訪問 10 + 10 = 20 → 累計 200
     final reaches = buildEntry(shop: shop, eatenAt: day(2));
@@ -45,8 +44,8 @@ void main() {
     expect(up.rankAfter, AdventurerRank.traveler);
     expect(up.isRankUp, isTrue);
 
-    // 昼のみの店の初訪問 (10 + 10) × 1.5 = 30 → 累計 180 + 15 には届かない例として、
-    // 2回目の「昼のみ」の店 10 × 1.5 = 15 → 累計 195
+    // 昼のみの店の初訪問 (10 + 10) × 1.3 = 26 → 累計 206。すでに上がっているので、
+    // 2回目の「昼のみ」の店 10 × 1.3 = 13 ではランクアップしない
     final lunch = buildShop(
       id: 'lunch',
       hoursConditions: {HoursCondition.lunchOnly},
@@ -61,7 +60,7 @@ void main() {
     ], lunchAgain.visit.id)!;
 
     expect(bigOnly.isRankUp, isFalse);
-    expect(notYet.totalBefore, 210);
+    expect(notYet.totalBefore, 206);
     expect(notYet.isRankUp, isFalse);
   });
 

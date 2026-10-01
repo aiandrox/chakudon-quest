@@ -52,19 +52,22 @@ class PastedPhoto extends StatelessWidget {
 }
 
 /// 縦書きの文字列。1文字ずつ縦に積み、長音などの横向きの記号は90度回す。
+/// 1行に収まらないときは、右から左へ2行目に折り返す。
 class VerticalText extends StatelessWidget {
   const VerticalText(
     this.text, {
     super.key,
     required this.style,
     this.maxChars,
+    this.maxLines = 2,
   });
 
   final String text;
   final TextStyle style;
 
-  /// これより長いときは末尾を「︙」にする。
+  /// 1行の最大の文字数。nullなら折り返さない。
   final int? maxChars;
+  final int maxLines;
 
   static const _rotated = {
     'ー',
@@ -84,34 +87,68 @@ class VerticalText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var chars = [
-      for (final rune in text.runes)
-        if (String.fromCharCode(rune).trim().isNotEmpty)
-          String.fromCharCode(rune),
-    ];
-    final max = maxChars;
-    if (max != null && chars.length > max) {
-      chars = [...chars.take(max - 1), '︙'];
-    }
+    final lines = verticalLines(text, maxChars: maxChars, maxLines: maxLines);
+    final charStyle = style.copyWith(height: 1.15);
     return Semantics(
       label: text,
       child: ExcludeSemantics(
         child: FittedBox(
           fit: BoxFit.scaleDown,
-          child: Column(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final char in chars)
-                _rotated.contains(char)
-                    ? RotatedBox(
-                        quarterTurns: 1,
-                        child: Text(char, style: style.copyWith(height: 1.15)),
-                      )
-                    : Text(char, style: style.copyWith(height: 1.15)),
+              // 縦書きは右の行から読むので、1行目を右に置く。
+              for (final line in lines.reversed)
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final char in line)
+                      _rotated.contains(char)
+                          ? RotatedBox(
+                              quarterTurns: 1,
+                              child: Text(char, style: charStyle),
+                            )
+                          : Text(char, style: charStyle),
+                  ],
+                ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+/// 縦書きの行に分ける。区切りの空白で分けて収まるならそこで、収まらなければ文字数で
+/// 折り返す。[maxLines]行に収まらないときは、最後の文字を「︙」にする。
+List<List<String>> verticalLines(
+  String text, {
+  int? maxChars,
+  int maxLines = 2,
+}) {
+  List<String> charsOf(String value) => [
+    for (final rune in value.runes)
+      if (String.fromCharCode(rune).trim().isNotEmpty)
+        String.fromCharCode(rune),
+  ];
+  final chars = charsOf(text);
+  if (maxChars == null || chars.length <= maxChars) return [chars];
+
+  final words = [
+    for (final word in text.trim().split(RegExp(r'[\s　]+')))
+      if (word.isNotEmpty) charsOf(word),
+  ];
+  if (words.length > 1 && words.length <= maxLines) {
+    if (words.every((word) => word.length <= maxChars)) return words;
+  }
+
+  final lines = <List<String>>[
+    for (var i = 0; i < chars.length && i ~/ maxChars < maxLines; i += maxChars)
+      chars.sublist(i, (i + maxChars).clamp(0, chars.length)),
+  ];
+  if (chars.length > maxChars * maxLines) {
+    lines.last = [...lines.last.take(maxChars - 1), '︙'];
+  }
+  return lines;
 }

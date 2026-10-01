@@ -124,19 +124,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get styleTsukemen => 'つけ麺';
 
   @override
+  String get styleShirunashi => '汁なし';
+
+  @override
   String get styleOther => 'その他';
 
   @override
   String get isLimited => '限定メニュー';
 
   @override
-  String get hasTicket => '整理券制';
+  String get hoursSection => '攻略しにくさ（当てはまるものすべて）';
 
   @override
-  String get hoursSection => '営業の条件（当てはまるものすべて）';
-
-  @override
-  String get hoursNote => '修行点の倍率: 1つで×1.5、2つ以上で×2';
+  String get hoursNote => '当てはまるものが多いほど、修行点の倍率が上がります（最大×2.5）';
 
   @override
   String get hoursLunchOnly => '昼のみ';
@@ -155,6 +155,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get hoursIrregular => '不定休';
+
+  @override
+  String get hoursBadAccess => 'アクセスが悪い';
 
   @override
   String get memoLabel => 'メモ';
@@ -212,9 +215,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get limitedBadge => '限定';
-
-  @override
-  String get ticketBadge => '整理券';
 
   @override
   String get checkinButton => '並んだ';
@@ -371,7 +371,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String pointsHours(String label) {
-    return '営業の条件（$label）';
+    return '攻略しにくさ（$label）';
   }
 
   @override
@@ -706,6 +706,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get inkanStyleTsukemen => '沾';
 
   @override
+  String get inkanStyleShirunashi => '混';
+
+  @override
   String get inkanStyleOther => '麺';
 
   @override
@@ -739,4 +742,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String recordPhotoDate(String date) {
     return '食べた日時: $date（写真の撮影日時）';
   }
+
+  @override
+  String kanjiReiwaDate(String year, String month, String day) {
+    return '令和$year年$month月$day日';
+  }
+
+  @override
+  String get reiwaFirstYear => '元';
 }

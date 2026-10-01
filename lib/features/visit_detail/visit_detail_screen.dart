@@ -117,7 +117,6 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
       if (waited != null) l10n.waitTime(waited),
       if (style != null) styleLabel(l10n, style),
       if (visit.isLimited) l10n.limitedBadge,
-      if (visit.hasTicket) l10n.ticketBadge,
       for (final condition in HoursCondition.values)
         if (entry.shop.hoursConditions.contains(condition))
           hoursConditionLabel(l10n, condition),

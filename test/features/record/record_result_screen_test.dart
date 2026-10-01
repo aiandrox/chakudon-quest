@@ -42,8 +42,8 @@ void main() {
   testWidgets('得たポイントの内訳と、累計・次のランクまでを表示する', (tester) async {
     final lunch = buildShop(
       id: 'lunch',
-      name: '昼だけの店',
-      hoursConditions: {HoursCondition.lunchOnly},
+      name: '不定休の店',
+      hoursConditions: {HoursCondition.irregular},
     );
     // (10 + 15 + 20 + 10) × 1.5 = 82.5 → 82
     final entry = buildEntry(
@@ -56,7 +56,7 @@ void main() {
 
     expect(
       find.byWidgetPredicate(
-        (widget) => widget is VerticalText && widget.text == '昼だけの店',
+        (widget) => widget is VerticalText && widget.text == '不定休の店',
       ),
       findsOneWidget,
     );
@@ -67,10 +67,10 @@ void main() {
     expect(find.text(ja.pointsGained(15)), findsOneWidget);
     expect(find.text(ja.isLimited), findsOneWidget);
     expect(find.text(ja.pointsFirstVisit), findsOneWidget);
-    expect(find.text(ja.pointsHours(ja.hoursLunchOnly)), findsOneWidget);
+    expect(find.text(ja.pointsHours(ja.hoursIrregular)), findsOneWidget);
     expect(find.text(ja.pointsMultiplier('1.5')), findsOneWidget);
     // 0点の項目は出さない。
-    expect(find.text(ja.hasTicket), findsNothing);
+
     expect(find.text(ja.pointsRetry), findsNothing);
 
     expect(find.text(ja.rankApprentice), findsOneWidget);
@@ -96,13 +96,12 @@ void main() {
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // (10 + 10 + 20 + 20 + 30) × 2 = 180
+    // (10 + 10 + 20 + 50) × 2 = 180
     final big = buildEntry(
       shop: rare,
       eatenAt: day(1),
       isLimited: true,
-      hasTicket: true,
-      waitMinutes: 60,
+      waitMinutes: 100,
     );
     // 10 + 10 = 20 → 累計 200
     final reaches = buildEntry(
@@ -121,15 +120,14 @@ void main() {
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // 1杯目 180、以降 (10 + 20 + 20 + 30) × 2 = 160 ずつ
+    // 1杯目 180、以降 (10 + 20 + 50) × 2 = 160 ずつ
     final entries = [
       for (var d = 1; d <= 10; d++)
         buildEntry(
           shop: rare,
           eatenAt: day(d),
           isLimited: true,
-          hasTicket: true,
-          waitMinutes: 60,
+          waitMinutes: 100,
         ),
     ];
     await pumpResult(tester, entries, entries.last.visit.id);

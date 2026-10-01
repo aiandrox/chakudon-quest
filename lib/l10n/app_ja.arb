@@ -51,17 +51,18 @@
   "styleIekei": "家系",
   "styleJiro": "二郎系",
   "styleTsukemen": "つけ麺",
+  "styleShirunashi": "汁なし",
   "styleOther": "その他",
   "isLimited": "限定メニュー",
-  "hasTicket": "整理券制",
-  "hoursSection": "営業の条件（当てはまるものすべて）",
-  "hoursNote": "修行点の倍率: 1つで×1.5、2つ以上で×2",
+  "hoursSection": "攻略しにくさ（当てはまるものすべて）",
+  "hoursNote": "当てはまるものが多いほど、修行点の倍率が上がります（最大×2.5）",
   "hoursLunchOnly": "昼のみ",
   "hoursNightOnly": "夜のみ",
   "hoursWeekdaysOnly": "平日のみ",
   "hoursWeekendsOnly": "土日のみ",
   "hoursFewDays": "週3日以下",
   "hoursIrregular": "不定休",
+  "hoursBadAccess": "アクセスが悪い",
   "memoLabel": "メモ",
   "discardTitle": "記録をやめますか？",
   "discardMessage": "入力した内容は保存されません",
@@ -81,7 +82,6 @@
   "editShopName": "店名",
   "editEatenAt": "食べた日時",
   "limitedBadge": "限定",
-  "ticketBadge": "整理券",
   "checkinButton": "並んだ",
   "checkinTitle": "並んだ店を選ぶ",
   "checkinDone": "{shop} に並びました",
@@ -176,7 +176,7 @@
   },
   "pointsFirstVisit": "初訪問",
   "pointsRetry": "再挑戦成功",
-  "pointsHours": "営業の条件（{label}）",
+  "pointsHours": "攻略しにくさ（{label}）",
   "@pointsHours": {
     "placeholders": {
       "label": {"type": "String"}
@@ -409,6 +409,7 @@
   "inkanStyleIekei": "家",
   "inkanStyleJiro": "郎",
   "inkanStyleTsukemen": "沾",
+  "inkanStyleShirunashi": "混",
   "inkanStyleOther": "麺",
   "kanjiMonthDay": "{month}月{day}日",
   "@kanjiMonthDay": {
@@ -439,5 +440,14 @@
     "placeholders": {
       "date": {"type": "String"}
     }
-  }
+  },
+  "kanjiReiwaDate": "令和{year}年{month}月{day}日",
+  "@kanjiReiwaDate": {
+    "placeholders": {
+      "year": {"type": "String"},
+      "month": {"type": "String"},
+      "day": {"type": "String"}
+    }
+  },
+  "reiwaFirstYear": "元"
 }

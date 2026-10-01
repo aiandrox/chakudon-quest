@@ -7,7 +7,6 @@ class PointsBreakdown {
     required this.base,
     required this.waitBonus,
     required this.limitedBonus,
-    required this.ticketBonus,
     required this.firstVisitBonus,
     required this.retryBonus,
     required this.hoursConditions,
@@ -17,7 +16,6 @@ class PointsBreakdown {
     base: 0,
     waitBonus: 0,
     limitedBonus: 0,
-    ticketBonus: 0,
     firstVisitBonus: 0,
     retryBonus: 0,
     hoursConditions: {},
@@ -26,41 +24,49 @@ class PointsBreakdown {
   final int base;
   final int waitBonus;
   final int limitedBonus;
-  final int ticketBonus;
   final int firstVisitBonus;
   final int retryBonus;
   final Set<HoursCondition> hoursConditions;
 
   int get subtotal =>
-      base +
-      waitBonus +
-      limitedBonus +
-      ticketBonus +
-      firstVisitBonus +
-      retryBonus;
+      base + waitBonus + limitedBonus + firstVisitBonus + retryBonus;
 
   /// 倍率をかけたあとの小数は切り捨てる。
-  int get total => subtotal * _doubledMultiplier(hoursConditions) ~/ 2;
+  int get total => subtotal * _multiplierTenths(hoursConditions) ~/ 10;
 }
 
 const basePoints = 10;
 const waitBonusPerTenMinutes = 5;
 const limitedBonus = 20;
-const ticketBonus = 20;
 const firstVisitBonus = 10;
 const retryBonus = 15;
 
-/// 倍率（×1 / ×1.5 / ×2）を整数で扱うため2倍した値。
-int _doubledMultiplier(Set<HoursCondition> conditions) =>
-    switch (conditions.length) {
-      0 => 2,
-      1 => 3,
-      _ => 4,
-    };
+/// 攻略しにくさの条件ごとの倍率の上乗せ（10分の1単位）。条件の分だけ足し、上限で止める。
+const hoursConditionWeights = <HoursCondition, int>{
+  HoursCondition.lunchOnly: 3,
+  HoursCondition.nightOnly: 2,
+  HoursCondition.weekdaysOnly: 5,
+  HoursCondition.weekendsOnly: 2,
+  HoursCondition.fewDays: 5,
+  HoursCondition.irregular: 5,
+  HoursCondition.badAccess: 5,
+};
+const _maxMultiplierTenths = 25;
 
-/// 営業の条件の数による倍率。なし ×1、1つ ×1.5、2つ以上 ×2。
+/// 倍率（×1〜×2.5）を整数で扱うため10倍した値。
+int _multiplierTenths(Set<HoursCondition> conditions) {
+  final total =
+      10 +
+      conditions.fold<int>(
+        0,
+        (sum, c) => sum + (hoursConditionWeights[c] ?? 0),
+      );
+  return total > _maxMultiplierTenths ? _maxMultiplierTenths : total;
+}
+
+/// 攻略しにくさの条件による倍率。条件ごとの上乗せを足し、最大×2.5。
 double hoursMultiplier(Set<HoursCondition> conditions) =>
-    _doubledMultiplier(conditions) / 2;
+    _multiplierTenths(conditions) / 10;
 
 PointsBreakdown calculatePoints({
   required Visit visit,
@@ -73,7 +79,6 @@ PointsBreakdown calculatePoints({
     base: basePoints,
     waitBonus: (waitMinutes(visit) ?? 0) ~/ 10 * waitBonusPerTenMinutes,
     limitedBonus: visit.isLimited ? limitedBonus : 0,
-    ticketBonus: visit.hasTicket ? ticketBonus : 0,
     firstVisitBonus: isFirstVisit ? firstVisitBonus : 0,
     retryBonus: isRetrySuccess ? retryBonus : 0,
     hoursConditions: hoursConditions,

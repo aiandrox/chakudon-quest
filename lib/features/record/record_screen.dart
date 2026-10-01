@@ -139,12 +139,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
               VisitDetailsForm(
                 style: state.style,
                 isLimited: state.isLimited,
-                hasTicket: state.hasTicket,
                 hoursConditions: state.hoursConditions,
                 memoController: _memoController,
                 onStyleChanged: controller.setStyle,
                 onLimitedChanged: controller.setLimited,
-                onHasTicketChanged: controller.setHasTicket,
                 onHoursConditionsChanged: controller.setHoursConditions,
                 onMemoChanged: controller.setMemo,
               ),
