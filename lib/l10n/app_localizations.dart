@@ -1387,7 +1387,7 @@ abstract class AppLocalizations {
   /// No description provided for @kanjiEraDate.
   ///
   /// In ja, this message translates to:
-  /// **'{era}{year}年{month}月{day}日'**
+  /// **'{era}{year}年\n{month}月{day}日'**
   String kanjiEraDate(String era, String year, String month, String day);
 
   /// No description provided for @eraReiwa.

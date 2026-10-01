@@ -745,7 +745,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String kanjiEraDate(String era, String year, String month, String day) {
-    return '$era$year年$month月$day日';
+    return '$era$year年\n$month月$day日';
   }
 
   @override

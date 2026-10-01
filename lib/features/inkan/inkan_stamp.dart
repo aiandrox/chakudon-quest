@@ -23,7 +23,7 @@ String inkanStyleChar(AppLocalizations l10n, RamenStyle? style) =>
       RamenStyle.other || null => l10n.inkanStyleOther,
     };
 
-/// 「令和八年十月一日」。元年は「元」と書く。
+/// 「令和八年」「十月一日」の2行。元年は「元」と書く。
 String kanjiEraDate(AppLocalizations l10n, DateTime date) {
   final (era, year) = japaneseEra(date);
   return l10n.kanjiEraDate(
@@ -80,14 +80,19 @@ class InkanStamp extends StatelessWidget {
           center,
           style: TextStyle(
             fontFamily: Washi.brush,
-            fontSize: size * 0.42,
+            fontSize: size * 0.38,
             color: color,
             height: 1.05,
           ),
         ),
         FittedBox(
           fit: BoxFit.scaleDown,
-          child: Text(date, style: small, maxLines: 1),
+          child: Text(
+            date,
+            style: small,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
@@ -105,7 +110,7 @@ class InkanStamp extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Padding(
                   padding: EdgeInsets.all(size * 0.12),
-                  child: SizedBox(width: size * 0.7, child: content),
+                  child: SizedBox(width: size * 0.5, child: content),
                 ),
               ),
             ),

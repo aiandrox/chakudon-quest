@@ -441,7 +441,7 @@
       "date": {"type": "String"}
     }
   },
-  "kanjiEraDate": "{era}{year}年{month}月{day}日",
+  "kanjiEraDate": "{era}{year}年\n{month}月{day}日",
   "@kanjiEraDate": {
     "placeholders": {
       "era": {"type": "String"},
