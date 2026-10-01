@@ -135,7 +135,7 @@ void main() {
     expect(_progress('limited', limited(5)).level, 2);
   });
 
-  test('系統の探究は、「その他」を除く系統の数。7系統で最高レベル（全系統制覇）', () {
+  test('系統の探究は、「その他」を除く系統の数。8系統で最高レベル（全系統制覇）', () {
     const styles = [
       RamenStyle.shoyu,
       RamenStyle.miso,
@@ -144,16 +144,17 @@ void main() {
       RamenStyle.iekei,
       RamenStyle.jiro,
       RamenStyle.tsukemen,
+      RamenStyle.shirunashi,
     ];
     final progress = _progress('styles', [
-      for (var i = 0; i < 7; i++)
+      for (var i = 0; i < 8; i++)
         buildEntry(shop: buildShop(), eatenAt: _day(i), style: styles[i]),
-      buildEntry(shop: buildShop(), eatenAt: _day(8), style: RamenStyle.other),
+      buildEntry(shop: buildShop(), eatenAt: _day(9), style: RamenStyle.other),
     ]);
 
     expect(progress.level, 3);
     expect(progress.isMaxLevel, isTrue);
-    expect(progress.levelAchievedAt, [_day(2), _day(4), _day(6)]);
+    expect(progress.levelAchievedAt, [_day(2), _day(4), _day(7)]);
   });
 
   test('大物討伐は、1杯で60点以上のSランクの店の数', () {
@@ -256,6 +257,17 @@ void main() {
       expect(
         _progress('rare_shop', [buildEntry(shop: two)]).isAchieved,
         isTrue,
+      );
+    });
+
+    test('幻の店は、アクセスの悪さを営業の条件として数えない', () {
+      final access = buildShop(
+        hoursConditions: {HoursCondition.nightOnly, HoursCondition.badAccess},
+      );
+
+      expect(
+        _progress('rare_shop', [buildEntry(shop: access)]).isAchieved,
+        isFalse,
       );
     });
   });

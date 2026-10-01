@@ -19,11 +19,23 @@ String inkanStyleChar(AppLocalizations l10n, RamenStyle? style) =>
       RamenStyle.iekei => l10n.inkanStyleIekei,
       RamenStyle.jiro => l10n.inkanStyleJiro,
       RamenStyle.tsukemen => l10n.inkanStyleTsukemen,
+      RamenStyle.shirunashi => l10n.inkanStyleShirunashi,
       RamenStyle.other || null => l10n.inkanStyleOther,
     };
 
-String kanjiMonthDay(AppLocalizations l10n, DateTime date) =>
-    l10n.kanjiMonthDay(kanjiNumber(date.month), kanjiNumber(date.day));
+/// 「令和八年十月一日」。元年は「元」と書く。
+String kanjiEraDate(AppLocalizations l10n, DateTime date) {
+  final (era, year) = japaneseEra(date);
+  return l10n.kanjiEraDate(
+    switch (era) {
+      Era.heisei => l10n.eraHeisei,
+      Era.reiwa => l10n.eraReiwa,
+    },
+    year == 1 ? l10n.eraFirstYear : kanjiNumber(year),
+    kanjiNumber(date.month),
+    kanjiNumber(date.day),
+  );
+}
 
 /// 1杯ごとの印。上に格と「一本」、真ん中に系統の一字、下に日付。
 class InkanStamp extends StatelessWidget {
@@ -37,7 +49,7 @@ class InkanStamp extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final visit = scored.visit;
     final shape = inkanShapeFor(scored);
-    final date = kanjiMonthDay(l10n, visit.eatenAt);
+    final date = kanjiEraDate(l10n, visit.eatenAt);
     final isRetreat = shape == InkanShape.retreat;
     final color = switch (shape) {
       InkanShape.retreat => Washi.faded,
@@ -73,7 +85,10 @@ class InkanStamp extends StatelessWidget {
             height: 1.05,
           ),
         ),
-        Text(date, style: small, maxLines: 1),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(date, style: small, maxLines: 1),
+        ),
       ],
     );
 
@@ -90,7 +105,7 @@ class InkanStamp extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Padding(
                   padding: EdgeInsets.all(size * 0.12),
-                  child: content,
+                  child: SizedBox(width: size * 0.7, child: content),
                 ),
               ),
             ),

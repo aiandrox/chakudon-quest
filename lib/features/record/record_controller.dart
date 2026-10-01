@@ -199,8 +199,6 @@ class RecordController extends Notifier<RecordState> {
 
   void setLimited(bool value) => state = state.copyWith(isLimited: value);
 
-  void setHasTicket(bool value) => state = state.copyWith(hasTicket: value);
-
   void setHoursConditions(Set<HoursCondition> conditions) =>
       state = state.copyWith(chosenHoursConditions: conditions);
 
@@ -228,7 +226,6 @@ class RecordController extends Notifier<RecordState> {
             checkedInAt: _checkedInAt(draft, draft.photoTakenAt ?? now),
             style: draft.style,
             isLimited: draft.isLimited,
-            hasTicket: draft.hasTicket,
             memo: draft.memo.trim(),
             now: now,
           );

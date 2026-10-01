@@ -30,7 +30,6 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
   late int? _rating = widget.entry.visit.rating;
   late RamenStyle? _style = widget.entry.visit.style;
   late bool _isLimited = widget.entry.visit.isLimited;
-  late bool _hasTicket = widget.entry.visit.hasTicket;
   late Set<HoursCondition> _hoursConditions = widget.entry.shop.hoursConditions;
   bool _isSaving = false;
 
@@ -82,7 +81,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
             rating: _rating,
             style: _style,
             isLimited: _isLimited,
-            hasTicket: _hasTicket,
+            hasTicket: widget.entry.visit.hasTicket,
             memo: _memoController.text.trim(),
             now: ref.read(clockProvider)(),
           );
@@ -137,12 +136,10 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
           VisitDetailsForm(
             style: _style,
             isLimited: _isLimited,
-            hasTicket: _hasTicket,
             hoursConditions: _hoursConditions,
             memoController: _memoController,
             onStyleChanged: (style) => setState(() => _style = style),
             onLimitedChanged: (value) => setState(() => _isLimited = value),
-            onHasTicketChanged: (value) => setState(() => _hasTicket = value),
             onHoursConditionsChanged: (conditions) =>
                 setState(() => _hoursConditions = conditions),
             onMemoChanged: (_) {},

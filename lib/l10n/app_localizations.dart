@@ -310,6 +310,12 @@ abstract class AppLocalizations {
   /// **'つけ麺'**
   String get styleTsukemen;
 
+  /// No description provided for @styleShirunashi.
+  ///
+  /// In ja, this message translates to:
+  /// **'汁なし'**
+  String get styleShirunashi;
+
   /// No description provided for @styleOther.
   ///
   /// In ja, this message translates to:
@@ -322,22 +328,16 @@ abstract class AppLocalizations {
   /// **'限定メニュー'**
   String get isLimited;
 
-  /// No description provided for @hasTicket.
-  ///
-  /// In ja, this message translates to:
-  /// **'整理券制'**
-  String get hasTicket;
-
   /// No description provided for @hoursSection.
   ///
   /// In ja, this message translates to:
-  /// **'営業の条件（当てはまるものすべて）'**
+  /// **'攻略しにくさ（当てはまるものすべて）'**
   String get hoursSection;
 
   /// No description provided for @hoursNote.
   ///
   /// In ja, this message translates to:
-  /// **'修行点の倍率: 1つで×1.5、2つ以上で×2'**
+  /// **'当てはまるものが多いほど、修行点の倍率が上がります（最大×2.5）'**
   String get hoursNote;
 
   /// No description provided for @hoursLunchOnly.
@@ -375,6 +375,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'不定休'**
   String get hoursIrregular;
+
+  /// No description provided for @hoursBadAccess.
+  ///
+  /// In ja, this message translates to:
+  /// **'アクセスが悪い'**
+  String get hoursBadAccess;
 
   /// No description provided for @memoLabel.
   ///
@@ -489,12 +495,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'限定'**
   String get limitedBadge;
-
-  /// No description provided for @ticketBadge.
-  ///
-  /// In ja, this message translates to:
-  /// **'整理券'**
-  String get ticketBadge;
 
   /// No description provided for @checkinButton.
   ///
@@ -763,7 +763,7 @@ abstract class AppLocalizations {
   /// No description provided for @pointsHours.
   ///
   /// In ja, this message translates to:
-  /// **'営業の条件（{label}）'**
+  /// **'攻略しにくさ（{label}）'**
   String pointsHours(String label);
 
   /// No description provided for @pointsMultiplier.
@@ -1324,6 +1324,12 @@ abstract class AppLocalizations {
   /// **'沾'**
   String get inkanStyleTsukemen;
 
+  /// No description provided for @inkanStyleShirunashi.
+  ///
+  /// In ja, this message translates to:
+  /// **'混'**
+  String get inkanStyleShirunashi;
+
   /// No description provided for @inkanStyleOther.
   ///
   /// In ja, this message translates to:
@@ -1377,6 +1383,30 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'食べた日時: {date}（写真の撮影日時）'**
   String recordPhotoDate(String date);
+
+  /// No description provided for @kanjiEraDate.
+  ///
+  /// In ja, this message translates to:
+  /// **'{era}{year}年{month}月{day}日'**
+  String kanjiEraDate(String era, String year, String month, String day);
+
+  /// No description provided for @eraReiwa.
+  ///
+  /// In ja, this message translates to:
+  /// **'令和'**
+  String get eraReiwa;
+
+  /// No description provided for @eraHeisei.
+  ///
+  /// In ja, this message translates to:
+  /// **'平成'**
+  String get eraHeisei;
+
+  /// No description provided for @eraFirstYear.
+  ///
+  /// In ja, this message translates to:
+  /// **'元'**
+  String get eraFirstYear;
 }
 
 class _AppLocalizationsDelegate

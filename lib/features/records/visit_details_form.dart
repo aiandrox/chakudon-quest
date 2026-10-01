@@ -4,30 +4,26 @@ import '../../l10n/app_localizations.dart';
 import 'labels.dart';
 import 'models.dart';
 
-/// 系統・限定・整理券・営業の条件・メモの入力欄。記録画面と編集画面で共有する。
+/// 系統・限定・攻略しにくさ・メモの入力欄。記録画面と編集画面で共有する。
 class VisitDetailsForm extends StatelessWidget {
   const VisitDetailsForm({
     super.key,
     required this.style,
     required this.isLimited,
-    required this.hasTicket,
     required this.hoursConditions,
     required this.memoController,
     required this.onStyleChanged,
     required this.onLimitedChanged,
-    required this.onHasTicketChanged,
     required this.onHoursConditionsChanged,
     required this.onMemoChanged,
   });
 
   final RamenStyle? style;
   final bool isLimited;
-  final bool hasTicket;
   final Set<HoursCondition> hoursConditions;
   final TextEditingController memoController;
   final ValueChanged<RamenStyle?> onStyleChanged;
   final ValueChanged<bool> onLimitedChanged;
-  final ValueChanged<bool> onHasTicketChanged;
   final ValueChanged<Set<HoursCondition>> onHoursConditionsChanged;
   final ValueChanged<String> onMemoChanged;
 
@@ -57,12 +53,6 @@ class VisitDetailsForm extends StatelessWidget {
           title: Text(l10n.isLimited),
           value: isLimited,
           onChanged: onLimitedChanged,
-        ),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(l10n.hasTicket),
-          value: hasTicket,
-          onChanged: onHasTicketChanged,
         ),
         const SizedBox(height: 8),
         Text(l10n.hoursSection, style: textTheme.labelLarge),

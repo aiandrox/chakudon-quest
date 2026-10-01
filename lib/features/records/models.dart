@@ -1,4 +1,4 @@
-/// 営業時間の「攻略しにくさ」。店ごとに当てはまるものをいくつでも付ける。
+/// 店の「攻略しにくさ」（営業の条件とアクセス）。店ごとに当てはまるものをいくつでも付ける。
 enum HoursCondition {
   lunchOnly,
   nightOnly,
@@ -6,11 +6,22 @@ enum HoursCondition {
   weekendsOnly,
   fewDays,
   irregular,
+  badAccess,
 }
 
 enum VisitResult { eaten, retreated }
 
-enum RamenStyle { shoyu, miso, shio, tonkotsu, iekei, jiro, tsukemen, other }
+enum RamenStyle {
+  shoyu,
+  miso,
+  shio,
+  tonkotsu,
+  iekei,
+  jiro,
+  tsukemen,
+  shirunashi,
+  other,
+}
 
 class Shop {
   const Shop({
@@ -63,6 +74,8 @@ class Visit {
   final RamenStyle? style;
   final int? rating;
   final bool isLimited;
+
+  /// 整理券制か。今は入力も採点もしないが、過去の記録の値は残している。
   final bool hasTicket;
   final String memo;
   final DateTime createdAt;

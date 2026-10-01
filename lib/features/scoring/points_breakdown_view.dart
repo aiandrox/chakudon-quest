@@ -24,7 +24,6 @@ class PointsBreakdownView extends StatelessWidget {
       (l10n.pointsBase, points.base),
       (l10n.pointsWait(waitMinutes(scored.visit) ?? 0), points.waitBonus),
       (l10n.isLimited, points.limitedBonus),
-      (l10n.hasTicket, points.ticketBonus),
       (l10n.pointsFirstVisit, points.firstVisitBonus),
       (l10n.pointsRetry, points.retryBonus),
     ];

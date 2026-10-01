@@ -9,6 +9,7 @@ String styleLabel(AppLocalizations l10n, RamenStyle style) => switch (style) {
   RamenStyle.iekei => l10n.styleIekei,
   RamenStyle.jiro => l10n.styleJiro,
   RamenStyle.tsukemen => l10n.styleTsukemen,
+  RamenStyle.shirunashi => l10n.styleShirunashi,
   RamenStyle.other => l10n.styleOther,
 };
 
@@ -20,6 +21,7 @@ String hoursConditionLabel(AppLocalizations l10n, HoursCondition condition) =>
       HoursCondition.weekendsOnly => l10n.hoursWeekendsOnly,
       HoursCondition.fewDays => l10n.hoursFewDays,
       HoursCondition.irregular => l10n.hoursIrregular,
+      HoursCondition.badAccess => l10n.hoursBadAccess,
     };
 
 /// 条件を定義順に並べて「・」でつなぐ。

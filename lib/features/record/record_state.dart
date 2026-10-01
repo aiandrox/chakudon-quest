@@ -26,7 +26,6 @@ class RecordState {
     this.rating,
     this.style,
     this.isLimited = false,
-    this.hasTicket = false,
     this.chosenHoursConditions,
     this.memo = '',
     this.isSaving = false,
@@ -61,7 +60,6 @@ class RecordState {
   final int? rating;
   final RamenStyle? style;
   final bool isLimited;
-  final bool hasTicket;
 
   /// 利用者がこの画面で選んだ営業の条件。選んでいなければnull。
   final Set<HoursCondition>? chosenHoursConditions;
@@ -109,7 +107,6 @@ class RecordState {
     Object? rating = _unset,
     Object? style = _unset,
     bool? isLimited,
-    bool? hasTicket,
     Object? chosenHoursConditions = _unset,
     String? memo,
     bool? isSaving,
@@ -140,7 +137,6 @@ class RecordState {
       rating: rating == _unset ? this.rating : rating as int?,
       style: style == _unset ? this.style : style as RamenStyle?,
       isLimited: isLimited ?? this.isLimited,
-      hasTicket: hasTicket ?? this.hasTicket,
       chosenHoursConditions: chosenHoursConditions == _unset
           ? this.chosenHoursConditions
           : chosenHoursConditions as Set<HoursCondition>?,
