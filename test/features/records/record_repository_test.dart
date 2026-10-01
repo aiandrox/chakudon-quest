@@ -185,6 +185,7 @@ void main() {
       shopName: shopName,
       hoursConditions: hoursConditions,
       eatenAt: visit.eatenAt,
+      checkedInAt: visit.checkedInAt,
       rating: rating,
       style: visit.style,
       isLimited: visit.isLimited,
@@ -201,6 +202,7 @@ void main() {
         shopName: '麺屋',
         hoursConditions: {HoursCondition.lunchOnly},
         eatenAt: DateTime(2026, 9, 29, 11),
+        checkedInAt: DateTime(2026, 9, 29, 10, 20),
         rating: 2,
         style: RamenStyle.miso,
         isLimited: true,
@@ -212,6 +214,7 @@ void main() {
       final entry = (await repository.watchVisits().first).single;
       expect(entry.visit.id, visit.id);
       expect(entry.visit.eatenAt, DateTime(2026, 9, 29, 11));
+      expect(entry.visit.checkedInAt, DateTime(2026, 9, 29, 10, 20));
       expect(entry.visit.rating, 2);
       expect(entry.visit.style, RamenStyle.miso);
       expect(entry.visit.isLimited, isTrue);

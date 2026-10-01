@@ -207,6 +207,33 @@ void main() {
     expect(entry.shop.latitude, isNull);
   });
 
+  group('待ち時間をあとから入れる', () {
+    test('入れた分だけ前を並んだ時刻にして保存する', () async {
+      await controller().start();
+      await pumpEventQueue();
+      controller().setManualName('並んだ店');
+      controller().setWaitMinutes(25);
+      await controller().save();
+
+      final visit = (await visits()).single.visit;
+      expect(
+        visit.checkedInAt,
+        _photoTime.subtract(const Duration(minutes: 25)),
+      );
+      expect(waitMinutes(visit), 25);
+    });
+
+    test('空にすれば待ち時間なし', () async {
+      await controller().start();
+      controller().setManualName('並ばなかった店');
+      controller().setWaitMinutes(25);
+      controller().setWaitMinutes(null);
+      await controller().save();
+
+      expect((await visits()).single.visit.checkedInAt, isNull);
+    });
+  });
+
   group('過去の写真から記録する', () {
     final takenAt = DateTime(2026, 9, 20, 12, 34);
     const shopPlace = GeoPoint(35.6, 139.7);
@@ -460,6 +487,33 @@ void main() {
       expect(await controller().save(), isNotNull);
 
       expect((await visits()).single.visit.checkedInAt, isNull);
+    });
+
+    test('別の店で待ち時間を手で入れても、並んでいる店のチェックインは続く', () async {
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().setManualName('別の店');
+      controller().setWaitMinutes(10);
+      expect(await controller().save(), isNotNull);
+
+      expect(waitMinutes((await visits()).single.visit), 10);
+      expect(
+        await container.read(recordRepositoryProvider).activeCheckin(),
+        isNotNull,
+      );
+    });
+
+    test('並んだ店を選んでいるときは、手で入れた待ち時間より並んだ時刻を使う', () async {
+      await checkIn();
+
+      await controller().start();
+      await pumpEventQueue();
+      controller().setWaitMinutes(99);
+      await controller().save();
+
+      expect(waitMinutes((await visits()).single.visit), 35);
     });
 
     test('別の店を選んで保存すると待ち時間はつかず、チェックインは続く', () async {

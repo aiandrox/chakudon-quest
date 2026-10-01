@@ -756,4 +756,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get eraFirstYear => '元';
+
+  @override
+  String get waitMinutesLabel => '待ち時間';
+
+  @override
+  String get waitMinutesHint => '並んだ時間をあとから入れられます。並ばなかったときは空のまま';
+
+  @override
+  String get waitMinutesUnit => '分';
 }

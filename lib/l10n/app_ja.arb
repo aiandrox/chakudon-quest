@@ -452,5 +452,8 @@
   },
   "eraReiwa": "令和",
   "eraHeisei": "平成",
-  "eraFirstYear": "元"
+  "eraFirstYear": "元",
+  "waitMinutesLabel": "待ち時間",
+  "waitMinutesHint": "並んだ時間をあとから入れられます。並ばなかったときは空のまま",
+  "waitMinutesUnit": "分"
 }

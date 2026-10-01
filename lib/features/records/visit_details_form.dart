@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'labels.dart';
@@ -16,6 +17,8 @@ class VisitDetailsForm extends StatelessWidget {
     required this.onLimitedChanged,
     required this.onHoursConditionsChanged,
     required this.onMemoChanged,
+    this.waitController,
+    this.onWaitChanged,
   });
 
   final RamenStyle? style;
@@ -26,6 +29,10 @@ class VisitDetailsForm extends StatelessWidget {
   final ValueChanged<bool> onLimitedChanged;
   final ValueChanged<Set<HoursCondition>> onHoursConditionsChanged;
   final ValueChanged<String> onMemoChanged;
+
+  /// 待ち時間（分）の入力欄。nullなら出さない（並んだ時刻から自動で計算するときなど）。
+  final TextEditingController? waitController;
+  final ValueChanged<int?>? onWaitChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +61,25 @@ class VisitDetailsForm extends StatelessWidget {
           value: isLimited,
           onChanged: onLimitedChanged,
         ),
+        if (waitController case final controller?) ...[
+          const SizedBox(height: 4),
+          TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(3),
+            ],
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: l10n.waitMinutesLabel,
+              helperText: l10n.waitMinutesHint,
+              suffixText: l10n.waitMinutesUnit,
+            ),
+            onChanged: (text) => onWaitChanged?.call(parseWaitMinutes(text)),
+          ),
+          const SizedBox(height: 8),
+        ],
         const SizedBox(height: 8),
         Text(l10n.hoursSection, style: textTheme.labelLarge),
         const SizedBox(height: 4),
@@ -88,4 +114,10 @@ class VisitDetailsForm extends StatelessWidget {
       ],
     );
   }
+}
+
+/// 入力された待ち時間（分）。空や0はnull（並ばなかった）。
+int? parseWaitMinutes(String text) {
+  final minutes = int.tryParse(text.trim());
+  return minutes == null || minutes <= 0 ? null : minutes;
 }
