@@ -167,6 +167,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
           FloatingActionButton.large(
             heroTag: 'record',
+            shape: const CircleBorder(),
             tooltip: l10n.addRecord,
             onPressed: _openRecord,
             child: const Icon(Icons.add),
@@ -233,8 +234,7 @@ class _InchoHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final eaten = visits.where((e) => e.visit.result == VisitResult.eaten);
-    final shops = {for (final entry in eaten) entry.shop.id};
+    final shops = {for (final entry in visits) entry.shop.id};
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
       child: Row(
@@ -248,7 +248,7 @@ class _InchoHeader extends StatelessWidget {
             ),
           ),
           Text(
-            l10n.inchoCount(eaten.length, shops.length),
+            l10n.inchoCount(visits.length, shops.length),
             style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
           ),
         ],

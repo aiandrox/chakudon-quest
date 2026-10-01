@@ -67,7 +67,6 @@ ThemeData buildAppTheme() {
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Washi.shu,
       foregroundColor: Colors.white,
-      shape: CircleBorder(),
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Washi.paper,
