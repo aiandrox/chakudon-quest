@@ -685,33 +685,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get inkanStyleShoyu => '醤';
-
-  @override
-  String get inkanStyleMiso => '味';
-
-  @override
-  String get inkanStyleShio => '塩';
-
-  @override
-  String get inkanStyleTonkotsu => '豚';
-
-  @override
-  String get inkanStyleIekei => '家';
-
-  @override
-  String get inkanStyleJiro => '郎';
-
-  @override
-  String get inkanStyleTsukemen => '沾';
-
-  @override
-  String get inkanStyleShirunashi => '混';
-
-  @override
-  String get inkanStyleOther => '麺';
-
-  @override
   String kanjiMonthDay(String month, String day) {
     return '$month月$day日';
   }
@@ -768,4 +741,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get questLocked => '未';
+
+  @override
+  String get inkanNoStyle => 'ラーメン';
 }

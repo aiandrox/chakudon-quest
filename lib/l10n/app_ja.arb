@@ -402,15 +402,6 @@
       "kind": {"type": "String"}
     }
   },
-  "inkanStyleShoyu": "醤",
-  "inkanStyleMiso": "味",
-  "inkanStyleShio": "塩",
-  "inkanStyleTonkotsu": "豚",
-  "inkanStyleIekei": "家",
-  "inkanStyleJiro": "郎",
-  "inkanStyleTsukemen": "沾",
-  "inkanStyleShirunashi": "混",
-  "inkanStyleOther": "麺",
   "kanjiMonthDay": "{month}月{day}日",
   "@kanjiMonthDay": {
     "placeholders": {
@@ -456,5 +447,6 @@
   "waitMinutesLabel": "待ち時間",
   "waitMinutesHint": "並んだ時間をあとから入れられます。並ばなかったときは空のまま",
   "waitMinutesUnit": "分",
-  "questLocked": "未"
+  "questLocked": "未",
+  "inkanNoStyle": "ラーメン"
 }

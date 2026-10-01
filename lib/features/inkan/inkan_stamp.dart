@@ -4,24 +4,16 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
+import '../records/labels.dart';
 import '../records/models.dart';
 import '../scoring/points.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/ranks.dart';
 import 'inkan.dart';
 
-String inkanStyleChar(AppLocalizations l10n, RamenStyle? style) =>
-    switch (style) {
-      RamenStyle.shoyu => l10n.inkanStyleShoyu,
-      RamenStyle.miso => l10n.inkanStyleMiso,
-      RamenStyle.shio => l10n.inkanStyleShio,
-      RamenStyle.tonkotsu => l10n.inkanStyleTonkotsu,
-      RamenStyle.iekei => l10n.inkanStyleIekei,
-      RamenStyle.jiro => l10n.inkanStyleJiro,
-      RamenStyle.tsukemen => l10n.inkanStyleTsukemen,
-      RamenStyle.shirunashi => l10n.inkanStyleShirunashi,
-      RamenStyle.other || null => l10n.inkanStyleOther,
-    };
+/// 印の真ん中に書く系統名。系統をつけていない記録は「ラーメン」。
+String inkanStyleName(AppLocalizations l10n, RamenStyle? style) =>
+    style == null ? l10n.inkanNoStyle : styleLabel(l10n, style);
 
 /// 「令和八年」「十月一日」の2行。元年は「元」と書く。
 String kanjiEraDate(AppLocalizations l10n, DateTime date) {
@@ -37,7 +29,7 @@ String kanjiEraDate(AppLocalizations l10n, DateTime date) {
   );
 }
 
-/// 1杯ごとの印。上に格と「一本」、真ん中に系統の一字、下に日付。
+/// 1杯ごとの印。上に格と「一本」、真ん中に系統名、下に日付。
 class InkanStamp extends StatelessWidget {
   const InkanStamp({super.key, required this.scored, this.size = 84});
 
@@ -64,7 +56,7 @@ class InkanStamp extends StatelessWidget {
           );
     final center = isRetreat
         ? l10n.inkanRetreat
-        : inkanStyleChar(l10n, visit.style);
+        : inkanStyleName(l10n, visit.style);
     final small = TextStyle(
       fontFamily: Washi.brush,
       fontSize: math.max(7, size * 0.11),
@@ -75,24 +67,24 @@ class InkanStamp extends StatelessWidget {
     final content = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (top != null) Text(top, style: small, maxLines: 1),
-        Text(
-          center,
-          style: TextStyle(
-            fontFamily: Washi.brush,
-            fontSize: size * 0.38,
-            color: color,
-            height: 1.05,
+        if (top != null) _fit(size * 0.5, Text(top, style: small, maxLines: 1)),
+        // 円の真ん中がいちばん広いので、系統名はほかより幅を広くとる。
+        _fit(
+          size * 0.7,
+          Text(
+            center,
+            maxLines: 1,
+            style: TextStyle(
+              fontFamily: Washi.brush,
+              fontSize: size * 0.38,
+              color: color,
+              height: 1.15,
+            ),
           ),
         ),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            date,
-            style: small,
-            maxLines: 2,
-            textAlign: TextAlign.center,
-          ),
+        _fit(
+          size * 0.5,
+          Text(date, style: small, maxLines: 2, textAlign: TextAlign.center),
         ),
       ],
     );
@@ -109,8 +101,11 @@ class InkanStamp extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Padding(
-                  padding: EdgeInsets.all(size * 0.12),
-                  child: SizedBox(width: size * 0.5, child: content),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size * 0.08,
+                    vertical: size * 0.12,
+                  ),
+                  child: content,
                 ),
               ),
             ),
@@ -120,6 +115,11 @@ class InkanStamp extends StatelessWidget {
     );
   }
 }
+
+Widget _fit(double width, Widget child) => SizedBox(
+  width: width,
+  child: FittedBox(fit: BoxFit.scaleDown, child: child),
+);
 
 class _InkanPainter extends CustomPainter {
   const _InkanPainter(this.shape);

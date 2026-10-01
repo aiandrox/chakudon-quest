@@ -1282,60 +1282,6 @@ abstract class AppLocalizations {
   /// **'{rank}　{kind}'**
   String inkanTop(String rank, String kind);
 
-  /// No description provided for @inkanStyleShoyu.
-  ///
-  /// In ja, this message translates to:
-  /// **'醤'**
-  String get inkanStyleShoyu;
-
-  /// No description provided for @inkanStyleMiso.
-  ///
-  /// In ja, this message translates to:
-  /// **'味'**
-  String get inkanStyleMiso;
-
-  /// No description provided for @inkanStyleShio.
-  ///
-  /// In ja, this message translates to:
-  /// **'塩'**
-  String get inkanStyleShio;
-
-  /// No description provided for @inkanStyleTonkotsu.
-  ///
-  /// In ja, this message translates to:
-  /// **'豚'**
-  String get inkanStyleTonkotsu;
-
-  /// No description provided for @inkanStyleIekei.
-  ///
-  /// In ja, this message translates to:
-  /// **'家'**
-  String get inkanStyleIekei;
-
-  /// No description provided for @inkanStyleJiro.
-  ///
-  /// In ja, this message translates to:
-  /// **'郎'**
-  String get inkanStyleJiro;
-
-  /// No description provided for @inkanStyleTsukemen.
-  ///
-  /// In ja, this message translates to:
-  /// **'沾'**
-  String get inkanStyleTsukemen;
-
-  /// No description provided for @inkanStyleShirunashi.
-  ///
-  /// In ja, this message translates to:
-  /// **'混'**
-  String get inkanStyleShirunashi;
-
-  /// No description provided for @inkanStyleOther.
-  ///
-  /// In ja, this message translates to:
-  /// **'麺'**
-  String get inkanStyleOther;
-
   /// No description provided for @kanjiMonthDay.
   ///
   /// In ja, this message translates to:
@@ -1431,6 +1377,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'未'**
   String get questLocked;
+
+  /// No description provided for @inkanNoStyle.
+  ///
+  /// In ja, this message translates to:
+  /// **'ラーメン'**
+  String get inkanNoStyle;
 }
 
 class _AppLocalizationsDelegate

@@ -92,7 +92,8 @@ void main() {
     expect(find.text('麺屋テスト'), findsWidgets);
     expect(find.text('2026/9/30 12:34'), findsOneWidget);
     expect(tester.widget<StarRating>(find.byType(StarRating)).rating, 4);
-    expect(find.text(ja.styleShoyu), findsOneWidget);
+    // 系統のタグと、印の真ん中の2か所。
+    expect(find.text(ja.styleShoyu), findsNWidgets(2));
     expect(find.text(ja.limitedBadge), findsOneWidget);
     expect(find.text('スープが濃い'), findsOneWidget);
     expect(find.text(ja.previousVisit), findsNothing);
