@@ -51,7 +51,7 @@ class PastedPhoto extends StatelessWidget {
   }
 }
 
-/// 縦書きの文字列。1文字ずつ縦に積み、長音などの横向きの記号は90度回す。
+/// 縦書きの文字列。1文字ずつ縦に積み、筆文字の縦書き用の字形を使う。
 /// 1行に収まらないときは、右から左へ2行目に折り返す。
 class VerticalText extends StatelessWidget {
   const VerticalText(
@@ -69,26 +69,16 @@ class VerticalText extends StatelessWidget {
   final int? maxChars;
   final int maxLines;
 
-  static const _rotated = {
-    'ー',
-    '－',
-    '-',
-    '〜',
-    '～',
-    '—',
-    '…',
-    '（',
-    '）',
-    '(',
-    ')',
-    '「',
-    '」',
-  };
-
   @override
   Widget build(BuildContext context) {
     final lines = verticalLines(text, maxChars: maxChars, maxLines: maxLines);
-    final charStyle = style.copyWith(height: 1.15);
+    // 縦書き用の字形（縦向きの長音・右上に寄った小さい「っ」など）に切り替える。
+    final charStyle = style.copyWith(
+      height: 1.15,
+      fontFeatures: const [FontFeature.enable('vert')],
+    );
+    // 文字ごとに幅が違っても列がそろうよう、1文字ずつ同じ大きさの枠の中央に置く。
+    final cell = MediaQuery.textScalerOf(context).scale(style.fontSize ?? 14);
     return Semantics(
       label: text,
       child: ExcludeSemantics(
@@ -104,12 +94,19 @@ class VerticalText extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     for (final char in line)
-                      _rotated.contains(char)
-                          ? RotatedBox(
-                              quarterTurns: 1,
-                              child: Text(char, style: charStyle),
-                            )
-                          : Text(char, style: charStyle),
+                      SizedBox(
+                        width: cell * 1.1,
+                        height: cell * 1.15,
+                        child: Center(
+                          child: Text(
+                            char,
+                            style: charStyle,
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+                            overflow: TextOverflow.visible,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
             ],
