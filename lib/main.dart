@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -9,6 +11,7 @@ import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  LicenseRegistry.addLicense(_fontLicenses);
   final documents = await getApplicationDocumentsDirectory();
   runApp(
     ProviderScope(
@@ -16,6 +19,14 @@ Future<void> main() async {
       child: const ChakudonQuestApp(),
     ),
   );
+}
+
+Stream<LicenseEntry> _fontLicenses() async* {
+  for (final font in ['ShipporiMincho', 'YujiSyuku']) {
+    yield LicenseEntryWithLineBreaks([
+      font,
+    ], await rootBundle.loadString('assets/fonts/$font-OFL.txt'));
+  }
 }
 
 class ChakudonQuestApp extends StatelessWidget {
@@ -30,7 +41,6 @@ class ChakudonQuestApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       theme: buildAppTheme(),
-      darkTheme: buildAppTheme(brightness: Brightness.dark),
       home: const AppShell(),
     );
   }

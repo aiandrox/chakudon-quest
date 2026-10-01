@@ -136,7 +136,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hoursSection => '営業の条件（当てはまるものすべて）';
 
   @override
-  String get hoursNote => 'ポイントの倍率: 1つで×1.5、2つ以上で×2';
+  String get hoursNote => '修行点の倍率: 1つで×1.5、2つ以上で×2';
 
   @override
   String get hoursLunchOnly => '昼のみ';
@@ -331,29 +331,29 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get rankApprentice => '見習い冒険者';
+  String get rankApprentice => '入門';
 
   @override
-  String get rankTraveler => '麺の旅人';
+  String get rankTraveler => '初段';
 
   @override
-  String get rankHero => '行列の勇者';
+  String get rankHero => '師範代';
 
   @override
-  String get rankLegend => '伝説の麺道士';
+  String get rankLegend => '免許皆伝';
 
   @override
   String points(int points) {
-    return '$points pt';
+    return '$points点';
   }
 
   @override
   String pointsGained(int points) {
-    return '+$points pt';
+    return '+$points点';
   }
 
   @override
-  String get pointsSection => '獲得ポイント';
+  String get pointsSection => '修行点';
 
   @override
   String get pointsBase => '基本';
@@ -380,32 +380,32 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get pointsRetreat => '撤退の記録にポイントはつきません';
+  String get pointsRetreat => '撤退の記録に修行点はつきません';
 
   @override
   String totalPoints(int points) {
-    return '累計 $points pt';
+    return '修行点 $points';
   }
 
   @override
   String nextRank(String rank, int points) {
-    return '「$rank」まで あと $points pt';
+    return '$rankまで あと $points点';
   }
 
   @override
-  String get maxRank => '最高ランクに到達しました';
+  String get maxRank => '免許皆伝に至りました';
 
   @override
-  String get rankUp => 'ランクアップ！';
+  String get rankUp => '昇段！';
 
   @override
   String get resultTitle => '着丼！';
 
   @override
-  String get resultOk => 'OK';
+  String get resultOk => '印帳にもどる';
 
   @override
-  String get navRecords => '記録';
+  String get navRecords => '印帳';
 
   @override
   String get navQuests => 'クエスト';
@@ -566,7 +566,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get bestLongestWait => '最長の待ち時間';
 
   @override
-  String get bestHighestPoints => '1杯の最高ポイント';
+  String get bestHighestPoints => '1杯の最高の修行点';
 
   @override
   String get bestMostRetreats => 'いちばん手ごわい店';
@@ -591,7 +591,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get statsShopRanksNote =>
-      'その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）';
+      'その店で1杯に得た最高の修行点で決まります（極 60以上 / 特 40以上 / 上 25以上 / 並）';
 
   @override
   String get navMap => '地図';
@@ -655,6 +655,83 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String statsBestPoints(int points) {
-    return '最高 $points pt';
+    return '最高 $points点';
   }
+
+  @override
+  String get shopRankS => '極';
+
+  @override
+  String get shopRankA => '特';
+
+  @override
+  String get shopRankB => '上';
+
+  @override
+  String get shopRankC => '並';
+
+  @override
+  String get inkanEaten => '一本';
+
+  @override
+  String get inkanRetry => '雪辱';
+
+  @override
+  String get inkanRetreat => '敗';
+
+  @override
+  String inkanTop(String rank, String kind) {
+    return '$rank　$kind';
+  }
+
+  @override
+  String get inkanStyleShoyu => '醤';
+
+  @override
+  String get inkanStyleMiso => '味';
+
+  @override
+  String get inkanStyleShio => '塩';
+
+  @override
+  String get inkanStyleTonkotsu => '豚';
+
+  @override
+  String get inkanStyleIekei => '家';
+
+  @override
+  String get inkanStyleJiro => '郎';
+
+  @override
+  String get inkanStyleTsukemen => '沾';
+
+  @override
+  String get inkanStyleOther => '麺';
+
+  @override
+  String kanjiMonthDay(String month, String day) {
+    return '$month月$day日';
+  }
+
+  @override
+  String get inchoTitle => '印帳';
+
+  @override
+  String inchoCount(int stamps, int shops) {
+    return '集めた印 $stamps　道場 $shops';
+  }
+
+  @override
+  String inchoMetaWait(int minutes) {
+    return '待 $minutes分';
+  }
+
+  @override
+  String get inchoMetaUnrated => '★ まだ';
+
+  @override
+  String get shopStamps => 'この道場の印';
+
+  @override
+  String get resultStamped => '印をいただきました';
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/emblem.dart';
-import '../scoring/ranks.dart';
 import 'quests.dart';
 
 IconData questIcon(Quest quest) => switch (quest.id) {
@@ -33,17 +32,3 @@ EmblemTier questTier(Quest quest, int level) {
     _ => EmblemTier.platinum,
   };
 }
-
-EmblemTier rankTier(AdventurerRank rank) => switch (rank) {
-  AdventurerRank.apprentice => EmblemTier.bronze,
-  AdventurerRank.traveler => EmblemTier.silver,
-  AdventurerRank.hero => EmblemTier.gold,
-  AdventurerRank.legend => EmblemTier.legend,
-};
-
-IconData rankIcon(AdventurerRank rank) => switch (rank) {
-  AdventurerRank.apprentice => Icons.hiking,
-  AdventurerRank.traveler => Icons.map,
-  AdventurerRank.hero => Icons.shield,
-  AdventurerRank.legend => Icons.auto_awesome,
-};

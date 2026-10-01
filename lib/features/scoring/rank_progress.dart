@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../theme/emblem.dart';
-import '../quests/quest_visuals.dart';
+import '../../theme/washi.dart';
+import '../inkan/inkan_stamp.dart';
 import 'rank_labels.dart';
 import 'ranks.dart';
 
-/// 冒険者ランクと累計ポイント、次のランクまでの進み具合。
+/// 段位と修行点、次の段位までの進み具合。
 class RankProgress extends StatelessWidget {
   const RankProgress({super.key, required this.totalPoints});
 
@@ -15,6 +15,7 @@ class RankProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final rank = adventurerRankFor(totalPoints);
     final next = rank.next;
@@ -23,36 +24,48 @@ class RankProgress extends StatelessWidget {
         : (totalPoints - rank.requiredPoints) /
               (next.requiredPoints - rank.requiredPoints);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Row(
-          children: [
-            Emblem(icon: rankIcon(rank), tier: rankTier(rank), size: 36),
-            const SizedBox(width: 8),
-            Expanded(
-              child: TitleLogo(
-                adventurerRankLabel(l10n, rank),
-                tier: rankTier(rank),
+        RankSeal(
+          label: adventurerRankLabel(l10n, rank),
+          fontSize: 18,
+          color: colors.primary,
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.totalPoints(totalPoints),
+                      style: textTheme.bodyMedium,
+                    ),
+                  ),
+                  Text(
+                    next == null
+                        ? l10n.maxRank
+                        : l10n.nextRank(
+                            adventurerRankLabel(l10n, next),
+                            next.requiredPoints - totalPoints,
+                          ),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Text(l10n.totalPoints(totalPoints), style: textTheme.bodyMedium),
-          ],
-        ),
-        const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: LinearProgressIndicator(value: progress, minHeight: 8),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          next == null
-              ? l10n.maxRank
-              : l10n.nextRank(
-                  adventurerRankLabel(l10n, next),
-                  next.requiredPoints - totalPoints,
-                ),
-          style: textTheme.bodySmall,
+              const SizedBox(height: 6),
+              LinearProgressIndicator(
+                value: progress,
+                minHeight: 4,
+                color: colors.onSurface,
+                backgroundColor: Washi.line.withValues(alpha: 0.6),
+              ),
+            ],
+          ),
         ),
       ],
     );

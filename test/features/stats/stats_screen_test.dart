@@ -96,8 +96,8 @@ void main() {
     // よく行く店と店ランクの両方に出る。
     expect(find.text('よく行く麺屋'), findsNWidgets(2));
     expect(find.text('週2日の店'), findsNWidgets(2));
-    expect(find.text('S'), findsOneWidget);
-    expect(find.text('C'), findsOneWidget);
+    expect(find.text(ja.shopRankS), findsOneWidget);
+    expect(find.text(ja.shopRankC), findsOneWidget);
     expect(find.text(ja.statsBestPoints(80)), findsOneWidget);
     expect(find.text(ja.statsBestPoints(20)), findsOneWidget);
 

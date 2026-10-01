@@ -9,4 +9,9 @@ String adventurerRankLabel(AppLocalizations l10n, AdventurerRank rank) =>
       AdventurerRank.legend => l10n.rankLegend,
     };
 
-String shopRankLabel(ShopRank rank) => rank.name.toUpperCase();
+String shopRankLabel(AppLocalizations l10n, ShopRank rank) => switch (rank) {
+  ShopRank.s => l10n.shopRankS,
+  ShopRank.a => l10n.shopRankA,
+  ShopRank.b => l10n.shopRankB,
+  ShopRank.c => l10n.shopRankC,
+};

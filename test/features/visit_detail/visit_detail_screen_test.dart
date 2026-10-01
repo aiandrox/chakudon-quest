@@ -177,9 +177,40 @@ void main() {
     ], 'second');
 
     expect(find.text(ja.previousVisit), findsOneWidget);
-    expect(find.text('2026/9/1'), findsOneWidget);
+    // 前回の記録と、この道場の印の日付の2か所。
+    expect(find.text('2026/9/1'), findsNWidgets(2));
     expect(stars(5), findsOneWidget);
     expect(find.text('前回のメモ'), findsOneWidget);
+  });
+
+  testWidgets('この道場の印をタップすると、その1杯に切り替わる', (tester) async {
+    await pumpDetail(tester, [
+      entry(id: 'second', eatenAt: DateTime(2026, 9, 30, 12), rating: 3),
+      entry(
+        id: 'first',
+        eatenAt: DateTime(2026, 9, 1, 12),
+        rating: 5,
+        memo: '前回のメモ',
+      ),
+    ], 'second');
+
+    expect(find.text(ja.shopStamps), findsOneWidget);
+    expect(find.text('2026/9/30 12:00'), findsOneWidget);
+
+    await tester.tap(find.text('2026/9/1').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('2026/9/1 12:00'), findsOneWidget);
+    expect(tester.widget<StarRating>(find.byType(StarRating)).rating, 5);
+    expect(find.text(ja.previousVisit), findsNothing);
+  });
+
+  testWidgets('この店の記録が1杯だけなら、印の一覧は出さない', (tester) async {
+    await pumpDetail(tester, [
+      entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
+    ], 'v');
+
+    expect(find.text(ja.shopStamps), findsNothing);
   });
 
   testWidgets('削除を確認すると、記録と写真を消して一覧に戻る', (tester) async {

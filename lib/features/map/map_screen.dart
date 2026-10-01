@@ -299,6 +299,7 @@ class _Pin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
     final rank = pin.rank;
     return GestureDetector(
@@ -326,7 +327,7 @@ class _Pin extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
-                  shopRankLabel(rank),
+                  shopRankLabel(l10n, rank),
                   style: TextStyle(
                     color: colors.onPrimary,
                     fontWeight: FontWeight.bold,
@@ -354,7 +355,7 @@ class _PinDetails extends StatelessWidget {
     final details = [
       if (pin.eatenCount > 0) l10n.mapShopBowls(pin.eatenCount),
       if (pin.retreatCount > 0) l10n.mapShopRetreats(pin.retreatCount),
-      if (rank != null) l10n.mapShopRank(shopRankLabel(rank)),
+      if (rank != null) l10n.mapShopRank(shopRankLabel(l10n, rank)),
     ];
     return SafeArea(
       child: Container(

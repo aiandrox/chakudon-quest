@@ -213,6 +213,7 @@ class _RankBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
     final isTop = rank == ShopRank.s;
     return CircleAvatar(
@@ -220,7 +221,7 @@ class _RankBadge extends StatelessWidget {
       backgroundColor: isTop ? colors.primary : colors.secondaryContainer,
       foregroundColor: isTop ? colors.onPrimary : colors.onSecondaryContainer,
       child: Text(
-        shopRankLabel(rank),
+        shopRankLabel(l10n, rank),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );

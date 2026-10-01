@@ -55,7 +55,7 @@
   "isLimited": "限定メニュー",
   "hasTicket": "整理券制",
   "hoursSection": "営業の条件（当てはまるものすべて）",
-  "hoursNote": "ポイントの倍率: 1つで×1.5、2つ以上で×2",
+  "hoursNote": "修行点の倍率: 1つで×1.5、2つ以上で×2",
   "hoursLunchOnly": "昼のみ",
   "hoursNightOnly": "夜のみ",
   "hoursWeekdaysOnly": "平日のみ",
@@ -150,23 +150,23 @@
       "minutes": {"type": "int"}
     }
   },
-  "rankApprentice": "見習い冒険者",
-  "rankTraveler": "麺の旅人",
-  "rankHero": "行列の勇者",
-  "rankLegend": "伝説の麺道士",
-  "points": "{points} pt",
+  "rankApprentice": "入門",
+  "rankTraveler": "初段",
+  "rankHero": "師範代",
+  "rankLegend": "免許皆伝",
+  "points": "{points}点",
   "@points": {
     "placeholders": {
       "points": {"type": "int"}
     }
   },
-  "pointsGained": "+{points} pt",
+  "pointsGained": "+{points}点",
   "@pointsGained": {
     "placeholders": {
       "points": {"type": "int"}
     }
   },
-  "pointsSection": "獲得ポイント",
+  "pointsSection": "修行点",
   "pointsBase": "基本",
   "pointsWait": "待ち時間 {minutes}分",
   "@pointsWait": {
@@ -188,25 +188,25 @@
       "multiplier": {"type": "String"}
     }
   },
-  "pointsRetreat": "撤退の記録にポイントはつきません",
-  "totalPoints": "累計 {points} pt",
+  "pointsRetreat": "撤退の記録に修行点はつきません",
+  "totalPoints": "修行点 {points}",
   "@totalPoints": {
     "placeholders": {
       "points": {"type": "int"}
     }
   },
-  "nextRank": "「{rank}」まで あと {points} pt",
+  "nextRank": "{rank}まで あと {points}点",
   "@nextRank": {
     "placeholders": {
       "rank": {"type": "String"},
       "points": {"type": "int"}
     }
   },
-  "maxRank": "最高ランクに到達しました",
-  "rankUp": "ランクアップ！",
+  "maxRank": "免許皆伝に至りました",
+  "rankUp": "昇段！",
   "resultTitle": "着丼！",
-  "resultOk": "OK",
-  "navRecords": "記録",
+  "resultOk": "印帳にもどる",
+  "navRecords": "印帳",
   "navQuests": "クエスト",
   "questTitle": "クエスト",
   "questStanding": "常設クエスト",
@@ -313,7 +313,7 @@
   "backupFileType": "バックアップ（zip）",
   "statsBests": "自己ベスト",
   "bestLongestWait": "最長の待ち時間",
-  "bestHighestPoints": "1杯の最高ポイント",
+  "bestHighestPoints": "1杯の最高の修行点",
   "bestMostRetreats": "いちばん手ごわい店",
   "minutes": "{minutes}分",
   "@minutes": {
@@ -335,7 +335,7 @@
     }
   },
   "statsShopRanks": "店ランク",
-  "statsShopRanksNote": "その店で1杯に得た最高ポイントで決まります（S 60以上 / A 40以上 / B 25以上）",
+  "statsShopRanksNote": "その店で1杯に得た最高の修行点で決まります（極 60以上 / 特 40以上 / 上 25以上 / 並）",
   "navMap": "地図",
   "mapAttribution": "OpenStreetMap contributors",
   "mapTitle": "ラーメン地図",
@@ -382,10 +382,56 @@
       "rank": {"type": "String"}
     }
   },
-  "statsBestPoints": "最高 {points} pt",
+  "statsBestPoints": "最高 {points}点",
   "@statsBestPoints": {
     "placeholders": {
       "points": {"type": "int"}
     }
-  }
+  },
+  "shopRankS": "極",
+  "shopRankA": "特",
+  "shopRankB": "上",
+  "shopRankC": "並",
+  "inkanEaten": "一本",
+  "inkanRetry": "雪辱",
+  "inkanRetreat": "敗",
+  "inkanTop": "{rank}　{kind}",
+  "@inkanTop": {
+    "placeholders": {
+      "rank": {"type": "String"},
+      "kind": {"type": "String"}
+    }
+  },
+  "inkanStyleShoyu": "醤",
+  "inkanStyleMiso": "味",
+  "inkanStyleShio": "塩",
+  "inkanStyleTonkotsu": "豚",
+  "inkanStyleIekei": "家",
+  "inkanStyleJiro": "郎",
+  "inkanStyleTsukemen": "沾",
+  "inkanStyleOther": "麺",
+  "kanjiMonthDay": "{month}月{day}日",
+  "@kanjiMonthDay": {
+    "placeholders": {
+      "month": {"type": "String"},
+      "day": {"type": "String"}
+    }
+  },
+  "inchoTitle": "印帳",
+  "inchoCount": "集めた印 {stamps}　道場 {shops}",
+  "@inchoCount": {
+    "placeholders": {
+      "stamps": {"type": "int"},
+      "shops": {"type": "int"}
+    }
+  },
+  "inchoMetaWait": "待 {minutes}分",
+  "@inchoMetaWait": {
+    "placeholders": {
+      "minutes": {"type": "int"}
+    }
+  },
+  "inchoMetaUnrated": "★ まだ",
+  "shopStamps": "この道場の印",
+  "resultStamped": "印をいただきました"
 }
