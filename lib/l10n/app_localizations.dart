@@ -1384,17 +1384,29 @@ abstract class AppLocalizations {
   /// **'食べた日時: {date}（写真の撮影日時）'**
   String recordPhotoDate(String date);
 
-  /// No description provided for @kanjiReiwaDate.
+  /// No description provided for @kanjiEraDate.
   ///
   /// In ja, this message translates to:
-  /// **'令和{year}年{month}月{day}日'**
-  String kanjiReiwaDate(String year, String month, String day);
+  /// **'{era}{year}年{month}月{day}日'**
+  String kanjiEraDate(String era, String year, String month, String day);
 
-  /// No description provided for @reiwaFirstYear.
+  /// No description provided for @eraReiwa.
+  ///
+  /// In ja, this message translates to:
+  /// **'令和'**
+  String get eraReiwa;
+
+  /// No description provided for @eraHeisei.
+  ///
+  /// In ja, this message translates to:
+  /// **'平成'**
+  String get eraHeisei;
+
+  /// No description provided for @eraFirstYear.
   ///
   /// In ja, this message translates to:
   /// **'元'**
-  String get reiwaFirstYear;
+  String get eraFirstYear;
 }
 
 class _AppLocalizationsDelegate

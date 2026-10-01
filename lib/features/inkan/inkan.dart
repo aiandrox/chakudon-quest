@@ -29,8 +29,12 @@ String kanjiNumber(int value) {
       '${ones == 0 ? '' : _kanjiDigits[ones]}';
 }
 
-/// 令和の年（2019年が1）。
-int reiwaYear(DateTime date) => date.year - 2018;
+enum Era { heisei, reiwa }
+
+/// 和暦の元号と年（元年が1）。令和より前は平成とする（記録は2000年以降のため）。
+(Era, int) japaneseEra(DateTime date) => date.isBefore(DateTime(2019, 5, 1))
+    ? (Era.heisei, date.year - 1988)
+    : (Era.reiwa, date.year - 2018);
 
 /// 印の傾き（ラジアン）。押すたびに少しずつ違うよう、記録のIDから決める。
 double inkanAngle(String visitId) {

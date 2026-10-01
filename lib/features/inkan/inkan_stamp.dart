@@ -23,11 +23,15 @@ String inkanStyleChar(AppLocalizations l10n, RamenStyle? style) =>
       RamenStyle.other || null => l10n.inkanStyleOther,
     };
 
-/// 「令和八年十月一日」。令和元年は「元」と書く。
-String kanjiReiwaDate(AppLocalizations l10n, DateTime date) {
-  final year = reiwaYear(date);
-  return l10n.kanjiReiwaDate(
-    year == 1 ? l10n.reiwaFirstYear : kanjiNumber(year),
+/// 「令和八年十月一日」。元年は「元」と書く。
+String kanjiEraDate(AppLocalizations l10n, DateTime date) {
+  final (era, year) = japaneseEra(date);
+  return l10n.kanjiEraDate(
+    switch (era) {
+      Era.heisei => l10n.eraHeisei,
+      Era.reiwa => l10n.eraReiwa,
+    },
+    year == 1 ? l10n.eraFirstYear : kanjiNumber(year),
     kanjiNumber(date.month),
     kanjiNumber(date.day),
   );
@@ -45,7 +49,7 @@ class InkanStamp extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final visit = scored.visit;
     final shape = inkanShapeFor(scored);
-    final date = kanjiReiwaDate(l10n, visit.eatenAt);
+    final date = kanjiEraDate(l10n, visit.eatenAt);
     final isRetreat = shape == InkanShape.retreat;
     final color = switch (shape) {
       InkanShape.retreat => Washi.faded,

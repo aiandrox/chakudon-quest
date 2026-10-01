@@ -70,9 +70,9 @@ const quests = <Quest>[
     id: 'styles',
     kind: QuestKind.standing,
     title: '系統の探究',
-    description: '食べた系統の数（「その他」を除く7系統）。7系統で全系統制覇',
+    description: '食べた系統の数（「その他」を除く8系統）。8系統で全系統制覇',
     unit: '系統',
-    thresholds: [3, 5, 7],
+    thresholds: [3, 5, 8],
     count: _styleCount,
   ),
   Quest(
@@ -124,7 +124,7 @@ const quests = <Quest>[
     id: 'rare_shop',
     kind: QuestKind.spot,
     title: '幻の店',
-    description: '営業の条件が2つ以上ある店で食べる',
+    description: '営業の条件（アクセスの悪さは除く）が2つ以上ある店で食べる',
     unit: '回',
     thresholds: [1],
     count: _rareShopCount,
@@ -304,7 +304,14 @@ int _doubleBowlDays(List<ScoredVisit> scored) {
 }
 
 int _rareShopCount(List<ScoredVisit> scored) => scored
-    .where((e) => _isEaten(e) && e.shop.hoursConditions.length >= 2)
+    .where(
+      (e) =>
+          _isEaten(e) &&
+          e.shop.hoursConditions
+                  .where((c) => c != HoursCondition.badAccess)
+                  .length >=
+              2,
+    )
     .length;
 
 int _rankSShopCount(List<ScoredVisit> scored) =>

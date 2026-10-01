@@ -441,13 +441,16 @@
       "date": {"type": "String"}
     }
   },
-  "kanjiReiwaDate": "令和{year}年{month}月{day}日",
-  "@kanjiReiwaDate": {
+  "kanjiEraDate": "{era}{year}年{month}月{day}日",
+  "@kanjiEraDate": {
     "placeholders": {
+      "era": {"type": "String"},
       "year": {"type": "String"},
       "month": {"type": "String"},
       "day": {"type": "String"}
     }
   },
-  "reiwaFirstYear": "元"
+  "eraReiwa": "令和",
+  "eraHeisei": "平成",
+  "eraFirstYear": "元"
 }

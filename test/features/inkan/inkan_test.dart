@@ -80,6 +80,16 @@ void main() {
     });
   });
 
+  group('japaneseEra', () {
+    test('2019年5月1日から令和、それより前は平成', () {
+      expect(japaneseEra(DateTime(2026, 10, 1)), (Era.reiwa, 8));
+      expect(japaneseEra(DateTime(2019, 5, 1)), (Era.reiwa, 1));
+      expect(japaneseEra(DateTime(2019, 4, 30, 23, 59)), (Era.heisei, 31));
+      expect(japaneseEra(DateTime(2016, 3, 1)), (Era.heisei, 28));
+      expect(japaneseEra(DateTime(2000, 1, 1)), (Era.heisei, 12));
+    });
+  });
+
   test('印の傾きは記録ごとに決まり、±8度に収まる', () {
     expect(inkanAngle('a'), inkanAngle('a'));
     for (final id in ['a', 'visit-1', '0f8e1c2a-uuid', '']) {

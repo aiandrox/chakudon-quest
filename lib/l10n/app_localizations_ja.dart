@@ -744,10 +744,16 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String kanjiReiwaDate(String year, String month, String day) {
-    return '令和$year年$month月$day日';
+  String kanjiEraDate(String era, String year, String month, String day) {
+    return '$era$year年$month月$day日';
   }
 
   @override
-  String get reiwaFirstYear => '元';
+  String get eraReiwa => '令和';
+
+  @override
+  String get eraHeisei => '平成';
+
+  @override
+  String get eraFirstYear => '元';
 }
