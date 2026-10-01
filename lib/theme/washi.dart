@@ -149,3 +149,38 @@ List<List<String>> verticalLines(
   }
   return lines;
 }
+
+/// 筆文字の見出し。下に細い墨の線を引く。
+class SectionTitle extends StatelessWidget {
+  const SectionTitle(this.text, {super.key, this.trailing});
+
+  final String text;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 4),
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Washi.line)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 20,
+                color: Washi.ink,
+              ),
+            ),
+          ),
+          ?trailing,
+        ],
+      ),
+    );
+  }
+}

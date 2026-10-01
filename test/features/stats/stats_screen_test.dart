@@ -89,7 +89,8 @@ void main() {
     expect(find.text(ja.bowls(4)), findsOneWidget);
 
     expect(find.text(ja.styleShoyu), findsOneWidget);
-    expect(find.text('${ja.bowls(2)}  ${ja.percent(50)}'), findsOneWidget);
+    expect(find.text(ja.percent(50)), findsOneWidget);
+    expect(find.text(ja.percent(25)), findsNWidgets(2));
     expect(find.text(ja.styleMiso), findsOneWidget);
     expect(find.text(ja.styleUnset), findsOneWidget);
 
