@@ -74,6 +74,7 @@ class VisitDetailsForm extends StatelessWidget {
               border: const OutlineInputBorder(),
               labelText: l10n.waitMinutesLabel,
               helperText: l10n.waitMinutesHint,
+              helperMaxLines: 2,
               suffixText: l10n.waitMinutesUnit,
             ),
             onChanged: (text) => onWaitChanged?.call(parseWaitMinutes(text)),

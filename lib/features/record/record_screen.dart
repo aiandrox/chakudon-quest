@@ -111,7 +111,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   Widget _buildScaffold(BuildContext context, RecordState state) {
     final l10n = AppLocalizations.of(context);
     final controller = ref.read(recordControllerProvider.notifier);
-    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.recordTitle)),
@@ -120,14 +119,14 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         children: [
           _PhotoSection(state: state),
           const SizedBox(height: 16),
-          Text(l10n.shopSection, style: textTheme.titleMedium),
+          SectionTitle(l10n.shopSection),
           _ShopSection(
             state: state,
             nameController: _nameController,
             onSelect: _selectShop,
           ),
           const SizedBox(height: 16),
-          Text(l10n.ratingOptional, style: textTheme.titleMedium),
+          SectionTitle(l10n.ratingOptional),
           Center(
             child: StarRating(
               rating: state.rating,
