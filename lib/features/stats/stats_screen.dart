@@ -10,6 +10,8 @@ import '../scoring/rank_labels.dart';
 import '../scoring/ranks.dart';
 import '../scoring/scoring_providers.dart';
 import 'stats.dart';
+import '../records/models.dart';
+import '../../theme/washi.dart';
 
 class StatsScreen extends ConsumerWidget {
   const StatsScreen({super.key});
@@ -53,12 +55,10 @@ class StatsScreen extends ConsumerWidget {
                 ),
                 ..._bests(l10n, textTheme, personalBests(scored)),
                 const SizedBox(height: 24),
-                Text(l10n.statsStyles, style: textTheme.titleMedium),
-                const SizedBox(height: 8),
-                for (final share in styleShares(scored))
-                  _StyleRow(share: share),
+                SectionTitle(l10n.statsStyles),
+                _StyleBreakdown(shares: styleShares(scored)),
                 const SizedBox(height: 24),
-                Text(l10n.statsFrequent, style: textTheme.titleMedium),
+                SectionTitle(l10n.statsFrequent),
                 for (final frequent in frequentShops(scored))
                   ListTile(
                     contentPadding: EdgeInsets.zero,
@@ -71,7 +71,7 @@ class StatsScreen extends ConsumerWidget {
                     ),
                   ),
                 const SizedBox(height: 24),
-                Text(l10n.statsShopRanks, style: textTheme.titleMedium),
+                SectionTitle(l10n.statsShopRanks),
                 Text(l10n.statsShopRanksNote, style: textTheme.bodySmall),
                 for (final ranked in rankedShops(scored))
                   ListTile(
@@ -128,11 +128,7 @@ List<Widget> _bests(
       ),
   ];
   if (rows.isEmpty) return const [];
-  return [
-    const SizedBox(height: 24),
-    Text(l10n.statsBests, style: textTheme.titleMedium),
-    ...rows,
-  ];
+  return [const SizedBox(height: 24), SectionTitle(l10n.statsBests), ...rows];
 }
 
 class _CountCard extends StatelessWidget {
@@ -156,7 +152,12 @@ class _CountCard extends StatelessWidget {
           children: [
             Text(label, style: textTheme.bodyMedium),
             const SizedBox(height: 4),
-            Text(value, style: textTheme.headlineMedium),
+            Text(
+              value,
+              style: textTheme.headlineMedium?.copyWith(
+                fontFamily: Washi.brush,
+              ),
+            ),
           ],
         ),
       ),
@@ -164,44 +165,96 @@ class _CountCard extends StatelessWidget {
   }
 }
 
-class _StyleRow extends StatelessWidget {
-  const _StyleRow({required this.share});
+/// 系統ごとの色。隣り合っても見分けやすいよう、明るさも変えた和の色にする。
+Color styleColor(RamenStyle? style) => switch (style) {
+  RamenStyle.shoyu => const Color(0xFF6B3A22),
+  RamenStyle.miso => const Color(0xFFB4793A),
+  RamenStyle.shio => const Color(0xFF7FA7B8),
+  RamenStyle.tonkotsu => const Color(0xFFE3C26F),
+  RamenStyle.iekei => Washi.shu,
+  RamenStyle.jiro => const Color(0xFF3F6B3F),
+  RamenStyle.tsukemen => const Color(0xFF2E4A6B),
+  RamenStyle.shirunashi => const Color(0xFF7E5A96),
+  RamenStyle.other => Washi.faded,
+  null => const Color(0xFFD8CDB8),
+};
 
-  final StyleShare share;
+/// 全体を100とした1本の帯を系統ごとに色分けし、下に色・系統・杯数・割合を並べる。
+class _StyleBreakdown extends StatelessWidget {
+  const _StyleBreakdown({required this.shares});
+
+  final List<StyleShare> shares;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final style = share.style;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 72,
-            child: Text(
-              style == null ? l10n.styleUnset : styleLabel(l10n, style),
-              style: textTheme.bodyMedium,
+    String label(RamenStyle? style) =>
+        style == null ? l10n.styleUnset : styleLabel(l10n, style);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Semantics(
+          label: [
+            for (final share in shares)
+              '${label(share.style)} ${l10n.percent((share.ratio * 100).round())}',
+          ].join('、'),
+          child: ExcludeSemantics(
+            child: Container(
+              height: 28,
+              decoration: BoxDecoration(border: Border.all(color: Washi.ink)),
+              child: Row(
+                children: [
+                  for (final (i, share) in shares.indexed)
+                    Expanded(
+                      flex: share.count,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: styleColor(share.style),
+                          border: i == 0
+                              ? null
+                              : const Border(
+                                  left: BorderSide(color: Washi.page),
+                                ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(value: share.ratio, minHeight: 12),
+        ),
+        const SizedBox(height: 12),
+        for (final share in shares)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            child: Row(
+              children: [
+                Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: styleColor(share.style),
+                    border: Border.all(color: Washi.line),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(label(share.style), style: textTheme.bodyMedium),
+                ),
+                Text(l10n.bowls(share.count), style: textTheme.bodyMedium),
+                SizedBox(
+                  width: 56,
+                  child: Text(
+                    l10n.percent((share.ratio * 100).round()),
+                    style: textTheme.bodyMedium?.copyWith(color: Washi.inkSoft),
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(
-            width: 96,
-            child: Text(
-              '${l10n.bowls(share.count)}  '
-              '${l10n.percent((share.ratio * 100).round())}',
-              style: textTheme.bodySmall,
-              textAlign: TextAlign.end,
-            ),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }
@@ -214,15 +267,23 @@ class _RankBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
     final isTop = rank == ShopRank.s;
-    return CircleAvatar(
-      radius: 16,
-      backgroundColor: isTop ? colors.primary : colors.secondaryContainer,
-      foregroundColor: isTop ? colors.onPrimary : colors.onSecondaryContainer,
+    return Container(
+      width: 34,
+      height: 34,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: isTop ? Washi.shu : Washi.page,
+        border: Border.all(color: Washi.shu, width: 2),
+        borderRadius: BorderRadius.circular(4),
+      ),
       child: Text(
         shopRankLabel(l10n, rank),
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style: TextStyle(
+          fontFamily: Washi.brush,
+          fontSize: 18,
+          color: isTop ? Washi.page : Washi.shu,
+        ),
       ),
     );
   }
