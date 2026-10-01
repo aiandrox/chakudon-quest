@@ -28,6 +28,7 @@ class RecordState {
     this.isLimited = false,
     this.chosenHoursConditions,
     this.memo = '',
+    this.manualWaitMinutes,
     this.isSaving = false,
   });
 
@@ -64,6 +65,9 @@ class RecordState {
   /// 利用者がこの画面で選んだ営業の条件。選んでいなければnull。
   final Set<HoursCondition>? chosenHoursConditions;
   final String memo;
+
+  /// あとから入れた待ち時間（分）。並んだ店を選んでいるときは使わない。
+  final int? manualWaitMinutes;
   final bool isSaving;
 
   Set<HoursCondition> get hoursConditions =>
@@ -109,6 +113,7 @@ class RecordState {
     bool? isLimited,
     Object? chosenHoursConditions = _unset,
     String? memo,
+    Object? manualWaitMinutes = _unset,
     bool? isSaving,
   }) {
     return RecordState(
@@ -141,6 +146,9 @@ class RecordState {
           ? this.chosenHoursConditions
           : chosenHoursConditions as Set<HoursCondition>?,
       memo: memo ?? this.memo,
+      manualWaitMinutes: manualWaitMinutes == _unset
+          ? this.manualWaitMinutes
+          : manualWaitMinutes as int?,
       isSaving: isSaving ?? this.isSaving,
     );
   }

@@ -9,6 +9,7 @@ import '../records/date_format.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_details_form.dart';
+import '../records/wait_time.dart';
 
 class VisitEditScreen extends ConsumerStatefulWidget {
   const VisitEditScreen({super.key, required this.entry});
@@ -26,6 +27,9 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
   late final _memoController = TextEditingController(
     text: widget.entry.visit.memo,
   );
+  late final _waitController = TextEditingController(
+    text: waitMinutes(widget.entry.visit)?.toString() ?? '',
+  );
   late DateTime _eatenAt = widget.entry.visit.eatenAt;
   late int? _rating = widget.entry.visit.rating;
   late RamenStyle? _style = widget.entry.visit.style;
@@ -37,6 +41,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
   void dispose() {
     _nameController.dispose();
     _memoController.dispose();
+    _waitController.dispose();
     super.dispose();
   }
 
@@ -65,6 +70,22 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
     });
   }
 
+  /// 待ち時間に触っていなければ、並んだ時刻を食べた日時と一緒にずらすだけにする
+  /// （秒や0分の待ち時間を保つため）。撤退の記録は待ち時間を入れないので変えない。
+  DateTime? _checkedInAt() {
+    final original = widget.entry.visit;
+    final checkedInAt = original.checkedInAt;
+    final initialText = waitMinutes(original)?.toString() ?? '';
+    if (original.result != VisitResult.eaten ||
+        _waitController.text == initialText) {
+      return checkedInAt?.add(_eatenAt.difference(original.eatenAt));
+    }
+    final minutes = parseWaitMinutes(_waitController.text);
+    return minutes == null
+        ? null
+        : _eatenAt.subtract(Duration(minutes: minutes));
+  }
+
   Future<void> _save() async {
     setState(() => _isSaving = true);
     try {
@@ -78,6 +99,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
                 ? null
                 : _hoursConditions,
             eatenAt: _eatenAt,
+            checkedInAt: _checkedInAt(),
             rating: _rating,
             style: _style,
             isLimited: _isLimited,
@@ -143,6 +165,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
             onHoursConditionsChanged: (conditions) =>
                 setState(() => _hoursConditions = conditions),
             onMemoChanged: (_) {},
+            waitController: isEaten ? _waitController : null,
           ),
         ],
       ),

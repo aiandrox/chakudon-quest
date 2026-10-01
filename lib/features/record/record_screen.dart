@@ -30,6 +30,7 @@ class RecordScreen extends ConsumerStatefulWidget {
 class _RecordScreenState extends ConsumerState<RecordScreen> {
   final _nameController = TextEditingController();
   final _memoController = TextEditingController();
+  final _waitController = TextEditingController();
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
   void dispose() {
     _nameController.dispose();
     _memoController.dispose();
+    _waitController.dispose();
     super.dispose();
   }
 
@@ -145,6 +147,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                 onLimitedChanged: controller.setLimited,
                 onHoursConditionsChanged: controller.setHoursConditions,
                 onMemoChanged: controller.setMemo,
+                // 並んだ店を選んでいれば、待ち時間は並んだ時刻から自動で計算する。
+                waitController: state.isCheckinShopSelected
+                    ? null
+                    : _waitController,
+                onWaitChanged: controller.setWaitMinutes,
               ),
             ],
           ),

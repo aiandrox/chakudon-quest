@@ -191,7 +191,8 @@ class RecordRepository {
       );
 
   /// [hoursConditions]は利用者が選んだときだけ渡す。nullなら記録済みの店の値を変えず、
-  /// 初めての店は条件なしにする。[checkedInAt]を渡すと、チェックインを終える。
+  /// 初めての店は条件なしにする。[endsCheckin]がtrueなら、チェックインを終える
+  /// （省略時は[checkedInAt]を渡したとき）。待ち時間を手で入れたときはfalseにする。
   Future<Visit> saveEatenVisit({
     required ShopInput shop,
     Set<HoursCondition>? hoursConditions,
@@ -199,6 +200,7 @@ class RecordRepository {
     int? rating,
     String? photoPath,
     DateTime? checkedInAt,
+    bool? endsCheckin,
     RamenStyle? style,
     bool isLimited = false,
     bool hasTicket = false,
@@ -222,7 +224,7 @@ class RecordRepository {
         createdAt: now,
       );
       await _insertVisit(visit);
-      if (checkedInAt != null) await cancelCheckin();
+      if (endsCheckin ?? checkedInAt != null) await cancelCheckin();
       return visit;
     });
   }
@@ -244,6 +246,7 @@ class RecordRepository {
     required String shopName,
     required Set<HoursCondition>? hoursConditions,
     required DateTime eatenAt,
+    required DateTime? checkedInAt,
     required int? rating,
     required RamenStyle? style,
     required bool isLimited,
@@ -291,6 +294,7 @@ class RecordRepository {
         VisitsCompanion(
           shopId: Value(shopId),
           eatenAt: Value(eatenAt),
+          checkedInAt: Value(checkedInAt),
           rating: Value(rating),
           style: Value(style),
           isLimited: Value(isLimited),

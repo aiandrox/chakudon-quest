@@ -1407,6 +1407,24 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'元'**
   String get eraFirstYear;
+
+  /// No description provided for @waitMinutesLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'待ち時間'**
+  String get waitMinutesLabel;
+
+  /// No description provided for @waitMinutesHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'並んだ時間をあとから入れられます。並ばなかったときは空のまま'**
+  String get waitMinutesHint;
+
+  /// No description provided for @waitMinutesUnit.
+  ///
+  /// In ja, this message translates to:
+  /// **'分'**
+  String get waitMinutesUnit;
 }
 
 class _AppLocalizationsDelegate

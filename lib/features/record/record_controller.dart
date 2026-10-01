@@ -204,6 +204,9 @@ class RecordController extends Notifier<RecordState> {
 
   void setMemo(String memo) => state = state.copyWith(memo: memo);
 
+  void setWaitMinutes(int? minutes) =>
+      state = state.copyWith(manualWaitMinutes: minutes);
+
   /// 保存できたら記録のID、できなければnullを返す。
   Future<String?> save() async {
     final draft = state;
@@ -215,15 +218,23 @@ class RecordController extends Notifier<RecordState> {
       final photoPath = draft.photoPath;
       if (photoPath != null) savedPhoto = await storage.save(photoPath);
       final now = ref.read(clockProvider)();
+      final eatenAt = draft.photoTakenAt ?? now;
+      final queuedAt = _checkedInAt(draft, eatenAt);
+      final manualWait = draft.manualWaitMinutes;
       final visit = await ref
           .read(recordRepositoryProvider)
           .saveEatenVisit(
             shop: _shopInput(draft),
             hoursConditions: draft.chosenHoursConditions,
-            eatenAt: draft.photoTakenAt ?? now,
+            eatenAt: eatenAt,
             rating: draft.rating,
             photoPath: savedPhoto,
-            checkedInAt: _checkedInAt(draft, draft.photoTakenAt ?? now),
+            checkedInAt:
+                queuedAt ??
+                (manualWait == null || draft.isCheckinShopSelected
+                    ? null
+                    : eatenAt.subtract(Duration(minutes: manualWait))),
+            endsCheckin: queuedAt != null,
             style: draft.style,
             isLimited: draft.isLimited,
             memo: draft.memo.trim(),
