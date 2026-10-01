@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chakudon_quest/features/quests/quest_list_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/theme/emblem.dart';
+import 'package:chakudon_quest/features/quests/quest_seal.dart';
 
 import '../../support/builders.dart';
 import '../../support/l10n.dart';
@@ -37,8 +37,9 @@ void main() {
     expect(find.text('着丼の道'), findsOneWidget);
     expect(find.text('はじめての着丼'), findsOneWidget);
     expect(find.text(ja.questNext(0, 5, '杯')), findsOneWidget);
-    final emblems = tester.widgetList<Emblem>(find.byType(Emblem));
-    expect(emblems.map((e) => e.tier).toSet(), {EmblemTier.locked});
+    final seals = tester.widgetList<QuestSeal>(find.byType(QuestSeal));
+    expect(seals.map((seal) => seal.level).toSet(), {0});
+    expect(find.text(ja.questLocked), findsNWidgets(seals.length));
   });
 
   testWidgets('常設はレベルと次の段階まで、スポットは達成と達成日を出す', (tester) async {
@@ -57,9 +58,6 @@ void main() {
     expect(find.text(ja.questSpotSummary(1, 6)), findsOneWidget);
     // 着丼の道 Lv.2 + 開拓者 Lv.0 ...のレベル合計。
     expect(find.text(ja.questLevelTotal(2)), findsOneWidget);
-    final emblem = tester.widget<Emblem>(
-      find.byWidgetPredicate((w) => w is Emblem && w.label == ja.questLevel(2)),
-    );
-    expect(emblem.tier, EmblemTier.silver);
+    expect(find.text(daijiNumber(2)), findsOneWidget);
   });
 }

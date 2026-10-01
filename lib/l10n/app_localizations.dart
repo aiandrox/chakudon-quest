@@ -823,73 +823,73 @@ abstract class AppLocalizations {
   /// No description provided for @navQuests.
   ///
   /// In ja, this message translates to:
-  /// **'クエスト'**
+  /// **'型と奥義'**
   String get navQuests;
 
   /// No description provided for @questTitle.
   ///
   /// In ja, this message translates to:
-  /// **'クエスト'**
+  /// **'型と奥義'**
   String get questTitle;
 
   /// No description provided for @questStanding.
   ///
   /// In ja, this message translates to:
-  /// **'常設クエスト'**
+  /// **'型'**
   String get questStanding;
 
   /// No description provided for @questStandingNote.
   ///
   /// In ja, this message translates to:
-  /// **'回数を重ねるほどレベルが上がります'**
+  /// **'回数を重ねるほど段が上がります'**
   String get questStandingNote;
 
   /// No description provided for @questSpot.
   ///
   /// In ja, this message translates to:
-  /// **'スポットクエスト'**
+  /// **'奥義'**
   String get questSpot;
 
   /// No description provided for @questSpotNote.
   ///
   /// In ja, this message translates to:
-  /// **'1回達成すればクリアです'**
+  /// **'一度会得すれば終わりです'**
   String get questSpotNote;
 
   /// No description provided for @questLevelTotal.
   ///
   /// In ja, this message translates to:
-  /// **'レベル合計 {total}'**
+  /// **'段の合計 {total}'**
   String questLevelTotal(int total);
 
   /// No description provided for @questSpotSummary.
   ///
   /// In ja, this message translates to:
-  /// **'達成 {achieved} / {total}'**
+  /// **'会得 {achieved} / {total}'**
   String questSpotSummary(int achieved, int total);
 
   /// No description provided for @questLevel.
   ///
   /// In ja, this message translates to:
-  /// **'Lv.{level}'**
+  /// **'{level}段'**
   String questLevel(int level);
 
   /// No description provided for @questMaxLevel.
   ///
   /// In ja, this message translates to:
-  /// **'MAX'**
+  /// **'極み'**
   String get questMaxLevel;
 
   /// No description provided for @questCleared.
   ///
   /// In ja, this message translates to:
-  /// **'達成'**
+  /// **'会得'**
   String get questCleared;
 
   /// No description provided for @questNext.
   ///
   /// In ja, this message translates to:
-  /// **'次のレベルまで {current} / {target}{unit}'**
+  /// **'次の段まで {current} / {target}{unit}'**
   String questNext(int current, int target, String unit);
 
   /// No description provided for @questCount.
@@ -901,25 +901,25 @@ abstract class AppLocalizations {
   /// No description provided for @questAchievedOn.
   ///
   /// In ja, this message translates to:
-  /// **'{date} 達成'**
+  /// **'{date} 会得'**
   String questAchievedOn(String date);
 
   /// No description provided for @questLevelUp.
   ///
   /// In ja, this message translates to:
-  /// **'クエスト レベルアップ！'**
+  /// **'型 昇段！'**
   String get questLevelUp;
 
   /// No description provided for @questLevelReached.
   ///
   /// In ja, this message translates to:
-  /// **'{title} Lv.{level}'**
+  /// **'{title} {level}段'**
   String questLevelReached(String title, int level);
 
   /// No description provided for @questAchieved.
   ///
   /// In ja, this message translates to:
-  /// **'クエスト達成！'**
+  /// **'奥義会得！'**
   String get questAchieved;
 
   /// No description provided for @navStats.
@@ -1425,6 +1425,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'分'**
   String get waitMinutesUnit;
+
+  /// No description provided for @questLocked.
+  ///
+  /// In ja, this message translates to:
+  /// **'未'**
+  String get questLocked;
 }
 
 class _AppLocalizationsDelegate

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/quests/quest_seal.dart';
 import 'package:chakudon_quest/features/quests/quests.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/scoring/points.dart';
@@ -302,5 +303,13 @@ void main() {
 
       expect(levelUps, isEmpty);
     });
+  });
+
+  test('段は大字で書く', () {
+    expect(daijiNumber(1), '壱');
+    expect(daijiNumber(4), '肆');
+    expect(daijiNumber(6), '陸');
+    expect(daijiNumber(10), '拾');
+    expect(daijiNumber(11), '11');
   });
 }
