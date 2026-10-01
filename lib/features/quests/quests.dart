@@ -61,7 +61,7 @@ const quests = <Quest>[
     id: 'boss',
     kind: QuestKind.standing,
     title: '大物討伐',
-    description: 'Sランクにした店の数',
+    description: '「極」にした店の数（1杯で60点以上）',
     unit: '軒',
     thresholds: [1, 3, 10],
     count: _rankSShopCount,

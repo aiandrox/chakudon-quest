@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../notifications/notification_service.dart';
-import '../../theme/emblem.dart';
-import '../quests/quest_visuals.dart';
+import '../quests/quest_seal.dart';
 import '../quests/quests.dart';
 import '../scoring/ranks.dart';
 import '../records/record_repository.dart';
@@ -308,14 +307,7 @@ class _QuestAchievedBanner extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            Emblem(
-              icon: questIcon(quest),
-              tier: questTier(quest, levelUp.level),
-              size: 56,
-              label: isSpot
-                  ? l10n.questCleared
-                  : l10n.questLevel(levelUp.level),
-            ),
+            QuestSeal(quest: quest, level: levelUp.level, size: 56),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

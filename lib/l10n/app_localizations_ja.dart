@@ -408,47 +408,47 @@ class AppLocalizationsJa extends AppLocalizations {
   String get navRecords => '印帳';
 
   @override
-  String get navQuests => 'クエスト';
+  String get navQuests => '型と奥義';
 
   @override
-  String get questTitle => 'クエスト';
+  String get questTitle => '型と奥義';
 
   @override
-  String get questStanding => '常設クエスト';
+  String get questStanding => '型';
 
   @override
-  String get questStandingNote => '回数を重ねるほどレベルが上がります';
+  String get questStandingNote => '回数を重ねるほど段が上がります';
 
   @override
-  String get questSpot => 'スポットクエスト';
+  String get questSpot => '奥義';
 
   @override
-  String get questSpotNote => '1回達成すればクリアです';
+  String get questSpotNote => '一度会得すれば終わりです';
 
   @override
   String questLevelTotal(int total) {
-    return 'レベル合計 $total';
+    return '段の合計 $total';
   }
 
   @override
   String questSpotSummary(int achieved, int total) {
-    return '達成 $achieved / $total';
+    return '会得 $achieved / $total';
   }
 
   @override
   String questLevel(int level) {
-    return 'Lv.$level';
+    return '$level段';
   }
 
   @override
-  String get questMaxLevel => 'MAX';
+  String get questMaxLevel => '極み';
 
   @override
-  String get questCleared => '達成';
+  String get questCleared => '会得';
 
   @override
   String questNext(int current, int target, String unit) {
-    return '次のレベルまで $current / $target$unit';
+    return '次の段まで $current / $target$unit';
   }
 
   @override
@@ -458,19 +458,19 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String questAchievedOn(String date) {
-    return '$date 達成';
+    return '$date 会得';
   }
 
   @override
-  String get questLevelUp => 'クエスト レベルアップ！';
+  String get questLevelUp => '型 昇段！';
 
   @override
   String questLevelReached(String title, int level) {
-    return '$title Lv.$level';
+    return '$title $level段';
   }
 
   @override
-  String get questAchieved => 'クエスト達成！';
+  String get questAchieved => '奥義会得！';
 
   @override
   String get navStats => '統計';
@@ -765,4 +765,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get waitMinutesUnit => '分';
+
+  @override
+  String get questLocked => '未';
 }

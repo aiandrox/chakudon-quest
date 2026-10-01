@@ -207,34 +207,34 @@
   "resultTitle": "着丼！",
   "resultOk": "印帳にもどる",
   "navRecords": "印帳",
-  "navQuests": "クエスト",
-  "questTitle": "クエスト",
-  "questStanding": "常設クエスト",
-  "questStandingNote": "回数を重ねるほどレベルが上がります",
-  "questSpot": "スポットクエスト",
-  "questSpotNote": "1回達成すればクリアです",
-  "questLevelTotal": "レベル合計 {total}",
+  "navQuests": "型と奥義",
+  "questTitle": "型と奥義",
+  "questStanding": "型",
+  "questStandingNote": "回数を重ねるほど段が上がります",
+  "questSpot": "奥義",
+  "questSpotNote": "一度会得すれば終わりです",
+  "questLevelTotal": "段の合計 {total}",
   "@questLevelTotal": {
     "placeholders": {
       "total": {"type": "int"}
     }
   },
-  "questSpotSummary": "達成 {achieved} / {total}",
+  "questSpotSummary": "会得 {achieved} / {total}",
   "@questSpotSummary": {
     "placeholders": {
       "achieved": {"type": "int"},
       "total": {"type": "int"}
     }
   },
-  "questLevel": "Lv.{level}",
+  "questLevel": "{level}段",
   "@questLevel": {
     "placeholders": {
       "level": {"type": "int"}
     }
   },
-  "questMaxLevel": "MAX",
-  "questCleared": "達成",
-  "questNext": "次のレベルまで {current} / {target}{unit}",
+  "questMaxLevel": "極み",
+  "questCleared": "会得",
+  "questNext": "次の段まで {current} / {target}{unit}",
   "@questNext": {
     "placeholders": {
       "current": {"type": "int"},
@@ -249,21 +249,21 @@
       "unit": {"type": "String"}
     }
   },
-  "questAchievedOn": "{date} 達成",
+  "questAchievedOn": "{date} 会得",
   "@questAchievedOn": {
     "placeholders": {
       "date": {"type": "String"}
     }
   },
-  "questLevelUp": "クエスト レベルアップ！",
-  "questLevelReached": "{title} Lv.{level}",
+  "questLevelUp": "型 昇段！",
+  "questLevelReached": "{title} {level}段",
   "@questLevelReached": {
     "placeholders": {
       "title": {"type": "String"},
       "level": {"type": "int"}
     }
   },
-  "questAchieved": "クエスト達成！",
+  "questAchieved": "奥義会得！",
   "navStats": "統計",
   "statsTitle": "統計",
   "statsEmpty": "記録が増えると、ここに統計が出ます",
@@ -455,5 +455,6 @@
   "eraFirstYear": "元",
   "waitMinutesLabel": "待ち時間",
   "waitMinutesHint": "並んだ時間をあとから入れられます。並ばなかったときは空のまま",
-  "waitMinutesUnit": "分"
+  "waitMinutesUnit": "分",
+  "questLocked": "未"
 }

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../theme/emblem.dart';
+import '../../theme/washi.dart';
 import '../records/date_format.dart';
 import '../scoring/scoring_providers.dart';
-import 'quest_visuals.dart';
+import 'quest_seal.dart';
 import 'quests.dart';
 
 class QuestListScreen extends ConsumerWidget {
@@ -72,13 +72,14 @@ class _SectionHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(child: Text(title, style: textTheme.titleLarge)),
-              Text(summary, style: textTheme.titleSmall),
-            ],
+          SectionTitle(
+            title,
+            trailing: Text(summary, style: textTheme.titleSmall),
           ),
-          Text(note, style: textTheme.bodySmall),
+          Text(
+            note,
+            style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
+          ),
         ],
       ),
     );
@@ -114,33 +115,27 @@ class _QuestCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Emblem(
-              icon: questIcon(quest),
-              tier: questTier(quest, progress.level),
-              size: 52,
-              label: isSpot
-                  ? (progress.isAchieved ? l10n.questCleared : null)
-                  : progress.isMaxLevel
-                  ? l10n.questMaxLevel
-                  : l10n.questLevel(progress.level),
-            ),
+            QuestSeal(quest: quest, level: progress.level),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(quest.title, style: textTheme.titleMedium),
+                  Text(
+                    quest.title,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontFamily: Washi.brush,
+                    ),
+                  ),
                   const SizedBox(height: 2),
                   Text(quest.description, style: textTheme.bodyMedium),
                   if (!isSpot && next != null) ...[
                     const SizedBox(height: 8),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value:
-                            (progress.current - previous) / (next - previous),
-                        minHeight: 6,
-                      ),
+                    LinearProgressIndicator(
+                      value: (progress.current - previous) / (next - previous),
+                      minHeight: 4,
+                      color: Washi.ink,
+                      backgroundColor: Washi.line.withValues(alpha: 0.6),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -150,7 +145,8 @@ class _QuestCard extends StatelessWidget {
                   ],
                   if (!isSpot && next == null)
                     Text(
-                      l10n.questCount(progress.current, quest.unit),
+                      '${l10n.questMaxLevel}  '
+                      '${l10n.questCount(progress.current, quest.unit)}',
                       style: textTheme.bodySmall,
                     ),
                   if (achievedAt != null)
