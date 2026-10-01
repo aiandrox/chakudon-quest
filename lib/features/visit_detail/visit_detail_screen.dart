@@ -236,7 +236,7 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                 ],
                 if (previous != null) ...[
                   const Divider(height: 32),
-                  Text(l10n.previousVisit, style: textTheme.titleMedium),
+                  SectionTitle(l10n.previousVisit),
                   const SizedBox(height: 8),
                   _PreviousVisit(visit: previous.visit),
                 ],

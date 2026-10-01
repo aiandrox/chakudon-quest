@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../theme/washi.dart';
 import '../../l10n/app_localizations.dart';
 import '../records/clock.dart';
 import '../records/models.dart';
@@ -91,7 +92,6 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final shopId = widget.checkin.shopId;
     final memo = shopId == null
@@ -109,7 +109,7 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
 
     return Card(
       elevation: 0,
-      color: colors.secondaryContainer,
+      color: Washi.ink,
       margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 8, 4),
@@ -118,7 +118,7 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
           children: [
             Row(
               children: [
-                Icon(Icons.groups, color: colors.onSecondaryContainer),
+                const Icon(Icons.groups, color: Washi.paper),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -126,20 +126,27 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
                     children: [
                       Text(
                         l10n.checkinBanner(widget.checkin.name),
-                        style: textTheme.titleMedium,
+                        style: textTheme.titleMedium?.copyWith(
+                          fontFamily: Washi.brush,
+                          color: Washi.paper,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         l10n.checkinWaiting(minutes),
-                        style: textTheme.bodyMedium,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: Washi.shuLight,
+                        ),
                       ),
                       if (memo.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: Text(
                             l10n.shopMemoInline(memo),
-                            style: textTheme.bodySmall,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: Washi.nightSoft,
+                            ),
                           ),
                         ),
                     ],
@@ -150,8 +157,16 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(onPressed: _cancel, child: Text(l10n.checkinCancel)),
-                TextButton(onPressed: _retreat, child: Text(l10n.retreat)),
+                TextButton(
+                  style: TextButton.styleFrom(foregroundColor: Washi.paper),
+                  onPressed: _cancel,
+                  child: Text(l10n.checkinCancel),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(foregroundColor: Washi.shuLight),
+                  onPressed: _retreat,
+                  child: Text(l10n.retreat),
+                ),
               ],
             ),
           ],

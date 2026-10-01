@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show setEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../theme/washi.dart';
 import '../../l10n/app_localizations.dart';
 import '../record/star_rating.dart';
 import '../records/clock.dart';
@@ -121,7 +122,6 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final isEaten = widget.entry.visit.result == VisitResult.eaten;
 
     return Scaffold(
@@ -146,7 +146,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
             onTap: _pickEatenAt,
           ),
           if (isEaten) ...[
-            Text(l10n.ratingSection, style: textTheme.titleMedium),
+            SectionTitle(l10n.ratingSection),
             Center(
               child: StarRating(
                 rating: _rating,
