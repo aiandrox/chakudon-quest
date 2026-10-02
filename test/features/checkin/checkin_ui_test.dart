@@ -7,6 +7,7 @@ import 'package:chakudon_quest/features/checkin/checkin_screen.dart';
 import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/shop_candidate.dart';
 import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
@@ -34,6 +35,7 @@ void main() {
         overrides: [
           recordRepositoryProvider.overrideWithValue(repository),
           visitsProvider.overrideWithValue(AsyncData(visits)),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           shopSearchServiceProvider.overrideWithValue(
             FakeShopSearchService(search),
           ),

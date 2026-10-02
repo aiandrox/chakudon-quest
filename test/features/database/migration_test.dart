@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 
 /// 最初の版（バージョン1）のテーブル定義。
 const _v1Schema = [
@@ -189,5 +190,48 @@ void main() {
     final checkin = (await repository.activeCheckin())!;
     expect(checkin.name, '並んでいる店');
     expect(checkin.dataSource, isNull);
+  });
+
+  test('バージョン5に願掛け帳の表を足し、記録はそのまま残す', () async {
+    final seconds = DateTime(2026, 10, 3).millisecondsSinceEpoch ~/ 1000;
+    final database = AppDatabase(
+      NativeDatabase.memory(
+        setup: (raw) {
+          raw.execute(
+            'CREATE TABLE shops (id TEXT NOT NULL, name TEXT NOT NULL, '
+            'latitude REAL, longitude REAL, osm_id TEXT, '
+            "hours_conditions TEXT NOT NULL DEFAULT '', "
+            "strategy_memo TEXT NOT NULL DEFAULT '', data_source TEXT, "
+            'created_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(_v1Schema[1]);
+          raw.execute(
+            'CREATE TABLE active_checkins (id INTEGER NOT NULL, '
+            'shop_id TEXT, osm_id TEXT, name TEXT NOT NULL, latitude REAL, '
+            'longitude REAL, data_source TEXT, '
+            'checked_in_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(
+            'INSERT INTO shops VALUES '
+            "('shop', '麺屋', NULL, NULL, NULL, '', '', NULL, $seconds)",
+          );
+          raw.execute(
+            "INSERT INTO visits VALUES ('visit', 'shop', 'eaten', "
+            "NULL, NULL, $seconds, NULL, 4, 0, 0, '', $seconds)",
+          );
+          raw.execute('PRAGMA user_version = 5');
+        },
+      ),
+    );
+    addTearDown(database.close);
+
+    final entry = (await RecordRepository(database).watchVisits().first).single;
+    expect(entry.shop.name, '麺屋');
+    final wishes = WishRepository(database);
+    await wishes.addWish(
+      shop: const ShopInput(name: 'はやし田'),
+      now: DateTime(2026, 10, 3),
+    );
+    expect((await wishes.watchWishes().first).single.name, 'はやし田');
   });
 }

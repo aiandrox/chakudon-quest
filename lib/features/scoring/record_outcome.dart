@@ -28,15 +28,19 @@ class RecordOutcome {
 
 /// [visitId]の記録が無ければnull。累計の変化は、その記録が無かった場合との差で求める
 /// （過去の日時の記録を足すと、ほかの記録の初訪問ボーナスが動くことがあるため）。
-RecordOutcome? computeRecordOutcome(List<VisitWithShop> all, String visitId) {
-  final scoredAll = scoreVisits(all);
+RecordOutcome? computeRecordOutcome(
+  List<VisitWithShop> all,
+  String visitId, {
+  List<Wish> wishes = const [],
+}) {
+  final scoredAll = scoreVisits(all, wishes: wishes);
   final scored = scoredAll.where((e) => e.visit.id == visitId).firstOrNull;
   if (scored == null) return null;
   final others = [
     for (final entry in all)
       if (entry.visit.id != visitId) entry,
   ];
-  final scoredOthers = scoreVisits(others);
+  final scoredOthers = scoreVisits(others, wishes: wishes);
   return RecordOutcome(
     scored: scored,
     totalBefore: totalPoints(scoredOthers),

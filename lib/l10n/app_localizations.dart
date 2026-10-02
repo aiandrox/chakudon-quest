@@ -1012,6 +1012,180 @@ abstract class AppLocalizations {
   /// **'攻略メモ: {memo}'**
   String shopMemoInline(String memo);
 
+  /// No description provided for @navWishes.
+  ///
+  /// In ja, this message translates to:
+  /// **'願掛け'**
+  String get navWishes;
+
+  /// No description provided for @wishTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'願掛け帳'**
+  String get wishTitle;
+
+  /// No description provided for @wishSealChar.
+  ///
+  /// In ja, this message translates to:
+  /// **'願'**
+  String get wishSealChar;
+
+  /// No description provided for @wishPendingTab.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだの願 {count}'**
+  String wishPendingTab(int count);
+
+  /// No description provided for @wishFulfilledTab.
+  ///
+  /// In ja, this message translates to:
+  /// **'叶った願 {count}'**
+  String wishFulfilledTab(int count);
+
+  /// No description provided for @wishPendingEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'行きたい店を書き留めておきましょう。\n地図の灰色のピンや店のページから願を掛けられます。右下の＋なら店名だけで書き留められます'**
+  String get wishPendingEmpty;
+
+  /// No description provided for @wishFulfilledEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を掛けた店で「着丼！」すると、ここに並びます'**
+  String get wishFulfilledEmpty;
+
+  /// No description provided for @wishAddTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を掛ける'**
+  String get wishAddTitle;
+
+  /// No description provided for @wishEditTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を書き直す'**
+  String get wishEditTitle;
+
+  /// No description provided for @wishAddButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を掛ける'**
+  String get wishAddButton;
+
+  /// No description provided for @wishMakeButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を掛ける（行きたい）'**
+  String get wishMakeButton;
+
+  /// No description provided for @wishAlready.
+  ///
+  /// In ja, this message translates to:
+  /// **'この店には願を掛けています'**
+  String get wishAlready;
+
+  /// No description provided for @wishShopName.
+  ///
+  /// In ja, this message translates to:
+  /// **'店名'**
+  String get wishShopName;
+
+  /// No description provided for @wishTrigger.
+  ///
+  /// In ja, this message translates to:
+  /// **'きっかけ（任意）'**
+  String get wishTrigger;
+
+  /// No description provided for @wishTriggerHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'同僚に聞いた・テレビで見た など'**
+  String get wishTriggerHint;
+
+  /// No description provided for @wishNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'ひとこと（任意）'**
+  String get wishNote;
+
+  /// No description provided for @wishNoteHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'限定の煮干しを食べたい など'**
+  String get wishNoteHint;
+
+  /// No description provided for @wishTriggerLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'きっかけ: {trigger}'**
+  String wishTriggerLine(String trigger);
+
+  /// No description provided for @wishSinceToday.
+  ///
+  /// In ja, this message translates to:
+  /// **'今日、願を掛けた'**
+  String get wishSinceToday;
+
+  /// No description provided for @wishSinceDays.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を掛けて {days}日'**
+  String wishSinceDays(int days);
+
+  /// No description provided for @wishFulfilledLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'{date} 願成就（{days}日越し）'**
+  String wishFulfilledLine(String date, int days);
+
+  /// No description provided for @wishAdded.
+  ///
+  /// In ja, this message translates to:
+  /// **'{name} に願を掛けました'**
+  String wishAdded(String name);
+
+  /// No description provided for @wishSaveFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を書き留められませんでした'**
+  String get wishSaveFailed;
+
+  /// No description provided for @wishDeleteConfirm.
+  ///
+  /// In ja, this message translates to:
+  /// **'{name} の願を消しますか？'**
+  String wishDeleteConfirm(String name);
+
+  /// No description provided for @wishFulfilled.
+  ///
+  /// In ja, this message translates to:
+  /// **'願成就'**
+  String get wishFulfilled;
+
+  /// No description provided for @wishFulfilledAfter.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を掛けてから {days}日、ついに着丼'**
+  String wishFulfilledAfter(int days);
+
+  /// No description provided for @wishFulfilledSameDay.
+  ///
+  /// In ja, this message translates to:
+  /// **'願を掛けたその日に着丼'**
+  String get wishFulfilledSameDay;
+
+  /// No description provided for @mapWished.
+  ///
+  /// In ja, this message translates to:
+  /// **'願掛け中の店'**
+  String get mapWished;
+
+  /// No description provided for @mapWishedLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'願掛け中の店 {name}'**
+  String mapWishedLabel(String name);
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:

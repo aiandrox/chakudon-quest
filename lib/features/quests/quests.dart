@@ -2,6 +2,7 @@ import '../records/models.dart';
 import '../records/wait_time.dart';
 import '../scoring/points.dart';
 import '../scoring/ranks.dart';
+import '../wishes/wishes.dart';
 
 /// 常設: 回数を重ねるごとにレベルが上がる。スポット: 1回達成すれば終わり。
 enum QuestKind { standing, spot }
@@ -76,6 +77,15 @@ const quests = <Quest>[
     count: _styleCount,
   ),
   Quest(
+    id: 'wishes',
+    kind: QuestKind.standing,
+    title: '願掛け',
+    description: '願掛け帳に書き留めた店で食べた数（願成就）',
+    unit: '軒',
+    thresholds: [1, 3, 10, 30],
+    count: _wishFulfilledCount,
+  ),
+  Quest(
     id: 'first_bowl',
     kind: QuestKind.spot,
     title: 'はじめての着丼',
@@ -128,6 +138,15 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _rareShopCount,
+  ),
+  Quest(
+    id: 'long_wish',
+    kind: QuestKind.spot,
+    title: '百日越しの願',
+    description: '願を掛けてから100日以上たって、その店で食べる',
+    unit: '回',
+    thresholds: [1],
+    count: _longWishCount,
   ),
 ];
 
@@ -316,3 +335,14 @@ int _rareShopCount(List<ScoredVisit> scored) => scored
 
 int _rankSShopCount(List<ScoredVisit> scored) =>
     shopRanks(scored).values.where((rank) => rank == ShopRank.s).length;
+
+int _wishFulfilledCount(List<ScoredVisit> scored) =>
+    scored.where((e) => e.fulfilledWish != null).length;
+
+int _longWishCount(List<ScoredVisit> scored) => scored
+    .where(
+      (e) =>
+          e.fulfilledWish != null &&
+          daysToFulfill(e.fulfilledWish!, e.visit.eatenAt) >= 100,
+    )
+    .length;

@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chakudon_quest/features/map/map_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
@@ -45,6 +46,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(AsyncData(visits)),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           mapTilesEnabledProvider.overrideWithValue(false),
           locationServiceProvider.overrideWithValue(location),
           nearbyShopFinderProvider.overrideWithValue(overpass),

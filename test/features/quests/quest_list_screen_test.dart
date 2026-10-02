@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chakudon_quest/features/quests/quest_list_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/quests/quest_seal.dart';
 
 import '../../support/builders.dart';
@@ -20,7 +21,10 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [visitsProvider.overrideWithValue(AsyncData(visits))],
+        overrides: [
+          visitsProvider.overrideWithValue(AsyncData(visits)),
+          wishesProvider.overrideWithValue(const AsyncData([])),
+        ],
         child: localizedApp(home: const QuestListScreen()),
       ),
     );
@@ -33,7 +37,7 @@ void main() {
     expect(find.text(ja.questStanding), findsOneWidget);
     expect(find.text(ja.questSpot), findsOneWidget);
     expect(find.text(ja.questLevelTotal(0)), findsOneWidget);
-    expect(find.text(ja.questSpotSummary(0, 6)), findsOneWidget);
+    expect(find.text(ja.questSpotSummary(0, 7)), findsOneWidget);
     expect(find.text('着丼の道'), findsOneWidget);
     expect(find.text('はじめての着丼'), findsOneWidget);
     expect(find.text(ja.questNext(0, 5, '杯')), findsOneWidget);
@@ -55,7 +59,7 @@ void main() {
     // はじめての着丼は達成。
     expect(find.text(ja.questCleared), findsOneWidget);
     expect(find.text(ja.questAchievedOn('2026/9/1')), findsOneWidget);
-    expect(find.text(ja.questSpotSummary(1, 6)), findsOneWidget);
+    expect(find.text(ja.questSpotSummary(1, 7)), findsOneWidget);
     // 着丼の道 Lv.2 + 開拓者 Lv.0 ...のレベル合計。
     expect(find.text(ja.questLevelTotal(2)), findsOneWidget);
     expect(find.text(daijiNumber(2)), findsOneWidget);

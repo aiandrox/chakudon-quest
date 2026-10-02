@@ -1,0 +1,276 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../l10n/app_localizations.dart';
+import '../../theme/washi.dart';
+import '../records/clock.dart';
+import '../records/date_format.dart';
+import '../records/record_repository.dart';
+import '../visit_detail/visit_detail_screen.dart';
+import 'wish_dialog.dart';
+import 'wish_providers.dart';
+import 'wish_repository.dart';
+import 'wishes.dart';
+
+/// 願掛け帳。行きたい店（まだの願）と、食べに行けた店（叶った願）を分けて見せる。
+class WishListScreen extends ConsumerWidget {
+  const WishListScreen({super.key});
+
+  Future<void> _addByName(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final repository = ref.read(wishRepositoryProvider);
+    final now = ref.read(clockProvider)();
+    final text = await showWishDialog(context);
+    if (text == null) return;
+    try {
+      await repository.addWish(
+        shop: ShopInput(name: text.name),
+        trigger: text.trigger,
+        note: text.note,
+        now: now,
+      );
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.wishAdded(text.name))),
+      );
+    } catch (e) {
+      debugPrint('Wish save failed: $e');
+      messenger.showSnackBar(SnackBar(content: Text(l10n.wishSaveFailed)));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final statuses = ref.watch(wishStatusesProvider);
+    final pending = [
+      for (final status in statuses)
+        if (!status.isFulfilled) status,
+    ];
+    final fulfilled =
+        [
+          for (final status in statuses)
+            if (status.isFulfilled) status,
+        ]..sort(
+          (a, b) => b.fulfilledBy!.visit.eatenAt.compareTo(
+            a.fulfilledBy!.visit.eatenAt,
+          ),
+        );
+
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.wishTitle),
+          bottom: TabBar(
+            tabs: [
+              Tab(text: l10n.wishPendingTab(pending.length)),
+              Tab(text: l10n.wishFulfilledTab(fulfilled.length)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            pending.isEmpty
+                ? _Empty(message: l10n.wishPendingEmpty)
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+                    children: [
+                      for (final status in pending)
+                        _PendingWishCard(status: status),
+                    ],
+                  ),
+            fulfilled.isEmpty
+                ? _Empty(message: l10n.wishFulfilledEmpty)
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                    children: [
+                      for (final status in fulfilled)
+                        _FulfilledWishCard(status: status),
+                    ],
+                  ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'add-wish',
+          tooltip: l10n.wishAddTitle,
+          onPressed: () => _addByName(context, ref),
+          child: const Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+}
+
+class _Empty extends StatelessWidget {
+  const _Empty({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(32),
+      child: Text(message, textAlign: TextAlign.center),
+    ),
+  );
+}
+
+class _PendingWishCard extends ConsumerWidget {
+  const _PendingWishCard({required this.status});
+
+  final WishStatus status;
+
+  Future<void> _edit(BuildContext context, WidgetRef ref) async {
+    final wish = status.wish;
+    final messenger = ScaffoldMessenger.of(context);
+    final failed = AppLocalizations.of(context).wishSaveFailed;
+    final repository = ref.read(wishRepositoryProvider);
+    final text = await showWishDialog(
+      context,
+      name: wish.name,
+      trigger: wish.trigger,
+      note: wish.note,
+      isEditing: true,
+    );
+    if (text == null) return;
+    try {
+      await repository.updateWish(
+        wish.id,
+        trigger: text.trigger,
+        note: text.note,
+      );
+    } catch (e) {
+      debugPrint('Wish update failed: $e');
+      messenger.showSnackBar(SnackBar(content: Text(failed)));
+    }
+  }
+
+  Future<void> _delete(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context);
+    final repository = ref.read(wishRepositoryProvider);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.wishDeleteConfirm(status.wish.name)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await repository.deleteWish(status.wish.id);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final wish = status.wish;
+    final days = daysToFulfill(wish, ref.watch(clockProvider)());
+
+    return Card(
+      child: ListTile(
+        contentPadding: const EdgeInsets.fromLTRB(16, 8, 4, 8),
+        leading: const _WishSeal(fulfilled: false),
+        title: Text(wish.name, style: textTheme.titleMedium),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (wish.note.isNotEmpty) Text(wish.note),
+            if (wish.trigger.isNotEmpty)
+              Text(l10n.wishTriggerLine(wish.trigger)),
+            Text(
+              days == 0 ? l10n.wishSinceToday : l10n.wishSinceDays(days),
+              style: textTheme.bodySmall?.copyWith(color: Washi.faded),
+            ),
+          ],
+        ),
+        onTap: () => _edit(context, ref),
+        trailing: IconButton(
+          tooltip: l10n.delete,
+          icon: const Icon(Icons.close),
+          onPressed: () => _delete(context, ref),
+        ),
+      ),
+    );
+  }
+}
+
+class _FulfilledWishCard extends StatelessWidget {
+  const _FulfilledWishCard({required this.status});
+
+  final WishStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final wish = status.wish;
+    final visit = status.fulfilledBy!.visit;
+
+    return Card(
+      child: ListTile(
+        contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        leading: const _WishSeal(fulfilled: true),
+        title: Text(wish.name, style: textTheme.titleMedium),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.wishFulfilledLine(
+                formatDate(visit.eatenAt),
+                daysToFulfill(wish, visit.eatenAt),
+              ),
+            ),
+            if (wish.trigger.isNotEmpty)
+              Text(l10n.wishTriggerLine(wish.trigger)),
+          ],
+        ),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => VisitDetailScreen(visitId: visit.id),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 「願」の丸印。叶った願は朱、まだの願は灰色の輪郭だけ。
+class _WishSeal extends StatelessWidget {
+  const _WishSeal({required this.fulfilled});
+
+  final bool fulfilled;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = fulfilled ? Washi.shu : Washi.faded;
+    return Container(
+      width: 40,
+      height: 40,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: fulfilled ? Washi.shu : null,
+        border: Border.all(color: color, width: 2),
+      ),
+      child: Text(
+        AppLocalizations.of(context).wishSealChar,
+        style: TextStyle(
+          fontFamily: Washi.brush,
+          fontSize: 20,
+          height: 1,
+          color: fulfilled ? Washi.page : color,
+        ),
+      ),
+    );
+  }
+}

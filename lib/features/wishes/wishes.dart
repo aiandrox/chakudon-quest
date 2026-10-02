@@ -1,0 +1,42 @@
+import '../records/models.dart';
+import '../shop_search/geo.dart';
+import '../shop_search/shop_candidate.dart';
+
+/// 願を掛けた店と、記録の店が同じ店か。店は記録が0件になると消えるため、IDのほかに名前と位置でも比べる。
+bool wishMatchesShop(Wish wish, Shop shop) =>
+    wish.shopId == shop.id ||
+    wishMatchesPlace(
+      wish,
+      osmId: shop.osmId,
+      name: shop.name,
+      location: ShopCandidate.fromShop(shop).location,
+    );
+
+/// 検索で見つけた店（まだ記録の無い店）など、IDの無い店と比べる。
+bool wishMatchesPlace(
+  Wish wish, {
+  String? osmId,
+  required String name,
+  GeoPoint? location,
+}) => isSameShop(
+  ShopCandidate(
+    osmId: wish.osmId,
+    name: wish.name,
+    location: wishLocation(wish),
+  ),
+  ShopCandidate(osmId: osmId, name: name, location: location),
+);
+
+GeoPoint? wishLocation(Wish wish) {
+  final latitude = wish.latitude;
+  final longitude = wish.longitude;
+  return latitude != null && longitude != null
+      ? GeoPoint(latitude, longitude)
+      : null;
+}
+
+/// 願を掛けてから、叶う（その店で食べる）までの日数。
+int daysToFulfill(Wish wish, DateTime eatenAt) =>
+    _dateOnly(eatenAt).difference(_dateOnly(wish.createdAt)).inDays;
+
+DateTime _dateOnly(DateTime at) => DateTime(at.year, at.month, at.day);

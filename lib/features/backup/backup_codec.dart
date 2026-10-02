@@ -5,10 +5,15 @@ const backupVersion = 1;
 
 /// 書き出す・読み込む記録ひとそろい。写真のファイルは別に扱う。
 class BackupData {
-  const BackupData({required this.shops, required this.visits});
+  const BackupData({
+    required this.shops,
+    required this.visits,
+    this.wishes = const [],
+  });
 
   final List<Shop> shops;
   final List<Visit> visits;
+  final List<Wish> wishes;
 }
 
 Map<String, Object?> encodeBackup(
@@ -37,6 +42,25 @@ Map<String, Object?> encodeBackup(
             'attributions': source.attributions,
           },
         'createdAt': shop.createdAt.toUtc().toIso8601String(),
+      },
+  ],
+  'wishes': [
+    for (final wish in data.wishes)
+      {
+        'id': wish.id,
+        'shopId': wish.shopId,
+        'osmId': wish.osmId,
+        'name': wish.name,
+        'latitude': wish.latitude,
+        'longitude': wish.longitude,
+        if (wish.dataSource case final source?)
+          'dataSource': {
+            'licenses': source.licenses,
+            'attributions': source.attributions,
+          },
+        'trigger': wish.trigger,
+        'note': wish.note,
+        'createdAt': wish.createdAt.toUtc().toIso8601String(),
       },
   ],
   'visits': [
@@ -71,6 +95,10 @@ BackupData decodeBackup(Object? json) {
   return BackupData(
     shops: [for (final shop in _list(root['shops'])) _decodeShop(shop)],
     visits: [for (final visit in _list(root['visits'])) _decodeVisit(visit)],
+    // 願掛け帳より前の版のバックアップには無い。
+    wishes: [
+      for (final wish in _list(root['wishes'] ?? const [])) _decodeWish(wish),
+    ],
   );
 }
 
@@ -102,6 +130,22 @@ ShopSource? _decodeSource(Object? json) {
   return ShopSource(
     licenses: strings(map['licenses']),
     attributions: strings(map['attributions']),
+  );
+}
+
+Wish _decodeWish(Object? json) {
+  final map = _map(json, '願');
+  return Wish(
+    id: _string(map['id']),
+    shopId: _stringOrNull(map['shopId']),
+    osmId: _stringOrNull(map['osmId']),
+    name: _string(map['name']),
+    latitude: _doubleOrNull(map['latitude']),
+    longitude: _doubleOrNull(map['longitude']),
+    dataSource: _decodeSource(map['dataSource']),
+    trigger: _stringOrNull(map['trigger']) ?? '',
+    note: _stringOrNull(map['note']) ?? '',
+    createdAt: _dateTime(map['createdAt']),
   );
 }
 

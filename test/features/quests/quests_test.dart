@@ -25,7 +25,7 @@ void main() {
     expect(quests.map((q) => q.id).toSet(), hasLength(quests.length));
     expect(
       quests.where((q) => q.kind == QuestKind.standing).map((q) => q.title),
-      ['着丼の道', '開拓者', '行列の覇者', '限定ハンター', '不屈の挑戦者', '大物討伐', '系統の探究'],
+      ['着丼の道', '開拓者', '行列の覇者', '限定ハンター', '不屈の挑戦者', '大物討伐', '系統の探究', '願掛け'],
     );
     expect(quests.where((q) => q.kind == QuestKind.spot).map((q) => q.title), [
       'はじめての着丼',
@@ -34,6 +34,7 @@ void main() {
       '一日二杯',
       '三度目の正直',
       '幻の店',
+      '百日越しの願',
     ]);
     for (final quest in quests) {
       final sorted = [...quest.thresholds]..sort();

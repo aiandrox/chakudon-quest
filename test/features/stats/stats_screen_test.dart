@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/stats/stats_screen.dart';
 
 import '../../support/builders.dart';
@@ -22,6 +23,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(AsyncData(visits)),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           clockProvider.overrideWithValue(() => DateTime(2026, 10, 1)),
         ],
         child: localizedApp(home: const StatsScreen()),
@@ -44,6 +46,7 @@ void main() {
           visitsProvider.overrideWithValue(
             AsyncError(StateError('db'), StackTrace.empty),
           ),
+          wishesProvider.overrideWithValue(const AsyncData([])),
         ],
         child: localizedApp(home: const StatsScreen()),
       ),

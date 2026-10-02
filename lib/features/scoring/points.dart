@@ -1,5 +1,6 @@
 import '../records/models.dart';
 import '../records/wait_time.dart';
+import '../wishes/wishes.dart';
 
 /// 1件の記録で得たポイントの内訳。撤退は全て0。
 class PointsBreakdown {
@@ -93,6 +94,7 @@ class ScoredVisit {
     required this.points,
     required this.isFirstVisit,
     required this.isRetrySuccess,
+    this.fulfilledWish,
   });
 
   final Visit visit;
@@ -104,11 +106,17 @@ class ScoredVisit {
 
   /// 同じ店での直前の記録が撤退だったか。
   final bool isRetrySuccess;
+
+  /// この1杯で叶った願（願を掛けたあと、その店で最初に食べた記録）。
+  final Wish? fulfilledWish;
 }
 
 /// 全記録を採点し、古い順に返す。初訪問と再挑戦成功は店ごとの記録の順番で決まるため、
-/// 1件だけでは採点できない。
-List<ScoredVisit> scoreVisits(List<VisitWithShop> entries) {
+/// 1件だけでは採点できない。[wishes]を渡すと、どの1杯で願が叶ったかも求める。
+List<ScoredVisit> scoreVisits(
+  List<VisitWithShop> entries, {
+  List<Wish> wishes = const [],
+}) {
   final ordered = [...entries]
     ..sort((a, b) {
       final byEaten = a.visit.eatenAt.compareTo(b.visit.eatenAt);
@@ -118,9 +126,21 @@ List<ScoredVisit> scoreVisits(List<VisitWithShop> entries) {
   final eatenShops = <String>{};
   final lastResult = <String, VisitResult>{};
   final scored = <ScoredVisit>[];
+  final pendingWishes = [...wishes]
+    ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   for (final entry in ordered) {
     final visit = entry.visit;
     final isEaten = visit.result == VisitResult.eaten;
+    final fulfilledWish = isEaten
+        ? pendingWishes
+              .where(
+                (wish) =>
+                    !wish.createdAt.isAfter(visit.eatenAt) &&
+                    wishMatchesShop(wish, entry.shop),
+              )
+              .firstOrNull
+        : null;
+    if (fulfilledWish != null) pendingWishes.remove(fulfilledWish);
     final isFirstVisit = isEaten && !eatenShops.contains(visit.shopId);
     final isRetrySuccess =
         isEaten && lastResult[visit.shopId] == VisitResult.retreated;
@@ -136,6 +156,7 @@ List<ScoredVisit> scoreVisits(List<VisitWithShop> entries) {
         ),
         isFirstVisit: isFirstVisit,
         isRetrySuccess: isRetrySuccess,
+        fulfilledWish: fulfilledWish,
       ),
     );
     if (isEaten) eatenShops.add(visit.shopId);

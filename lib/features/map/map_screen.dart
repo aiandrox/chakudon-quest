@@ -12,6 +12,11 @@ import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
 import '../shop_search/nearby_shop_finder.dart';
 import '../shop_search/overpass.dart';
+import '../records/models.dart';
+import '../records/record_repository.dart';
+import '../wishes/wish_dialog.dart';
+import '../wishes/wish_providers.dart';
+import '../wishes/wishes.dart';
 import 'shop_pins.dart';
 
 /// 地図の画像は OpenStreetMap のタイルサーバーから取る。送るのは表示範囲だけ（issue #8）。
@@ -115,6 +120,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final pins = shopPins(ref.watch(scoredVisitsProvider));
+    final pendingWishes = [
+      for (final status in ref.watch(wishStatusesProvider))
+        if (!status.isFulfilled && wishLocation(status.wish) != null)
+          status.wish,
+    ];
     final tilesEnabled = ref.watch(mapTilesEnabledProvider);
     final here = _here;
 
@@ -150,15 +160,31 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               MarkerLayer(
                 markers: [
                   for (final shop in _nearby)
-                    Marker(
-                      point: LatLng(
-                        shop.location.latitude,
-                        shop.location.longitude,
+                    if (!pendingWishes.any(
+                      (wish) => wishMatchesPlace(
+                        wish,
+                        osmId: shop.osmId,
+                        name: shop.name,
+                        location: shop.location,
                       ),
+                    ))
+                      Marker(
+                        point: LatLng(
+                          shop.location.latitude,
+                          shop.location.longitude,
+                        ),
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.topCenter,
+                        child: _UnvisitedPin(shop: shop, here: here),
+                      ),
+                  for (final wish in pendingWishes)
+                    Marker(
+                      point: LatLng(wish.latitude!, wish.longitude!),
                       width: 40,
                       height: 40,
                       alignment: Alignment.topCenter,
-                      child: _UnvisitedPin(shop: shop, here: here),
+                      child: _WishPin(wish: wish),
                     ),
                   for (final pin in pins)
                     Marker(
@@ -197,7 +223,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
               ),
             ),
-          if (pins.isEmpty && _nearby.isEmpty)
+          if (pins.isEmpty && _nearby.isEmpty && pendingWishes.isEmpty)
             Positioned(
               left: 16,
               right: 16,
@@ -258,14 +284,14 @@ class _HereDot extends StatelessWidget {
   }
 }
 
-class _UnvisitedPin extends StatelessWidget {
+class _UnvisitedPin extends ConsumerWidget {
   const _UnvisitedPin({required this.shop, required this.here});
 
   final FoundShop shop;
   final GeoPoint? here;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
     final here = this.here;
@@ -290,6 +316,25 @@ class _UnvisitedPin extends StatelessWidget {
                       distanceMeters(here, shop.location).round(),
                     ),
                   ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  icon: const Icon(Icons.bookmark_add),
+                  label: Text(l10n.wishMakeButton),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    addWishFor(
+                      context,
+                      ref,
+                      ShopInput(
+                        osmId: shop.osmId,
+                        name: shop.name,
+                        latitude: shop.location.latitude,
+                        longitude: shop.location.longitude,
+                        dataSource: shop.dataSource,
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -388,6 +433,65 @@ class _PinDetails extends StatelessWidget {
             Text(
               l10n.mapLastVisit(formatDate(pin.lastVisitAt)),
               style: textTheme.bodyMedium,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 願を掛けた（まだ行っていない）店。輪郭だけの朱のピンに「願」の字。
+class _WishPin extends StatelessWidget {
+  const _WishPin({required this.wish});
+
+  final Wish wish;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final colors = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: () => showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        builder: (context) => SafeArea(
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(wish.name, style: textTheme.titleLarge),
+                const SizedBox(height: 8),
+                Text(l10n.mapWished),
+                if (wish.note.isNotEmpty) Text(wish.note),
+                if (wish.trigger.isNotEmpty)
+                  Text(l10n.wishTriggerLine(wish.trigger)),
+              ],
+            ),
+          ),
+        ),
+      ),
+      child: Semantics(
+        button: true,
+        label: l10n.mapWishedLabel(wish.name),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Icon(Icons.location_on_outlined, size: 40, color: colors.primary),
+            Padding(
+              padding: const EdgeInsets.only(top: 7),
+              child: Text(
+                l10n.wishSealChar,
+                style: TextStyle(
+                  color: colors.primary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),

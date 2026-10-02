@@ -62,6 +62,7 @@ class RecordRepository {
   Future<BackupData> exportAll() async => BackupData(
     shops: await _db.select(_db.shops).get(),
     visits: await _db.select(_db.visits).get(),
+    wishes: await _db.select(_db.wishes).get(),
   );
 
   /// バックアップの記録を足す。同じIDの店・記録がすでにあれば、端末の方を残す。
@@ -86,6 +87,28 @@ class RecordRepository {
                 strategyMemo: Value(shop.strategyMemo),
                 dataSource: Value(shop.dataSource),
                 createdAt: shop.createdAt,
+              ),
+            );
+      }
+      final wishIds = {
+        for (final wish in await _db.select(_db.wishes).get()) wish.id,
+      };
+      for (final wish in data.wishes) {
+        if (!wishIds.add(wish.id)) continue;
+        await _db
+            .into(_db.wishes)
+            .insert(
+              WishesCompanion.insert(
+                id: wish.id,
+                shopId: Value(wish.shopId),
+                osmId: Value(wish.osmId),
+                name: wish.name,
+                latitude: Value(wish.latitude),
+                longitude: Value(wish.longitude),
+                dataSource: Value(wish.dataSource),
+                trigger: Value(wish.trigger),
+                note: Value(wish.note),
+                createdAt: wish.createdAt,
               ),
             );
       }

@@ -7,6 +7,7 @@ import 'package:chakudon_quest/features/notifications/notification_service.dart'
 import 'package:chakudon_quest/features/record/record_result_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/theme/washi.dart';
 
 import '../../support/builders.dart';
@@ -22,8 +23,9 @@ void main() {
   Future<void> pumpResult(
     WidgetTester tester,
     List<VisitWithShop> visits,
-    String visitId,
-  ) async {
+    String visitId, {
+    List<Wish> wishes = const [],
+  }) async {
     tester.view.physicalSize = const Size(1080, 4800);
     tester.view.devicePixelRatio = 2.5;
     addTearDown(tester.view.reset);
@@ -31,6 +33,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(AsyncData(visits)),
+          wishesProvider.overrideWithValue(AsyncData(wishes)),
           notificationServiceProvider.overrideWithValue(notifications),
         ],
         child: localizedApp(home: RecordResultScreen(visitId: visitId)),
@@ -142,6 +145,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(const AsyncData([])),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           notificationServiceProvider.overrideWithValue(notifications),
         ],
         child: localizedApp(home: const RecordResultScreen(visitId: 'v')),
@@ -151,5 +155,35 @@ void main() {
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.text(ja.resultOk), findsOneWidget);
+  });
+
+  testWidgets('願を掛けた店で食べたら「願成就」と日数・きっかけを出す', (tester) async {
+    final shop = buildShop(id: 'shop', name: 'はやし田');
+    final entry = buildEntry(shop: shop, eatenAt: day(30));
+    await pumpResult(
+      tester,
+      [entry],
+      entry.visit.id,
+      wishes: [
+        Wish(
+          id: 'wish',
+          shopId: 'shop',
+          name: 'はやし田',
+          trigger: '同僚に聞いた',
+          createdAt: day(1),
+        ),
+      ],
+    );
+
+    expect(find.text(ja.wishFulfilled), findsOneWidget);
+    expect(find.text(ja.wishFulfilledAfter(29)), findsOneWidget);
+    expect(find.text(ja.wishTriggerLine('同僚に聞いた')), findsOneWidget);
+  });
+
+  testWidgets('願を掛けていない店では「願成就」を出さない', (tester) async {
+    final entry = buildEntry(eatenAt: day(30));
+    await pumpResult(tester, [entry], entry.visit.id);
+
+    expect(find.text(ja.wishFulfilled), findsNothing);
   });
 }

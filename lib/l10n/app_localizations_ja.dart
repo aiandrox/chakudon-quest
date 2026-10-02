@@ -525,6 +525,112 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get navWishes => '願掛け';
+
+  @override
+  String get wishTitle => '願掛け帳';
+
+  @override
+  String get wishSealChar => '願';
+
+  @override
+  String wishPendingTab(int count) {
+    return 'まだの願 $count';
+  }
+
+  @override
+  String wishFulfilledTab(int count) {
+    return '叶った願 $count';
+  }
+
+  @override
+  String get wishPendingEmpty =>
+      '行きたい店を書き留めておきましょう。\n地図の灰色のピンや店のページから願を掛けられます。右下の＋なら店名だけで書き留められます';
+
+  @override
+  String get wishFulfilledEmpty => '願を掛けた店で「着丼！」すると、ここに並びます';
+
+  @override
+  String get wishAddTitle => '願を掛ける';
+
+  @override
+  String get wishEditTitle => '願を書き直す';
+
+  @override
+  String get wishAddButton => '願を掛ける';
+
+  @override
+  String get wishMakeButton => '願を掛ける（行きたい）';
+
+  @override
+  String get wishAlready => 'この店には願を掛けています';
+
+  @override
+  String get wishShopName => '店名';
+
+  @override
+  String get wishTrigger => 'きっかけ（任意）';
+
+  @override
+  String get wishTriggerHint => '同僚に聞いた・テレビで見た など';
+
+  @override
+  String get wishNote => 'ひとこと（任意）';
+
+  @override
+  String get wishNoteHint => '限定の煮干しを食べたい など';
+
+  @override
+  String wishTriggerLine(String trigger) {
+    return 'きっかけ: $trigger';
+  }
+
+  @override
+  String get wishSinceToday => '今日、願を掛けた';
+
+  @override
+  String wishSinceDays(int days) {
+    return '願を掛けて $days日';
+  }
+
+  @override
+  String wishFulfilledLine(String date, int days) {
+    return '$date 願成就（$days日越し）';
+  }
+
+  @override
+  String wishAdded(String name) {
+    return '$name に願を掛けました';
+  }
+
+  @override
+  String get wishSaveFailed => '願を書き留められませんでした';
+
+  @override
+  String wishDeleteConfirm(String name) {
+    return '$name の願を消しますか？';
+  }
+
+  @override
+  String get wishFulfilled => '願成就';
+
+  @override
+  String wishFulfilledAfter(int days) {
+    return '願を掛けてから $days日、ついに着丼';
+  }
+
+  @override
+  String get wishFulfilledSameDay => '願を掛けたその日に着丼';
+
+  @override
+  String get mapWished => '願掛け中の店';
+
+  @override
+  String mapWishedLabel(String name) {
+    return '願掛け中の店 $name';
+  }
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override

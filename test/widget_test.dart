@@ -11,6 +11,7 @@ import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/inkan/inkan_stamp.dart';
 import 'package:chakudon_quest/main.dart';
 import 'package:chakudon_quest/theme/washi.dart';
@@ -36,6 +37,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(AsyncData(visits)),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           activeCheckinProvider.overrideWithValue(const AsyncData(null)),
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           photoPickerProvider.overrideWithValue(FakePhotoPicker()),
@@ -154,6 +156,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(const AsyncData([])),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           activeCheckinProvider.overrideWith((ref) => checkins.stream),
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           photoPickerProvider.overrideWithValue(FakePhotoPicker()),

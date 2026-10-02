@@ -20,6 +20,8 @@ import '../scoring/points_breakdown_view.dart';
 import '../../theme/washi.dart';
 import '../shop/shop_memo_dialog.dart';
 import '../scoring/scoring_providers.dart';
+import '../wishes/wish_dialog.dart';
+import '../wishes/wish_providers.dart';
 import 'visit_edit_screen.dart';
 
 /// 1つの店のページ。開いた1杯を大きく見せ、この店で集めた印をタップすると切り替わる。
@@ -126,6 +128,32 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
       appBar: AppBar(
         title: Text(entry.shop.name),
         actions: [
+          if (pendingWishFor(ref.watch(wishStatusesProvider), entry.shop) !=
+              null)
+            IconButton(
+              tooltip: l10n.wishAlready,
+              icon: const Icon(Icons.bookmark),
+              onPressed: () =>
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(l10n.wishAlready))),
+            )
+          else
+            IconButton(
+              tooltip: l10n.wishMakeButton,
+              icon: const Icon(Icons.bookmark_add_outlined),
+              onPressed: () => addWishFor(
+                context,
+                ref,
+                ShopInput(
+                  shopId: entry.shop.id,
+                  osmId: entry.shop.osmId,
+                  name: entry.shop.name,
+                  latitude: entry.shop.latitude,
+                  longitude: entry.shop.longitude,
+                  dataSource: entry.shop.dataSource,
+                ),
+              ),
+            ),
           IconButton(
             tooltip: l10n.edit,
             icon: const Icon(Icons.edit),
