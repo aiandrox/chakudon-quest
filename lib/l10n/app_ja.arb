@@ -336,6 +336,7 @@
   "mapWished": "願掛け中の店",
   "mapWishedLabel": "願掛け中の店 {name}",
   "@mapWishedLabel": {"placeholders": {"name": {"type": "String"}}},
+  "journalTitle": "道中記",
   "backupTitle": "バックアップ",
   "creditsTitle": "出典・ライセンス",
   "creditsServicesHeading": "地図と店の情報",

@@ -180,6 +180,12 @@ void main() {
     ], 'second');
 
     expect(find.text(ja.previousVisit), findsOneWidget);
+    expect(find.text(ja.journalTitle), findsOneWidget);
+    expect(
+      find.text('2度目の来訪。').evaluate().isNotEmpty ||
+          find.text('通うこと2度目。').evaluate().isNotEmpty,
+      isTrue,
+    );
     // 前回の記録と、この道場の印の日付の2か所。
     expect(find.text('2026/9/1'), findsNWidgets(2));
     expect(stars(5), findsOneWidget);

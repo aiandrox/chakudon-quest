@@ -61,6 +61,7 @@ VisitWithShop buildEntry({
   RamenStyle? style,
   bool isLimited = false,
   bool hasTicket = false,
+  String memo = '',
 }) {
   final resolvedShop = shop ?? buildShop();
   return VisitWithShop(
@@ -73,6 +74,7 @@ VisitWithShop buildEntry({
       style: style,
       isLimited: isLimited,
       hasTicket: hasTicket,
+      memo: memo,
     ),
   );
 }

@@ -1204,6 +1204,12 @@ abstract class AppLocalizations {
   /// **'願掛け中の店 {name}'**
   String mapWishedLabel(String name);
 
+  /// No description provided for @journalTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'道中記'**
+  String get journalTitle;
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:

@@ -22,6 +22,9 @@ import '../shop/shop_memo_dialog.dart';
 import '../scoring/scoring_providers.dart';
 import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
+import '../wishes/wishes.dart';
+import '../journal/journal.dart';
+import '../journal/journal_view.dart';
 import 'visit_edit_screen.dart';
 
 /// 1つの店のページ。開いた1杯を大きく見せ、この店で集めた印をタップすると切り替わる。
@@ -129,6 +132,7 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
     final canFulfill =
         visit.result == VisitResult.eaten &&
         pendingWish != null &&
+        wishPrecedes(pendingWish, visit.eatenAt) &&
         !statuses.any((s) => s.fulfilledBy?.visit.id == visit.id);
 
     return Scaffold(
@@ -202,6 +206,13 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                     child: Text(l10n.wishFulfillButton),
                   ),
                 ),
+              ),
+            ),
+          if (scored != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+              child: JournalView(
+                lines: buildJournal(scored, ref.watch(scoredVisitsProvider)),
               ),
             ),
           if (shopStamps.length > 1)
