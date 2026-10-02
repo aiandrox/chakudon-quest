@@ -31,7 +31,6 @@ class QuestListScreen extends ConsumerWidget {
         children: [
           _SectionHeader(
             title: l10n.questStanding,
-            note: l10n.questStandingNote,
             summary: l10n.questLevelTotal(
               standing.fold(0, (sum, progress) => sum + progress.level),
             ),
@@ -40,7 +39,6 @@ class QuestListScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           _SectionHeader(
             title: l10n.questSpot,
-            note: l10n.questSpotNote,
             summary: l10n.questSpotSummary(
               spot.where((progress) => progress.isAchieved).length,
               spot.length,
@@ -54,14 +52,9 @@ class QuestListScreen extends ConsumerWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.title,
-    required this.note,
-    required this.summary,
-  });
+  const _SectionHeader({required this.title, required this.summary});
 
   final String title;
-  final String note;
   final String summary;
 
   @override
@@ -69,18 +62,9 @@ class _SectionHeader extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SectionTitle(
-            title,
-            trailing: Text(summary, style: textTheme.titleSmall),
-          ),
-          Text(
-            note,
-            style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
-          ),
-        ],
+      child: SectionTitle(
+        title,
+        trailing: Text(summary, style: textTheme.titleSmall),
       ),
     );
   }

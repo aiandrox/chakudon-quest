@@ -126,7 +126,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             onSelect: _selectShop,
           ),
           const SizedBox(height: 16),
-          SectionTitle(l10n.ratingOptional),
+          SectionTitle(l10n.ratingSection),
           Center(
             child: StarRating(
               rating: state.rating,

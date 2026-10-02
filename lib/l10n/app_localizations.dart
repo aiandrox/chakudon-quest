@@ -226,12 +226,6 @@ abstract class AppLocalizations {
   /// **'評価'**
   String get ratingSection;
 
-  /// No description provided for @ratingOptional.
-  ///
-  /// In ja, this message translates to:
-  /// **'評価（食べ終わってから、あとで付けてもOK）'**
-  String get ratingOptional;
-
   /// No description provided for @ratingUnrated.
   ///
   /// In ja, this message translates to:
@@ -243,12 +237,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{shop} はどうでしたか？'**
   String ratingPrompt(String shop);
-
-  /// No description provided for @ratingTapToRate.
-  ///
-  /// In ja, this message translates to:
-  /// **'★をタップして評価できます'**
-  String get ratingTapToRate;
 
   /// No description provided for @ratingStar.
   ///
@@ -333,12 +321,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'攻略しにくさ（当てはまるものすべて）'**
   String get hoursSection;
-
-  /// No description provided for @hoursNote.
-  ///
-  /// In ja, this message translates to:
-  /// **'当てはまるものが多いほど、修行点の倍率が上がります（最大×2.5）'**
-  String get hoursNote;
 
   /// No description provided for @hoursLunchOnly.
   ///
@@ -838,23 +820,11 @@ abstract class AppLocalizations {
   /// **'型'**
   String get questStanding;
 
-  /// No description provided for @questStandingNote.
-  ///
-  /// In ja, this message translates to:
-  /// **'回数を重ねるほど段が上がります'**
-  String get questStandingNote;
-
   /// No description provided for @questSpot.
   ///
   /// In ja, this message translates to:
   /// **'奥義'**
   String get questSpot;
-
-  /// No description provided for @questSpotNote.
-  ///
-  /// In ja, this message translates to:
-  /// **'一度会得すれば終わりです'**
-  String get questSpotNote;
 
   /// No description provided for @questLevelTotal.
   ///
@@ -1510,12 +1480,6 @@ abstract class AppLocalizations {
   /// **'店ランク'**
   String get statsShopRanks;
 
-  /// No description provided for @statsShopRanksNote.
-  ///
-  /// In ja, this message translates to:
-  /// **'その店で1杯に得た最高の修行点で決まります（極 60以上 / 特 40以上 / 上 25以上 / 並）'**
-  String get statsShopRanksNote;
-
   /// No description provided for @navMap.
   ///
   /// In ja, this message translates to:
@@ -1731,12 +1695,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'待ち時間'**
   String get waitMinutesLabel;
-
-  /// No description provided for @waitMinutesHint.
-  ///
-  /// In ja, this message translates to:
-  /// **'並んだ時間をあとから入れられます。並ばなかったときは空のまま'**
-  String get waitMinutesHint;
 
   /// No description provided for @waitMinutesUnit.
   ///

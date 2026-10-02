@@ -73,8 +73,6 @@ class VisitDetailsForm extends StatelessWidget {
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: l10n.waitMinutesLabel,
-              helperText: l10n.waitMinutesHint,
-              helperMaxLines: 2,
               suffixText: l10n.waitMinutesUnit,
             ),
             onChanged: (text) => onWaitChanged?.call(parseWaitMinutes(text)),
@@ -84,7 +82,6 @@ class VisitDetailsForm extends StatelessWidget {
         const SizedBox(height: 8),
         Text(l10n.hoursSection, style: textTheme.labelLarge),
         const SizedBox(height: 4),
-        Text(l10n.hoursNote, style: textTheme.bodySmall),
         Wrap(
           spacing: 8,
           children: [

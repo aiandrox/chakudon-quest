@@ -27,7 +27,6 @@
   },
   "shopSearchAttribution": "© OpenStreetMap contributors ／ 出典: OpenPOI API（https://openpoiapi.com/attribution.html）",
   "ratingSection": "評価",
-  "ratingOptional": "評価（食べ終わってから、あとで付けてもOK）",
   "ratingUnrated": "未評価",
   "ratingPrompt": "{shop} はどうでしたか？",
   "@ratingPrompt": {
@@ -35,7 +34,6 @@
       "shop": {"type": "String"}
     }
   },
-  "ratingTapToRate": "★をタップして評価できます",
   "ratingStar": "★{stars}",
   "@ratingStar": {
     "placeholders": {
@@ -55,7 +53,6 @@
   "styleOther": "その他",
   "isLimited": "限定メニュー",
   "hoursSection": "攻略しにくさ（当てはまるものすべて）",
-  "hoursNote": "当てはまるものが多いほど、修行点の倍率が上がります（最大×2.5）",
   "hoursLunchOnly": "昼のみ",
   "hoursNightOnly": "夜のみ",
   "hoursWeekdaysOnly": "平日のみ",
@@ -210,9 +207,7 @@
   "navQuests": "型と奥義",
   "questTitle": "型と奥義",
   "questStanding": "型",
-  "questStandingNote": "回数を重ねるほど段が上がります",
   "questSpot": "奥義",
-  "questSpotNote": "一度会得すれば終わりです",
   "questLevelTotal": "段の合計 {total}",
   "@questLevelTotal": {
     "placeholders": {
@@ -419,7 +414,6 @@
     }
   },
   "statsShopRanks": "店ランク",
-  "statsShopRanksNote": "その店で1杯に得た最高の修行点で決まります（極 60以上 / 特 40以上 / 上 25以上 / 並）",
   "navMap": "地図",
   "mapAttribution": "OpenStreetMap contributors",
   "openPoiAttribution": "出典: OpenPOI API（https://openpoiapi.com/attribution.html）",
@@ -516,7 +510,6 @@
   "eraHeisei": "平成",
   "eraFirstYear": "元",
   "waitMinutesLabel": "待ち時間",
-  "waitMinutesHint": "並んだ時間をあとから入れられます。並ばなかったときは空のまま",
   "waitMinutesUnit": "分",
   "questLocked": "未",
   "inkanNoStyle": "拉麺",

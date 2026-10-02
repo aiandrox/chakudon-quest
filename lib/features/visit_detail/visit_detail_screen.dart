@@ -253,8 +253,6 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                           saveRating(context, ref, visit.id, rating),
                     ),
                   ),
-                  if (visit.rating == null)
-                    Text(l10n.ratingTapToRate, style: textTheme.bodySmall),
                 ],
                 if (tags.isNotEmpty) ...[
                   const SizedBox(height: 12),
