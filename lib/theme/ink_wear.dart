@@ -41,34 +41,34 @@ InkWearPattern inkWearPattern(int seed) {
       min + random.nextDouble() * (max - min);
   return InkWearPattern(
     fadeAngle: between(0, 2 * math.pi),
-    fadeStrength: between(0.35, 0.7),
+    fadeStrength: between(0.28, 0.62),
     marks: [
       // 押しむらでできる、ぼんやり薄い大きめのところ。
-      for (var i = 0; i < 3 + random.nextInt(4); i++)
+      for (var i = 0; i < 3 + random.nextInt(3); i++)
         (
           x: between(0.1, 0.9),
           y: between(0.1, 0.9),
-          radius: between(0.1, 0.24),
-          strength: between(0.35, 0.65),
+          radius: between(0.09, 0.2),
+          strength: between(0.28, 0.55),
         ),
       // インクが乗らなかった細かい点。
-      for (var i = 0; i < 120 + random.nextInt(100); i++)
+      for (var i = 0; i < 80 + random.nextInt(70); i++)
         (
           x: between(0, 1),
           y: between(0, 1),
-          radius: between(0.005, 0.026),
-          strength: between(0.6, 1),
+          radius: between(0.005, 0.022),
+          strength: between(0.55, 0.95),
         ),
     ],
     streaks: [
-      for (var i = 0; i < 6 + random.nextInt(7); i++)
+      for (var i = 0; i < 4 + random.nextInt(6); i++)
         (
           x: between(0.1, 0.9),
           y: between(0.1, 0.9),
           angle: between(-0.7, 0.7),
-          length: between(0.2, 0.6),
-          width: between(0.012, 0.035),
-          strength: between(0.6, 1),
+          length: between(0.18, 0.5),
+          width: between(0.01, 0.028),
+          strength: between(0.5, 0.9),
         ),
     ],
   );
