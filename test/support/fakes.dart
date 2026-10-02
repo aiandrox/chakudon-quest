@@ -316,5 +316,8 @@ class FakeWishRepository implements WishRepository {
   Future<void> deleteWish(String id) async {}
 
   @override
+  Future<List<Wish>> pendingWishes() async => const [];
+
+  @override
   Stream<List<Wish>> watchWishes() => const Stream.empty();
 }

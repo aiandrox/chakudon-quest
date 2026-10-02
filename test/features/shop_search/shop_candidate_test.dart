@@ -108,6 +108,44 @@ void main() {
       expect(candidates.map((c) => c.shopId), ['shop-壱角家', 'shop-らぁ麺　はやし田']);
     });
 
+    test('まだの願の店は「願」を付けて先頭に出し、候補に無ければ願の店を足す', () {
+      final candidates = rankShopCandidates(
+        here: _here,
+        found: [
+          _found('近い店', 0.0001),
+          _found('願の店', 0.002, osmId: 'node/wish'),
+        ],
+        knownShops: const [],
+        wishes: [
+          Wish(
+            id: 'w1',
+            osmId: 'node/wish',
+            name: '願の店',
+            latitude: 35.002,
+            longitude: 139.0,
+            createdAt: DateTime(2026),
+          ),
+          Wish(
+            id: 'w2',
+            name: '検索に無い店',
+            latitude: 35.0015,
+            longitude: 139.0,
+            createdAt: DateTime(2026),
+          ),
+          Wish(
+            id: 'far',
+            name: '遠い店',
+            latitude: 35.1,
+            longitude: 139.0,
+            createdAt: DateTime(2026),
+          ),
+        ],
+      );
+
+      expect(candidates.map((c) => c.name), ['検索に無い店', '願の店', '近い店']);
+      expect(candidates.map((c) => c.wishId), ['w2', 'w1', null]);
+    });
+
     test('同じ店が検索結果と記録済みの両方にあるときは記録済みの方を残す', () {
       final candidates = rankShopCandidates(
         here: _here,

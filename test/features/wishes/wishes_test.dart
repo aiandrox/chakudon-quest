@@ -15,6 +15,7 @@ Wish _wish({
   double? latitude,
   double? longitude,
   required DateTime createdAt,
+  String? fulfilledVisitId,
 }) => Wish(
   id: id,
   shopId: shopId,
@@ -23,6 +24,7 @@ Wish _wish({
   latitude: latitude,
   longitude: longitude,
   createdAt: createdAt,
+  fulfilledVisitId: fulfilledVisitId,
 );
 
 void main() {
@@ -81,38 +83,35 @@ void main() {
   });
 
   group('scoreVisits の願成就', () {
-    test('願を掛けたあと、その店で最初に食べた1杯で叶う', () {
-      final wish = _wish(shopId: 'shop', createdAt: DateTime(2026, 9, 1));
+    test('願と結び付いた1杯だけに、叶った願を添える', () {
+      final first = buildEntry(shop: shop, eatenAt: DateTime(2026, 10, 3));
+      final second = buildEntry(shop: shop, eatenAt: DateTime(2026, 10, 20));
       final scored = scoreVisits(
-        [
-          buildEntry(shop: shop, eatenAt: DateTime(2026, 8, 1)),
-          buildEntry(
-            shop: shop,
-            result: VisitResult.retreated,
-            eatenAt: DateTime(2026, 9, 10),
+        [first, second],
+        wishes: [
+          _wish(
+            createdAt: DateTime(2026, 9, 1),
+            fulfilledVisitId: first.visit.id,
           ),
-          buildEntry(shop: shop, eatenAt: DateTime(2026, 10, 3)),
-          buildEntry(shop: shop, eatenAt: DateTime(2026, 10, 20)),
+          _wish(id: 'pending', createdAt: DateTime(2026, 9, 2)),
         ],
-        wishes: [wish],
       );
 
-      expect(scored.map((e) => e.fulfilledWish?.id), [
-        null,
-        null,
-        'wish',
-        null,
-      ]);
-      expect(daysToFulfill(wish, scored[2].visit.eatenAt), 32);
+      expect(scored.map((e) => e.fulfilledWish?.id), ['wish', null]);
+      expect(
+        daysToFulfill(scored.first.fulfilledWish!, first.visit.eatenAt),
+        32,
+      );
     });
 
-    test('ほかの店の記録では叶わない', () {
-      final scored = scoreVisits(
-        [buildEntry(shop: buildShop(id: 'other'))],
-        wishes: [_wish(shopId: 'shop', createdAt: DateTime(2026))],
+    test('願を掛ける前の写真で記録しても、日数は0にする', () {
+      expect(
+        daysToFulfill(
+          _wish(createdAt: DateTime(2026, 10, 3)),
+          DateTime(2026, 9, 1),
+        ),
+        0,
       );
-
-      expect(scored.single.fulfilledWish, isNull);
     });
   });
 
@@ -121,9 +120,15 @@ void main() {
         evaluateQuests(scored).firstWhere((p) => p.quest.id == id);
 
     test('願成就の数で「願掛け」の段が上がる', () {
+      final entry = buildEntry(shop: shop, eatenAt: DateTime(2026, 10, 3));
       final scored = scoreVisits(
-        [buildEntry(shop: shop, eatenAt: DateTime(2026, 10, 3))],
-        wishes: [_wish(shopId: 'shop', createdAt: DateTime(2026, 9, 1))],
+        [entry],
+        wishes: [
+          _wish(
+            createdAt: DateTime(2026, 9, 1),
+            fulfilledVisitId: entry.visit.id,
+          ),
+        ],
       );
 
       expect(progress(scored, 'wishes').level, 1);
@@ -131,10 +136,16 @@ void main() {
 
     test('「百日越しの願」は99日では届かず、100日で届く', () {
       final created = DateTime(2026, 1, 1, 20);
-      List<ScoredVisit> after(int days) => scoreVisits(
-        [buildEntry(shop: shop, eatenAt: DateTime(2026, 1, 1 + days, 12))],
-        wishes: [_wish(shopId: 'shop', createdAt: created)],
-      );
+      List<ScoredVisit> after(int days) {
+        final entry = buildEntry(
+          shop: shop,
+          eatenAt: DateTime(2026, 1, 1 + days, 12),
+        );
+        return scoreVisits(
+          [entry],
+          wishes: [_wish(createdAt: created, fulfilledVisitId: entry.visit.id)],
+        );
+      }
 
       expect(progress(after(99), 'long_wish').isAchieved, isFalse);
       expect(progress(after(100), 'long_wish').isAchieved, isTrue);

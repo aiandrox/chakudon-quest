@@ -26,6 +26,7 @@ class ShopInput {
     this.latitude,
     this.longitude,
     this.dataSource,
+    this.wishId,
   });
 
   final String? shopId;
@@ -34,6 +35,9 @@ class ShopInput {
   final double? latitude;
   final double? longitude;
   final ShopSource? dataSource;
+
+  /// 願掛け帳の店を選んだときの願。食べた記録を保存すると、この願が叶う。
+  final String? wishId;
 }
 
 class RecordRepository {
@@ -109,6 +113,7 @@ class RecordRepository {
                 trigger: Value(wish.trigger),
                 note: Value(wish.note),
                 createdAt: wish.createdAt,
+                fulfilledVisitId: Value(wish.fulfilledVisitId),
               ),
             );
       }
@@ -254,10 +259,47 @@ class RecordRepository {
         createdAt: now,
       );
       await _insertVisit(visit);
+      await _fulfillWish(shop, shopId: shopId, visitId: visit.id);
       if (endsCheckin ?? checkedInAt != null) await cancelCheckin();
       return visit;
     });
   }
+
+  /// 選んだ願か、IDで同じ店とわかるまだの願を、この1杯で叶える。名前が似ているだけでは叶えない
+  /// （別の支店で叶ってしまわないよう。そのときは店のページから手で叶える）。
+  Future<void> _fulfillWish(
+    ShopInput shop, {
+    required String shopId,
+    required String visitId,
+  }) async {
+    final osmId = shop.osmId;
+    final wish =
+        await (_db.select(_db.wishes)
+              ..where(
+                (w) =>
+                    w.fulfilledVisitId.isNull() &
+                    (shop.wishId != null
+                        ? w.id.equals(shop.wishId!)
+                        : w.shopId.equals(shopId) |
+                              (osmId == null
+                                  ? const Constant(false)
+                                  : w.osmId.equals(osmId))),
+              )
+              ..orderBy([(w) => OrderingTerm.asc(w.createdAt)])
+              ..limit(1))
+            .getSingleOrNull();
+    if (wish == null) return;
+    await fulfillWish(wish.id, visitId: visitId, shopId: shopId);
+  }
+
+  /// 願を、この1杯で叶えたことにする。
+  Future<void> fulfillWish(
+    String wishId, {
+    required String visitId,
+    required String shopId,
+  }) => (_db.update(_db.wishes)..where((w) => w.id.equals(wishId))).write(
+    WishesCompanion(fulfilledVisitId: Value(visitId), shopId: Value(shopId)),
+  );
 
   Future<void> setShopMemo(String shopId, String memo) =>
       (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
@@ -344,6 +386,10 @@ class RecordRepository {
       )..where((v) => v.id.equals(visitId))).getSingleOrNull();
       if (visit == null) return null;
       await (_db.delete(_db.visits)..where((v) => v.id.equals(visitId))).go();
+      // 叶えた1杯を消したら、願はまだの願に戻す。
+      await (_db.update(_db.wishes)
+            ..where((w) => w.fulfilledVisitId.equals(visitId)))
+          .write(const WishesCompanion(fulfilledVisitId: Value(null)));
       await _deleteShopIfUnused(visit.shopId);
       return visit.photoPath;
     });

@@ -1162,6 +1162,24 @@ abstract class AppLocalizations {
   /// **'願成就'**
   String get wishFulfilled;
 
+  /// No description provided for @wishFulfillPrompt.
+  ///
+  /// In ja, this message translates to:
+  /// **'{name} の願を、この1杯で叶えたことにしますか？'**
+  String wishFulfillPrompt(String name);
+
+  /// No description provided for @wishFulfillButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'叶えた'**
+  String get wishFulfillButton;
+
+  /// No description provided for @shopWished.
+  ///
+  /// In ja, this message translates to:
+  /// **'願掛け中'**
+  String get shopWished;
+
   /// No description provided for @wishFulfilledAfter.
   ///
   /// In ja, this message translates to:

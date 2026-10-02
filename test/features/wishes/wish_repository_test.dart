@@ -75,4 +75,61 @@ void main() {
 
     expect(data.wishes, isEmpty);
   });
+
+  group('記録で願を叶える', () {
+    Future<Visit> eat(ShopInput shop) => records.saveEatenVisit(
+      shop: shop,
+      eatenAt: DateTime(2026, 10, 3, 12),
+      now: DateTime(2026, 10, 3, 12, 5),
+    );
+
+    test('願の店を選んで保存すると、その1杯で叶う。消すとまだの願に戻る', () async {
+      final wish = await wishes.addWish(
+        shop: const ShopInput(name: 'はやし田', latitude: 35.0, longitude: 139.0),
+        now: DateTime(2026, 9, 1),
+      );
+      final visit = await eat(
+        ShopInput(
+          name: 'はやし田',
+          latitude: 35.0,
+          longitude: 139.0,
+          wishId: wish.id,
+        ),
+      );
+
+      var saved = (await wishes.watchWishes().first).single;
+      expect(saved.fulfilledVisitId, visit.id);
+      expect(saved.shopId, visit.shopId);
+      expect(await wishes.pendingWishes(), isEmpty);
+
+      await records.deleteVisit(visit.id);
+      saved = (await wishes.watchWishes().first).single;
+      expect(saved.fulfilledVisitId, isNull);
+    });
+
+    test('願を選ばなくても、同じOSMの店なら叶う', () async {
+      await wishes.addWish(
+        shop: const ShopInput(osmId: 'node/1', name: 'はやし田'),
+        now: DateTime(2026, 9, 1),
+      );
+      final visit = await eat(
+        const ShopInput(osmId: 'node/1', name: 'らぁ麺 はやし田'),
+      );
+
+      expect(
+        (await wishes.watchWishes().first).single.fulfilledVisitId,
+        visit.id,
+      );
+    });
+
+    test('名前が似ているだけでは叶わない', () async {
+      await wishes.addWish(
+        shop: const ShopInput(name: '一蘭'),
+        now: DateTime(2026, 9, 1),
+      );
+      await eat(const ShopInput(name: '一蘭 新宿店'));
+
+      expect(await wishes.pendingWishes(), hasLength(1));
+    });
+  });
 }

@@ -94,7 +94,7 @@ class Visit {
 }
 
 /// 願掛け帳（行きたい店）の1件。まだ行っていない店のこともあるため、店の情報をそのまま持つ。
-/// 叶ったかどうかは保存せず、書き留めたあとにその店で食べた記録から計算する。
+/// 記録のときに願の店を選ぶと、その1杯と結び付く（叶う）。
 class Wish {
   const Wish({
     required this.id,
@@ -107,6 +107,7 @@ class Wish {
     this.trigger = '',
     this.note = '',
     required this.createdAt,
+    this.fulfilledVisitId,
   });
 
   final String id;
@@ -125,6 +126,9 @@ class Wish {
   /// ひとこと（食べたいもの など）。
   final String note;
   final DateTime createdAt;
+
+  /// この願が叶った1杯。まだならnull。
+  final String? fulfilledVisitId;
 }
 
 /// 並んでいる最中の店。記録がまだ無い店のこともあるため、店の情報をそのまま持つ。

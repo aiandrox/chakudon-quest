@@ -96,6 +96,7 @@ class Wishes extends Table {
   TextColumn get trigger => text().withDefault(const Constant(''))();
   TextColumn get note => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
+  TextColumn get fulfilledVisitId => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};

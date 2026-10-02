@@ -39,8 +39,11 @@ GeoPoint? wishLocation(Wish wish) {
       : null;
 }
 
-/// 願を掛けてから、叶う（その店で食べる）までの日数。
-int daysToFulfill(Wish wish, DateTime eatenAt) =>
-    _dateOnly(eatenAt).difference(_dateOnly(wish.createdAt)).inDays;
+/// 願を掛けてから、叶う（その店で食べる）までの日数。願を掛ける前の写真で記録したときは0。
+int daysToFulfill(Wish wish, DateTime eatenAt) {
+  final days = _dateOnly(eatenAt).difference(_dateOnly(wish.createdAt)).inDays;
+  return days < 0 ? 0 : days;
+}
 
-DateTime _dateOnly(DateTime at) => DateTime(at.year, at.month, at.day);
+// 夏時間のある地域でも1日を24時間として数えるため、UTCの日付で比べる。
+DateTime _dateOnly(DateTime at) => DateTime.utc(at.year, at.month, at.day);

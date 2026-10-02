@@ -24,6 +24,7 @@ void main() {
         name: 'はやし田',
         trigger: '同僚に聞いた',
         createdAt: DateTime(2026, 9, 1),
+        fulfilledVisitId: eaten.visit.id,
       ),
       Wish(
         id: 'b',

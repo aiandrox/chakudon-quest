@@ -25,6 +25,9 @@ class WishRepository {
     _db.wishes,
   )..orderBy([(w) => OrderingTerm.desc(w.createdAt)])).watch();
 
+  Future<List<Wish>> pendingWishes() =>
+      (_db.select(_db.wishes)..where((w) => w.fulfilledVisitId.isNull())).get();
+
   Future<Wish> addWish({
     required ShopInput shop,
     String trigger = '',

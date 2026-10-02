@@ -14,6 +14,7 @@ class ShopCandidate {
     this.hoursConditions,
     this.strategyMemo = '',
     this.dataSource,
+    this.wishId,
   });
 
   factory ShopCandidate.fromShop(Shop shop, {double? distanceMeters}) {
@@ -47,6 +48,21 @@ class ShopCandidate {
   final String strategyMemo;
 
   final ShopSource? dataSource;
+
+  /// 願掛け帳に書き留めた店なら、その願。
+  final String? wishId;
+
+  ShopCandidate withWish(String wishId) => ShopCandidate(
+    shopId: shopId,
+    osmId: osmId,
+    name: name,
+    location: location,
+    distanceMeters: distanceMeters,
+    hoursConditions: hoursConditions,
+    strategyMemo: strategyMemo,
+    dataSource: dataSource,
+    wishId: wishId,
+  );
 }
 
 /// 2つの候補が同じ店を指すか。IDで比べられないときは、名前と近さで判断する。
@@ -67,10 +83,12 @@ bool isSameShop(ShopCandidate a, ShopCandidate b) {
 
 /// 検索結果と記録済みの店を合わせ、半径内のものを近い順に最大[limit]件返す。
 /// 同じ店が両方にあるときは記録済みの方を残す。
+/// まだの願（[wishes]）の店は「願」を付けて先頭に出す。候補に無ければ願の店そのものを候補にする。
 List<ShopCandidate> rankShopCandidates({
   required GeoPoint here,
   required List<FoundShop> found,
   required List<Shop> knownShops,
+  List<Wish> wishes = const [],
   int radiusMeters = shopSearchRadiusMeters,
   int limit = maxShopCandidates,
 }) {
@@ -100,6 +118,49 @@ List<ShopCandidate> rankShopCandidates({
     if (known.any((k) => isSameShop(k, candidate))) continue;
     candidates.add(candidate);
   }
-  candidates.sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
-  return candidates.take(limit).toList();
+  final wished = <ShopCandidate>[];
+  for (final wish in wishes) {
+    final latitude = wish.latitude;
+    final longitude = wish.longitude;
+    final index = candidates.indexWhere(
+      (c) =>
+          (wish.shopId != null && c.shopId == wish.shopId) ||
+          isSameShop(c, _wishCandidate(wish)),
+    );
+    if (index >= 0) {
+      wished.add(candidates.removeAt(index).withWish(wish.id));
+      continue;
+    }
+    if (latitude == null || longitude == null) continue;
+    final distance = distanceMeters(here, GeoPoint(latitude, longitude));
+    if (distance > radiusMeters) continue;
+    wished.add(
+      ShopCandidate(
+        shopId: wish.shopId,
+        osmId: wish.osmId,
+        name: wish.name,
+        location: GeoPoint(latitude, longitude),
+        distanceMeters: distance,
+        dataSource: wish.dataSource,
+        wishId: wish.id,
+      ),
+    );
+  }
+  int byDistance(ShopCandidate a, ShopCandidate b) =>
+      a.distanceMeters!.compareTo(b.distanceMeters!);
+  wished.sort(byDistance);
+  candidates.sort(byDistance);
+  return [...wished, ...candidates].take(limit).toList();
+}
+
+ShopCandidate _wishCandidate(Wish wish) {
+  final latitude = wish.latitude;
+  final longitude = wish.longitude;
+  return ShopCandidate(
+    osmId: wish.osmId,
+    name: wish.name,
+    location: latitude != null && longitude != null
+        ? GeoPoint(latitude, longitude)
+        : null,
+  );
 }

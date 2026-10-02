@@ -171,6 +171,7 @@ void main() {
           name: 'はやし田',
           trigger: '同僚に聞いた',
           createdAt: day(1),
+          fulfilledVisitId: entry.visit.id,
         ),
       ],
     );

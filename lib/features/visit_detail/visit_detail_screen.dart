@@ -124,12 +124,18 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
           hoursConditionLabel(l10n, condition),
     ];
 
+    final statuses = ref.watch(wishStatusesProvider);
+    final pendingWish = pendingWishFor(statuses, entry.shop);
+    final canFulfill =
+        visit.result == VisitResult.eaten &&
+        pendingWish != null &&
+        !statuses.any((s) => s.fulfilledBy?.visit.id == visit.id);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(entry.shop.name),
         actions: [
-          if (pendingWishFor(ref.watch(wishStatusesProvider), entry.shop) !=
-              null)
+          if (pendingWish != null)
             IconButton(
               tooltip: l10n.wishAlready,
               icon: const Icon(Icons.bookmark),
@@ -178,6 +184,26 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: _ShopPage(entry: entry, scored: scored),
           ),
+          if (canFulfill)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Card(
+                child: ListTile(
+                  leading: const Icon(Icons.bookmark),
+                  title: Text(l10n.wishFulfillPrompt(pendingWish.name)),
+                  trailing: TextButton(
+                    onPressed: () => ref
+                        .read(recordRepositoryProvider)
+                        .fulfillWish(
+                          pendingWish.id,
+                          visitId: visit.id,
+                          shopId: entry.shop.id,
+                        ),
+                    child: Text(l10n.wishFulfillButton),
+                  ),
+                ),
+              ),
+            ),
           if (shopStamps.length > 1)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),

@@ -29,7 +29,7 @@ final wishStatusesProvider = Provider<List<WishStatus>>((ref) {
   ];
 });
 
-/// まだ叶っていない願のうち、[shop]の店に掛けたもの。
+/// まだ叶っていない願のうち、[shop]の店に掛けたらしいもの（名前と近さで探すので、確かめてから使う）。
 Wish? pendingWishFor(List<WishStatus> statuses, Shop shop) => statuses
     .where((s) => !s.isFulfilled && wishMatchesShop(s.wish, shop))
     .map((s) => s.wish)
