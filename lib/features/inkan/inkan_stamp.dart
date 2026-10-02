@@ -69,7 +69,7 @@ class InkanStamp extends StatelessWidget {
         : inkanStyleName(l10n, visit.style);
     final small = TextStyle(
       fontFamily: Washi.brush,
-      fontSize: math.max(7, size * 0.11),
+      fontSize: math.max(8, size * 0.13),
       color: color,
       height: 1.1,
     );
@@ -77,7 +77,18 @@ class InkanStamp extends StatelessWidget {
     final content = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (top != null) _fit(size * 0.5, Text(top, style: small, maxLines: 1)),
+        if (top != null)
+          _fit(
+            size * 0.5,
+            Text(
+              top,
+              maxLines: 1,
+              // 格の1文字だけのときは大きく見せる。
+              style: top.length == 1
+                  ? small.copyWith(fontSize: size * 0.16)
+                  : small,
+            ),
+          ),
         // 円の真ん中がいちばん広いので、系統名はほかより幅を広くとる。
         _fit(
           size * 0.7,
@@ -86,14 +97,15 @@ class InkanStamp extends StatelessWidget {
             maxLines: 1,
             style: TextStyle(
               fontFamily: Washi.brush,
-              fontSize: size * 0.38,
+              fontSize: size * 0.34,
               color: color,
               height: 1.15,
             ),
           ),
         ),
+        // 丸い印は下ほど狭いので、日付の幅を角印より狭くする。
         _fit(
-          size * 0.5,
+          size * (shape == InkanShape.square ? 0.6 : 0.5),
           Text(date, style: small, maxLines: 2, textAlign: TextAlign.center),
         ),
       ],

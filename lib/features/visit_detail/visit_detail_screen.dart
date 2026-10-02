@@ -290,7 +290,7 @@ class _ShopPage extends StatelessWidget {
                     Positioned(
                       right: 4,
                       bottom: 0,
-                      child: InkanStamp(scored: scored, size: 108),
+                      child: InkanStamp(scored: scored, size: 120),
                     ),
                 ],
               ),
@@ -366,7 +366,7 @@ class _ShopStamps extends StatelessWidget {
                         padding: const EdgeInsets.all(6),
                         child: Column(
                           children: [
-                            InkanStamp(scored: stamp, size: 64),
+                            InkanStamp(scored: stamp, size: 72),
                             const SizedBox(height: 2),
                             Text(
                               formatDate(stamp.visit.eatenAt),
