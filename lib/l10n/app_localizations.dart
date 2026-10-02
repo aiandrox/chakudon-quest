@@ -1252,6 +1252,72 @@ abstract class AppLocalizations {
   /// **'共有できませんでした'**
   String get shareFailed;
 
+  /// No description provided for @journeyToggle.
+  ///
+  /// In ja, this message translates to:
+  /// **'旅路'**
+  String get journeyToggle;
+
+  /// No description provided for @journeyAllYears.
+  ///
+  /// In ja, this message translates to:
+  /// **'すべて'**
+  String get journeyAllYears;
+
+  /// No description provided for @journeyYear.
+  ///
+  /// In ja, this message translates to:
+  /// **'{year}年'**
+  String journeyYear(int year);
+
+  /// No description provided for @journeySummary.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shops}軒をめぐる麺の道 {km}km'**
+  String journeySummary(int shops, String km);
+
+  /// No description provided for @journeyEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'位置のわかる店で食べると、旅路が引かれます'**
+  String get journeyEmpty;
+
+  /// No description provided for @journeyReplay.
+  ///
+  /// In ja, this message translates to:
+  /// **'旅路を再生'**
+  String get journeyReplay;
+
+  /// No description provided for @journeyStop.
+  ///
+  /// In ja, this message translates to:
+  /// **'止める'**
+  String get journeyStop;
+
+  /// No description provided for @journeyExpeditions.
+  ///
+  /// In ja, this message translates to:
+  /// **'遠征'**
+  String get journeyExpeditions;
+
+  /// No description provided for @journeyExpeditionsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'遠征の記録'**
+  String get journeyExpeditionsTitle;
+
+  /// No description provided for @journeyExpeditionsNone.
+  ///
+  /// In ja, this message translates to:
+  /// **'いちばん通う店から20km以上離れた店で食べた日が、遠征として並びます'**
+  String get journeyExpeditionsNone;
+
+  /// No description provided for @journeyExpeditionName.
+  ///
+  /// In ja, this message translates to:
+  /// **'{month}月{day}日の遠征（{shop}）'**
+  String journeyExpeditionName(int month, int day, String shop);
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:

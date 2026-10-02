@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,11 +14,13 @@ import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
 import '../shop_search/nearby_shop_finder.dart';
 import '../shop_search/overpass.dart';
+import '../../theme/washi.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
 import '../wishes/wishes.dart';
+import 'journey.dart';
 import 'shop_pins.dart';
 
 /// 地図の画像は OpenStreetMap のタイルサーバーから取る。送るのは表示範囲だけ（issue #8）。
@@ -43,6 +47,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   GeoPoint? _here;
   List<FoundShop> _nearby = const [];
   bool _isSearching = false;
+  bool _showJourney = false;
+
+  /// 旅路を見せる年。nullならすべての年。
+  int? _journeyYear;
+
+  /// 旅路を再生しているときの、灯っている店の数。再生していなければnull。
+  int? _replayCount;
+  Timer? _replayTimer;
 
   @override
   void initState() {
@@ -52,6 +64,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
   @override
   void dispose() {
+    _replayTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -110,6 +123,97 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
   }
 
+  void _toggleJourney() {
+    _stopReplay();
+    setState(() => _showJourney = !_showJourney);
+  }
+
+  void _stopReplay() {
+    _replayTimer?.cancel();
+    _replayTimer = null;
+    _replayCount = null;
+  }
+
+  /// 1杯目から順に、店を1つずつ灯していく。
+  void _replay(List<JourneyStop> stops) {
+    _stopReplay();
+    if (stops.isEmpty) return;
+    _fitTo(stops);
+    setState(() => _replayCount = 1);
+    _replayTimer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
+      if (!mounted) return timer.cancel();
+      final next = (_replayCount ?? 0) + 1;
+      if (next > stops.length) {
+        timer.cancel();
+        setState(_stopReplay);
+        return;
+      }
+      setState(() => _replayCount = next);
+    });
+  }
+
+  void _fitTo(List<JourneyStop> stops) {
+    if (stops.isEmpty) return;
+    if (stops.length == 1) {
+      final only = stops.single.location;
+      _controller.move(LatLng(only.latitude, only.longitude), 15);
+      return;
+    }
+    _controller.fitCamera(
+      CameraFit.coordinates(
+        coordinates: [
+          for (final stop in stops)
+            LatLng(stop.location.latitude, stop.location.longitude),
+        ],
+        padding: const EdgeInsets.fromLTRB(48, 160, 48, 120),
+        maxZoom: 16,
+      ),
+    );
+  }
+
+  void _showExpeditions(List<Expedition> list) {
+    final l10n = AppLocalizations.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (context) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          children: [
+            Text(
+              l10n.journeyExpeditionsTitle,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            if (list.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(l10n.journeyExpeditionsNone),
+              ),
+            for (final expedition in list)
+              ListTile(
+                leading: const Icon(Icons.flag),
+                title: Text(
+                  l10n.journeyExpeditionName(
+                    expedition.day.month,
+                    expedition.day.day,
+                    expedition.stops.first.shop.name,
+                  ),
+                ),
+                subtitle: Text(
+                  expedition.stops.map((s) => s.shop.name).join('・'),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _fitTo(expedition.stops);
+                },
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showMessage(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -119,20 +223,51 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final pins = shopPins(ref.watch(scoredVisitsProvider));
+    final allPins = shopPins(ref.watch(scoredVisitsProvider));
     final pendingWishes = [
       for (final status in ref.watch(wishStatusesProvider))
         if (!status.isFulfilled &&
             wishLocation(status.wish) != null &&
             // 行ったことのある店に掛けた（再訪の）願は、その店のピンで見せる。
-            !pins.any((pin) => wishMatchesShop(status.wish, pin.shop)))
+            !allPins.any((pin) => wishMatchesShop(status.wish, pin.shop)))
           status.wish,
     ];
+    final scored = ref.watch(scoredVisitsProvider);
+    final allStops = journeyStops(scored);
+    final years = {for (final stop in allStops) stop.eatenAt.year}.toList()
+      ..sort((a, b) => b.compareTo(a));
+    final stops = _journeyYear == null
+        ? allStops
+        : [
+            for (final stop in allStops)
+              if (stop.eatenAt.year == _journeyYear) stop,
+          ];
+    final shownStops = _replayCount == null
+        ? stops
+        : stops.take(_replayCount!).toList();
+    // 再生中は、灯った店のピンだけを出す。
+    final pins = _replayCount == null
+        ? allPins
+        : [
+            for (final pin in allPins)
+              if (shownStops.any((stop) => stop.shop.id == pin.shop.id)) pin,
+          ];
     final tilesEnabled = ref.watch(mapTilesEnabledProvider);
     final here = _here;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.mapTitle)),
+      appBar: AppBar(
+        title: Text(l10n.mapTitle),
+        actions: [
+          IconButton(
+            tooltip: l10n.journeyToggle,
+            isSelected: _showJourney,
+            icon: const Icon(Icons.route_outlined),
+            selectedIcon: const Icon(Icons.route),
+            onPressed: _toggleJourney,
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           FlutterMap(
@@ -159,6 +294,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 TileLayer(
                   urlTemplate: _tileUrl,
                   userAgentPackageName: 'com.aiandrox.chakudon_quest',
+                ),
+              if (_showJourney && shownStops.length > 1)
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: [
+                        for (final stop in shownStops)
+                          LatLng(
+                            stop.location.latitude,
+                            stop.location.longitude,
+                          ),
+                      ],
+                      color: Washi.shu.withValues(alpha: 0.8),
+                      strokeWidth: 3,
+                    ),
+                  ],
                 ),
               MarkerLayer(
                 markers: [
@@ -226,7 +377,31 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ),
               ),
             ),
-          if (pins.isEmpty && _nearby.isEmpty && pendingWishes.isEmpty)
+          if (_showJourney)
+            Positioned(
+              left: 8,
+              right: 8,
+              top: 8,
+              child: _JourneyPanel(
+                years: years,
+                year: _journeyYear,
+                stops: stops,
+                isReplaying: _replayCount != null,
+                onYear: (year) => setState(() {
+                  _stopReplay();
+                  _journeyYear = year;
+                }),
+                onReplay: () => _replayCount == null
+                    ? _replay(stops)
+                    : setState(_stopReplay),
+                onExpeditions: () =>
+                    _showExpeditions(expeditions(scored, year: _journeyYear)),
+              ),
+            ),
+          if (!_showJourney &&
+              pins.isEmpty &&
+              _nearby.isEmpty &&
+              pendingWishes.isEmpty)
             Positioned(
               left: 16,
               right: 16,
@@ -495,6 +670,90 @@ class _WishPin extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _JourneyPanel extends StatelessWidget {
+  const _JourneyPanel({
+    required this.years,
+    required this.year,
+    required this.stops,
+    required this.isReplaying,
+    required this.onYear,
+    required this.onReplay,
+    required this.onExpeditions,
+  });
+
+  final List<int> years;
+  final int? year;
+  final List<JourneyStop> stops;
+  final bool isReplaying;
+  final ValueChanged<int?> onYear;
+  final VoidCallback onReplay;
+  final VoidCallback onExpeditions;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final shops = {for (final stop in stops) stop.shop.id}.length;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  ChoiceChip(
+                    label: Text(l10n.journeyAllYears),
+                    selected: year == null,
+                    onSelected: (_) => onYear(null),
+                  ),
+                  for (final y in years) ...[
+                    const SizedBox(width: 6),
+                    ChoiceChip(
+                      label: Text(l10n.journeyYear(y)),
+                      selected: year == y,
+                      onSelected: (_) => onYear(y),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              stops.isEmpty
+                  ? l10n.journeyEmpty
+                  : l10n.journeySummary(
+                      shops,
+                      journeyKilometers(stops).toStringAsFixed(1),
+                    ),
+              style: textTheme.bodyMedium,
+            ),
+            Row(
+              children: [
+                TextButton.icon(
+                  onPressed: stops.isEmpty ? null : onReplay,
+                  icon: Icon(isReplaying ? Icons.stop : Icons.play_arrow),
+                  label: Text(
+                    isReplaying ? l10n.journeyStop : l10n.journeyReplay,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: stops.isEmpty ? null : onExpeditions,
+                  icon: const Icon(Icons.flag_outlined),
+                  label: Text(l10n.journeyExpeditions),
+                ),
+              ],
             ),
           ],
         ),

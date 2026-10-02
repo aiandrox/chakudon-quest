@@ -666,6 +666,45 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shareFailed => '共有できませんでした';
 
   @override
+  String get journeyToggle => '旅路';
+
+  @override
+  String get journeyAllYears => 'すべて';
+
+  @override
+  String journeyYear(int year) {
+    return '$year年';
+  }
+
+  @override
+  String journeySummary(int shops, String km) {
+    return '$shops軒をめぐる麺の道 ${km}km';
+  }
+
+  @override
+  String get journeyEmpty => '位置のわかる店で食べると、旅路が引かれます';
+
+  @override
+  String get journeyReplay => '旅路を再生';
+
+  @override
+  String get journeyStop => '止める';
+
+  @override
+  String get journeyExpeditions => '遠征';
+
+  @override
+  String get journeyExpeditionsTitle => '遠征の記録';
+
+  @override
+  String get journeyExpeditionsNone => 'いちばん通う店から20km以上離れた店で食べた日が、遠征として並びます';
+
+  @override
+  String journeyExpeditionName(int month, int day, String shop) {
+    return '$month月$day日の遠征（$shop）';
+  }
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override
