@@ -423,21 +423,6 @@
       "day": {"type": "String"}
     }
   },
-  "inchoTitle": "印帳",
-  "inchoCount": "集めた印 {stamps}　道場 {shops}",
-  "@inchoCount": {
-    "placeholders": {
-      "stamps": {"type": "int"},
-      "shops": {"type": "int"}
-    }
-  },
-  "inchoMetaWait": "待 {minutes}分",
-  "@inchoMetaWait": {
-    "placeholders": {
-      "minutes": {"type": "int"}
-    }
-  },
-  "inchoMetaUnrated": "★ まだ",
   "shopStamps": "この道場の印",
   "resultStamped": "印をいただきました",
   "recordPhotoDate": "食べた日時: {date}（写真の撮影日時）",
