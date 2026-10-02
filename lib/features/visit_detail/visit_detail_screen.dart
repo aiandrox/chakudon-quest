@@ -25,6 +25,7 @@ import '../wishes/wish_providers.dart';
 import '../wishes/wishes.dart';
 import '../journal/journal.dart';
 import '../journal/journal_view.dart';
+import '../share/share_screen.dart';
 import 'visit_edit_screen.dart';
 
 /// 1つの店のページ。開いた1杯を大きく見せ、この店で集めた印をタップすると切り替わる。
@@ -164,6 +165,15 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                 ),
               ),
             ),
+          IconButton(
+            tooltip: l10n.shareTitle,
+            icon: const Icon(Icons.ios_share),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => ShareScreen(visitId: visit.id),
+              ),
+            ),
+          ),
           IconButton(
             tooltip: l10n.edit,
             icon: const Icon(Icons.edit),

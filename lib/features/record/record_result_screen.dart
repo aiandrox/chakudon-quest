@@ -15,6 +15,7 @@ import '../scoring/rank_labels.dart';
 import '../scoring/rank_progress.dart';
 import '../records/models.dart';
 import '../scoring/record_outcome.dart';
+import '../share/share_screen.dart';
 import '../wishes/wish_repository.dart';
 import '../wishes/wishes.dart';
 import '../inkan/inkan_stamp.dart';
@@ -173,6 +174,16 @@ class _ResultBody extends StatelessWidget {
           const SizedBox(height: 12),
           _QuestAchievedBanner(levelUp: levelUp),
         ],
+        const SizedBox(height: 20),
+        OutlinedButton.icon(
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => ShareScreen(visitId: scored.visit.id),
+            ),
+          ),
+          icon: const Icon(Icons.ios_share),
+          label: Text(l10n.shareTitle),
+        ),
       ],
     );
   }

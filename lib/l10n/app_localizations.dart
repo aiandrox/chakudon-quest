@@ -1210,6 +1210,48 @@ abstract class AppLocalizations {
   /// **'道中記'**
   String get journalTitle;
 
+  /// No description provided for @shareTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'この一杯を共有'**
+  String get shareTitle;
+
+  /// No description provided for @shareIncludePhoto.
+  ///
+  /// In ja, this message translates to:
+  /// **'写真を入れる'**
+  String get shareIncludePhoto;
+
+  /// No description provided for @shareIncludeJournal.
+  ///
+  /// In ja, this message translates to:
+  /// **'道中記を入れる'**
+  String get shareIncludeJournal;
+
+  /// No description provided for @shareIncludePoints.
+  ///
+  /// In ja, this message translates to:
+  /// **'修行点を入れる'**
+  String get shareIncludePoints;
+
+  /// No description provided for @shareNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'店の場所（地図）は入りません。共有を押したときだけ、選んだ相手やアプリに送られます'**
+  String get shareNote;
+
+  /// No description provided for @shareButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'共有する'**
+  String get shareButton;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'共有できませんでした'**
+  String get shareFailed;
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:
