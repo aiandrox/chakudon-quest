@@ -1339,7 +1339,7 @@ abstract class AppLocalizations {
   /// No description provided for @memoryDismiss.
   ///
   /// In ja, this message translates to:
-  /// **'今日は閉じる'**
+  /// **'閉じる'**
   String get memoryDismiss;
 
   /// No description provided for @backupTitle.

@@ -11,7 +11,7 @@ import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
 import 'memory.dart';
 
-/// 一覧の上に、何年か前の今日の1杯をそっと出す。×で今日は閉じる。
+/// 一覧の上に、何年か前の今日の1杯をそっと出す。×で閉じる（アプリを開き直すとまた出る）。
 class MemoryCard extends ConsumerStatefulWidget {
   const MemoryCard({super.key});
 

@@ -17,12 +17,13 @@ class DayMemory {
 }
 
 /// [today]と同じ月日に、前の年に食べた1杯。いちばん近い年のものを返す。無ければnull。
+/// うるう年でない年の2月28日には、2月29日の1杯も思い出す。
 DayMemory? memoryOfTheDay(List<ScoredVisit> scored, DateTime today) {
   ScoredVisit? best;
   for (final entry in scored) {
     final at = entry.visit.eatenAt;
     if (entry.visit.result != VisitResult.eaten) continue;
-    if (at.month != today.month || at.day != today.day) continue;
+    if (!_sameDay(at, today)) continue;
     if (at.year >= today.year) continue;
     if (best == null || at.year > best.visit.eatenAt.year) best = entry;
   }
@@ -39,4 +40,14 @@ DayMemory? memoryOfTheDay(List<ScoredVisit> scored, DateTime today) {
           e.visit.eatenAt.isAfter(since),
     ),
   );
+}
+
+bool _sameDay(DateTime at, DateTime today) {
+  if (at.month == today.month && at.day == today.day) return true;
+  final isLeapYear = DateTime(today.year, 2, 29).month == 2;
+  return !isLeapYear &&
+      today.month == 2 &&
+      today.day == 28 &&
+      at.month == 2 &&
+      at.day == 29;
 }

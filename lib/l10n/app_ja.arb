@@ -363,7 +363,7 @@
   "memoryLine": "{shop}で着丼していました",
   "@memoryLine": {"placeholders": {"shop": {"type": "String"}}},
   "memoryNotSince": "あれから一度も行っていません。久しぶりにどうですか",
-  "memoryDismiss": "今日は閉じる",
+  "memoryDismiss": "閉じる",
   "backupTitle": "バックアップ",
   "creditsTitle": "出典・ライセンス",
   "creditsServicesHeading": "地図と店の情報",

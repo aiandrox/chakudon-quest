@@ -724,7 +724,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get memoryNotSince => 'あれから一度も行っていません。久しぶりにどうですか';
 
   @override
-  String get memoryDismiss => '今日は閉じる';
+  String get memoryDismiss => '閉じる';
 
   @override
   String get backupTitle => 'バックアップ';

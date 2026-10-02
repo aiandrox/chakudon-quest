@@ -62,6 +62,22 @@ void main() {
     );
   });
 
+  test('うるう年でない年の2月28日には、2月29日の1杯を思い出す', () {
+    final memory = memoryOfTheDay(
+      scoreVisits([buildEntry(shop: a, eatenAt: DateTime(2024, 2, 29, 12))]),
+      DateTime(2025, 2, 28, 9),
+    );
+
+    expect(memory?.yearsAgo, 1);
+    expect(
+      memoryOfTheDay(
+        scoreVisits([buildEntry(shop: a, eatenAt: DateTime(2024, 2, 29, 12))]),
+        DateTime(2028, 2, 28, 9),
+      ),
+      isNull,
+    );
+  });
+
   testWidgets('一覧の上に一年前の今日の1杯を出し、×で閉じられる', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
