@@ -642,6 +642,9 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get journalTitle => '道中記';
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override
