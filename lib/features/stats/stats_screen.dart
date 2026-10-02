@@ -72,7 +72,6 @@ class StatsScreen extends ConsumerWidget {
                   ),
                 const SizedBox(height: 24),
                 SectionTitle(l10n.statsShopRanks),
-                Text(l10n.statsShopRanksNote, style: textTheme.bodySmall),
                 for (final ranked in rankedShops(scored))
                   ListTile(
                     contentPadding: EdgeInsets.zero,

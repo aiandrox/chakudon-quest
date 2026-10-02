@@ -79,18 +79,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get ratingSection => '評価';
 
   @override
-  String get ratingOptional => '評価（食べ終わってから、あとで付けてもOK）';
-
-  @override
   String get ratingUnrated => '未評価';
 
   @override
   String ratingPrompt(String shop) {
     return '$shop はどうでしたか？';
   }
-
-  @override
-  String get ratingTapToRate => '★をタップして評価できます';
 
   @override
   String ratingStar(int stars) {
@@ -135,9 +129,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get hoursSection => '攻略しにくさ（当てはまるものすべて）';
-
-  @override
-  String get hoursNote => '当てはまるものが多いほど、修行点の倍率が上がります（最大×2.5）';
 
   @override
   String get hoursLunchOnly => '昼のみ';
@@ -418,13 +409,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get questStanding => '型';
 
   @override
-  String get questStandingNote => '回数を重ねるほど段が上がります';
-
-  @override
   String get questSpot => '奥義';
-
-  @override
-  String get questSpotNote => '一度会得すれば終わりです';
 
   @override
   String questLevelTotal(int total) {
@@ -823,10 +808,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get statsShopRanks => '店ランク';
 
   @override
-  String get statsShopRanksNote =>
-      'その店で1杯に得た最高の修行点で決まります（極 60以上 / 特 40以上 / 上 25以上 / 並）';
-
-  @override
   String get navMap => '地図';
 
   @override
@@ -956,9 +937,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get waitMinutesLabel => '待ち時間';
-
-  @override
-  String get waitMinutesHint => '並んだ時間をあとから入れられます。並ばなかったときは空のまま';
 
   @override
   String get waitMinutesUnit => '分';

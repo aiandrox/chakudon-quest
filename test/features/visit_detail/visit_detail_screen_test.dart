@@ -113,8 +113,6 @@ void main() {
       ),
     ], 'v');
 
-    expect(find.text(ja.ratingTapToRate), findsOneWidget);
-
     await tester.tap(find.byTooltip(ja.ratingStar(4)));
     await tester.pump();
 
