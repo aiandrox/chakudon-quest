@@ -50,18 +50,52 @@ void main() {
 
   test('いちばん通う店から20km以上離れた店で食べた日を、遠征としてまとめる', () {
     final list = expeditions(
-      journeyStops(
-        scored([
-          buildEntry(shop: home, eatenAt: day(1, 1)),
-          buildEntry(shop: home, eatenAt: day(1, 8)),
-          buildEntry(shop: far, eatenAt: day(2, 1)),
-          buildEntry(shop: near, eatenAt: day(2, 2)),
-        ]),
-      ),
+      scored([
+        buildEntry(shop: home, eatenAt: day(1, 1)),
+        buildEntry(shop: far, eatenAt: day(2, 1)),
+        buildEntry(shop: near, eatenAt: day(2, 2)),
+      ]),
     );
 
     expect(list.single.day, DateTime(2026, 2, 1));
     expect(list.single.stops.single.shop.id, 'far');
+  });
+
+  test('いつもの場所は続けて通った回数も数え、同じ遠くの店へ別の日に行けば別の遠征にする', () {
+    final farB = buildShop(id: 'farB', latitude: 35.31, longitude: 139.0);
+    final list = expeditions(
+      scored([
+        for (var d = 1; d <= 5; d++) buildEntry(shop: home, eatenAt: day(1, d)),
+        buildEntry(shop: far, eatenAt: day(3, 1)),
+        buildEntry(shop: farB, eatenAt: day(3, 1)),
+        buildEntry(shop: far, eatenAt: day(3, 2)),
+        buildEntry(shop: far, eatenAt: day(4, 10)),
+      ]),
+    );
+
+    expect(list.map((e) => e.day), [
+      DateTime(2026, 4, 10),
+      DateTime(2026, 3, 2),
+      DateTime(2026, 3, 1),
+    ]);
+  });
+
+  test('年で絞っても、いつもの場所はすべての年で決める', () {
+    final list = expeditions(
+      scored([
+        for (var d = 1; d <= 5; d++)
+          buildEntry(shop: home, eatenAt: DateTime(2025, 1, d, 12)),
+        buildEntry(shop: far, eatenAt: day(1, 1)),
+        buildEntry(shop: far, eatenAt: day(1, 2)),
+        buildEntry(shop: home, eatenAt: day(1, 3)),
+      ]),
+      year: 2026,
+    );
+
+    expect(list.map((e) => e.day), [
+      DateTime(2026, 1, 2),
+      DateTime(2026, 1, 1),
+    ]);
   });
 
   test('記録が無ければ遠征も無い', () {

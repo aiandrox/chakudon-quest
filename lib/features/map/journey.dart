@@ -58,22 +58,35 @@ class Expedition {
   final List<JourneyStop> stops;
 }
 
-/// いつもの場所（いちばん多く食べた店）から [expeditionKilometers] 以上離れた店で食べた日を、日ごとにまとめる。
-/// 家の位置は持たないので、いちばん通っている店を「いつもの場所」とみなす。
-List<Expedition> expeditions(List<JourneyStop> stops) {
-  if (stops.isEmpty) return const [];
+/// いつもの場所（いちばん多く食べた店。すべての年で数える）から [expeditionKilometers] 以上離れた店で
+/// 食べた日を、日ごとにまとめる（新しい順）。家の位置は持たないので、いちばん通っている店を「いつもの場所」とみなす。
+/// [year]を渡すと、その年の遠征だけを返す。
+List<Expedition> expeditions(List<ScoredVisit> scored, {int? year}) {
+  final eaten = [
+    for (final entry in scored)
+      if (entry.visit.result == VisitResult.eaten &&
+          entry.shop.latitude != null &&
+          entry.shop.longitude != null)
+        JourneyStop(
+          shop: entry.shop,
+          location: GeoPoint(entry.shop.latitude!, entry.shop.longitude!),
+          eatenAt: entry.visit.eatenAt,
+        ),
+  ];
+  if (eaten.isEmpty) return const [];
   final counts = <String, int>{};
-  for (final stop in stops) {
+  for (final stop in eaten) {
     counts.update(stop.shop.id, (n) => n + 1, ifAbsent: () => 1);
   }
   final homeId = counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
-  final home = stops.firstWhere((s) => s.shop.id == homeId).location;
+  final home = eaten.firstWhere((s) => s.shop.id == homeId).location;
   final byDay = <DateTime, List<JourneyStop>>{};
-  for (final stop in stops) {
+  for (final stop in eaten) {
+    final at = stop.eatenAt;
+    if (year != null && at.year != year) continue;
     if (distanceMeters(home, stop.location) < expeditionKilometers * 1000) {
       continue;
     }
-    final at = stop.eatenAt;
     (byDay[DateTime(at.year, at.month, at.day)] ??= []).add(stop);
   }
   return [

@@ -394,7 +394,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 onReplay: () => _replayCount == null
                     ? _replay(stops)
                     : setState(_stopReplay),
-                onExpeditions: () => _showExpeditions(expeditions(stops)),
+                onExpeditions: () =>
+                    _showExpeditions(expeditions(scored, year: _journeyYear)),
               ),
             ),
           if (!_showJourney &&
