@@ -58,22 +58,20 @@ void main() {
     expect(find.text(ja.appName), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsOneWidget);
     expect(find.byTooltip(ja.addRecord), findsOneWidget);
-    expect(find.text(ja.checkinButton), findsOneWidget);
   });
 
-  testWidgets('下のタブでクエスト・統計・地図に切り替えられる。地図は開いたときだけ作る', (tester) async {
+  testWidgets('下のタブで修行・地図に切り替えられる。地図は開いたときだけ作る', (tester) async {
     await pumpApp(tester, const []);
 
-    await tester.tap(find.text(ja.navQuests));
+    await tester.tap(find.text(ja.navShugyo));
     await tester.pumpAndSettle();
 
     expect(find.text(ja.questStanding), findsOneWidget);
     expect(find.text('着丼の道'), findsOneWidget);
-
-    await tester.tap(find.text(ja.navStats));
-    await tester.pumpAndSettle();
-
+    await tester.scrollUntilVisible(find.text(ja.statsEmpty), 300);
     expect(find.text(ja.statsEmpty), findsOneWidget);
+    await tester.scrollUntilVisible(find.text(ja.backupTitle), 300);
+    expect(find.text(ja.creditsTitle), findsOneWidget);
     expect(find.byType(MapScreen), findsNothing);
 
     await tester.tap(find.text(ja.navMap));
@@ -213,6 +211,8 @@ void main() {
         eatenAt(DateTime(2026, 9, 22, 12)),
         eatenAt(DateTime(2026, 9, 15, 12)),
       ], now: thursday);
+      await tester.tap(find.text(ja.navShugyo));
+      await tester.pumpAndSettle();
 
       expect(find.text(ja.streakWeeks(2)), findsOneWidget);
       expect(find.text(ja.streakAtRisk), findsOneWidget);
@@ -224,6 +224,8 @@ void main() {
         eatenAt(DateTime(2026, 9, 30, 12)),
         eatenAt(DateTime(2026, 9, 22, 12)),
       ], now: thursday);
+      await tester.tap(find.text(ja.navShugyo));
+      await tester.pumpAndSettle();
 
       expect(find.text(ja.streakWeeks(2)), findsOneWidget);
       expect(find.text(ja.streakAtRisk), findsNothing);
@@ -232,6 +234,8 @@ void main() {
 
     testWidgets('連続記録が無ければ表示せず、知らせる予約も消す', (tester) async {
       await pumpApp(tester, [eatenAt(DateTime(2026, 9, 1, 12))], now: thursday);
+      await tester.tap(find.text(ja.navShugyo));
+      await tester.pumpAndSettle();
 
       expect(find.textContaining('週連続'), findsNothing);
       expect(notifications.streakReminders, isEmpty);

@@ -204,8 +204,6 @@
   "resultTitle": "着丼！",
   "resultOk": "印帳にもどる",
   "navRecords": "印帳",
-  "navQuests": "型と奥義",
-  "questTitle": "型と奥義",
   "questStanding": "型",
   "questSpot": "奥義",
   "questLevelTotal": "段の合計 {total}",
@@ -259,8 +257,6 @@
     }
   },
   "questAchieved": "奥義会得！",
-  "navStats": "統計",
-  "statsTitle": "統計",
   "statsEmpty": "記録が増えると、ここに統計が出ます",
   "statsThisYear": "今年の杯数",
   "statsTotal": "累計の杯数",
@@ -521,5 +517,9 @@
   "inkanStyleJiro": "二郎",
   "inkanStyleTsukemen": "沾麺",
   "inkanStyleShirunashi": "汁無",
-  "inkanStyleOther": "麺"
+  "inkanStyleOther": "麺",
+  "navShugyo": "修行",
+  "shugyoTitle": "修行",
+  "settingsSection": "設定",
+  "checkinStart": "いま並んでいる"
 }

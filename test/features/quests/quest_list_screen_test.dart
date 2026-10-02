@@ -25,7 +25,9 @@ void main() {
           visitsProvider.overrideWithValue(AsyncData(visits)),
           wishesProvider.overrideWithValue(const AsyncData([])),
         ],
-        child: localizedApp(home: const QuestListScreen()),
+        child: localizedApp(
+          home: Scaffold(body: ListView(children: const [QuestSections()])),
+        ),
       ),
     );
     await tester.pumpAndSettle();

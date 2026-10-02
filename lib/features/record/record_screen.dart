@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
+import '../checkin/checkin_controller.dart';
 import '../checkin/checkin_rules.dart';
+import '../checkin/checkin_screen.dart';
 import '../records/clock.dart';
 import '../records/date_format.dart';
 import '../records/visit_details_form.dart';
@@ -67,6 +69,19 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     }
   }
 
+  /// まだ食べていないので記録はせず、並び始めて印帳に戻る。
+  Future<void> _startCheckin() async {
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = AppLocalizations.of(context);
+    final shopName = await navigator.push<String>(
+      MaterialPageRoute(builder: (_) => const CheckinScreen()),
+    );
+    if (shopName == null || !mounted) return;
+    navigator.pop();
+    messenger.showSnackBar(SnackBar(content: Text(l10n.checkinDone(shopName))));
+  }
+
   Future<void> _confirmDiscard() async {
     final l10n = AppLocalizations.of(context);
     final discard = await showDialog<bool>(
@@ -117,6 +132,18 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
+          if (ref.watch(activeCheckinProvider) case AsyncData(value: null))
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                ),
+                onPressed: _startCheckin,
+                icon: const Icon(Icons.groups),
+                label: Text(l10n.checkinStart),
+              ),
+            ),
           _PhotoSection(state: state),
           const SizedBox(height: 16),
           SectionTitle(l10n.shopSection),

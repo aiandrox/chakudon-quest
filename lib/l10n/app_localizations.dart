@@ -802,18 +802,6 @@ abstract class AppLocalizations {
   /// **'印帳'**
   String get navRecords;
 
-  /// No description provided for @navQuests.
-  ///
-  /// In ja, this message translates to:
-  /// **'型と奥義'**
-  String get navQuests;
-
-  /// No description provided for @questTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'型と奥義'**
-  String get questTitle;
-
   /// No description provided for @questStanding.
   ///
   /// In ja, this message translates to:
@@ -891,18 +879,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'奥義会得！'**
   String get questAchieved;
-
-  /// No description provided for @navStats.
-  ///
-  /// In ja, this message translates to:
-  /// **'統計'**
-  String get navStats;
-
-  /// No description provided for @statsTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'統計'**
-  String get statsTitle;
 
   /// No description provided for @statsEmpty.
   ///
@@ -1767,6 +1743,30 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'麺'**
   String get inkanStyleOther;
+
+  /// No description provided for @navShugyo.
+  ///
+  /// In ja, this message translates to:
+  /// **'修行'**
+  String get navShugyo;
+
+  /// No description provided for @shugyoTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'修行'**
+  String get shugyoTitle;
+
+  /// No description provided for @settingsSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'設定'**
+  String get settingsSection;
+
+  /// No description provided for @checkinStart.
+  ///
+  /// In ja, this message translates to:
+  /// **'いま並んでいる'**
+  String get checkinStart;
 }
 
 class _AppLocalizationsDelegate

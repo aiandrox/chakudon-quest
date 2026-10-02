@@ -13,8 +13,9 @@ import 'stats.dart';
 import '../records/models.dart';
 import '../../theme/washi.dart';
 
-class StatsScreen extends ConsumerWidget {
-  const StatsScreen({super.key});
+/// 杯数・自己ベスト・系統の割合などの数字。修行タブの中に並べる。
+class StatsSections extends ConsumerWidget {
+  const StatsSections({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,66 +26,62 @@ class StatsScreen extends ConsumerWidget {
     final total = totalBowls(scored);
     final thisYear = bowlsInYear(scored, ref.watch(currentTimeProvider).year);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.statsTitle)),
-      body: visits.hasError
-          ? Center(child: Text(l10n.homeLoadFailed))
-          : visits.isLoading && !visits.hasValue
-          ? const Center(child: CircularProgressIndicator())
-          : total == 0
-          ? Center(child: Text(l10n.statsEmpty))
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: _CountCard(
-                        label: l10n.statsThisYear,
-                        value: l10n.bowls(thisYear),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _CountCard(
-                        label: l10n.statsTotal,
-                        value: l10n.bowls(total),
-                      ),
-                    ),
-                  ],
-                ),
-                ..._bests(l10n, textTheme, personalBests(scored)),
-                const SizedBox(height: 24),
-                SectionTitle(l10n.statsStyles),
-                _StyleBreakdown(shares: styleShares(scored)),
-                const SizedBox(height: 24),
-                SectionTitle(l10n.statsFrequent),
-                for (final frequent in frequentShops(scored))
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    leading: const Icon(Icons.storefront),
-                    title: Text(frequent.shop.name),
-                    trailing: Text(
-                      l10n.bowls(frequent.count),
-                      style: textTheme.bodyLarge,
-                    ),
-                  ),
-                const SizedBox(height: 24),
-                SectionTitle(l10n.statsShopRanks),
-                for (final ranked in rankedShops(scored))
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    dense: true,
-                    leading: _RankBadge(rank: ranked.rank),
-                    title: Text(ranked.shop.name),
-                    trailing: Text(
-                      l10n.statsBestPoints(ranked.bestPoints),
-                      style: textTheme.bodyMedium,
-                    ),
-                  ),
-              ],
+    if (visits.hasError) return Text(l10n.homeLoadFailed);
+    if (visits.isLoading && !visits.hasValue) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (total == 0) return Text(l10n.statsEmpty);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _CountCard(
+                label: l10n.statsThisYear,
+                value: l10n.bowls(thisYear),
+              ),
             ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _CountCard(
+                label: l10n.statsTotal,
+                value: l10n.bowls(total),
+              ),
+            ),
+          ],
+        ),
+        ..._bests(l10n, textTheme, personalBests(scored)),
+        const SizedBox(height: 24),
+        SectionTitle(l10n.statsStyles),
+        _StyleBreakdown(shares: styleShares(scored)),
+        const SizedBox(height: 24),
+        SectionTitle(l10n.statsFrequent),
+        for (final frequent in frequentShops(scored))
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            leading: const Icon(Icons.storefront),
+            title: Text(frequent.shop.name),
+            trailing: Text(
+              l10n.bowls(frequent.count),
+              style: textTheme.bodyLarge,
+            ),
+          ),
+        const SizedBox(height: 24),
+        SectionTitle(l10n.statsShopRanks),
+        for (final ranked in rankedShops(scored))
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            leading: _RankBadge(rank: ranked.rank),
+            title: Text(ranked.shop.name),
+            trailing: Text(
+              l10n.statsBestPoints(ranked.bestPoints),
+              style: textTheme.bodyMedium,
+            ),
+          ),
+      ],
     );
   }
 }

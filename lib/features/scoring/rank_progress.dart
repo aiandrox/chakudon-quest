@@ -8,9 +8,16 @@ import 'ranks.dart';
 
 /// 段位と修行点、次の段位までの進み具合。
 class RankProgress extends StatelessWidget {
-  const RankProgress({super.key, required this.totalPoints});
+  const RankProgress({
+    super.key,
+    required this.totalPoints,
+    this.compact = false,
+  });
 
   final int totalPoints;
+
+  /// 印帳の上では、次の段位まであと何点かを出さない（修行タブで見る）。
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +51,18 @@ class RankProgress extends StatelessWidget {
                       style: textTheme.bodyMedium,
                     ),
                   ),
-                  Text(
-                    next == null
-                        ? l10n.maxRank
-                        : l10n.nextRank(
-                            adventurerRankLabel(l10n, next),
-                            next.requiredPoints - totalPoints,
-                          ),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+                  if (!compact)
+                    Text(
+                      next == null
+                          ? l10n.maxRank
+                          : l10n.nextRank(
+                              adventurerRankLabel(l10n, next),
+                              next.requiredPoints - totalPoints,
+                            ),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: 6),
