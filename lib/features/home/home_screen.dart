@@ -20,6 +20,7 @@ import '../inkan/inkan_stamp.dart';
 import '../../theme/washi.dart';
 import '../scoring/rank_progress.dart';
 import '../streak/streak.dart';
+import '../memory/memory_card.dart';
 import 'rating_prompt.dart';
 import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
@@ -207,6 +208,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const _StreakLine(),
           if (_ratingPromptTarget(visits.value) case final entry?)
             RatingPrompt(entry: entry),
+          const MemoryCard(),
           const SizedBox(height: 12),
         ],
       ),
