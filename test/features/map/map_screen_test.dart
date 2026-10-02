@@ -116,4 +116,33 @@ void main() {
 
     expect(find.text(ja.mapSearchFailed), findsOneWidget);
   });
+
+  testWidgets('旅路を開くと、年ごとの軒数と距離を出し、再生と遠征を選べる', (tester) async {
+    final a = buildShop(id: 'a', latitude: 35.0, longitude: 139.0);
+    final b = buildShop(id: 'b', latitude: 35.01, longitude: 139.0);
+    await pumpMap(tester, [
+      buildEntry(shop: a, eatenAt: DateTime(2025, 12, 1, 12)),
+      buildEntry(shop: b, eatenAt: DateTime(2026, 1, 1, 12)),
+      buildEntry(shop: a, eatenAt: DateTime(2026, 1, 2, 12)),
+    ]);
+
+    await tester.tap(find.byTooltip(ja.journeyToggle));
+    await tester.pumpAndSettle();
+    expect(find.text(ja.journeySummary(2, '2.2')), findsOneWidget);
+
+    await tester.tap(find.text(ja.journeyYear(2026)));
+    await tester.pumpAndSettle();
+    expect(find.text(ja.journeySummary(2, '1.1')), findsOneWidget);
+
+    await tester.tap(find.text(ja.journeyReplay));
+    await tester.pump();
+    expect(find.text(ja.journeyStop), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(find.text(ja.journeyReplay), findsOneWidget);
+
+    await tester.tap(find.text(ja.journeyExpeditions));
+    await tester.pumpAndSettle();
+    expect(find.text(ja.journeyExpeditionsNone), findsOneWidget);
+  });
 }
