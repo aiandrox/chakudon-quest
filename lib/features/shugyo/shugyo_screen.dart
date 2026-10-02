@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../l10n/app_localizations.dart';
+import '../../theme/washi.dart';
+import '../backup/backup_screen.dart';
+import '../credits/credits_screen.dart';
+import '../quests/quest_list_screen.dart';
+import '../scoring/rank_progress.dart';
+import '../scoring/scoring_providers.dart';
+import '../stats/stats_screen.dart';
+import '../streak/streak_line.dart';
+
+/// 修行の記録をひとまとめにした画面。段位 → 型と奥義 → 数字 → 設定の順に並べる。
+class ShugyoScreen extends ConsumerWidget {
+  const ShugyoScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    void open(Widget screen) =>
+        Navigator.of(context)
+            .push(MaterialPageRoute<void>(builder: (_) => screen));
+
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.shugyoTitle)),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+        children: [
+          RankProgress(totalPoints: ref.watch(totalPointsProvider)),
+          const StreakLine(),
+          const SizedBox(height: 24),
+          const QuestSections(),
+          const SizedBox(height: 32),
+          const StatsSections(),
+          const SizedBox(height: 32),
+          SectionTitle(l10n.settingsSection),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.backupTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => open(const BackupScreen()),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.creditsTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => open(const CreditsScreen()),
+          ),
+        ],
+      ),
+    );
+  }
+}

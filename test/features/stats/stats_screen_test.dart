@@ -26,7 +26,9 @@ void main() {
           wishesProvider.overrideWithValue(const AsyncData([])),
           clockProvider.overrideWithValue(() => DateTime(2026, 10, 1)),
         ],
-        child: localizedApp(home: const StatsScreen()),
+        child: localizedApp(
+          home: Scaffold(body: ListView(children: const [StatsSections()])),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -48,7 +50,9 @@ void main() {
           ),
           wishesProvider.overrideWithValue(const AsyncData([])),
         ],
-        child: localizedApp(home: const StatsScreen()),
+        child: localizedApp(
+          home: Scaffold(body: ListView(children: const [StatsSections()])),
+        ),
       ),
     );
     await tester.pump();

@@ -400,12 +400,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get navRecords => '印帳';
 
   @override
-  String get navQuests => '型と奥義';
-
-  @override
-  String get questTitle => '型と奥義';
-
-  @override
   String get questStanding => '型';
 
   @override
@@ -457,12 +451,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get questAchieved => '奥義会得！';
-
-  @override
-  String get navStats => '統計';
-
-  @override
-  String get statsTitle => '統計';
 
   @override
   String get statsEmpty => '記録が増えると、ここに統計が出ます';
@@ -973,4 +961,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get inkanStyleOther => '麺';
+
+  @override
+  String get navShugyo => '修行';
+
+  @override
+  String get shugyoTitle => '修行';
+
+  @override
+  String get settingsSection => '設定';
+
+  @override
+  String get checkinStart => 'いま並んでいる';
 }

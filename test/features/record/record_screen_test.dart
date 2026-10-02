@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/checkin/checkin_controller.dart';
 import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/record/record_result_screen.dart';
@@ -35,6 +36,7 @@ void main() {
           appDatabaseProvider.overrideWithValue(database),
           // driftの監視はテストの偽の時間の中で止まってしまうため、一覧は固定の値にする。
           visitsProvider.overrideWithValue(const AsyncData([])),
+          activeCheckinProvider.overrideWithValue(const AsyncData(null)),
           wishesProvider.overrideWithValue(const AsyncData([])),
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           locationServiceProvider.overrideWithValue(
@@ -117,6 +119,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(picker.cameraOpens, 1);
+  });
+
+  testWidgets('並んでいなければ「いま並んでいる」を出す', (tester) async {
+    await pumpScreen(tester);
+
+    expect(find.text(ja.checkinStart), findsOneWidget);
   });
 
   testWidgets('検索に失敗しても、店名を入力して保存できる', (tester) async {

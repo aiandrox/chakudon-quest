@@ -3,11 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../backup/backup_screen.dart';
-import '../credits/credits_screen.dart';
 import '../checkin/checkin_banner.dart';
 import '../checkin/checkin_controller.dart';
-import '../checkin/checkin_screen.dart';
 import '../notifications/notification_service.dart';
 import '../record/photo_picker.dart';
 import '../record/record_screen.dart';
@@ -102,17 +99,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Future<void> _openCheckin() async {
-    final shopName = await Navigator.of(context)
-        .push<String>(MaterialPageRoute(builder: (_) => const CheckinScreen()));
-    if (shopName == null || !mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context).checkinDone(shopName)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -123,26 +109,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       // 印帳のページ（和紙）が浮いて見えるよう、机の色にする。
       backgroundColor: Washi.desk,
-      appBar: AppBar(
-        backgroundColor: Washi.desk,
-        title: Text(l10n.appName),
-        actions: [
-          IconButton(
-            tooltip: l10n.creditsTitle,
-            icon: const Icon(Icons.info_outline),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const CreditsScreen()),
-            ),
-          ),
-          IconButton(
-            tooltip: l10n.backupTitle,
-            icon: const Icon(Icons.settings_backup_restore),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const BackupScreen()),
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(backgroundColor: Washi.desk, title: Text(l10n.appName)),
       body: Column(
         children: [
           // 並んでいる最中は、何より先に見えるよう上に固定する。
@@ -150,33 +117,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Expanded(child: _buildVisits(l10n, visits)),
         ],
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (checkin == null && !checkinState.isLoading) ...[
-            FloatingActionButton.extended(
-              heroTag: 'checkin',
-              backgroundColor: Washi.paper,
-              foregroundColor: Washi.ink,
-              shape: const RoundedRectangleBorder(
-                side: BorderSide(color: Washi.ink),
-                borderRadius: BorderRadius.all(Radius.circular(2)),
-              ),
-              onPressed: _openCheckin,
-              icon: const Icon(Icons.groups),
-              label: Text(l10n.checkinButton),
-            ),
-            const SizedBox(height: 16),
-          ],
-          FloatingActionButton.large(
-            heroTag: 'record',
-            shape: const CircleBorder(),
-            tooltip: l10n.addRecord,
-            onPressed: _openRecord,
-            child: const Icon(Icons.add),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton.large(
+        heroTag: 'record',
+        shape: const CircleBorder(),
+        tooltip: l10n.addRecord,
+        onPressed: _openRecord,
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -203,9 +149,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-            child: RankProgress(totalPoints: ref.watch(totalPointsProvider)),
+            child: RankProgress(
+              totalPoints: ref.watch(totalPointsProvider),
+              compact: true,
+            ),
           ),
-          const _StreakLine(),
           if (_ratingPromptTarget(visits.value) case final entry?)
             RatingPrompt(entry: entry),
           const MemoryCard(),
@@ -332,36 +280,6 @@ class _VisitPage extends ConsumerWidget {
             },
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _StreakLine extends ConsumerWidget {
-  const _StreakLine();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final streak = ref.watch(streakProvider);
-    if (streak.weeks == 0) return const SizedBox.shrink();
-    final colors = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-      child: Row(
-        children: [
-          Icon(Icons.local_fire_department, size: 16, color: colors.primary),
-          const SizedBox(width: 4),
-          Text(l10n.streakWeeks(streak.weeks), style: textTheme.bodySmall),
-          if (streak.isAtRisk) ...[
-            const SizedBox(width: 8),
-            Text(
-              l10n.streakAtRisk,
-              style: textTheme.bodySmall?.copyWith(color: colors.error),
-            ),
-          ],
-        ],
       ),
     );
   }

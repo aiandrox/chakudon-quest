@@ -8,8 +8,9 @@ import '../scoring/scoring_providers.dart';
 import 'quest_seal.dart';
 import 'quests.dart';
 
-class QuestListScreen extends ConsumerWidget {
-  const QuestListScreen({super.key});
+/// 型と奥義の一覧。修行タブの中に並べる。
+class QuestSections extends ConsumerWidget {
+  const QuestSections({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,29 +25,26 @@ class QuestListScreen extends ConsumerWidget {
         if (progress.quest.kind == QuestKind.spot) progress,
     ];
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.questTitle)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        children: [
-          _SectionHeader(
-            title: l10n.questStanding,
-            summary: l10n.questLevelTotal(
-              standing.fold(0, (sum, progress) => sum + progress.level),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SectionHeader(
+          title: l10n.questStanding,
+          summary: l10n.questLevelTotal(
+            standing.fold(0, (sum, progress) => sum + progress.level),
           ),
-          for (final progress in standing) _QuestCard(progress: progress),
-          const SizedBox(height: 24),
-          _SectionHeader(
-            title: l10n.questSpot,
-            summary: l10n.questSpotSummary(
-              spot.where((progress) => progress.isAchieved).length,
-              spot.length,
-            ),
+        ),
+        for (final progress in standing) _QuestCard(progress: progress),
+        const SizedBox(height: 24),
+        _SectionHeader(
+          title: l10n.questSpot,
+          summary: l10n.questSpotSummary(
+            spot.where((progress) => progress.isAchieved).length,
+            spot.length,
           ),
-          for (final progress in spot) _QuestCard(progress: progress),
-        ],
-      ),
+        ),
+        for (final progress in spot) _QuestCard(progress: progress),
+      ],
     );
   }
 }
