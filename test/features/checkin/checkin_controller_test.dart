@@ -10,7 +10,7 @@ import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
 import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
 
 import '../../support/fakes.dart';
@@ -19,23 +19,23 @@ const _here = GeoPoint(35.0, 139.0);
 
 void main() {
   late FakeLocationService location;
-  late FakeOverpassClient overpass;
+  late FakeShopFinder overpass;
   late ProviderContainer container;
   var now = DateTime(2026, 9, 30, 11);
 
   setUp(() {
     now = DateTime(2026, 9, 30, 11);
     location = FakeLocationService(position: _here);
-    overpass = FakeOverpassClient(
+    overpass = FakeShopFinder(
       shops: const [
         // 約56m
-        OverpassShop(
+        FoundShop(
           osmId: 'node/near',
           name: '近い店',
           location: GeoPoint(35.0005, 139.0),
         ),
         // 約222m
-        OverpassShop(
+        FoundShop(
           osmId: 'node/far',
           name: '遠い店',
           location: GeoPoint(35.002, 139.0),
@@ -46,7 +46,7 @@ void main() {
       overrides: [
         appDatabaseProvider.overrideWithValue(createTestDatabase()),
         locationServiceProvider.overrideWithValue(location),
-        overpassClientProvider.overrideWithValue(overpass),
+        nearbyShopFinderProvider.overrideWithValue(overpass),
         clockProvider.overrideWithValue(() => now),
       ],
     );

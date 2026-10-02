@@ -1,0 +1,460 @@
+{
+  "count": 23,
+  "results": [
+    {
+      "name": "鴨 to 葱",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.690832,
+      "lng": 139.70012,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org / Copyright 2024 Foursquare Labs, Inc. (https://opensource.foursquare.com/places-notice-txt/)"
+      ]
+    },
+    {
+      "name": "1/2PPUDO",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.6910807,
+      "lng": 139.7009705,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org / Copyright 2024 Foursquare Labs, Inc. (https://opensource.foursquare.com/places-notice-txt/)"
+      ]
+    },
+    {
+      "name": "喜多方ラーメン 蔵新宿南口店",
+      "name_kana": "",
+      "prefecture": "",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.68987901,
+      "lng": 139.70200662,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org"
+      ]
+    },
+    {
+      "name": "俺流塩らーめん新宿東南口店",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区新宿3-36-18 国土三協ビル　1F",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.689914378,
+      "lng": 139.702076439,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0",
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "阿夫利ラーメン",
+      "name_kana": "",
+      "prefecture": "",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.68903691705044,
+      "lng": 139.699059362259,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org"
+      ]
+    },
+    {
+      "name": "煮干しラーメン凪 別館",
+      "name_kana": "",
+      "prefecture": "",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.6919559,
+      "lng": 139.7008808,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org"
+      ]
+    },
+    {
+      "name": "しんちゃんラーメン",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区新宿4-2-7 Ciel新宿　1FD室",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.689186753,
+      "lng": 139.702723239,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0"
+      ],
+      "attributions": [
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "札幌ラーメン　北の大地",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区新宿3-28-2 フクモトビル1F",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.6907432,
+      "lng": 139.702989467,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0"
+      ],
+      "attributions": [
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "日高屋新宿中央店",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区新宿3-34-16 池田ビル　1F",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.690367756,
+      "lng": 139.703182847,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0",
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "新高揚ラーメン",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区西新宿1-16-13 桑原ビル　地下1F",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.689384244,
+      "lng": 139.698021311,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0"
+      ],
+      "attributions": [
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "とんこつラーメン町田家",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区新宿4-1-20",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.688582675,
+      "lng": 139.702911208,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0"
+      ],
+      "attributions": [
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "壱角家",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.690608797034976,
+      "lng": 139.70328680412726,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "Apache-2.0",
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "Overture Maps Foundation, overturemaps.org / Copyright 2024 Foursquare Labs, Inc. (https://opensource.foursquare.com/places-notice-txt/)"
+      ]
+    },
+    {
+      "name": "リンガーハット西新宿店",
+      "name_kana": "リンガーハットニシシンジュクテン",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区西新宿一丁目16番4号　国際通りビル1階",
+      "category": "unknown",
+      "business_type": "unknown",
+      "lat": 35.689014,
+      "lng": 139.698026,
+      "level": "",
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0",
+        "CDLA-Permissive-2.0",
+        "公共データ利用規約（第1.0版, PDL1.0）"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "厚生労働省 食品衛生申請等システム（オープンデータ）",
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "博多中洲屋台ラーメン 一竜西新宿店",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.68924823527481,
+      "lng": 139.6976858522662,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org / Copyright 2024 Foursquare Labs, Inc. (https://opensource.foursquare.com/places-notice-txt/)"
+      ]
+    },
+    {
+      "name": "♯新宿地下ラーメン",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区西新宿1 西口下街1　新宿駅西口自動車駐車場付帯地下店舗　小田急エース北館",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.690383,
+      "lng": 139.697501,
+      "level": 3,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0"
+      ],
+      "attributions": [
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "らぁ麺　はやし田",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区新宿3-31-5 新宿ペガサス館102",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.690633647,
+      "lng": 139.703692572,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0",
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "煮干しらーめん玉五郎新宿店",
+      "name_kana": "",
+      "prefecture": "",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.69074254,
+      "lng": 139.70374961,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org"
+      ]
+    },
+    {
+      "name": "横浜らーめん　山本家",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "新宿区",
+      "address": "東京都新宿区西新宿1-15-13 西新宿島田ビル　1F",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.689349858,
+      "lng": 139.697416225,
+      "level": 8,
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0",
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "東京都新宿区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "らーめん亭新宿店",
+      "name_kana": "",
+      "prefecture": "",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.6904985,
+      "lng": 139.69732944,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org"
+      ]
+    },
+    {
+      "name": "味噌らーめん 十味や",
+      "name_kana": "",
+      "prefecture": "",
+      "city": "新宿区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.68832904,
+      "lng": 139.69768894,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org"
+      ]
+    },
+    {
+      "name": "つけ麺屋　やすべえ",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "渋谷区",
+      "address": "代々木二丁目",
+      "category": "unknown",
+      "business_type": "unknown",
+      "lat": 35.68773334,
+      "lng": 139.6975209,
+      "level": "",
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0",
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "東京都渋谷区食品等営業許可・届出一覧"
+      ]
+    },
+    {
+      "name": "元祖台湾まぜそば 麺屋はなび",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "渋谷区",
+      "address": "",
+      "category": "restaurant",
+      "business_type": "restaurant",
+      "lat": 35.687572,
+      "lng": 139.69757,
+      "level": "",
+      "source": "overture",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org / Copyright 2024 Foursquare Labs, Inc. (https://opensource.foursquare.com/places-notice-txt/)"
+      ]
+    },
+    {
+      "name": "つけ麺　五ノ神製作所",
+      "name_kana": "",
+      "prefecture": "東京都",
+      "city": "渋谷区",
+      "address": "千駄ヶ谷五丁目",
+      "category": "unknown",
+      "business_type": "unknown",
+      "lat": 35.68732145,
+      "lng": 139.7037276,
+      "level": "",
+      "source": "jff",
+      "licenses": [
+        "CC BY 4.0",
+        "CDLA-Permissive-2.0"
+      ],
+      "attributions": [
+        "Overture Maps Foundation, overturemaps.org",
+        "東京都渋谷区食品等営業許可・届出一覧"
+      ]
+    }
+  ]
+}

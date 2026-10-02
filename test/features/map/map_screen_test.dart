@@ -8,26 +8,26 @@ import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
 import '../../support/l10n.dart';
 
 void main() {
-  late FakeOverpassClient overpass;
+  late FakeShopFinder overpass;
   late FakeLocationService location;
 
   setUp(() {
     location = FakeLocationService(position: const GeoPoint(35.0, 139.0));
-    overpass = FakeOverpassClient(
+    overpass = FakeShopFinder(
       shops: const [
-        OverpassShop(
+        FoundShop(
           osmId: 'node/1',
           name: '行った店',
           location: GeoPoint(35.001, 139.0),
         ),
-        OverpassShop(
+        FoundShop(
           osmId: 'node/2',
           name: 'まだ行っていない店',
           location: GeoPoint(35.002, 139.0),
@@ -47,7 +47,7 @@ void main() {
           visitsProvider.overrideWithValue(AsyncData(visits)),
           mapTilesEnabledProvider.overrideWithValue(false),
           locationServiceProvider.overrideWithValue(location),
-          overpassClientProvider.overrideWithValue(overpass),
+          nearbyShopFinderProvider.overrideWithValue(overpass),
         ],
         child: localizedApp(home: const MapScreen()),
       ),
@@ -79,6 +79,7 @@ void main() {
     expect(overpass.radii, [nearbySearchRadiusMeters]);
     expect(find.text(ja.mapNearbyFound(1)), findsOneWidget);
     expect(find.bySemanticsLabel('まだ行っていない店'), findsOneWidget);
+    expect(find.text(ja.openPoiAttribution), findsOneWidget);
   });
 
   testWidgets('位置のわからない手入力の店や、撤退しただけの店は「まだ行っていない店」に出さない', (tester) async {

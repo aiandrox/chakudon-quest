@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 
 import '../backup/backup_codec.dart';
 import '../database/app_database.dart';
+import '../shop_search/found_shop.dart';
 import '../shop_search/geo.dart';
 import 'models.dart';
 
@@ -394,6 +395,8 @@ class RecordRepository {
                 ..limit(1))
               .getSingleOrNull();
       if (byOsmId != null) return byOsmId;
+      final lookAlike = await _lookAlikeShopWithoutOsmId(input);
+      if (lookAlike != null) return lookAlike;
     }
     final sameName = await (_db.select(
       _db.shops,
@@ -402,6 +405,28 @@ class RecordRepository {
       for (final shop in sameName)
         if (osmId == null || shop.osmId == null) shop,
     ]);
+  }
+
+  /// OpenPOI で選んだ店（OpenStreetMap の ID なし）を、表記の少し違う OpenStreetMap の同じ店として見つける。
+  Future<Shop?> _lookAlikeShopWithoutOsmId(ShopInput input) async {
+    final latitude = input.latitude;
+    final longitude = input.longitude;
+    if (latitude == null || longitude == null) return null;
+    final here = GeoPoint(latitude, longitude);
+    final shops = await (_db.select(
+      _db.shops,
+    )..where((s) => s.osmId.isNull() & s.latitude.isNotNull())).get();
+    for (final shop in shops) {
+      if (looksLikeSameShop(
+        input.name,
+        here,
+        shop.name,
+        GeoPoint(shop.latitude!, shop.longitude!),
+      )) {
+        return shop;
+      }
+    }
+    return null;
   }
 
   /// 同じ名前でも離れていれば別の店（支店）として扱う。どちらかの位置がわからないときは

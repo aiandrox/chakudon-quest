@@ -25,7 +25,7 @@
       "meters": {"type": "int"}
     }
   },
-  "osmAttribution": "© OpenStreetMap contributors",
+  "shopSearchAttribution": "© OpenStreetMap contributors ／ 出典: OpenPOI API（https://openpoiapi.com/attribution.html）",
   "ratingSection": "評価",
   "ratingOptional": "評価（食べ終わってから、あとで付けてもOK）",
   "ratingUnrated": "未評価",
@@ -338,6 +338,7 @@
   "statsShopRanksNote": "その店で1杯に得た最高の修行点で決まります（極 60以上 / 特 40以上 / 上 25以上 / 並）",
   "navMap": "地図",
   "mapAttribution": "OpenStreetMap contributors",
+  "openPoiAttribution": "出典: OpenPOI API（https://openpoiapi.com/attribution.html）",
   "mapTitle": "ラーメン地図",
   "mapEmpty": "行った店はまだ地図にありません。「このあたりのラーメン店を探す」で、まわりの店を探せます",
   "mapSearchHere": "このあたりのラーメン店を探す",

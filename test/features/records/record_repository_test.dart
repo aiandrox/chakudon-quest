@@ -151,6 +151,40 @@ void main() {
     expect(shop.latitude, 35.0);
   });
 
+  test('OpenPOIで選んだ店を、近くにある表記の少し違うOSMの店として選び直すと同じ店にする', () async {
+    final first = await save(
+      const ShopInput(name: '鴨 to 葱', latitude: 35.0, longitude: 139.0),
+    );
+    final second = await save(
+      const ShopInput(
+        osmId: 'node/1',
+        name: 'らーめん鴨to葱',
+        latitude: 35.0003,
+        longitude: 139.0,
+      ),
+    );
+
+    expect(second.shopId, first.shopId);
+    final shop = (await repository.allShops()).single;
+    expect(shop.osmId, 'node/1');
+  });
+
+  test('表記の似た店でも100mより離れていれば別の店にする', () async {
+    final first = await save(
+      const ShopInput(name: '壱角家', latitude: 35.0, longitude: 139.0),
+    );
+    final second = await save(
+      const ShopInput(
+        osmId: 'node/1',
+        name: '壱角家 西新宿店',
+        latitude: 35.002,
+        longitude: 139.0,
+      ),
+    );
+
+    expect(second.shopId, isNot(first.shopId));
+  });
+
   test('同じ名前でも別のOSMの店は別の店にする', () async {
     final first = await save(const ShopInput(osmId: 'node/1', name: '一風堂'));
     final second = await save(const ShopInput(osmId: 'node/2', name: '一風堂'));
