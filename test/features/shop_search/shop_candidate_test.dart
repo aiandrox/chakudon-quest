@@ -92,6 +92,22 @@ void main() {
       });
     });
 
+    test('OpenPOIで選んだ店と表記の少し違うOSMの店は、記録済みの方だけを出す', () {
+      final candidates = rankShopCandidates(
+        here: _here,
+        found: [
+          _found('壱角家 西新宿店', 0.0005, osmId: 'node/1'),
+          _found('らぁ麺 はやし田', 0.001, osmId: 'node/2'),
+        ],
+        knownShops: [
+          _known('壱角家', northDegrees: 0.0004),
+          _known('らぁ麺　はやし田', northDegrees: 0.001),
+        ],
+      );
+
+      expect(candidates.map((c) => c.shopId), ['shop-壱角家', 'shop-らぁ麺　はやし田']);
+    });
+
     test('同じ店が検索結果と記録済みの両方にあるときは記録済みの方を残す', () {
       final candidates = rankShopCandidates(
         here: _here,

@@ -49,9 +49,14 @@ class ShopCandidate {
 bool isSameShop(ShopCandidate a, ShopCandidate b) {
   if (a.shopId != null && b.shopId != null) return a.shopId == b.shopId;
   if (a.osmId != null && b.osmId != null) return a.osmId == b.osmId;
-  if (a.name != b.name) return false;
   final aLocation = a.location;
   final bLocation = b.location;
+  if (a.name != b.name) {
+    // OpenPOI で選んで保存した店（ID なし）と、OpenStreetMap の同じ店の表記ゆれを拾う。
+    return aLocation != null &&
+        bLocation != null &&
+        looksLikeSameShop(a.name, aLocation, b.name, bLocation);
+  }
   if (aLocation == null || bLocation == null) return true;
   return distanceMeters(aLocation, bLocation) <= shopSearchRadiusMeters;
 }
@@ -66,7 +71,6 @@ List<ShopCandidate> rankShopCandidates({
   int limit = maxShopCandidates,
 }) {
   final candidates = <ShopCandidate>[];
-  final knownOsmIds = <String>{};
   final knownNames = <String>{};
   for (final shop in knownShops) {
     final candidate = ShopCandidate.fromShop(shop);
@@ -75,22 +79,21 @@ List<ShopCandidate> rankShopCandidates({
     final distance = distanceMeters(here, location);
     if (distance > radiusMeters) continue;
     candidates.add(ShopCandidate.fromShop(shop, distanceMeters: distance));
-    if (shop.osmId != null) knownOsmIds.add(shop.osmId!);
     knownNames.add(shop.name);
   }
+  final known = [...candidates];
   for (final shop in found) {
-    if (knownOsmIds.contains(shop.osmId)) continue;
     if (knownNames.contains(shop.name)) continue;
     final distance = distanceMeters(here, shop.location);
     if (distance > radiusMeters) continue;
-    candidates.add(
-      ShopCandidate(
-        osmId: shop.osmId,
-        name: shop.name,
-        location: shop.location,
-        distanceMeters: distance,
-      ),
+    final candidate = ShopCandidate(
+      osmId: shop.osmId,
+      name: shop.name,
+      location: shop.location,
+      distanceMeters: distance,
     );
+    if (known.any((k) => isSameShop(k, candidate))) continue;
+    candidates.add(candidate);
   }
   candidates.sort((a, b) => a.distanceMeters!.compareTo(b.distanceMeters!));
   return candidates.take(limit).toList();
