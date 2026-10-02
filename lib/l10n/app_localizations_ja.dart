@@ -840,6 +840,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get mapTitle => 'ラーメン地図';
 
   @override
+  String get mapSearching => 'このあたりのラーメン店を探しています…';
+
+  @override
+  String get mapLocating => '現在地を確かめています…';
+
+  @override
   String get mapEmpty => '行った店はまだ地図にありません。「このあたりのラーメン店を探す」で、まわりの店を探せます';
 
   @override
