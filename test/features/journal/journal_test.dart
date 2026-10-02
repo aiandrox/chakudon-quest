@@ -97,4 +97,21 @@ void main() {
     final entry = buildEntry(shop: shop, eatenAt: day(4, 1));
     expect(journalOf([entry]), journalOf([entry]));
   });
+
+  test('願を掛ける前の1杯を叶えたことにしても、願の話は入れない', () {
+    final eaten = buildEntry(shop: shop, eatenAt: day(5, 10));
+    final lines = journalOf(
+      [eaten],
+      wishes: [
+        Wish(
+          id: 'wish',
+          name: 'はやし田',
+          createdAt: day(10, 3),
+          fulfilledVisitId: eaten.visit.id,
+        ),
+      ],
+    );
+
+    expect(lines.any((l) => l.contains('願')), isFalse);
+  });
 }

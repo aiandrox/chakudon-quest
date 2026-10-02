@@ -22,6 +22,7 @@ import '../shop/shop_memo_dialog.dart';
 import '../scoring/scoring_providers.dart';
 import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
+import '../wishes/wishes.dart';
 import '../journal/journal.dart';
 import '../journal/journal_view.dart';
 import 'visit_edit_screen.dart';
@@ -131,6 +132,7 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
     final canFulfill =
         visit.result == VisitResult.eaten &&
         pendingWish != null &&
+        wishPrecedes(pendingWish, visit.eatenAt) &&
         !statuses.any((s) => s.fulfilledBy?.visit.id == visit.id);
 
     return Scaffold(

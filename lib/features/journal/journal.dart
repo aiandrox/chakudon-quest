@@ -16,7 +16,11 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
   final eatenBefore = before.where(_isEaten).length;
   final retreats = _retreatsSinceLastEaten(before);
   final pick = _Picker(visit.id);
-  final wish = target.fulfilledWish;
+  // 願を掛けるより前の1杯を叶えたことにしたときは、願の話は入れない。
+  final fulfilled = target.fulfilledWish;
+  final wish = fulfilled != null && wishPrecedes(fulfilled, visit.eatenAt)
+      ? fulfilled
+      : null;
   final checkedInAt = visit.checkedInAt;
   // 撤退でも、並んだ時間は物語に入れる。
   final waited = checkedInAt == null

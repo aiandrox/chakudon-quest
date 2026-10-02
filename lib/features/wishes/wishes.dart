@@ -39,6 +39,10 @@ GeoPoint? wishLocation(Wish wish) {
       : null;
 }
 
+/// 願を掛けた日より前の1杯ではないか（同じ日なら、掛けたあとに食べたとみなす）。
+bool wishPrecedes(Wish wish, DateTime eatenAt) =>
+    !_dateOnly(wish.createdAt).isAfter(_dateOnly(eatenAt));
+
 /// 願を掛けてから、叶う（その店で食べる）までの日数。願を掛ける前の写真で記録したときは0。
 int daysToFulfill(Wish wish, DateTime eatenAt) {
   final days = _dateOnly(eatenAt).difference(_dateOnly(wish.createdAt)).inDays;
