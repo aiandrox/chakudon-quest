@@ -645,6 +645,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get journalTitle => '道中記';
 
   @override
+  String get shareTitle => 'この一杯を共有';
+
+  @override
+  String get shareIncludePhoto => '写真を入れる';
+
+  @override
+  String get shareIncludeJournal => '道中記を入れる';
+
+  @override
+  String get shareIncludePoints => '修行点を入れる';
+
+  @override
+  String get shareNote => '店の場所（地図）は入りません。共有を押したときだけ、選んだ相手やアプリに送られます';
+
+  @override
+  String get shareButton => '共有する';
+
+  @override
+  String get shareFailed => '共有できませんでした';
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override
