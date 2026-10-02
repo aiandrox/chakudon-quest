@@ -60,17 +60,17 @@ void main() {
   test('周辺の検索結果から、食べたことのある店を除く（OSMのIDか、同じ名前で近い店）', () {
     final shops = unvisitedShops(
       found: const [
-        OverpassShop(
+        FoundShop(
           osmId: 'node/1',
           name: 'OSMの店',
           location: GeoPoint(35.0, 139.0),
         ),
-        OverpassShop(
+        FoundShop(
           osmId: 'node/2',
           name: '手入力で記録した店',
           location: GeoPoint(35.001, 139.0),
         ),
-        OverpassShop(
+        FoundShop(
           osmId: 'node/3',
           name: '初めての店',
           location: GeoPoint(35.002, 139.0),

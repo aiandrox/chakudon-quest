@@ -18,7 +18,7 @@ import 'package:chakudon_quest/features/records/wait_time.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
 import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
 
 import '../../support/fakes.dart';
@@ -29,7 +29,7 @@ final _photoTime = DateTime(2026, 9, 30, 12);
 void main() {
   late Directory documents;
   late FakeLocationService location;
-  late FakeOverpassClient overpass;
+  late FakeShopFinder overpass;
   late FakePhotoPicker picker;
   late FakePhotoMetadataReader metadata;
   late ProviderContainer container;
@@ -39,9 +39,9 @@ void main() {
     final photo = File(p.join(createTempDirectory().path, 'camera.jpg'))
       ..writeAsBytesSync([1, 2, 3]);
     location = FakeLocationService(position: _here);
-    overpass = FakeOverpassClient(
+    overpass = FakeShopFinder(
       shops: const [
-        OverpassShop(
+        FoundShop(
           osmId: 'node/1',
           name: '麺屋テスト',
           location: GeoPoint(35.001, 139.0),
@@ -55,7 +55,7 @@ void main() {
         appDatabaseProvider.overrideWithValue(createTestDatabase()),
         documentsDirectoryProvider.overrideWithValue(documents),
         locationServiceProvider.overrideWithValue(location),
-        overpassClientProvider.overrideWithValue(overpass),
+        nearbyShopFinderProvider.overrideWithValue(overpass),
         photoPickerProvider.overrideWithValue(picker),
         photoMetadataReaderProvider.overrideWithValue(metadata),
         clockProvider.overrideWithValue(() => _photoTime),
@@ -560,7 +560,7 @@ void main() {
 
     test('並んだ店を検索結果や名前の候補から選び直しても、待ち時間がつく', () async {
       overpass.shops = const [
-        OverpassShop(
+        FoundShop(
           osmId: 'node/9',
           name: '並んだ店',
           location: GeoPoint(35.0, 139.0),
@@ -614,7 +614,7 @@ void main() {
         ),
         documentsDirectoryProvider.overrideWithValue(documents),
         locationServiceProvider.overrideWithValue(location),
-        overpassClientProvider.overrideWithValue(overpass),
+        nearbyShopFinderProvider.overrideWithValue(overpass),
         photoPickerProvider.overrideWithValue(picker),
         photoMetadataReaderProvider.overrideWithValue(metadata),
         clockProvider.overrideWithValue(() => now),

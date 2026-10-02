@@ -109,7 +109,10 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             else ...[
               Align(
                 alignment: Alignment.centerRight,
-                child: Text(l10n.osmAttribution, style: textTheme.labelSmall),
+                child: Text(
+                  l10n.shopSearchAttribution,
+                  style: textTheme.labelSmall,
+                ),
               ),
               const SizedBox(height: 16),
               TextField(

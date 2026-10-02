@@ -13,14 +13,14 @@ import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
 
 import '../../support/fakes.dart';
 import '../../support/l10n.dart';
 
 void main() {
   late AppDatabase database;
-  late FakeOverpassClient overpass;
+  late FakeShopFinder overpass;
   late FakePhotoPicker picker;
 
   Future<void> pumpScreen(WidgetTester tester) async {
@@ -38,7 +38,7 @@ void main() {
           locationServiceProvider.overrideWithValue(
             FakeLocationService(position: const GeoPoint(35.0, 139.0)),
           ),
-          overpassClientProvider.overrideWithValue(overpass),
+          nearbyShopFinderProvider.overrideWithValue(overpass),
           photoPickerProvider.overrideWithValue(picker),
         ],
         child: localizedApp(
@@ -61,9 +61,9 @@ void main() {
 
   setUp(() {
     picker = FakePhotoPicker();
-    overpass = FakeOverpassClient(
+    overpass = FakeShopFinder(
       shops: const [
-        OverpassShop(
+        FoundShop(
           osmId: 'node/1',
           name: '麺屋テスト',
           location: GeoPoint(35.001, 139.0),
@@ -77,7 +77,7 @@ void main() {
 
     expect(find.text('麺屋テスト'), findsOneWidget);
     expect(find.text('111m'), findsOneWidget);
-    expect(find.text(ja.osmAttribution), findsOneWidget);
+    expect(find.text(ja.shopSearchAttribution), findsOneWidget);
     final saveButton = find.widgetWithText(FilledButton, ja.save);
     expect(tester.widget<FilledButton>(saveButton).onPressed, isNull);
 

@@ -5,14 +5,14 @@ import '../records/models.dart';
 import '../records/record_repository.dart';
 import 'geo.dart';
 import 'location_service.dart';
+import 'nearby_shop_finder.dart';
 import 'overpass.dart';
-import 'overpass_client.dart';
 import 'shop_candidate.dart';
 
 final shopSearchServiceProvider = Provider<ShopSearchService>(
   (ref) => ShopSearchService(
     location: ref.watch(locationServiceProvider),
-    overpass: ref.watch(overpassClientProvider),
+    finder: ref.watch(nearbyShopFinderProvider),
     repository: ref.watch(recordRepositoryProvider),
   ),
 );
@@ -32,12 +32,12 @@ class ShopSearchResult {
 class ShopSearchService {
   ShopSearchService({
     required this._location,
-    required this._overpass,
+    required this._finder,
     required this._repository,
   });
 
   final LocationService _location;
-  final OverpassClient _overpass;
+  final NearbyShopFinder _finder;
   final RecordRepository _repository;
 
   Future<ShopSearchResult> search({
@@ -50,10 +50,10 @@ class ShopSearchService {
     if (here == null) {
       return const ShopSearchResult(failure: ShopSearchFailure.noLocation);
     }
-    var found = const <OverpassShop>[];
+    var found = const <FoundShop>[];
     ShopSearchFailure? failure;
     try {
-      found = await _overpass.searchNearby(here);
+      found = await _finder.searchNearby(here);
     } catch (e) {
       debugPrint('Shop search failed: $e');
       failure = ShopSearchFailure.searchFailed;

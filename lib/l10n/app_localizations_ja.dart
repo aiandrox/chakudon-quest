@@ -72,7 +72,8 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get osmAttribution => '© OpenStreetMap contributors';
+  String get shopSearchAttribution =>
+      '© OpenStreetMap contributors ／ 出典: OpenPOI API（https://openpoiapi.com/attribution.html）';
 
   @override
   String get ratingSection => '評価';
@@ -598,6 +599,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get mapAttribution => 'OpenStreetMap contributors';
+
+  @override
+  String get openPoiAttribution =>
+      '出典: OpenPOI API（https://openpoiapi.com/attribution.html）';
 
   @override
   String get mapTitle => 'ラーメン地図';

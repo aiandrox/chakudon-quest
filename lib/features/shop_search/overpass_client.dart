@@ -4,6 +4,9 @@ import 'package:http/http.dart' as http;
 import 'geo.dart';
 import 'overpass.dart';
 
+const shopSearchUserAgent =
+    'chakudon-quest (https://github.com/aiandrox/chakudon-quest)';
+
 final overpassClientProvider = Provider<OverpassClient>((ref) {
   final client = http.Client();
   ref.onDispose(client.close);
@@ -21,7 +24,7 @@ class OverpassClient {
   final Uri _endpoint;
 
   /// 通信の失敗・タイムアウト・想定外の応答は例外にする。呼び出し側で手入力に切り替える。
-  Future<List<OverpassShop>> searchNearby(
+  Future<List<FoundShop>> searchNearby(
     GeoPoint center, {
     int radiusMeters = shopSearchRadiusMeters,
     Duration timeout = OverpassClient.timeout,
@@ -29,10 +32,7 @@ class OverpassClient {
     final response = await _client
         .post(
           _endpoint,
-          headers: const {
-            'User-Agent':
-                'chakudon-quest (https://github.com/aiandrox/chakudon-quest)',
-          },
+          headers: const {'User-Agent': shopSearchUserAgent},
           body: {
             'data': buildOverpassQuery(
               center,

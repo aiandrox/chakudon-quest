@@ -10,8 +10,8 @@ import '../scoring/ranks.dart';
 import '../scoring/scoring_providers.dart';
 import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
+import '../shop_search/nearby_shop_finder.dart';
 import '../shop_search/overpass.dart';
-import '../shop_search/overpass_client.dart';
 import 'shop_pins.dart';
 
 /// 地図の画像は OpenStreetMap のタイルサーバーから取る。送るのは表示範囲だけ（issue #8）。
@@ -36,7 +36,7 @@ class MapScreen extends ConsumerStatefulWidget {
 class _MapScreenState extends ConsumerState<MapScreen> {
   final _controller = MapController();
   GeoPoint? _here;
-  List<OverpassShop> _nearby = const [];
+  List<FoundShop> _nearby = const [];
   bool _isSearching = false;
 
   @override
@@ -74,7 +74,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     setState(() => _isSearching = true);
     try {
       final found = await ref
-          .read(overpassClientProvider)
+          .read(nearbyShopFinderProvider)
           .searchNearby(
             GeoPoint(center.latitude, center.longitude),
             radiusMeters: nearbySearchRadiusMeters,
@@ -181,6 +181,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               SimpleAttributionWidget(source: Text(l10n.mapAttribution)),
             ],
           ),
+          if (_nearby.isNotEmpty)
+            Positioned(
+              left: 8,
+              top: 8,
+              right: 8,
+              child: ColoredBox(
+                color: const Color(0xCCFFFFFF),
+                child: Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: Text(
+                    l10n.openPoiAttribution,
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ),
+              ),
+            ),
           if (pins.isEmpty && _nearby.isEmpty)
             Positioned(
               left: 16,
@@ -245,7 +261,7 @@ class _HereDot extends StatelessWidget {
 class _UnvisitedPin extends StatelessWidget {
   const _UnvisitedPin({required this.shop, required this.here});
 
-  final OverpassShop shop;
+  final FoundShop shop;
   final GeoPoint? here;
 
   @override

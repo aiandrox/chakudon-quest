@@ -8,8 +8,8 @@ import 'package:chakudon_quest/features/shop_search/shop_candidate.dart';
 const _here = GeoPoint(35.0, 139.0);
 
 /// 緯度0.001度は約111m。
-OverpassShop _found(String name, double northDegrees, {String? osmId}) =>
-    OverpassShop(
+FoundShop _found(String name, double northDegrees, {String? osmId}) =>
+    FoundShop(
       osmId: osmId ?? 'node/$name',
       name: name,
       location: GeoPoint(35.0 + northDegrees, 139.0),

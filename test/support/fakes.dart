@@ -12,6 +12,7 @@ import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
+import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
 import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
 import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
@@ -45,10 +46,10 @@ class FakeLocationService implements LocationService {
   }
 }
 
-class FakeOverpassClient implements OverpassClient {
-  FakeOverpassClient({this.shops = const [], this.error});
+class FakeShopFinder implements NearbyShopFinder {
+  FakeShopFinder({this.shops = const [], this.error});
 
-  List<OverpassShop> shops;
+  List<FoundShop> shops;
   Object? error;
   int calls = 0;
 
@@ -56,7 +57,7 @@ class FakeOverpassClient implements OverpassClient {
   final centers = <GeoPoint>[];
 
   @override
-  Future<List<OverpassShop>> searchNearby(
+  Future<List<FoundShop>> searchNearby(
     GeoPoint center, {
     int radiusMeters = shopSearchRadiusMeters,
     Duration timeout = OverpassClient.timeout,

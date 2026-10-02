@@ -1,22 +1,11 @@
 import 'dart:convert';
 
+import 'found_shop.dart';
 import 'geo.dart';
 
-const shopSearchRadiusMeters = 300;
+export 'found_shop.dart';
 
 const _nameKeywords = 'ラーメン|らーめん|拉麺|中華そば|麺|つけ麺';
-
-class OverpassShop {
-  const OverpassShop({
-    required this.osmId,
-    required this.name,
-    required this.location,
-  });
-
-  final String osmId;
-  final String name;
-  final GeoPoint location;
-}
 
 String buildOverpassQuery(
   GeoPoint center, {
@@ -34,7 +23,7 @@ String buildOverpassQuery(
 }
 
 /// 名前か位置が無い要素は候補にできないため捨てる。
-List<OverpassShop> parseOverpassResponse(String body) {
+List<FoundShop> parseOverpassResponse(String body) {
   final decoded = jsonDecode(body);
   if (decoded is! Map<String, dynamic>) {
     throw const FormatException('Overpassの応答がオブジェクトではありません');
@@ -49,7 +38,7 @@ List<OverpassShop> parseOverpassResponse(String body) {
   if (elements is! List) {
     throw const FormatException('Overpassの応答にelementsがありません');
   }
-  final shops = <OverpassShop>[];
+  final shops = <FoundShop>[];
   final seen = <String>{};
   for (final element in elements) {
     if (element is! Map<String, dynamic>) continue;
@@ -68,7 +57,7 @@ List<OverpassShop> parseOverpassResponse(String body) {
     final osmId = '$type/${id.toInt()}';
     if (!seen.add(osmId)) continue;
     shops.add(
-      OverpassShop(
+      FoundShop(
         osmId: osmId,
         name: name,
         location: GeoPoint(lat.toDouble(), lon.toDouble()),

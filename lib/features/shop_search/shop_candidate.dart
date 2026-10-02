@@ -60,7 +60,7 @@ bool isSameShop(ShopCandidate a, ShopCandidate b) {
 /// 同じ店が両方にあるときは記録済みの方を残す。
 List<ShopCandidate> rankShopCandidates({
   required GeoPoint here,
-  required List<OverpassShop> found,
+  required List<FoundShop> found,
   required List<Shop> knownShops,
   int radiusMeters = shopSearchRadiusMeters,
   int limit = maxShopCandidates,

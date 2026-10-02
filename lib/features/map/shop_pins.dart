@@ -55,8 +55,8 @@ List<ShopPin> shopPins(List<ScoredVisit> scored) {
 }
 
 /// 周辺の検索結果のうち、まだ食べたことのない店。記録済みの店と同じ店は除く。
-List<OverpassShop> unvisitedShops({
-  required List<OverpassShop> found,
+List<FoundShop> unvisitedShops({
+  required List<FoundShop> found,
   required List<Shop> eatenShops,
 }) {
   final known = [for (final shop in eatenShops) ShopCandidate.fromShop(shop)];

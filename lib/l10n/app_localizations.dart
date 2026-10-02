@@ -214,11 +214,11 @@ abstract class AppLocalizations {
   /// **'{meters}m'**
   String distanceMeters(int meters);
 
-  /// No description provided for @osmAttribution.
+  /// No description provided for @shopSearchAttribution.
   ///
   /// In ja, this message translates to:
-  /// **'© OpenStreetMap contributors'**
-  String get osmAttribution;
+  /// **'© OpenStreetMap contributors ／ 出典: OpenPOI API（https://openpoiapi.com/attribution.html）'**
+  String get shopSearchAttribution;
 
   /// No description provided for @ratingSection.
   ///
@@ -1143,6 +1143,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'OpenStreetMap contributors'**
   String get mapAttribution;
+
+  /// No description provided for @openPoiAttribution.
+  ///
+  /// In ja, this message translates to:
+  /// **'出典: OpenPOI API（https://openpoiapi.com/attribution.html）'**
+  String get openPoiAttribution;
 
   /// No description provided for @mapTitle.
   ///
