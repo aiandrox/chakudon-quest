@@ -79,7 +79,7 @@ void main() {
     expect(find.text(ja.mapEmpty), findsOneWidget);
   });
 
-  testWidgets('記録があるときは店名・★・ポイントと、ランクを表示する', (tester) async {
+  testWidgets('記録があるときは店名と印、段位と修行点を表示する', (tester) async {
     final shop = Shop(
       id: 'shop',
       name: '麺屋テスト',
@@ -104,11 +104,6 @@ void main() {
     ]);
 
     expect(verticalText('麺屋テスト'), findsOneWidget);
-    // 初訪問の1杯は 10 + 10 = 20点。
-    expect(
-      find.text('9/30  ${ja.ratingStar(4)}  ${ja.pointsGained(20)}'),
-      findsOneWidget,
-    );
     expect(find.byType(InkanStamp), findsOneWidget);
     expect(find.text(ja.rankApprentice), findsOneWidget);
     expect(find.text(ja.totalPoints(20)), findsOneWidget);
@@ -141,7 +136,6 @@ void main() {
     ]);
 
     expect(find.text(ja.ratingPrompt('麺屋テスト')), findsOneWidget);
-    expect(find.textContaining(ja.inchoMetaUnrated), findsOneWidget);
 
     await pumpApp(tester, [
       VisitWithShop(

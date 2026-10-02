@@ -118,7 +118,7 @@ class VerticalText extends StatelessWidget {
 }
 
 /// 縦書きの行に分ける。区切りの空白で分けて収まるならそこで、収まらなければ文字数で
-/// 折り返す。[maxLines]行に収まらないときは、最後の文字を「︙」にする。
+/// 折り返す。[maxLines]行に収まらないときは、最後の文字を「…」（縦書きでは縦向き）にする。
 List<List<String>> verticalLines(
   String text, {
   int? maxChars,
@@ -145,7 +145,7 @@ List<List<String>> verticalLines(
       chars.sublist(i, (i + maxChars).clamp(0, chars.length)),
   ];
   if (chars.length > maxChars * maxLines) {
-    lines.last = [...lines.last.take(maxChars - 1), '︙'];
+    lines.last = [...lines.last.take(maxChars - 1), '…'];
   }
   return lines;
 }

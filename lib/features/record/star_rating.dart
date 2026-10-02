@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 
 class StarRating extends StatelessWidget {
-  const StarRating({super.key, required this.rating, required this.onChanged});
+  const StarRating({
+    super.key,
+    required this.rating,
+    required this.onChanged,
+    this.size = 44,
+  });
 
   final int? rating;
   final ValueChanged<int> onChanged;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,7 @@ class StarRating extends StatelessWidget {
       children: [
         for (var stars = 1; stars <= 5; stars++)
           IconButton(
-            iconSize: 44,
+            iconSize: size,
             tooltip: l10n.ratingStar(stars),
             color: color,
             isSelected: (rating ?? 0) >= stars,

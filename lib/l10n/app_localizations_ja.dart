@@ -722,22 +722,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get inchoTitle => '印帳';
-
-  @override
-  String inchoCount(int stamps, int shops) {
-    return '集めた印 $stamps　道場 $shops';
-  }
-
-  @override
-  String inchoMetaWait(int minutes) {
-    return '待 $minutes分';
-  }
-
-  @override
-  String get inchoMetaUnrated => '★ まだ';
-
-  @override
   String get shopStamps => 'この道場の印';
 
   @override

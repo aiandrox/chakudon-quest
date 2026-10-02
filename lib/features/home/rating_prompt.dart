@@ -36,18 +36,21 @@ class RatingPrompt extends ConsumerWidget {
     return Card(
       elevation: 0,
       color: colors.surfaceContainerHigh,
-      margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+      margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+        padding: const EdgeInsets.fromLTRB(16, 10, 8, 2),
         child: Column(
           children: [
             Text(
               l10n.ratingPrompt(entry.shop.name),
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             StarRating(
               rating: null,
+              size: 32,
               onChanged: (rating) =>
                   saveRating(context, ref, entry.visit.id, rating),
             ),

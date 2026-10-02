@@ -1342,30 +1342,6 @@ abstract class AppLocalizations {
   /// **'{month}月{day}日'**
   String kanjiMonthDay(String month, String day);
 
-  /// No description provided for @inchoTitle.
-  ///
-  /// In ja, this message translates to:
-  /// **'印帳'**
-  String get inchoTitle;
-
-  /// No description provided for @inchoCount.
-  ///
-  /// In ja, this message translates to:
-  /// **'集めた印 {stamps}　道場 {shops}'**
-  String inchoCount(int stamps, int shops);
-
-  /// No description provided for @inchoMetaWait.
-  ///
-  /// In ja, this message translates to:
-  /// **'待 {minutes}分'**
-  String inchoMetaWait(int minutes);
-
-  /// No description provided for @inchoMetaUnrated.
-  ///
-  /// In ja, this message translates to:
-  /// **'★ まだ'**
-  String get inchoMetaUnrated;
-
   /// No description provided for @shopStamps.
   ///
   /// In ja, this message translates to:
