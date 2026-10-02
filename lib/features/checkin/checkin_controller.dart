@@ -65,6 +65,7 @@ class CheckinController extends Notifier<CheckinState> {
         name: shop.name,
         latitude: shop.location?.latitude,
         longitude: shop.location?.longitude,
+        dataSource: shop.dataSource,
       ),
     );
   }

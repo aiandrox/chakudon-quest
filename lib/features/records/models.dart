@@ -23,6 +23,14 @@ enum RamenStyle {
   other,
 }
 
+/// 検索サービスから取り込んだ店の出所。OpenPOI API は、保存した店と一緒にこれを残すよう求めている。
+class ShopSource {
+  const ShopSource({this.licenses = const [], this.attributions = const []});
+
+  final List<String> licenses;
+  final List<String> attributions;
+}
+
 class Shop {
   const Shop({
     required this.id,
@@ -32,6 +40,7 @@ class Shop {
     this.osmId,
     this.hoursConditions = const {},
     this.strategyMemo = '',
+    this.dataSource,
     required this.createdAt,
   });
 
@@ -44,6 +53,9 @@ class Shop {
 
   /// 店ごとの攻略メモ（開店の何分前に着けばよいか、券売機など）。記録ごとのメモとは別。
   final String strategyMemo;
+
+  /// OpenPOI で見つけた店の出所。OpenStreetMap の店・手入力の店は null。
+  final ShopSource? dataSource;
   final DateTime createdAt;
 }
 
@@ -89,6 +101,7 @@ class Checkin {
     required this.name,
     this.latitude,
     this.longitude,
+    this.dataSource,
     required this.checkedInAt,
   });
 
@@ -97,6 +110,7 @@ class Checkin {
   final String name;
   final double? latitude;
   final double? longitude;
+  final ShopSource? dataSource;
   final DateTime checkedInAt;
 }
 

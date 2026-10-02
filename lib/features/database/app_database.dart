@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +26,25 @@ class HoursConditionsConverter
   ].join(',');
 }
 
+class ShopSourceConverter extends TypeConverter<ShopSource, String> {
+  const ShopSourceConverter();
+
+  @override
+  ShopSource fromSql(String fromDb) {
+    final map = jsonDecode(fromDb) as Map<String, dynamic>;
+    return ShopSource(
+      licenses: [...?(map['licenses'] as List?)?.whereType<String>()],
+      attributions: [...?(map['attributions'] as List?)?.whereType<String>()],
+    );
+  }
+
+  @override
+  String toSql(ShopSource value) => jsonEncode({
+    'licenses': value.licenses,
+    'attributions': value.attributions,
+  });
+}
+
 @UseRowClass(Shop)
 class Shops extends Table {
   TextColumn get id => text()();
@@ -35,6 +56,8 @@ class Shops extends Table {
       .map(const HoursConditionsConverter())
       .withDefault(const Constant(''))();
   TextColumn get strategyMemo => text().withDefault(const Constant(''))();
+  TextColumn get dataSource =>
+      text().map(const ShopSourceConverter()).nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -68,6 +91,8 @@ class ActiveCheckins extends Table {
   TextColumn get name => text()();
   RealColumn get latitude => real().nullable()();
   RealColumn get longitude => real().nullable()();
+  TextColumn get dataSource =>
+      text().map(const ShopSourceConverter()).nullable()();
   DateTimeColumn get checkedInAt => dateTime()();
 
   @override
@@ -82,12 +107,15 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'chakudon_quest'));
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) async {
       if (from < 2) await migrator.createTable(activeCheckins);
+      if (from >= 2 && from < 5) {
+        await migrator.addColumn(activeCheckins, activeCheckins.dataSource);
+      }
       if (from < 3) {
         // 営業時間の種類（1つだけ選ぶ）を、条件（いくつでも選べる）に置き換える。
         await migrator.alterTable(
@@ -99,12 +127,19 @@ class AppDatabase extends _$AppDatabase {
                 "WHEN 'fewDays' THEN 'fewDays' ELSE '' END",
               ),
             },
-            // 作り直した表には、バージョン4で足した列もすでに入る。
-            newColumns: [shops.hoursConditions, shops.strategyMemo],
+            // 作り直した表には、バージョン4・5で足した列もすでに入る。
+            newColumns: [
+              shops.hoursConditions,
+              shops.strategyMemo,
+              shops.dataSource,
+            ],
           ),
         );
       }
       if (from == 3) await migrator.addColumn(shops, shops.strategyMemo);
+      if (from >= 3 && from < 5) {
+        await migrator.addColumn(shops, shops.dataSource);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

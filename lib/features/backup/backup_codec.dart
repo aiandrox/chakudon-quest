@@ -31,6 +31,11 @@ Map<String, Object?> encodeBackup(
             if (shop.hoursConditions.contains(condition)) condition.name,
         ],
         'strategyMemo': shop.strategyMemo,
+        if (shop.dataSource case final source?)
+          'dataSource': {
+            'licenses': source.licenses,
+            'attributions': source.attributions,
+          },
         'createdAt': shop.createdAt.toUtc().toIso8601String(),
       },
   ],
@@ -83,7 +88,20 @@ Shop _decodeShop(Object? json) {
         ?byName[name],
     },
     strategyMemo: _stringOrNull(map['strategyMemo']) ?? '',
+    dataSource: _decodeSource(map['dataSource']),
     createdAt: _dateTime(map['createdAt']),
+  );
+}
+
+ShopSource? _decodeSource(Object? json) {
+  if (json == null) return null;
+  final map = _map(json, '店の出所');
+  List<String> strings(Object? value) => [
+    for (final item in _list(value ?? const [])) _string(item),
+  ];
+  return ShopSource(
+    licenses: strings(map['licenses']),
+    attributions: strings(map['attributions']),
   );
 }
 

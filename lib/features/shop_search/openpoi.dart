@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../records/models.dart';
 import 'found_shop.dart';
 import 'geo.dart';
 
@@ -45,8 +46,15 @@ List<FoundShop> parseOpenPoiResponse(String body) {
       FoundShop(
         name: name.trim(),
         location: GeoPoint(lat.toDouble(), lng.toDouble()),
+        dataSource: ShopSource(
+          licenses: _strings(result['licenses']),
+          attributions: _strings(result['attributions']),
+        ),
       ),
     );
   }
   return shops;
 }
+
+List<String> _strings(Object? value) =>
+    value is List ? [...value.whereType<String>()] : const [];

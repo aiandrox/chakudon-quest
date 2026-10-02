@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../backup/backup_screen.dart';
+import '../credits/credits_screen.dart';
 import '../checkin/checkin_banner.dart';
 import '../checkin/checkin_controller.dart';
 import '../checkin/checkin_screen.dart';
@@ -124,6 +125,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         title: Text(l10n.appName),
         actions: [
+          IconButton(
+            tooltip: l10n.creditsTitle,
+            icon: const Icon(Icons.info_outline),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const CreditsScreen()),
+            ),
+          ),
           IconButton(
             tooltip: l10n.backupTitle,
             icon: const Icon(Icons.settings_backup_restore),
