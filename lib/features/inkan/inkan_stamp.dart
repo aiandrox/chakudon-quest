@@ -4,16 +4,26 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
-import '../records/labels.dart';
 import '../records/models.dart';
 import '../scoring/points.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/ranks.dart';
 import 'inkan.dart';
 
-/// 印の真ん中に書く系統名。系統をつけていない記録は「ラーメン」。
+/// 印の真ん中に書く、系統を表す漢字1〜2文字。系統をつけていない記録は「拉麺」。
 String inkanStyleName(AppLocalizations l10n, RamenStyle? style) =>
-    style == null ? l10n.inkanNoStyle : styleLabel(l10n, style);
+    switch (style) {
+      RamenStyle.shoyu => l10n.inkanStyleShoyu,
+      RamenStyle.miso => l10n.inkanStyleMiso,
+      RamenStyle.shio => l10n.inkanStyleShio,
+      RamenStyle.tonkotsu => l10n.inkanStyleTonkotsu,
+      RamenStyle.iekei => l10n.inkanStyleIekei,
+      RamenStyle.jiro => l10n.inkanStyleJiro,
+      RamenStyle.tsukemen => l10n.inkanStyleTsukemen,
+      RamenStyle.shirunashi => l10n.inkanStyleShirunashi,
+      RamenStyle.other => l10n.inkanStyleOther,
+      null => l10n.inkanNoStyle,
+    };
 
 /// 「令和八年」「十月一日」の2行。元年は「元」と書く。
 String kanjiEraDate(AppLocalizations l10n, DateTime date) {
@@ -29,7 +39,7 @@ String kanjiEraDate(AppLocalizations l10n, DateTime date) {
   );
 }
 
-/// 1杯ごとの印。上に格と「一本」、真ん中に系統名、下に日付。
+/// 1杯ごとの印。上に格と「一本」、真ん中に系統の漢字、下に日付。
 class InkanStamp extends StatelessWidget {
   const InkanStamp({super.key, required this.scored, this.size = 84});
 
