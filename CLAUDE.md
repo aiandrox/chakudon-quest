@@ -178,7 +178,7 @@ Visit（1杯の記録。撤退も含む）
 - 半径 300m 以内で、次のどれかに当てはまる店を探す
   - `cuisine` に `ramen` を含む
   - `amenity` が `restaurant` / `fast_food` で、名前に「ラーメン」「らーめん」「拉麺」「中華そば」「麺」「つけ麺」を含む
-- OpenPOI API は「ラーメン」「中華そば」などの語で探す（`lib/features/shop_search/openpoi.dart`）。位置が町丁目までしかわからない施設は除く
+- OpenPOI API は「ラーメン」「麺屋」「中華そば」などの語を1語ずつ同時に探してまとめる（`lib/features/shop_search/openpoi.dart`。複数の語を1回で渡すと取りこぼすため）。位置が町丁目までしかわからない施設は除く
 - 両方の結果は、名前と 100m 以内の近さで重なりを除き、OpenStreetMap の店を優先する
 - タイムアウトは 10 秒。片方が失敗してももう片方の結果を使い、両方失敗したら手入力に切り替える（エラーで止めない）
 - 検索結果を表示する画面に出典 `© OpenStreetMap contributors` と `出典: OpenPOI API（https://openpoiapi.com/attribution.html）` を表示する
