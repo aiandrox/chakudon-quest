@@ -31,9 +31,16 @@ class ShopTile extends StatelessWidget {
       if (shop.shopId != null) l10n.shopVisited,
       ?note,
     ];
+    // 選んだ店は塗りつぶさず、朱の枠で示す（塗ると店名が読めなくなるため）。
     return Card(
       elevation: 0,
-      color: selected ? colors.primaryContainer : colors.surfaceContainerLow,
+      color: colors.surfaceContainerLow,
+      shape: selected
+          ? RoundedRectangleBorder(
+              side: BorderSide(color: colors.primary, width: 2),
+              borderRadius: BorderRadius.circular(2),
+            )
+          : null,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: ListTile(
         enabled: onTap != null,
