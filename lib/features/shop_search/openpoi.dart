@@ -4,16 +4,22 @@ import '../records/models.dart';
 import 'found_shop.dart';
 import 'geo.dart';
 
-/// OpenPOI の /v1/search は語を OR で探す。「麺」だけだとパスタやフォーも拾うため、ラーメンらしい語に絞る。
-const openPoiKeywords = 'ラーメン らーめん らぁ麺 拉麺 中華そば つけ麺 まぜそば 油そば 麺屋';
+/// 1語ずつ別に探して結果をまとめる。/v1/search に複数の語を空白でつないで渡すと、
+/// 「ラーメン」のような分類に当たる語があるとほかの語が無視され、「麺屋藤ろう」などを取りこぼすため。
+/// 「麺」だけだとパスタやフォーも拾うので、ラーメンらしい語に絞る（「らーめん」は「ラーメン」と同じ結果になる）。
+const openPoiKeywords = ['ラーメン', 'らぁ麺', '中華そば', 'つけ麺', 'まぜそば', '油そば', '麺屋'];
+
+/// 「麺屋」で拾ってしまうパスタの店を除く。
+const _notRamenNameParts = ['洋麺', 'パスタ', 'スパゲッティ'];
 
 Uri buildOpenPoiUri(
-  GeoPoint center, {
+  GeoPoint center,
+  String keyword, {
   int radiusMeters = shopSearchRadiusMeters,
   int limit = 100,
 }) {
   return Uri.https('api.openpoiapi.com', '/v1/search', {
-    'q': openPoiKeywords,
+    'q': keyword,
     'center': '${center.longitude},${center.latitude}',
     'radius': '$radiusMeters',
     'limit': '$limit',
@@ -37,6 +43,7 @@ List<FoundShop> parseOpenPoiResponse(String body) {
     if (result is! Map<String, dynamic>) continue;
     final name = result['name'];
     if (name is! String || name.trim().isEmpty) continue;
+    if (_notRamenNameParts.any(name.contains)) continue;
     final lat = result['lat'];
     final lng = result['lng'];
     if (lat is! num || lng is! num) continue;

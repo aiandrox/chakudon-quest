@@ -19,13 +19,32 @@ class OpenPoiClient {
 
   final http.Client _client;
 
-  /// 通信の失敗・タイムアウト・想定外の応答は例外にする。
+  /// 語ごとに同時に探し、同じ店をまとめて返す。1語でも答えが返れば、その結果を使う。
+  /// すべて失敗したときだけ例外にする。
   Future<List<FoundShop>> searchNearby(
     GeoPoint center, {
     int radiusMeters = shopSearchRadiusMeters,
     Duration timeout = OverpassClient.timeout,
   }) async {
-    final uri = buildOpenPoiUri(center, radiusMeters: radiusMeters);
+    Object? lastError;
+    final results = await Future.wait([
+      for (final keyword in openPoiKeywords)
+        _search(
+          buildOpenPoiUri(center, keyword, radiusMeters: radiusMeters),
+          timeout,
+        ).then<List<FoundShop>?>(
+          (shops) => shops,
+          onError: (Object e) {
+            lastError = e;
+            return null;
+          },
+        ),
+    ]);
+    if (results.every((shops) => shops == null)) throw lastError!;
+    return mergeFoundShops(const [], [for (final shops in results) ...?shops]);
+  }
+
+  Future<List<FoundShop>> _search(Uri uri, Duration timeout) async {
     final response = await _client
         .get(uri, headers: const {'User-Agent': shopSearchUserAgent})
         .timeout(timeout);

@@ -63,23 +63,3 @@ class NearbyShopFinder {
     return mergeFoundShops(osm ?? const [], poi ?? const []);
   }
 }
-
-/// OpenStreetMap の店を優先し（ID があるため）、OpenPOI の店は重ならないものだけ足す。
-/// OpenPOI には ID が無く、同じ店が業種違いで複数件になることもあるため、名前と近さで重なりを判定する。
-List<FoundShop> mergeFoundShops(List<FoundShop> osm, List<FoundShop> poi) {
-  final merged = [...osm];
-  for (final shop in poi) {
-    if (merged.any(
-      (other) => looksLikeSameShop(
-        shop.name,
-        shop.location,
-        other.name,
-        other.location,
-      ),
-    )) {
-      continue;
-    }
-    merged.add(shop);
-  }
-  return merged;
-}
