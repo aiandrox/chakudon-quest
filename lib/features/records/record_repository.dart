@@ -406,6 +406,10 @@ class RecordRepository {
   Future<void> _deleteShopIfUnused(String shopId) async {
     if (await _visitCount(shopId) > 0) return;
     await (_db.delete(_db.shops)..where((s) => s.id.equals(shopId))).go();
+    // 願は名前と位置を持っているので、消えた店のIDだけを外して残す。
+    await (_db.update(_db.wishes)..where((w) => w.shopId.equals(shopId))).write(
+      const WishesCompanion(shopId: Value(null)),
+    );
   }
 
   Future<String> _resolveShop(

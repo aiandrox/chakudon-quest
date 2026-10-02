@@ -105,6 +105,8 @@ void main() {
       await records.deleteVisit(visit.id);
       saved = (await wishes.watchWishes().first).single;
       expect(saved.fulfilledVisitId, isNull);
+      // 店も消えたので、願から店のIDを外す。
+      expect(saved.shopId, isNull);
     });
 
     test('願を選ばなくても、同じOSMの店なら叶う', () async {
