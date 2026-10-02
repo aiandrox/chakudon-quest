@@ -11,6 +11,7 @@ import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/inkan/inkan_stamp.dart';
 import 'package:chakudon_quest/main.dart';
@@ -42,6 +43,7 @@ void main() {
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           photoPickerProvider.overrideWithValue(FakePhotoPicker()),
           notificationServiceProvider.overrideWithValue(notifications),
+          locationServiceProvider.overrideWithValue(FakeLocationService()),
           if (now != null) clockProvider.overrideWithValue(() => now),
         ],
         child: const ChakudonQuestApp(),

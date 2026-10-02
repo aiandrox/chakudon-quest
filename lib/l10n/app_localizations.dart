@@ -1540,6 +1540,18 @@ abstract class AppLocalizations {
   /// **'ラーメン地図'**
   String get mapTitle;
 
+  /// No description provided for @mapSearching.
+  ///
+  /// In ja, this message translates to:
+  /// **'このあたりのラーメン店を探しています…'**
+  String get mapSearching;
+
+  /// No description provided for @mapLocating.
+  ///
+  /// In ja, this message translates to:
+  /// **'現在地を確かめています…'**
+  String get mapLocating;
+
   /// No description provided for @mapEmpty.
   ///
   /// In ja, this message translates to:

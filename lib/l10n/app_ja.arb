@@ -424,6 +424,8 @@
   "mapAttribution": "OpenStreetMap contributors",
   "openPoiAttribution": "出典: OpenPOI API（https://openpoiapi.com/attribution.html）",
   "mapTitle": "ラーメン地図",
+  "mapSearching": "このあたりのラーメン店を探しています…",
+  "mapLocating": "現在地を確かめています…",
   "mapEmpty": "行った店はまだ地図にありません。「このあたりのラーメン店を探す」で、まわりの店を探せます",
   "mapSearchHere": "このあたりのラーメン店を探す",
   "mapMyLocation": "現在地",

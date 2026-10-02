@@ -47,6 +47,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   GeoPoint? _here;
   List<FoundShop> _nearby = const [];
   bool _isSearching = false;
+
+  /// 現在地を確かめている回数。開いたときと「現在地」ボタンで重なることがあるため数える。
+  int _locating = 0;
   bool _showJourney = false;
 
   /// 旅路を見せる年。nullならすべての年。
@@ -70,9 +73,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _locate({required bool move}) async {
-    final here = await ref
-        .read(locationServiceProvider)
-        .currentPosition(requestPermission: true);
+    setState(() => _locating++);
+    final GeoPoint? here;
+    try {
+      here = await ref
+          .read(locationServiceProvider)
+          .currentPosition(requestPermission: true);
+    } finally {
+      if (mounted) setState(() => _locating--);
+    }
     if (!mounted) return;
     if (here == null) {
       if (move) _showMessage(AppLocalizations.of(context).mapNoLocation);
@@ -398,6 +407,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     _showExpeditions(expeditions(scored, year: _journeyYear)),
               ),
             ),
+          if (_isSearching || _locating > 0) ...[
+            const Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              child: LinearProgressIndicator(),
+            ),
+            Align(
+              child: _LoadingBadge(
+                message: _isSearching ? l10n.mapSearching : l10n.mapLocating,
+              ),
+            ),
+          ],
           if (!_showJourney &&
               pins.isEmpty &&
               _nearby.isEmpty &&
@@ -756,6 +778,40 @@ class _JourneyPanel extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 地図の真ん中に出す「探しています」の札。地図の操作は止めない。
+class _LoadingBadge extends StatelessWidget {
+  const _LoadingBadge({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Semantics(
+        liveRegion: true,
+        child: Card(
+          elevation: 3,
+          shape: const StadiumBorder(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox.square(
+                  dimension: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                ),
+                const SizedBox(width: 12),
+                Text(message),
+              ],
+            ),
+          ),
         ),
       ),
     );

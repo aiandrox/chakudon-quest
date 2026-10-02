@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/native.dart';
@@ -54,6 +55,9 @@ class FakeShopFinder implements NearbyShopFinder {
   Object? error;
   int calls = 0;
 
+  /// 渡すと、完了するまで検索の答えを返さない（探している最中の表示を確かめるため）。
+  Completer<void>? gate;
+
   final radii = <int>[];
   final centers = <GeoPoint>[];
 
@@ -66,6 +70,7 @@ class FakeShopFinder implements NearbyShopFinder {
     calls++;
     radii.add(radiusMeters);
     centers.add(center);
+    await gate?.future;
     final error = this.error;
     if (error != null) throw error;
     return shops;

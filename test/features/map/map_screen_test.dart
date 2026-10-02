@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -144,5 +146,21 @@ void main() {
     await tester.tap(find.text(ja.journeyExpeditions));
     await tester.pumpAndSettle();
     expect(find.text(ja.journeyExpeditionsNone), findsOneWidget);
+  });
+
+  testWidgets('周辺を探している間は、地図の上に「探しています」と出す', (tester) async {
+    final gate = Completer<void>();
+    overpass.gate = gate;
+    await pumpMap(tester, [buildEntry(shop: buildShop(id: 'no-location'))]);
+
+    await tester.tap(find.text(ja.mapSearchHere));
+    await tester.pump();
+    expect(find.text(ja.mapSearching), findsOneWidget);
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+
+    gate.complete();
+    await tester.pumpAndSettle();
+    expect(find.text(ja.mapSearching), findsNothing);
+    expect(find.byType(LinearProgressIndicator), findsNothing);
   });
 }
