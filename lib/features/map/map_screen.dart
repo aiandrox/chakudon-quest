@@ -47,7 +47,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   GeoPoint? _here;
   List<FoundShop> _nearby = const [];
   bool _isSearching = false;
-  bool _isLocating = false;
+
+  /// 現在地を確かめている回数。開いたときと「現在地」ボタンで重なることがあるため数える。
+  int _locating = 0;
   bool _showJourney = false;
 
   /// 旅路を見せる年。nullならすべての年。
@@ -71,14 +73,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _locate({required bool move}) async {
-    setState(() => _isLocating = true);
+    setState(() => _locating++);
     final GeoPoint? here;
     try {
       here = await ref
           .read(locationServiceProvider)
           .currentPosition(requestPermission: true);
     } finally {
-      if (mounted) setState(() => _isLocating = false);
+      if (mounted) setState(() => _locating--);
     }
     if (!mounted) return;
     if (here == null) {
@@ -405,7 +407,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     _showExpeditions(expeditions(scored, year: _journeyYear)),
               ),
             ),
-          if (_isSearching || _isLocating) ...[
+          if (_isSearching || _locating > 0) ...[
             const Positioned(
               left: 0,
               right: 0,
