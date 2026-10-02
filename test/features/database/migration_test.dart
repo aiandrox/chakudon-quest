@@ -149,4 +149,45 @@ void main() {
     await repository.setShopMemo('shop', '平日の昼だけ');
     expect((await repository.allShops()).single.strategyMemo, '平日の昼だけ');
   });
+
+  test('バージョン4の店と並び中の店に、出所の列を足す', () async {
+    final seconds = DateTime(2026, 10, 2).millisecondsSinceEpoch ~/ 1000;
+    final database = AppDatabase(
+      NativeDatabase.memory(
+        setup: (raw) {
+          raw.execute(
+            'CREATE TABLE shops (id TEXT NOT NULL, name TEXT NOT NULL, '
+            'latitude REAL, longitude REAL, osm_id TEXT, '
+            "hours_conditions TEXT NOT NULL DEFAULT '', "
+            "strategy_memo TEXT NOT NULL DEFAULT '', "
+            'created_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(_v1Schema[1]);
+          raw.execute(
+            'CREATE TABLE active_checkins (id INTEGER NOT NULL, '
+            'shop_id TEXT, osm_id TEXT, name TEXT NOT NULL, latitude REAL, '
+            'longitude REAL, checked_in_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(
+            'INSERT INTO shops VALUES '
+            "('shop', '麺屋', NULL, NULL, NULL, '', 'メモ', $seconds)",
+          );
+          raw.execute(
+            'INSERT INTO active_checkins VALUES '
+            "(1, NULL, NULL, '並んでいる店', 35.0, 139.0, $seconds)",
+          );
+          raw.execute('PRAGMA user_version = 4');
+        },
+      ),
+    );
+    addTearDown(database.close);
+    final repository = RecordRepository(database);
+
+    final shop = (await repository.allShops()).single;
+    expect(shop.strategyMemo, 'メモ');
+    expect(shop.dataSource, isNull);
+    final checkin = (await repository.activeCheckin())!;
+    expect(checkin.name, '並んでいる店');
+    expect(checkin.dataSource, isNull);
+  });
 }

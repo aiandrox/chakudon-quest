@@ -25,6 +25,7 @@ class ShopInput {
     required this.name,
     this.latitude,
     this.longitude,
+    this.dataSource,
   });
 
   final String? shopId;
@@ -32,6 +33,7 @@ class ShopInput {
   final String name;
   final double? latitude;
   final double? longitude;
+  final ShopSource? dataSource;
 }
 
 class RecordRepository {
@@ -82,6 +84,7 @@ class RecordRepository {
                 osmId: Value(shop.osmId),
                 hoursConditions: Value(shop.hoursConditions),
                 strategyMemo: Value(shop.strategyMemo),
+                dataSource: Value(shop.dataSource),
                 createdAt: shop.createdAt,
               ),
             );
@@ -117,6 +120,7 @@ class RecordRepository {
     name: row.name,
     latitude: row.latitude,
     longitude: row.longitude,
+    dataSource: row.dataSource,
     checkedInAt: row.checkedInAt,
   );
 
@@ -132,6 +136,7 @@ class RecordRepository {
             name: shop.name.trim(),
             latitude: Value(shop.latitude),
             longitude: Value(shop.longitude),
+            dataSource: Value(shop.dataSource),
             checkedInAt: at,
           ),
         );
@@ -170,6 +175,7 @@ class RecordRepository {
     name: checkin.name,
     latitude: checkin.latitude,
     longitude: checkin.longitude,
+    dataSource: checkin.dataSource,
   );
 
   Future<void> _insertVisit(Visit visit) => _db
@@ -345,7 +351,9 @@ class RecordRepository {
       final changesHours =
           hoursConditions != null &&
           !setEquals(existing.hoursConditions, hoursConditions);
-      if (adoptsOsm || changesHours) {
+      final adoptsSource =
+          existing.dataSource == null && input.dataSource != null;
+      if (adoptsOsm || changesHours || adoptsSource) {
         await (_db.update(
           _db.shops,
         )..where((s) => s.id.equals(existing.id))).write(
@@ -357,6 +365,9 @@ class RecordRepository {
                 : const Value.absent(),
             hoursConditions: changesHours
                 ? Value(hoursConditions)
+                : const Value.absent(),
+            dataSource: adoptsSource
+                ? Value(input.dataSource)
                 : const Value.absent(),
           ),
         );
@@ -374,6 +385,7 @@ class RecordRepository {
             longitude: Value(input.longitude),
             osmId: Value(input.osmId),
             hoursConditions: Value(hoursConditions ?? const {}),
+            dataSource: Value(input.dataSource),
             createdAt: now,
           ),
         );

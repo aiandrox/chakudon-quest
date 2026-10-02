@@ -66,6 +66,7 @@ class RecordController extends Notifier<RecordState> {
               shopId: checkin.shopId,
               osmId: checkin.osmId,
               name: checkin.name,
+              dataSource: checkin.dataSource,
               location: latitude != null && longitude != null
                   ? GeoPoint(latitude, longitude)
                   : null,
@@ -261,6 +262,7 @@ class RecordController extends Notifier<RecordState> {
         name: selected.name,
         latitude: selected.location?.latitude,
         longitude: selected.location?.longitude,
+        dataSource: selected.dataSource,
       );
     }
     // ギャラリーの写真は店にいるときに選んだとは限らないため、現在地を店の位置にしない。

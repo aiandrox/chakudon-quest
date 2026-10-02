@@ -16,6 +16,14 @@ void main() {
       final hayashida = shops.firstWhere((s) => s.name == 'らぁ麺　はやし田');
       expect(hayashida.osmId, isNull);
       expect(hayashida.location.latitude, closeTo(35.690633647, 1e-9));
+      expect(hayashida.dataSource!.licenses, [
+        'CC BY 4.0',
+        'CDLA-Permissive-2.0',
+      ]);
+      expect(
+        hayashida.dataSource!.attributions,
+        contains('東京都新宿区食品等営業許可・届出一覧'),
+      );
     });
 
     test('位置が町丁目までしかわからない施設は捨てる', () {

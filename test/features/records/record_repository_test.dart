@@ -185,6 +185,66 @@ void main() {
     expect(second.shopId, isNot(first.shopId));
   });
 
+  group('OpenPOIの店の出所', () {
+    const source = ShopSource(
+      licenses: ['CC BY 4.0'],
+      attributions: ['東京都新宿区食品等営業許可・届出一覧'],
+    );
+
+    test('店と一緒に保存する', () async {
+      await save(
+        const ShopInput(
+          name: 'はやし田',
+          latitude: 35.0,
+          longitude: 139.0,
+          dataSource: source,
+        ),
+      );
+
+      final shop = (await repository.allShops()).single;
+      expect(shop.dataSource!.licenses, ['CC BY 4.0']);
+      expect(shop.dataSource!.attributions, source.attributions);
+    });
+
+    test('手入力で記録した店をOpenPOIの候補から選び直すと、出所を補う', () async {
+      final first = await save(
+        const ShopInput(name: 'はやし田', latitude: 35.0, longitude: 139.0),
+      );
+      final second = await save(
+        const ShopInput(
+          name: 'はやし田',
+          latitude: 35.0,
+          longitude: 139.0,
+          dataSource: source,
+        ),
+      );
+
+      expect(second.shopId, first.shopId);
+      expect((await repository.allShops()).single.dataSource, isNotNull);
+    });
+
+    test('並んだ店の出所は、撤退の記録の店に引き継ぐ', () async {
+      await repository.checkIn(
+        shop: const ShopInput(
+          name: 'はやし田',
+          latitude: 35.0,
+          longitude: 139.0,
+          dataSource: source,
+        ),
+        at: DateTime(2026, 10, 2, 11),
+      );
+      final checkin = (await repository.activeCheckin())!;
+      expect(checkin.dataSource!.licenses, ['CC BY 4.0']);
+
+      await repository.saveRetreat(
+        checkin: checkin,
+        now: DateTime(2026, 10, 2, 12),
+      );
+
+      expect((await repository.allShops()).single.dataSource, isNotNull);
+    });
+  });
+
   test('同じ名前でも別のOSMの店は別の店にする', () async {
     final first = await save(const ShopInput(osmId: 'node/1', name: '一風堂'));
     final second = await save(const ShopInput(osmId: 'node/2', name: '一風堂'));

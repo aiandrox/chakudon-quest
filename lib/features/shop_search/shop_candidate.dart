@@ -13,6 +13,7 @@ class ShopCandidate {
     this.distanceMeters,
     this.hoursConditions,
     this.strategyMemo = '',
+    this.dataSource,
   });
 
   factory ShopCandidate.fromShop(Shop shop, {double? distanceMeters}) {
@@ -28,6 +29,7 @@ class ShopCandidate {
       distanceMeters: distanceMeters,
       hoursConditions: shop.hoursConditions,
       strategyMemo: shop.strategyMemo,
+      dataSource: shop.dataSource,
     );
   }
 
@@ -43,6 +45,8 @@ class ShopCandidate {
 
   /// 記録済みの店の攻略メモ。
   final String strategyMemo;
+
+  final ShopSource? dataSource;
 }
 
 /// 2つの候補が同じ店を指すか。IDで比べられないときは、名前と近さで判断する。
@@ -91,6 +95,7 @@ List<ShopCandidate> rankShopCandidates({
       name: shop.name,
       location: shop.location,
       distanceMeters: distance,
+      dataSource: shop.dataSource,
     );
     if (known.any((k) => isSameShop(k, candidate))) continue;
     candidates.add(candidate);

@@ -295,6 +295,20 @@
     }
   },
   "backupTitle": "バックアップ",
+  "creditsTitle": "出典・ライセンス",
+  "creditsServicesHeading": "地図と店の情報",
+  "creditsOsm": "地図と店の情報: © OpenStreetMap contributors（ODbL）",
+  "creditsOpenPoi": "店の情報: 出典 OpenPOI API（https://openpoiapi.com/attribution.html）",
+  "creditsSavedShopsHeading": "記録した店の出典",
+  "creditsSavedShopsNote": "OpenPOI API で見つけて記録した店の情報の出どころです",
+  "creditsLicenses": "ライセンス: {licenses}",
+  "@creditsLicenses": {
+    "placeholders": {
+      "licenses": {"type": "String"}
+    }
+  },
+  "creditsAppHeading": "アプリで使っている部品",
+  "creditsAppLicenses": "部品とフォントのライセンスを見る",
   "backupDescription": "記録と写真を1つのファイル（zip）にまとめて書き出します。機種変更のときは、新しいスマホでこのファイルを読み込んでください。",
   "backupExport": "書き出す",
   "backupExportNote": "書き出したファイルは、「ファイル」アプリやクラウド、メールなどに保存してください",

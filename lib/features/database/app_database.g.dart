@@ -79,6 +79,15 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  @override
+  late final GeneratedColumnWithTypeConverter<ShopSource?, String> dataSource =
+      GeneratedColumn<String>(
+        'data_source',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<ShopSource?>($ShopsTable.$converterdataSourcen);
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -99,6 +108,7 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     osmId,
     hoursConditions,
     strategyMemo,
+    dataSource,
     createdAt,
   ];
   @override
@@ -200,6 +210,12 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
         DriftSqlType.string,
         data['${effectivePrefix}strategy_memo'],
       )!,
+      dataSource: $ShopsTable.$converterdataSourcen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}data_source'],
+        ),
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -214,6 +230,10 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
 
   static TypeConverter<Set<HoursCondition>, String> $converterhoursConditions =
       const HoursConditionsConverter();
+  static TypeConverter<ShopSource, String> $converterdataSource =
+      const ShopSourceConverter();
+  static TypeConverter<ShopSource?, String?> $converterdataSourcen =
+      NullAwareTypeConverter.wrap($converterdataSource);
 }
 
 class ShopsCompanion extends UpdateCompanion<Shop> {
@@ -224,6 +244,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
   final Value<String?> osmId;
   final Value<Set<HoursCondition>> hoursConditions;
   final Value<String> strategyMemo;
+  final Value<ShopSource?> dataSource;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const ShopsCompanion({
@@ -234,6 +255,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.osmId = const Value.absent(),
     this.hoursConditions = const Value.absent(),
     this.strategyMemo = const Value.absent(),
+    this.dataSource = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -245,6 +267,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.osmId = const Value.absent(),
     this.hoursConditions = const Value.absent(),
     this.strategyMemo = const Value.absent(),
+    this.dataSource = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -258,6 +281,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Expression<String>? osmId,
     Expression<String>? hoursConditions,
     Expression<String>? strategyMemo,
+    Expression<String>? dataSource,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -269,6 +293,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       if (osmId != null) 'osm_id': osmId,
       if (hoursConditions != null) 'hours_conditions': hoursConditions,
       if (strategyMemo != null) 'strategy_memo': strategyMemo,
+      if (dataSource != null) 'data_source': dataSource,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -282,6 +307,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Value<String?>? osmId,
     Value<Set<HoursCondition>>? hoursConditions,
     Value<String>? strategyMemo,
+    Value<ShopSource?>? dataSource,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -293,6 +319,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       osmId: osmId ?? this.osmId,
       hoursConditions: hoursConditions ?? this.hoursConditions,
       strategyMemo: strategyMemo ?? this.strategyMemo,
+      dataSource: dataSource ?? this.dataSource,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -324,6 +351,11 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     if (strategyMemo.present) {
       map['strategy_memo'] = Variable<String>(strategyMemo.value);
     }
+    if (dataSource.present) {
+      map['data_source'] = Variable<String>(
+        $ShopsTable.$converterdataSourcen.toSql(dataSource.value),
+      );
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -343,6 +375,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
           ..write('osmId: $osmId, ')
           ..write('hoursConditions: $hoursConditions, ')
           ..write('strategyMemo: $strategyMemo, ')
+          ..write('dataSource: $dataSource, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -905,6 +938,15 @@ class $ActiveCheckinsTable extends ActiveCheckins
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  @override
+  late final GeneratedColumnWithTypeConverter<ShopSource?, String> dataSource =
+      GeneratedColumn<String>(
+        'data_source',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<ShopSource?>($ActiveCheckinsTable.$converterdataSourcen);
   static const VerificationMeta _checkedInAtMeta = const VerificationMeta(
     'checkedInAt',
   );
@@ -924,6 +966,7 @@ class $ActiveCheckinsTable extends ActiveCheckins
     name,
     latitude,
     longitude,
+    dataSource,
     checkedInAt,
   ];
   @override
@@ -1017,6 +1060,12 @@ class $ActiveCheckinsTable extends ActiveCheckins
         DriftSqlType.double,
         data['${effectivePrefix}longitude'],
       ),
+      dataSource: $ActiveCheckinsTable.$converterdataSourcen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}data_source'],
+        ),
+      ),
       checkedInAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}checked_in_at'],
@@ -1028,6 +1077,11 @@ class $ActiveCheckinsTable extends ActiveCheckins
   $ActiveCheckinsTable createAlias(String alias) {
     return $ActiveCheckinsTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<ShopSource, String> $converterdataSource =
+      const ShopSourceConverter();
+  static TypeConverter<ShopSource?, String?> $converterdataSourcen =
+      NullAwareTypeConverter.wrap($converterdataSource);
 }
 
 class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
@@ -1037,6 +1091,7 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
   final String name;
   final double? latitude;
   final double? longitude;
+  final ShopSource? dataSource;
   final DateTime checkedInAt;
   const ActiveCheckin({
     required this.id,
@@ -1045,6 +1100,7 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
     required this.name,
     this.latitude,
     this.longitude,
+    this.dataSource,
     required this.checkedInAt,
   });
   @override
@@ -1063,6 +1119,11 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
     }
     if (!nullToAbsent || longitude != null) {
       map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || dataSource != null) {
+      map['data_source'] = Variable<String>(
+        $ActiveCheckinsTable.$converterdataSourcen.toSql(dataSource),
+      );
     }
     map['checked_in_at'] = Variable<DateTime>(checkedInAt);
     return map;
@@ -1084,6 +1145,9 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
       longitude: longitude == null && nullToAbsent
           ? const Value.absent()
           : Value(longitude),
+      dataSource: dataSource == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dataSource),
       checkedInAt: Value(checkedInAt),
     );
   }
@@ -1100,6 +1164,7 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
       name: serializer.fromJson<String>(json['name']),
       latitude: serializer.fromJson<double?>(json['latitude']),
       longitude: serializer.fromJson<double?>(json['longitude']),
+      dataSource: serializer.fromJson<ShopSource?>(json['dataSource']),
       checkedInAt: serializer.fromJson<DateTime>(json['checkedInAt']),
     );
   }
@@ -1113,6 +1178,7 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
       'name': serializer.toJson<String>(name),
       'latitude': serializer.toJson<double?>(latitude),
       'longitude': serializer.toJson<double?>(longitude),
+      'dataSource': serializer.toJson<ShopSource?>(dataSource),
       'checkedInAt': serializer.toJson<DateTime>(checkedInAt),
     };
   }
@@ -1124,6 +1190,7 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
     String? name,
     Value<double?> latitude = const Value.absent(),
     Value<double?> longitude = const Value.absent(),
+    Value<ShopSource?> dataSource = const Value.absent(),
     DateTime? checkedInAt,
   }) => ActiveCheckin(
     id: id ?? this.id,
@@ -1132,6 +1199,7 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
     name: name ?? this.name,
     latitude: latitude.present ? latitude.value : this.latitude,
     longitude: longitude.present ? longitude.value : this.longitude,
+    dataSource: dataSource.present ? dataSource.value : this.dataSource,
     checkedInAt: checkedInAt ?? this.checkedInAt,
   );
   ActiveCheckin copyWithCompanion(ActiveCheckinsCompanion data) {
@@ -1142,6 +1210,9 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
       name: data.name.present ? data.name.value : this.name,
       latitude: data.latitude.present ? data.latitude.value : this.latitude,
       longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      dataSource: data.dataSource.present
+          ? data.dataSource.value
+          : this.dataSource,
       checkedInAt: data.checkedInAt.present
           ? data.checkedInAt.value
           : this.checkedInAt,
@@ -1157,14 +1228,23 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
           ..write('name: $name, ')
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
+          ..write('dataSource: $dataSource, ')
           ..write('checkedInAt: $checkedInAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, shopId, osmId, name, latitude, longitude, checkedInAt);
+  int get hashCode => Object.hash(
+    id,
+    shopId,
+    osmId,
+    name,
+    latitude,
+    longitude,
+    dataSource,
+    checkedInAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1175,6 +1255,7 @@ class ActiveCheckin extends DataClass implements Insertable<ActiveCheckin> {
           other.name == this.name &&
           other.latitude == this.latitude &&
           other.longitude == this.longitude &&
+          other.dataSource == this.dataSource &&
           other.checkedInAt == this.checkedInAt);
 }
 
@@ -1185,6 +1266,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
   final Value<String> name;
   final Value<double?> latitude;
   final Value<double?> longitude;
+  final Value<ShopSource?> dataSource;
   final Value<DateTime> checkedInAt;
   const ActiveCheckinsCompanion({
     this.id = const Value.absent(),
@@ -1193,6 +1275,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
     this.name = const Value.absent(),
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
+    this.dataSource = const Value.absent(),
     this.checkedInAt = const Value.absent(),
   });
   ActiveCheckinsCompanion.insert({
@@ -1202,6 +1285,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
     required String name,
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
+    this.dataSource = const Value.absent(),
     required DateTime checkedInAt,
   }) : name = Value(name),
        checkedInAt = Value(checkedInAt);
@@ -1212,6 +1296,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
     Expression<String>? name,
     Expression<double>? latitude,
     Expression<double>? longitude,
+    Expression<String>? dataSource,
     Expression<DateTime>? checkedInAt,
   }) {
     return RawValuesInsertable({
@@ -1221,6 +1306,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
       if (name != null) 'name': name,
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
+      if (dataSource != null) 'data_source': dataSource,
       if (checkedInAt != null) 'checked_in_at': checkedInAt,
     });
   }
@@ -1232,6 +1318,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
     Value<String>? name,
     Value<double?>? latitude,
     Value<double?>? longitude,
+    Value<ShopSource?>? dataSource,
     Value<DateTime>? checkedInAt,
   }) {
     return ActiveCheckinsCompanion(
@@ -1241,6 +1328,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
       name: name ?? this.name,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      dataSource: dataSource ?? this.dataSource,
       checkedInAt: checkedInAt ?? this.checkedInAt,
     );
   }
@@ -1266,6 +1354,11 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
     if (longitude.present) {
       map['longitude'] = Variable<double>(longitude.value);
     }
+    if (dataSource.present) {
+      map['data_source'] = Variable<String>(
+        $ActiveCheckinsTable.$converterdataSourcen.toSql(dataSource.value),
+      );
+    }
     if (checkedInAt.present) {
       map['checked_in_at'] = Variable<DateTime>(checkedInAt.value);
     }
@@ -1281,6 +1374,7 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
           ..write('name: $name, ')
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
+          ..write('dataSource: $dataSource, ')
           ..write('checkedInAt: $checkedInAt')
           ..write(')'))
         .toString();
@@ -1312,6 +1406,7 @@ typedef $$ShopsTableCreateCompanionBuilder = ShopsCompanion Function({
   Value<String?> osmId,
   Value<Set<HoursCondition>> hoursConditions,
   Value<String> strategyMemo,
+  Value<ShopSource?> dataSource,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -1323,6 +1418,7 @@ typedef $$ShopsTableUpdateCompanionBuilder = ShopsCompanion Function({
   Value<String?> osmId,
   Value<Set<HoursCondition>> hoursConditions,
   Value<String> strategyMemo,
+  Value<ShopSource?> dataSource,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -1397,6 +1493,12 @@ class $$ShopsTableFilterComposer extends Composer<_$AppDatabase, $ShopsTable> {
   ColumnFilters<String> get strategyMemo => $composableBuilder(
     column: $table.strategyMemo,
     builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ShopSource?, ShopSource, String>
+  get dataSource => $composableBuilder(
+    column: $table.dataSource,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
@@ -1474,6 +1576,11 @@ class $$ShopsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get dataSource => $composableBuilder(
+    column: $table.dataSource,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -1514,6 +1621,12 @@ class $$ShopsTableAnnotationComposer
     column: $table.strategyMemo,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<ShopSource?, String> get dataSource =>
+      $composableBuilder(
+        column: $table.dataSource,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -1580,6 +1693,7 @@ class $$ShopsTableTableManager
                 Value<Set<HoursCondition>> hoursConditions =
                     const Value.absent(),
                 Value<String> strategyMemo = const Value.absent(),
+                Value<ShopSource?> dataSource = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion(
@@ -1590,6 +1704,7 @@ class $$ShopsTableTableManager
                 osmId: osmId,
                 hoursConditions: hoursConditions,
                 strategyMemo: strategyMemo,
+                dataSource: dataSource,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -1603,6 +1718,7 @@ class $$ShopsTableTableManager
                 Value<Set<HoursCondition>> hoursConditions =
                     const Value.absent(),
                 Value<String> strategyMemo = const Value.absent(),
+                Value<ShopSource?> dataSource = const Value.absent(),
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion.insert(
@@ -1613,6 +1729,7 @@ class $$ShopsTableTableManager
                 osmId: osmId,
                 hoursConditions: hoursConditions,
                 strategyMemo: strategyMemo,
+                dataSource: dataSource,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -2124,6 +2241,7 @@ typedef $$ActiveCheckinsTableCreateCompanionBuilder =
       required String name,
       Value<double?> latitude,
       Value<double?> longitude,
+      Value<ShopSource?> dataSource,
       required DateTime checkedInAt,
     });
 typedef $$ActiveCheckinsTableUpdateCompanionBuilder =
@@ -2134,6 +2252,7 @@ typedef $$ActiveCheckinsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<double?> latitude,
       Value<double?> longitude,
+      Value<ShopSource?> dataSource,
       Value<DateTime> checkedInAt,
     });
 
@@ -2174,6 +2293,12 @@ class $$ActiveCheckinsTableFilterComposer
   ColumnFilters<double> get longitude => $composableBuilder(
     column: $table.longitude,
     builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ShopSource?, ShopSource, String>
+  get dataSource => $composableBuilder(
+    column: $table.dataSource,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<DateTime> get checkedInAt => $composableBuilder(
@@ -2221,6 +2346,11 @@ class $$ActiveCheckinsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get dataSource => $composableBuilder(
+    column: $table.dataSource,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get checkedInAt => $composableBuilder(
     column: $table.checkedInAt,
     builder: (column) => ColumnOrderings(column),
@@ -2253,6 +2383,12 @@ class $$ActiveCheckinsTableAnnotationComposer
 
   GeneratedColumn<double> get longitude =>
       $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ShopSource?, String> get dataSource =>
+      $composableBuilder(
+        column: $table.dataSource,
+        builder: (column) => column,
+      );
 
   GeneratedColumn<DateTime> get checkedInAt => $composableBuilder(
     column: $table.checkedInAt,
@@ -2299,6 +2435,7 @@ class $$ActiveCheckinsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<double?> latitude = const Value.absent(),
                 Value<double?> longitude = const Value.absent(),
+                Value<ShopSource?> dataSource = const Value.absent(),
                 Value<DateTime> checkedInAt = const Value.absent(),
               }) => ActiveCheckinsCompanion(
                 id: id,
@@ -2307,6 +2444,7 @@ class $$ActiveCheckinsTableTableManager
                 name: name,
                 latitude: latitude,
                 longitude: longitude,
+                dataSource: dataSource,
                 checkedInAt: checkedInAt,
               ),
           createCompanionCallback:
@@ -2317,6 +2455,7 @@ class $$ActiveCheckinsTableTableManager
                 required String name,
                 Value<double?> latitude = const Value.absent(),
                 Value<double?> longitude = const Value.absent(),
+                Value<ShopSource?> dataSource = const Value.absent(),
                 required DateTime checkedInAt,
               }) => ActiveCheckinsCompanion.insert(
                 id: id,
@@ -2325,6 +2464,7 @@ class $$ActiveCheckinsTableTableManager
                 name: name,
                 latitude: latitude,
                 longitude: longitude,
+                dataSource: dataSource,
                 checkedInAt: checkedInAt,
               ),
           withReferenceMapper: (p0) => p0

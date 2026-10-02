@@ -1,15 +1,24 @@
+import '../records/models.dart';
 import 'geo.dart';
 
 const shopSearchRadiusMeters = 300;
 
 /// 店の検索（Overpass・OpenPOI）で見つかった店。
 class FoundShop {
-  const FoundShop({this.osmId, required this.name, required this.location});
+  const FoundShop({
+    this.osmId,
+    required this.name,
+    required this.location,
+    this.dataSource,
+  });
 
   /// OpenStreetMap の ID。OpenPOI で見つかった店は null。
   final String? osmId;
   final String name;
   final GeoPoint location;
+
+  /// OpenPOI で見つけた店の出所。
+  final ShopSource? dataSource;
 }
 
 /// 表記ゆれを許して同じ店とみなす距離。同じ名前の別の支店（数百 m 離れている）と混ざらない程度に狭くする。

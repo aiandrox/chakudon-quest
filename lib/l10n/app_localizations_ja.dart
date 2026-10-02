@@ -528,6 +528,36 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupTitle => 'バックアップ';
 
   @override
+  String get creditsTitle => '出典・ライセンス';
+
+  @override
+  String get creditsServicesHeading => '地図と店の情報';
+
+  @override
+  String get creditsOsm => '地図と店の情報: © OpenStreetMap contributors（ODbL）';
+
+  @override
+  String get creditsOpenPoi =>
+      '店の情報: 出典 OpenPOI API（https://openpoiapi.com/attribution.html）';
+
+  @override
+  String get creditsSavedShopsHeading => '記録した店の出典';
+
+  @override
+  String get creditsSavedShopsNote => 'OpenPOI API で見つけて記録した店の情報の出どころです';
+
+  @override
+  String creditsLicenses(String licenses) {
+    return 'ライセンス: $licenses';
+  }
+
+  @override
+  String get creditsAppHeading => 'アプリで使っている部品';
+
+  @override
+  String get creditsAppLicenses => '部品とフォントのライセンスを見る';
+
+  @override
   String get backupDescription =>
       '記録と写真を1つのファイル（zip）にまとめて書き出します。機種変更のときは、新しいスマホでこのファイルを読み込んでください。';
 

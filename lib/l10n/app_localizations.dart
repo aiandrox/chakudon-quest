@@ -1018,6 +1018,60 @@ abstract class AppLocalizations {
   /// **'バックアップ'**
   String get backupTitle;
 
+  /// No description provided for @creditsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'出典・ライセンス'**
+  String get creditsTitle;
+
+  /// No description provided for @creditsServicesHeading.
+  ///
+  /// In ja, this message translates to:
+  /// **'地図と店の情報'**
+  String get creditsServicesHeading;
+
+  /// No description provided for @creditsOsm.
+  ///
+  /// In ja, this message translates to:
+  /// **'地図と店の情報: © OpenStreetMap contributors（ODbL）'**
+  String get creditsOsm;
+
+  /// No description provided for @creditsOpenPoi.
+  ///
+  /// In ja, this message translates to:
+  /// **'店の情報: 出典 OpenPOI API（https://openpoiapi.com/attribution.html）'**
+  String get creditsOpenPoi;
+
+  /// No description provided for @creditsSavedShopsHeading.
+  ///
+  /// In ja, this message translates to:
+  /// **'記録した店の出典'**
+  String get creditsSavedShopsHeading;
+
+  /// No description provided for @creditsSavedShopsNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'OpenPOI API で見つけて記録した店の情報の出どころです'**
+  String get creditsSavedShopsNote;
+
+  /// No description provided for @creditsLicenses.
+  ///
+  /// In ja, this message translates to:
+  /// **'ライセンス: {licenses}'**
+  String creditsLicenses(String licenses);
+
+  /// No description provided for @creditsAppHeading.
+  ///
+  /// In ja, this message translates to:
+  /// **'アプリで使っている部品'**
+  String get creditsAppHeading;
+
+  /// No description provided for @creditsAppLicenses.
+  ///
+  /// In ja, this message translates to:
+  /// **'部品とフォントのライセンスを見る'**
+  String get creditsAppLicenses;
+
   /// No description provided for @backupDescription.
   ///
   /// In ja, this message translates to:
