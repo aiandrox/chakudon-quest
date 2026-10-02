@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
 import 'quests.dart';
 
@@ -51,29 +52,32 @@ class QuestSeal extends StatelessWidget {
       child: ExcludeSemantics(
         child: Transform.rotate(
           angle: (locked ? 0 : -6) * math.pi / 180,
-          child: Container(
-            width: size,
-            height: size,
-            alignment: Alignment.center,
-            decoration: ShapeDecoration(
-              color: isMax ? Washi.shu : Colors.transparent,
-              shape: shape.copyWith(
-                side: BorderSide(
-                  color: color,
-                  width: locked ? 1.5 : size * 0.06,
+          child: InkWear(
+            seed: inkSeed('${quest.id}:$level'),
+            child: Container(
+              width: size,
+              height: size,
+              alignment: Alignment.center,
+              decoration: ShapeDecoration(
+                color: isMax ? Washi.shu : Colors.transparent,
+                shape: shape.copyWith(
+                  side: BorderSide(
+                    color: color,
+                    width: locked ? 1.5 : size * 0.06,
+                  ),
                 ),
               ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(size * 0.12),
-              child: FittedBox(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    fontFamily: Washi.brush,
-                    fontSize: size * 0.5,
-                    height: 1.1,
-                    color: isMax ? Washi.page : color,
+              child: Padding(
+                padding: EdgeInsets.all(size * 0.12),
+                child: FittedBox(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      fontFamily: Washi.brush,
+                      fontSize: size * 0.5,
+                      height: 1.1,
+                      color: isMax ? Washi.page : color,
+                    ),
                   ),
                 ),
               ),

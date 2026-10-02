@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
 import '../records/models.dart';
 import '../scoring/points.dart';
@@ -116,18 +117,21 @@ class InkanStamp extends StatelessWidget {
       child: ExcludeSemantics(
         child: Transform.rotate(
           angle: inkanAngle(visit.id),
-          child: SizedBox.square(
-            dimension: size,
-            child: CustomPaint(
-              painter: _InkanPainter(shape),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: size * 0.08,
-                    vertical: size * 0.12,
+          child: InkWear(
+            seed: inkSeed(visit.id),
+            child: SizedBox.square(
+              dimension: size,
+              child: CustomPaint(
+                painter: _InkanPainter(shape),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: size * 0.08,
+                      vertical: size * 0.12,
+                    ),
+                    child: content,
                   ),
-                  child: content,
                 ),
               ),
             ),
@@ -223,23 +227,26 @@ class RankSeal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Transform.rotate(
       angle: -5 * math.pi / 180,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: color, width: 2),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: fontSize * 0.45,
-            vertical: fontSize * 0.25,
+      child: InkWear(
+        seed: inkSeed(label),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(color: color, width: 2),
+            borderRadius: BorderRadius.circular(4),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontFamily: Washi.brush,
-              fontSize: fontSize,
-              color: color,
-              height: 1.1,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: fontSize * 0.45,
+              vertical: fontSize * 0.25,
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: fontSize,
+                color: color,
+                height: 1.1,
+              ),
             ),
           ),
         ),
