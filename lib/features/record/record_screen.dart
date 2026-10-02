@@ -132,18 +132,20 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          if (ref.watch(activeCheckinProvider) case AsyncData(value: null))
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(48),
+          // 何か入れたあとは食べた記録なので出さない（並び始めると入力が消えるため）。
+          if (!state.hasInput)
+            if (ref.watch(activeCheckinProvider) case AsyncData(value: null))
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                  onPressed: _startCheckin,
+                  icon: const Icon(Icons.groups),
+                  label: Text(l10n.checkinStart),
                 ),
-                onPressed: _startCheckin,
-                icon: const Icon(Icons.groups),
-                label: Text(l10n.checkinStart),
               ),
-            ),
           _PhotoSection(state: state),
           const SizedBox(height: 16),
           SectionTitle(l10n.shopSection),
