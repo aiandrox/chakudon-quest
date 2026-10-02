@@ -743,5 +743,32 @@ class AppLocalizationsJa extends AppLocalizations {
   String get questLocked => '未';
 
   @override
-  String get inkanNoStyle => 'ラーメン';
+  String get inkanNoStyle => '拉麺';
+
+  @override
+  String get inkanStyleShoyu => '醤油';
+
+  @override
+  String get inkanStyleMiso => '味噌';
+
+  @override
+  String get inkanStyleShio => '塩';
+
+  @override
+  String get inkanStyleTonkotsu => '豚骨';
+
+  @override
+  String get inkanStyleIekei => '家系';
+
+  @override
+  String get inkanStyleJiro => '二郎';
+
+  @override
+  String get inkanStyleTsukemen => '沾麺';
+
+  @override
+  String get inkanStyleShirunashi => '汁無';
+
+  @override
+  String get inkanStyleOther => '麺';
 }

@@ -1381,8 +1381,62 @@ abstract class AppLocalizations {
   /// No description provided for @inkanNoStyle.
   ///
   /// In ja, this message translates to:
-  /// **'ラーメン'**
+  /// **'拉麺'**
   String get inkanNoStyle;
+
+  /// No description provided for @inkanStyleShoyu.
+  ///
+  /// In ja, this message translates to:
+  /// **'醤油'**
+  String get inkanStyleShoyu;
+
+  /// No description provided for @inkanStyleMiso.
+  ///
+  /// In ja, this message translates to:
+  /// **'味噌'**
+  String get inkanStyleMiso;
+
+  /// No description provided for @inkanStyleShio.
+  ///
+  /// In ja, this message translates to:
+  /// **'塩'**
+  String get inkanStyleShio;
+
+  /// No description provided for @inkanStyleTonkotsu.
+  ///
+  /// In ja, this message translates to:
+  /// **'豚骨'**
+  String get inkanStyleTonkotsu;
+
+  /// No description provided for @inkanStyleIekei.
+  ///
+  /// In ja, this message translates to:
+  /// **'家系'**
+  String get inkanStyleIekei;
+
+  /// No description provided for @inkanStyleJiro.
+  ///
+  /// In ja, this message translates to:
+  /// **'二郎'**
+  String get inkanStyleJiro;
+
+  /// No description provided for @inkanStyleTsukemen.
+  ///
+  /// In ja, this message translates to:
+  /// **'沾麺'**
+  String get inkanStyleTsukemen;
+
+  /// No description provided for @inkanStyleShirunashi.
+  ///
+  /// In ja, this message translates to:
+  /// **'汁無'**
+  String get inkanStyleShirunashi;
+
+  /// No description provided for @inkanStyleOther.
+  ///
+  /// In ja, this message translates to:
+  /// **'麺'**
+  String get inkanStyleOther;
 }
 
 class _AppLocalizationsDelegate

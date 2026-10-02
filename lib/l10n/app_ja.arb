@@ -448,5 +448,14 @@
   "waitMinutesHint": "並んだ時間をあとから入れられます。並ばなかったときは空のまま",
   "waitMinutesUnit": "分",
   "questLocked": "未",
-  "inkanNoStyle": "ラーメン"
+  "inkanNoStyle": "拉麺",
+  "inkanStyleShoyu": "醤油",
+  "inkanStyleMiso": "味噌",
+  "inkanStyleShio": "塩",
+  "inkanStyleTonkotsu": "豚骨",
+  "inkanStyleIekei": "家系",
+  "inkanStyleJiro": "二郎",
+  "inkanStyleTsukemen": "沾麺",
+  "inkanStyleShirunashi": "汁無",
+  "inkanStyleOther": "麺"
 }
