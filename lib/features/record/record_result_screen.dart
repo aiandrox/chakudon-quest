@@ -13,7 +13,10 @@ import '../records/record_repository.dart';
 import '../scoring/points_breakdown_view.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/rank_progress.dart';
+import '../records/models.dart';
 import '../scoring/record_outcome.dart';
+import '../wishes/wish_repository.dart';
+import '../wishes/wishes.dart';
 import '../inkan/inkan_stamp.dart';
 import '../records/visit_photo.dart';
 import '../scoring/points.dart';
@@ -45,9 +48,13 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
     final l10n = AppLocalizations.of(context);
     final visitsState = ref.watch(visitsProvider);
     final visits = visitsState.value;
-    _outcome ??= visits == null
+    // 願は「願成就」を出すためだけに使うので、読めなかったときは願なしで結果を出す。
+    final wishesState = ref.watch(wishesProvider);
+    final wishes =
+        wishesState.value ?? (wishesState.hasError ? const <Wish>[] : null);
+    _outcome ??= visits == null || wishes == null
         ? null
-        : computeRecordOutcome(visits, widget.visitId);
+        : computeRecordOutcome(visits, widget.visitId, wishes: wishes);
     final outcome = _outcome;
 
     final base = Theme.of(context);
@@ -129,6 +136,10 @@ class _ResultBody extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _StampedPage(scored: scored),
+        if (scored.fulfilledWish case final wish?) ...[
+          const SizedBox(height: 16),
+          _WishFulfilledBanner(wish: wish, eatenAt: scored.visit.eatenAt),
+        ],
         const SizedBox(height: 16),
         PointsBreakdownView(scored: scored),
         const Divider(height: 20, color: Washi.inkSoft),
@@ -330,6 +341,52 @@ class _QuestAchievedBanner extends StatelessWidget {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WishFulfilledBanner extends StatelessWidget {
+  const _WishFulfilledBanner({required this.wish, required this.eatenAt});
+
+  final Wish wish;
+  final DateTime eatenAt;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final days = daysToFulfill(wish, eatenAt);
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border.all(color: Washi.shuLight)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text(
+              l10n.wishFulfilled,
+              style: const TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 32,
+                color: Washi.shuLight,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              days == 0
+                  ? l10n.wishFulfilledSameDay
+                  : l10n.wishFulfilledAfter(days),
+              style: textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            ),
+            if (wish.trigger.isNotEmpty)
+              Text(
+                l10n.wishTriggerLine(wish.trigger),
+                style: textTheme.bodySmall?.copyWith(color: Washi.nightSoft),
+                textAlign: TextAlign.center,
+              ),
           ],
         ),
       ),

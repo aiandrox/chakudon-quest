@@ -10,6 +10,7 @@ import 'package:chakudon_quest/features/record/photo_metadata.dart';
 import 'package:chakudon_quest/features/record/photo_picker.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
@@ -288,4 +289,35 @@ class FakePhotoMetadataReader implements PhotoMetadataReader {
     paths.add(path);
     return metadata;
   }
+}
+
+class FakeWishRepository implements WishRepository {
+  final added = <ShopInput>[];
+
+  @override
+  Future<Wish> addWish({
+    required ShopInput shop,
+    String trigger = '',
+    String note = '',
+    required DateTime now,
+  }) async {
+    added.add(shop);
+    return Wish(id: 'wish-${added.length}', name: shop.name, createdAt: now);
+  }
+
+  @override
+  Future<void> updateWish(
+    String id, {
+    required String trigger,
+    required String note,
+  }) async {}
+
+  @override
+  Future<void> deleteWish(String id) async {}
+
+  @override
+  Future<List<Wish>> pendingWishes() async => const [];
+
+  @override
+  Stream<List<Wish>> watchWishes() => const Stream.empty();
 }

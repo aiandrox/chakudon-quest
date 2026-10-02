@@ -93,6 +93,7 @@ class ScoredVisit {
     required this.points,
     required this.isFirstVisit,
     required this.isRetrySuccess,
+    this.fulfilledWish,
   });
 
   final Visit visit;
@@ -104,11 +105,17 @@ class ScoredVisit {
 
   /// 同じ店での直前の記録が撤退だったか。
   final bool isRetrySuccess;
+
+  /// この1杯で叶った願。
+  final Wish? fulfilledWish;
 }
 
 /// 全記録を採点し、古い順に返す。初訪問と再挑戦成功は店ごとの記録の順番で決まるため、
-/// 1件だけでは採点できない。
-List<ScoredVisit> scoreVisits(List<VisitWithShop> entries) {
+/// 1件だけでは採点できない。[wishes]を渡すと、どの1杯で叶った願かも添える。
+List<ScoredVisit> scoreVisits(
+  List<VisitWithShop> entries, {
+  List<Wish> wishes = const [],
+}) {
   final ordered = [...entries]
     ..sort((a, b) {
       final byEaten = a.visit.eatenAt.compareTo(b.visit.eatenAt);
@@ -118,9 +125,11 @@ List<ScoredVisit> scoreVisits(List<VisitWithShop> entries) {
   final eatenShops = <String>{};
   final lastResult = <String, VisitResult>{};
   final scored = <ScoredVisit>[];
+  final wishByVisit = {for (final wish in wishes) ?wish.fulfilledVisitId: wish};
   for (final entry in ordered) {
     final visit = entry.visit;
     final isEaten = visit.result == VisitResult.eaten;
+    final fulfilledWish = isEaten ? wishByVisit[visit.id] : null;
     final isFirstVisit = isEaten && !eatenShops.contains(visit.shopId);
     final isRetrySuccess =
         isEaten && lastResult[visit.shopId] == VisitResult.retreated;
@@ -136,6 +145,7 @@ List<ScoredVisit> scoreVisits(List<VisitWithShop> entries) {
         ),
         isFirstVisit: isFirstVisit,
         isRetrySuccess: isRetrySuccess,
+        fulfilledWish: fulfilledWish,
       ),
     );
     if (isEaten) eatenShops.add(visit.shopId);

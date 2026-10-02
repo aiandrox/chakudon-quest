@@ -1381,12 +1381,457 @@ class ActiveCheckinsCompanion extends UpdateCompanion<ActiveCheckin> {
   }
 }
 
+class $WishesTable extends Wishes with TableInfo<$WishesTable, Wish> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WishesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shopIdMeta = const VerificationMeta('shopId');
+  @override
+  late final GeneratedColumn<String> shopId = GeneratedColumn<String>(
+    'shop_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _osmIdMeta = const VerificationMeta('osmId');
+  @override
+  late final GeneratedColumn<String> osmId = GeneratedColumn<String>(
+    'osm_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ShopSource?, String> dataSource =
+      GeneratedColumn<String>(
+        'data_source',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<ShopSource?>($WishesTable.$converterdataSourcen);
+  static const VerificationMeta _triggerMeta = const VerificationMeta(
+    'trigger',
+  );
+  @override
+  late final GeneratedColumn<String> trigger = GeneratedColumn<String>(
+    'trigger',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fulfilledVisitIdMeta = const VerificationMeta(
+    'fulfilledVisitId',
+  );
+  @override
+  late final GeneratedColumn<String> fulfilledVisitId = GeneratedColumn<String>(
+    'fulfilled_visit_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    shopId,
+    osmId,
+    name,
+    latitude,
+    longitude,
+    dataSource,
+    trigger,
+    note,
+    createdAt,
+    fulfilledVisitId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'wishes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Wish> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('shop_id')) {
+      context.handle(
+        _shopIdMeta,
+        shopId.isAcceptableOrUnknown(data['shop_id']!, _shopIdMeta),
+      );
+    }
+    if (data.containsKey('osm_id')) {
+      context.handle(
+        _osmIdMeta,
+        osmId.isAcceptableOrUnknown(data['osm_id']!, _osmIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
+    if (data.containsKey('trigger')) {
+      context.handle(
+        _triggerMeta,
+        trigger.isAcceptableOrUnknown(data['trigger']!, _triggerMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('fulfilled_visit_id')) {
+      context.handle(
+        _fulfilledVisitIdMeta,
+        fulfilledVisitId.isAcceptableOrUnknown(
+          data['fulfilled_visit_id']!,
+          _fulfilledVisitIdMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Wish map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Wish(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      shopId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}shop_id'],
+      ),
+      osmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}osm_id'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      dataSource: $WishesTable.$converterdataSourcen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}data_source'],
+        ),
+      ),
+      trigger: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trigger'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      fulfilledVisitId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}fulfilled_visit_id'],
+      ),
+    );
+  }
+
+  @override
+  $WishesTable createAlias(String alias) {
+    return $WishesTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<ShopSource, String> $converterdataSource =
+      const ShopSourceConverter();
+  static TypeConverter<ShopSource?, String?> $converterdataSourcen =
+      NullAwareTypeConverter.wrap($converterdataSource);
+}
+
+class WishesCompanion extends UpdateCompanion<Wish> {
+  final Value<String> id;
+  final Value<String?> shopId;
+  final Value<String?> osmId;
+  final Value<String> name;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<ShopSource?> dataSource;
+  final Value<String> trigger;
+  final Value<String> note;
+  final Value<DateTime> createdAt;
+  final Value<String?> fulfilledVisitId;
+  final Value<int> rowid;
+  const WishesCompanion({
+    this.id = const Value.absent(),
+    this.shopId = const Value.absent(),
+    this.osmId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.dataSource = const Value.absent(),
+    this.trigger = const Value.absent(),
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.fulfilledVisitId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WishesCompanion.insert({
+    required String id,
+    this.shopId = const Value.absent(),
+    this.osmId = const Value.absent(),
+    required String name,
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.dataSource = const Value.absent(),
+    this.trigger = const Value.absent(),
+    this.note = const Value.absent(),
+    required DateTime createdAt,
+    this.fulfilledVisitId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       name = Value(name),
+       createdAt = Value(createdAt);
+  static Insertable<Wish> custom({
+    Expression<String>? id,
+    Expression<String>? shopId,
+    Expression<String>? osmId,
+    Expression<String>? name,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<String>? dataSource,
+    Expression<String>? trigger,
+    Expression<String>? note,
+    Expression<DateTime>? createdAt,
+    Expression<String>? fulfilledVisitId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (shopId != null) 'shop_id': shopId,
+      if (osmId != null) 'osm_id': osmId,
+      if (name != null) 'name': name,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (dataSource != null) 'data_source': dataSource,
+      if (trigger != null) 'trigger': trigger,
+      if (note != null) 'note': note,
+      if (createdAt != null) 'created_at': createdAt,
+      if (fulfilledVisitId != null) 'fulfilled_visit_id': fulfilledVisitId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WishesCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? shopId,
+    Value<String?>? osmId,
+    Value<String>? name,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<ShopSource?>? dataSource,
+    Value<String>? trigger,
+    Value<String>? note,
+    Value<DateTime>? createdAt,
+    Value<String?>? fulfilledVisitId,
+    Value<int>? rowid,
+  }) {
+    return WishesCompanion(
+      id: id ?? this.id,
+      shopId: shopId ?? this.shopId,
+      osmId: osmId ?? this.osmId,
+      name: name ?? this.name,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      dataSource: dataSource ?? this.dataSource,
+      trigger: trigger ?? this.trigger,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+      fulfilledVisitId: fulfilledVisitId ?? this.fulfilledVisitId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (shopId.present) {
+      map['shop_id'] = Variable<String>(shopId.value);
+    }
+    if (osmId.present) {
+      map['osm_id'] = Variable<String>(osmId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (dataSource.present) {
+      map['data_source'] = Variable<String>(
+        $WishesTable.$converterdataSourcen.toSql(dataSource.value),
+      );
+    }
+    if (trigger.present) {
+      map['trigger'] = Variable<String>(trigger.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (fulfilledVisitId.present) {
+      map['fulfilled_visit_id'] = Variable<String>(fulfilledVisitId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WishesCompanion(')
+          ..write('id: $id, ')
+          ..write('shopId: $shopId, ')
+          ..write('osmId: $osmId, ')
+          ..write('name: $name, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('dataSource: $dataSource, ')
+          ..write('trigger: $trigger, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('fulfilledVisitId: $fulfilledVisitId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ShopsTable shops = $ShopsTable(this);
   late final $VisitsTable visits = $VisitsTable(this);
   late final $ActiveCheckinsTable activeCheckins = $ActiveCheckinsTable(this);
+  late final $WishesTable wishes = $WishesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1395,6 +1840,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     shops,
     visits,
     activeCheckins,
+    wishes,
   ];
 }
 
@@ -2501,6 +2947,327 @@ typedef $$ActiveCheckinsTableProcessedTableManager =
       ActiveCheckin,
       PrefetchHooks Function()
     >;
+typedef $$WishesTableCreateCompanionBuilder = WishesCompanion Function({
+  required String id,
+  Value<String?> shopId,
+  Value<String?> osmId,
+  required String name,
+  Value<double?> latitude,
+  Value<double?> longitude,
+  Value<ShopSource?> dataSource,
+  Value<String> trigger,
+  Value<String> note,
+  required DateTime createdAt,
+  Value<String?> fulfilledVisitId,
+  Value<int> rowid,
+});
+typedef $$WishesTableUpdateCompanionBuilder = WishesCompanion Function({
+  Value<String> id,
+  Value<String?> shopId,
+  Value<String?> osmId,
+  Value<String> name,
+  Value<double?> latitude,
+  Value<double?> longitude,
+  Value<ShopSource?> dataSource,
+  Value<String> trigger,
+  Value<String> note,
+  Value<DateTime> createdAt,
+  Value<String?> fulfilledVisitId,
+  Value<int> rowid,
+});
+
+class $$WishesTableFilterComposer
+    extends Composer<_$AppDatabase, $WishesTable> {
+  $$WishesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get osmId => $composableBuilder(
+    column: $table.osmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ShopSource?, ShopSource, String>
+  get dataSource => $composableBuilder(
+    column: $table.dataSource,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get trigger => $composableBuilder(
+    column: $table.trigger,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fulfilledVisitId => $composableBuilder(
+    column: $table.fulfilledVisitId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WishesTableOrderingComposer
+    extends Composer<_$AppDatabase, $WishesTable> {
+  $$WishesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shopId => $composableBuilder(
+    column: $table.shopId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get osmId => $composableBuilder(
+    column: $table.osmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dataSource => $composableBuilder(
+    column: $table.dataSource,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trigger => $composableBuilder(
+    column: $table.trigger,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fulfilledVisitId => $composableBuilder(
+    column: $table.fulfilledVisitId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WishesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WishesTable> {
+  $$WishesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get shopId =>
+      $composableBuilder(column: $table.shopId, builder: (column) => column);
+
+  GeneratedColumn<String> get osmId =>
+      $composableBuilder(column: $table.osmId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ShopSource?, String> get dataSource =>
+      $composableBuilder(
+        column: $table.dataSource,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get trigger =>
+      $composableBuilder(column: $table.trigger, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get fulfilledVisitId => $composableBuilder(
+    column: $table.fulfilledVisitId,
+    builder: (column) => column,
+  );
+}
+
+class $$WishesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WishesTable,
+          Wish,
+          $$WishesTableFilterComposer,
+          $$WishesTableOrderingComposer,
+          $$WishesTableAnnotationComposer,
+          $$WishesTableCreateCompanionBuilder,
+          $$WishesTableUpdateCompanionBuilder,
+          (Wish, BaseReferences<_$AppDatabase, $WishesTable, Wish>),
+          Wish,
+          PrefetchHooks Function()
+        > {
+  $$WishesTableTableManager(_$AppDatabase db, $WishesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WishesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WishesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WishesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> shopId = const Value.absent(),
+                Value<String?> osmId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<ShopSource?> dataSource = const Value.absent(),
+                Value<String> trigger = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> fulfilledVisitId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WishesCompanion(
+                id: id,
+                shopId: shopId,
+                osmId: osmId,
+                name: name,
+                latitude: latitude,
+                longitude: longitude,
+                dataSource: dataSource,
+                trigger: trigger,
+                note: note,
+                createdAt: createdAt,
+                fulfilledVisitId: fulfilledVisitId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> shopId = const Value.absent(),
+                Value<String?> osmId = const Value.absent(),
+                required String name,
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<ShopSource?> dataSource = const Value.absent(),
+                Value<String> trigger = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                required DateTime createdAt,
+                Value<String?> fulfilledVisitId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WishesCompanion.insert(
+                id: id,
+                shopId: shopId,
+                osmId: osmId,
+                name: name,
+                latitude: latitude,
+                longitude: longitude,
+                dataSource: dataSource,
+                trigger: trigger,
+                note: note,
+                createdAt: createdAt,
+                fulfilledVisitId: fulfilledVisitId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$WishesTable, Wish>(table),
+                  BaseReferences<_$AppDatabase, $WishesTable, Wish>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WishesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WishesTable,
+      Wish,
+      $$WishesTableFilterComposer,
+      $$WishesTableOrderingComposer,
+      $$WishesTableAnnotationComposer,
+      $$WishesTableCreateCompanionBuilder,
+      $$WishesTableUpdateCompanionBuilder,
+      (Wish, BaseReferences<_$AppDatabase, $WishesTable, Wish>),
+      Wish,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2511,4 +3278,6 @@ class $AppDatabaseManager {
       $$VisitsTableTableManager(_db, _db.visits);
   $$ActiveCheckinsTableTableManager get activeCheckins =>
       $$ActiveCheckinsTableTableManager(_db, _db.activeCheckins);
+  $$WishesTableTableManager get wishes =>
+      $$WishesTableTableManager(_db, _db.wishes);
 }

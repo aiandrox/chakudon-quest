@@ -83,6 +83,25 @@ class Visits extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+@UseRowClass(Wish)
+class Wishes extends Table {
+  TextColumn get id => text()();
+  TextColumn get shopId => text().nullable()();
+  TextColumn get osmId => text().nullable()();
+  TextColumn get name => text()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  TextColumn get dataSource =>
+      text().map(const ShopSourceConverter()).nullable()();
+  TextColumn get trigger => text().withDefault(const Constant(''))();
+  TextColumn get note => text().withDefault(const Constant(''))();
+  DateTimeColumn get createdAt => dateTime()();
+  TextColumn get fulfilledVisitId => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// 並んでいる最中のチェックイン。同時に1件だけなので、`id`は常に[activeCheckinId]。
 class ActiveCheckins extends Table {
   IntColumn get id => integer()();
@@ -101,13 +120,13 @@ class ActiveCheckins extends Table {
 
 const activeCheckinId = 1;
 
-@DriftDatabase(tables: [Shops, Visits, ActiveCheckins])
+@DriftDatabase(tables: [Shops, Visits, ActiveCheckins, Wishes])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
     : super(executor ?? driftDatabase(name: 'chakudon_quest'));
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -140,6 +159,7 @@ class AppDatabase extends _$AppDatabase {
       if (from >= 3 && from < 5) {
         await migrator.addColumn(shops, shops.dataSource);
       }
+      if (from < 6) await migrator.createTable(wishes);
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

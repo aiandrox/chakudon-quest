@@ -10,6 +10,7 @@ import 'package:chakudon_quest/features/record/record_result_screen.dart';
 import 'package:chakudon_quest/features/record/record_screen.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
@@ -34,6 +35,7 @@ void main() {
           appDatabaseProvider.overrideWithValue(database),
           // driftの監視はテストの偽の時間の中で止まってしまうため、一覧は固定の値にする。
           visitsProvider.overrideWithValue(const AsyncData([])),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           locationServiceProvider.overrideWithValue(
             FakeLocationService(position: const GeoPoint(35.0, 139.0)),

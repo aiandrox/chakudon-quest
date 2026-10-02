@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../records/models.dart';
 import '../records/record_repository.dart';
+import '../wishes/wish_repository.dart';
 import 'geo.dart';
 import 'location_service.dart';
 import 'nearby_shop_finder.dart';
@@ -14,6 +15,7 @@ final shopSearchServiceProvider = Provider<ShopSearchService>(
     location: ref.watch(locationServiceProvider),
     finder: ref.watch(nearbyShopFinderProvider),
     repository: ref.watch(recordRepositoryProvider),
+    wishes: ref.watch(wishRepositoryProvider),
   ),
 );
 
@@ -34,11 +36,13 @@ class ShopSearchService {
     required this._location,
     required this._finder,
     required this._repository,
+    required this._wishes,
   });
 
   final LocationService _location;
   final NearbyShopFinder _finder;
   final RecordRepository _repository;
+  final WishRepository _wishes;
 
   Future<ShopSearchResult> search({
     required bool requestPermission,
@@ -64,6 +68,12 @@ class ShopSearchService {
     } catch (e) {
       debugPrint('Known shops load failed: $e');
     }
+    var wishes = const <Wish>[];
+    try {
+      wishes = await _wishes.pendingWishes();
+    } catch (e) {
+      debugPrint('Wishes load failed: $e');
+    }
     return ShopSearchResult(
       here: here,
       failure: failure,
@@ -71,6 +81,7 @@ class ShopSearchService {
         here: here,
         found: found,
         knownShops: knownShops,
+        wishes: wishes,
       ),
     );
   }

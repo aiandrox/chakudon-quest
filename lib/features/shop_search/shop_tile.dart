@@ -27,6 +27,7 @@ class ShopTile extends StatelessWidget {
     final distance = shop.distanceMeters;
     final details = [
       if (distance != null) l10n.distanceMeters(distance.round()),
+      if (shop.wishId != null) l10n.shopWished,
       if (shop.shopId != null) l10n.shopVisited,
       ?note,
     ];
@@ -37,8 +38,12 @@ class ShopTile extends StatelessWidget {
       child: ListTile(
         enabled: onTap != null,
         leading: Icon(
-          selected ? Icons.check_circle : Icons.storefront,
-          color: selected ? colors.primary : null,
+          selected
+              ? Icons.check_circle
+              : shop.wishId != null
+              ? Icons.bookmark
+              : Icons.storefront,
+          color: selected || shop.wishId != null ? colors.primary : null,
         ),
         title: Text(shop.name),
         subtitle: details.isEmpty ? null : Text(details.join('・')),

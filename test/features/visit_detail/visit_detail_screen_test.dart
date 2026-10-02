@@ -9,6 +9,7 @@ import 'package:chakudon_quest/features/record/star_rating.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
 
 import '../../support/builders.dart';
@@ -51,6 +52,7 @@ void main() {
       ProviderScope(
         overrides: [
           visitsProvider.overrideWithValue(AsyncData(visits)),
+          wishesProvider.overrideWithValue(const AsyncData([])),
           recordRepositoryProvider.overrideWithValue(repository),
           documentsDirectoryProvider.overrideWithValue(documents),
         ],

@@ -93,6 +93,44 @@ class Visit {
   final DateTime createdAt;
 }
 
+/// 願掛け帳（行きたい店）の1件。まだ行っていない店のこともあるため、店の情報をそのまま持つ。
+/// 記録のときに願の店を選ぶと、その1杯と結び付く（叶う）。
+class Wish {
+  const Wish({
+    required this.id,
+    this.shopId,
+    this.osmId,
+    required this.name,
+    this.latitude,
+    this.longitude,
+    this.dataSource,
+    this.trigger = '',
+    this.note = '',
+    required this.createdAt,
+    this.fulfilledVisitId,
+  });
+
+  final String id;
+
+  /// 書き留めたときに記録済みだった店のID。店はあとで消えることがあるので、名前と位置でも照らし合わせる。
+  final String? shopId;
+  final String? osmId;
+  final String name;
+  final double? latitude;
+  final double? longitude;
+  final ShopSource? dataSource;
+
+  /// きっかけ（誰に聞いた・どこで見た）。
+  final String trigger;
+
+  /// ひとこと（食べたいもの など）。
+  final String note;
+  final DateTime createdAt;
+
+  /// この願が叶った1杯。まだならnull。
+  final String? fulfilledVisitId;
+}
+
 /// 並んでいる最中の店。記録がまだ無い店のこともあるため、店の情報をそのまま持つ。
 class Checkin {
   const Checkin({

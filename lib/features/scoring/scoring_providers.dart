@@ -2,11 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../quests/quests.dart';
 import '../records/record_repository.dart';
+import '../wishes/wish_repository.dart';
 import 'points.dart';
 
 /// 採点済みの全記録（古い順）。ポイントは保存せず、記録が変わるたびに計算し直す。
 final scoredVisitsProvider = Provider<List<ScoredVisit>>(
-  (ref) => scoreVisits(ref.watch(visitsProvider).value ?? const []),
+  (ref) => scoreVisits(
+    ref.watch(visitsProvider).value ?? const [],
+    wishes: ref.watch(wishesProvider).value ?? const [],
+  ),
 );
 
 final totalPointsProvider = Provider<int>(

@@ -12,6 +12,8 @@ import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
+import '../wishes/wish_repository.dart';
+import '../wishes/wishes.dart';
 import 'photo_metadata.dart';
 import 'photo_picker.dart';
 import 'record_state.dart';
@@ -23,6 +25,7 @@ final recordControllerProvider =
 
 class RecordController extends Notifier<RecordState> {
   List<Shop> _knownShops = const [];
+  List<Wish> _pendingWishes = const [];
   GeoPoint? _here;
   int _searchGeneration = 0;
 
@@ -86,6 +89,11 @@ class RecordController extends Notifier<RecordState> {
       _knownShops = await ref.read(recordRepositoryProvider).allShops();
     } catch (e) {
       debugPrint('Known shops load failed: $e');
+    }
+    try {
+      _pendingWishes = await ref.read(wishRepositoryProvider).pendingWishes();
+    } catch (e) {
+      debugPrint('Wishes load failed: $e');
     }
   }
 
@@ -175,14 +183,31 @@ class RecordController extends Notifier<RecordState> {
       manualName: name,
       selectedShop: deselects ? null : state.selectedShop,
       chosenHoursConditions: deselects ? null : state.chosenHoursConditions,
-      nameMatches: query.isEmpty
-          ? const []
-          : [
-              for (final shop in _knownShops)
-                if (shop.name.toLowerCase().contains(query))
-                  ShopCandidate.fromShop(shop),
-            ].take(maxShopCandidates).toList(),
+      nameMatches: query.isEmpty ? const [] : _nameMatches(query),
     );
+  }
+
+  /// 店名を打っているときの候補。まだの願の店（位置のわからない店も）を先に出す。
+  List<ShopCandidate> _nameMatches(String query) {
+    final wished = [
+      for (final wish in _pendingWishes)
+        if (wish.name.toLowerCase().contains(query))
+          ShopCandidate(
+            shopId: wish.shopId,
+            osmId: wish.osmId,
+            name: wish.name,
+            location: wishLocation(wish),
+            dataSource: wish.dataSource,
+            wishId: wish.id,
+          ),
+    ];
+    final known = [
+      for (final shop in _knownShops)
+        if (shop.name.toLowerCase().contains(query) &&
+            !wished.any((w) => w.shopId == shop.id))
+          ShopCandidate.fromShop(shop),
+    ];
+    return [...wished, ...known].take(maxShopCandidates).toList();
   }
 
   void setRating(int rating) => state = state.copyWith(rating: rating);
@@ -263,6 +288,7 @@ class RecordController extends Notifier<RecordState> {
         latitude: selected.location?.latitude,
         longitude: selected.location?.longitude,
         dataSource: selected.dataSource,
+        wishId: selected.wishId,
       );
     }
     // ギャラリーの写真は店にいるときに選んだとは限らないため、現在地を店の位置にしない。
