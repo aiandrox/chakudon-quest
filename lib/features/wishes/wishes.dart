@@ -1,4 +1,5 @@
 import '../records/models.dart';
+import '../shop_search/found_shop.dart';
 import '../shop_search/geo.dart';
 import '../shop_search/shop_candidate.dart';
 
@@ -13,19 +14,22 @@ bool wishMatchesShop(Wish wish, Shop shop) =>
     );
 
 /// 検索で見つけた店（まだ記録の無い店）など、IDの無い店と比べる。
+/// 店名だけで書き留めた願は位置がわからないので、表記の少し違う名前（「はやし田」と「らぁ麺 はやし田」）も同じ店とみなす。
 bool wishMatchesPlace(
   Wish wish, {
   String? osmId,
   required String name,
   GeoPoint? location,
-}) => isSameShop(
-  ShopCandidate(
-    osmId: wish.osmId,
-    name: wish.name,
-    location: wishLocation(wish),
-  ),
-  ShopCandidate(osmId: osmId, name: name, location: location),
-);
+}) {
+  final here = wishLocation(wish);
+  if (here == null && wish.osmId == null) {
+    return shopNamesLookAlike(wish.name, name);
+  }
+  return isSameShop(
+    ShopCandidate(osmId: wish.osmId, name: wish.name, location: here),
+    ShopCandidate(osmId: osmId, name: name, location: location),
+  );
+}
 
 GeoPoint? wishLocation(Wish wish) {
   final latitude = wish.latitude;

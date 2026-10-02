@@ -61,13 +61,21 @@ void main() {
       );
     });
 
-    test('店名だけで書き留めた願は、同じ名前の店と照らし合わせる', () {
+    test('店名だけで書き留めた願は、表記の少し違う名前の店とも照らし合わせる', () {
       expect(
         wishMatchesShop(
           _wish(name: 'らぁ麺 はやし田', createdAt: DateTime(2026)),
           shop,
         ),
         isTrue,
+      );
+      expect(
+        wishMatchesShop(_wish(name: 'はやし田', createdAt: DateTime(2026)), shop),
+        isTrue,
+      );
+      expect(
+        wishMatchesShop(_wish(name: '豚山', createdAt: DateTime(2026)), shop),
+        isFalse,
       );
     });
   });

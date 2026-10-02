@@ -48,7 +48,10 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
     final l10n = AppLocalizations.of(context);
     final visitsState = ref.watch(visitsProvider);
     final visits = visitsState.value;
-    final wishes = ref.watch(wishesProvider).value;
+    // 願は「願成就」を出すためだけに使うので、読めなかったときは願なしで結果を出す。
+    final wishesState = ref.watch(wishesProvider);
+    final wishes =
+        wishesState.value ?? (wishesState.hasError ? const <Wish>[] : null);
     _outcome ??= visits == null || wishes == null
         ? null
         : computeRecordOutcome(visits, widget.visitId, wishes: wishes);

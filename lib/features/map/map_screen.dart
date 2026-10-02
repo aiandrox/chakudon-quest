@@ -122,7 +122,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     final pins = shopPins(ref.watch(scoredVisitsProvider));
     final pendingWishes = [
       for (final status in ref.watch(wishStatusesProvider))
-        if (!status.isFulfilled && wishLocation(status.wish) != null)
+        if (!status.isFulfilled &&
+            wishLocation(status.wish) != null &&
+            // 行ったことのある店に掛けた（再訪の）願は、その店のピンで見せる。
+            !pins.any((pin) => wishMatchesShop(status.wish, pin.shop)))
           status.wish,
     ];
     final tilesEnabled = ref.watch(mapTilesEnabledProvider);
