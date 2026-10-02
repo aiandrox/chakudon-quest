@@ -117,27 +117,30 @@ class VerticalText extends StatelessWidget {
   }
 }
 
-/// 縦書きの行に分ける。区切りの空白で分けて収まるならそこで、収まらなければ文字数で
-/// 折り返す。[maxLines]行に収まらないときは、最後の文字を「…」（縦書きでは縦向き）にする。
+/// 縦書きの行に分ける。1行に収まらなければ、きりのいいところで2行にする。
+/// 区切りの空白がいちばんよく、次に文字の種類の変わり目（漢字とかな、カナと漢字など）。
+/// 小さい「ゃ」や「ー」「ん」で行が始まる分け方は避ける。きりのいいところなら、
+/// 1文字だけ長くてもよい（少し縮めて表示する）。[maxLines]行に収まらないときは、
+/// 最後の文字を「…」（縦書きでは縦向き）にする。
 List<List<String>> verticalLines(
   String text, {
   int? maxChars,
   int maxLines = 2,
 }) {
-  List<String> charsOf(String value) => [
-    for (final rune in value.runes)
-      if (String.fromCharCode(rune).trim().isNotEmpty)
-        String.fromCharCode(rune),
-  ];
-  final chars = charsOf(text);
+  final chars = <String>[];
+  final spaceBefore = <int>{};
+  for (final rune in text.trim().runes) {
+    final char = String.fromCharCode(rune);
+    if (char.trim().isEmpty) {
+      spaceBefore.add(chars.length);
+    } else {
+      chars.add(char);
+    }
+  }
   if (maxChars == null || chars.length <= maxChars) return [chars];
-
-  final words = [
-    for (final word in text.trim().split(RegExp(r'[\s　]+')))
-      if (word.isNotEmpty) charsOf(word),
-  ];
-  if (words.length > 1 && words.length <= maxLines) {
-    if (words.every((word) => word.length <= maxChars)) return words;
+  if (maxLines >= 2) {
+    final at = _bestBreak(chars, spaceBefore, maxChars);
+    if (at != null) return [chars.sublist(0, at), chars.sublist(at)];
   }
 
   final lines = <List<String>>[
@@ -148,6 +151,57 @@ List<List<String>> verticalLines(
     lines.last = [...lines.last.take(maxChars - 1), '…'];
   }
   return lines;
+}
+
+const _noLineStart = {
+  'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'っ', 'ゃ', 'ゅ', 'ょ', 'ゎ', 'ん', //
+  'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ッ', 'ャ', 'ュ', 'ョ', 'ヮ', 'ン', //
+  'ー', '々', '、', '。', '」', '）', ')', '・', '…',
+};
+const _noLineEnd = {'「', '（', '('};
+
+enum _Script { kanji, hiragana, katakana, latin, other }
+
+_Script _scriptOf(String char) {
+  final code = char.runes.first;
+  if ((code >= 0x4E00 && code <= 0x9FFF) || code == 0x3005) {
+    return _Script.kanji;
+  }
+  if (code >= 0x3041 && code <= 0x309F) return _Script.hiragana;
+  if (code >= 0x30A1 && code <= 0x30FF) return _Script.katakana;
+  if (RegExp(r'[A-Za-z0-9Ａ-Ｚａ-ｚ０-９]').hasMatch(char)) return _Script.latin;
+  return _Script.other;
+}
+
+/// 2行に分ける位置（1行目の文字数）。きりのいい位置が無ければnull。
+int? _bestBreak(List<String> chars, Set<int> spaceBefore, int maxChars) {
+  int? best;
+  var bestScore = double.negativeInfinity;
+  for (var at = 1; at < chars.length; at++) {
+    final first = at;
+    final second = chars.length - at;
+    final isSpace = spaceBefore.contains(at);
+    // 「ー」は前の文字と同じ種類として扱う（「ラーメン」の途中で分けないため）。
+    final isScriptChange =
+        chars[at] != 'ー' && _scriptOf(chars[at - 1]) != _scriptOf(chars[at]);
+    final isGood = isSpace || isScriptChange;
+    final limit = maxChars + (isGood ? 1 : 0);
+    if (first > limit || second > limit) continue;
+    var score = 0.0;
+    if (isSpace) score += 10;
+    if (isScriptChange) score += 4;
+    if (_noLineStart.contains(chars[at])) score -= 20;
+    if (_noLineEnd.contains(chars[at - 1])) score -= 20;
+    if (first > maxChars || second > maxChars) score -= 1;
+    score -= (first - second).abs() * 0.5;
+    // 同じ点なら、1行目を長くする（縦書きは右の行から読むため）。
+    score += first * 0.01;
+    if (score > bestScore) {
+      bestScore = score;
+      best = at;
+    }
+  }
+  return best;
 }
 
 /// 筆文字の見出し。下に細い墨の線を引く。
