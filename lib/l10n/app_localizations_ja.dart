@@ -671,9 +671,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shopRankC => '並';
 
   @override
-  String get inkanEaten => '一本';
-
-  @override
   String get inkanRetry => '雪辱';
 
   @override

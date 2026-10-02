@@ -392,7 +392,6 @@
   "shopRankA": "特",
   "shopRankB": "上",
   "shopRankC": "並",
-  "inkanEaten": "一本",
   "inkanRetry": "雪辱",
   "inkanRetreat": "敗",
   "inkanTop": "{rank}　{kind}",

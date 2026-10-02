@@ -39,7 +39,7 @@ String kanjiEraDate(AppLocalizations l10n, DateTime date) {
   );
 }
 
-/// 1杯ごとの印。上に格と「一本」、真ん中に系統の漢字、下に日付。
+/// 1杯ごとの印。上に格（再挑戦成功なら「雪辱」も）、真ん中に系統の漢字、下に日付。
 class InkanStamp extends StatelessWidget {
   const InkanStamp({super.key, required this.scored, this.size = 84});
 
@@ -58,12 +58,12 @@ class InkanStamp extends StatelessWidget {
       InkanShape.filled => Washi.page,
       _ => Washi.shu,
     };
+    final rank = shopRankLabel(l10n, shopRankFor(scored.points.total));
     final top = isRetreat
         ? null
-        : l10n.inkanTop(
-            shopRankLabel(l10n, shopRankFor(scored.points.total)),
-            scored.isRetrySuccess ? l10n.inkanRetry : l10n.inkanEaten,
-          );
+        : scored.isRetrySuccess
+        ? l10n.inkanTop(rank, l10n.inkanRetry)
+        : rank;
     final center = isRetreat
         ? l10n.inkanRetreat
         : inkanStyleName(l10n, visit.style);

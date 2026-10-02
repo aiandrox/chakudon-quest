@@ -1258,12 +1258,6 @@ abstract class AppLocalizations {
   /// **'並'**
   String get shopRankC;
 
-  /// No description provided for @inkanEaten.
-  ///
-  /// In ja, this message translates to:
-  /// **'一本'**
-  String get inkanEaten;
-
   /// No description provided for @inkanRetry.
   ///
   /// In ja, this message translates to:
