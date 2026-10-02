@@ -705,6 +705,28 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String memoryYearsAgo(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years年前の今日',
+      one: '一年前の今日',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String memoryLine(String shop) {
+    return '$shopで着丼していました';
+  }
+
+  @override
+  String get memoryNotSince => 'あれから一度も行っていません。久しぶりにどうですか';
+
+  @override
+  String get memoryDismiss => '閉じる';
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override

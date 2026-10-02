@@ -1318,6 +1318,30 @@ abstract class AppLocalizations {
   /// **'{month}月{day}日の遠征（{shop}）'**
   String journeyExpeditionName(int month, int day, String shop);
 
+  /// No description provided for @memoryYearsAgo.
+  ///
+  /// In ja, this message translates to:
+  /// **'{years, plural, =1{一年前の今日} other{{years}年前の今日}}'**
+  String memoryYearsAgo(int years);
+
+  /// No description provided for @memoryLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shop}で着丼していました'**
+  String memoryLine(String shop);
+
+  /// No description provided for @memoryNotSince.
+  ///
+  /// In ja, this message translates to:
+  /// **'あれから一度も行っていません。久しぶりにどうですか'**
+  String get memoryNotSince;
+
+  /// No description provided for @memoryDismiss.
+  ///
+  /// In ja, this message translates to:
+  /// **'閉じる'**
+  String get memoryDismiss;
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:
