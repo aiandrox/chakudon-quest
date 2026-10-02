@@ -88,7 +88,7 @@ class _ShareScreenState extends ConsumerState<ShareScreen> {
       appBar: AppBar(title: Text(l10n.shareTitle)),
       backgroundColor: Washi.desk,
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         children: [
           Center(
             child: FittedBox(
@@ -126,14 +126,18 @@ class _ShareScreenState extends ConsumerState<ShareScreen> {
           ),
           const SizedBox(height: 8),
           Text(l10n.shareNote, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 16),
-          FilledButton.icon(
-            key: _buttonKey,
-            onPressed: _isSharing ? null : _share,
-            icon: const Icon(Icons.ios_share),
-            label: Text(l10n.shareButton),
-          ),
         ],
+      ),
+      // スマホの戻るボタンの帯に重ならないよう、画面の下に固定する。
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        child: FilledButton.icon(
+          key: _buttonKey,
+          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(56)),
+          onPressed: _isSharing ? null : _share,
+          icon: const Icon(Icons.ios_share),
+          label: Text(l10n.shareButton),
+        ),
       ),
     );
   }
