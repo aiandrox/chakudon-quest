@@ -26,6 +26,9 @@ class PointsBreakdownView extends StatelessWidget {
       (l10n.isLimited, points.limitedBonus),
       (l10n.pointsFirstVisit, points.firstVisitBonus),
       (l10n.pointsRetry, points.retryBonus),
+      (l10n.pointsExpedition, points.expeditionBonus),
+      (l10n.pointsEarly, points.earlyBonus),
+      (l10n.pointsLateNight, points.lateNightBonus),
     ];
 
     return Column(

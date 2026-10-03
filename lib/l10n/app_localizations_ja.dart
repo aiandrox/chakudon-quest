@@ -364,6 +364,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pointsRetry => '再挑戦成功';
 
   @override
+  String get pointsExpedition => '遠征';
+
+  @override
+  String get pointsEarly => '朝ラー';
+
+  @override
+  String get pointsLateNight => '深夜';
+
+  @override
   String pointsHours(String label) {
     return '攻略しにくさ（$label）';
   }

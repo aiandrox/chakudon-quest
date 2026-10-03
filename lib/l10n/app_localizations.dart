@@ -742,6 +742,24 @@ abstract class AppLocalizations {
   /// **'再挑戦成功'**
   String get pointsRetry;
 
+  /// No description provided for @pointsExpedition.
+  ///
+  /// In ja, this message translates to:
+  /// **'遠征'**
+  String get pointsExpedition;
+
+  /// No description provided for @pointsEarly.
+  ///
+  /// In ja, this message translates to:
+  /// **'朝ラー'**
+  String get pointsEarly;
+
+  /// No description provided for @pointsLateNight.
+  ///
+  /// In ja, this message translates to:
+  /// **'深夜'**
+  String get pointsLateNight;
+
   /// No description provided for @pointsHours.
   ///
   /// In ja, this message translates to:

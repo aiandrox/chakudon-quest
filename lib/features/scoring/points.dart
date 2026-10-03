@@ -1,3 +1,4 @@
+import '../map/journey.dart';
 import '../records/models.dart';
 import '../records/wait_time.dart';
 
@@ -9,6 +10,9 @@ class PointsBreakdown {
     required this.limitedBonus,
     required this.firstVisitBonus,
     required this.retryBonus,
+    this.expeditionBonus = 0,
+    this.earlyBonus = 0,
+    this.lateNightBonus = 0,
     required this.hoursConditions,
   });
 
@@ -26,10 +30,20 @@ class PointsBreakdown {
   final int limitedBonus;
   final int firstVisitBonus;
   final int retryBonus;
+  final int expeditionBonus;
+  final int earlyBonus;
+  final int lateNightBonus;
   final Set<HoursCondition> hoursConditions;
 
   int get subtotal =>
-      base + waitBonus + limitedBonus + firstVisitBonus + retryBonus;
+      base +
+      waitBonus +
+      limitedBonus +
+      firstVisitBonus +
+      retryBonus +
+      expeditionBonus +
+      earlyBonus +
+      lateNightBonus;
 
   /// 倍率をかけたあとの小数は切り捨てる。
   int get total => subtotal * _multiplierTenths(hoursConditions) ~/ 10;
@@ -40,6 +54,15 @@ const waitBonusPerTenMinutes = 5;
 const limitedBonus = 20;
 const firstVisitBonus = 10;
 const retryBonus = 15;
+
+/// 押さなくても、記録の時刻と場所から自動でつく難しさ。
+const expeditionBonus = 20;
+const earlyBonus = 10;
+const lateNightBonus = 10;
+
+/// 朝ラー（5〜9時台）と深夜（0〜4時台）。
+bool isEarlyHour(DateTime at) => at.hour >= 5 && at.hour < 10;
+bool isLateNightHour(DateTime at) => at.hour < 5;
 
 /// 攻略しにくさの条件ごとの倍率の上乗せ（10分の1単位）。条件の分だけ足し、上限で止める。
 const hoursConditionWeights = <HoursCondition, int>{
@@ -73,6 +96,7 @@ PointsBreakdown calculatePoints({
   required Set<HoursCondition> hoursConditions,
   required bool isFirstVisit,
   required bool isRetrySuccess,
+  bool isExpedition = false,
 }) {
   if (visit.result != VisitResult.eaten) return PointsBreakdown.zero;
   return PointsBreakdown(
@@ -81,6 +105,9 @@ PointsBreakdown calculatePoints({
     limitedBonus: visit.isLimited ? limitedBonus : 0,
     firstVisitBonus: isFirstVisit ? firstVisitBonus : 0,
     retryBonus: isRetrySuccess ? retryBonus : 0,
+    expeditionBonus: isExpedition ? expeditionBonus : 0,
+    earlyBonus: isEarlyHour(visit.eatenAt) ? earlyBonus : 0,
+    lateNightBonus: isLateNightHour(visit.eatenAt) ? lateNightBonus : 0,
     hoursConditions: hoursConditions,
   );
 }
@@ -126,6 +153,9 @@ List<ScoredVisit> scoreVisits(
   final lastResult = <String, VisitResult>{};
   final scored = <ScoredVisit>[];
   final wishByVisit = {for (final wish in wishes) ?wish.fulfilledVisitId: wish};
+  final expeditionIds = expeditionVisitIds([
+    for (final entry in ordered) (entry.visit, entry.shop),
+  ]);
   for (final entry in ordered) {
     final visit = entry.visit;
     final isEaten = visit.result == VisitResult.eaten;
@@ -142,6 +172,7 @@ List<ScoredVisit> scoreVisits(
           hoursConditions: entry.shop.hoursConditions,
           isFirstVisit: isFirstVisit,
           isRetrySuccess: isRetrySuccess,
+          isExpedition: expeditionIds.contains(visit.id),
         ),
         isFirstVisit: isFirstVisit,
         isRetrySuccess: isRetrySuccess,
