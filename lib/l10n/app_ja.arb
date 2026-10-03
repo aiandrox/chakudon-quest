@@ -348,7 +348,7 @@
   "journeyStop": "止める",
   "journeyExpeditions": "遠征",
   "journeyExpeditionsTitle": "遠征の記録",
-  "journeyExpeditionsNone": "拠点から20km以上離れた店で食べた日が、遠征として並びます",
+  "journeyExpeditionsNone": "拠点から80km以上離れた店で食べた日が、遠征として並びます",
   "homeBaseLine": "今の拠点: {shop}のあたり（{bowls}杯）",
   "@homeBaseLine": {"placeholders": {"shop": {"type": "String"}, "bowls": {"type": "int"}}},
   "homeBaseNone": "同じ地域で{bowls}杯食べると拠点ができます",

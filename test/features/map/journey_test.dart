@@ -10,7 +10,7 @@ void main() {
   // 緯度0.01度は約1.1km。
   final home = buildShop(id: 'home', latitude: 35.0, longitude: 139.0);
   final near = buildShop(id: 'near', latitude: 35.01, longitude: 139.0);
-  final far = buildShop(id: 'far', latitude: 35.3, longitude: 139.0);
+  final far = buildShop(id: 'far', latitude: 35.8, longitude: 139.0);
   final unknown = buildShop(id: 'unknown');
   DateTime day(int month, int d) => DateTime(2026, month, d, 12);
 
@@ -162,7 +162,7 @@ void main() {
     });
   });
 
-  test('拠点から20km以上離れた店で食べた日を、遠征としてまとめる', () {
+  test('拠点から80km以上離れた店で食べた日を、遠征としてまとめる', () {
     final list = expeditions(
       scored([
         for (var d = 1; d <= 5; d++) buildEntry(shop: home, eatenAt: day(1, d)),
@@ -173,6 +173,21 @@ void main() {
 
     expect(list.single.day, DateTime(2026, 2, 1));
     expect(list.single.stops.single.shop.id, 'far');
+  });
+
+  test('拠点から80km未満の店は、遠征にしない', () {
+    // 緯度0.72度は約80.1km、0.71度は約79.0km。
+    final justFar = buildShop(id: 'justFar', latitude: 35.72, longitude: 139.0);
+    final notFar = buildShop(id: 'notFar', latitude: 35.71, longitude: 139.0);
+    final list = expeditions(
+      scored([
+        for (var d = 1; d <= 5; d++) buildEntry(shop: home, eatenAt: day(1, d)),
+        buildEntry(shop: notFar, eatenAt: day(2, 1)),
+        buildEntry(shop: justFar, eatenAt: day(2, 2)),
+      ]),
+    );
+
+    expect(list.single.stops.single.shop.id, 'justFar');
   });
 
   test('拠点がまだ無ければ、遠征も無い', () {
@@ -187,7 +202,7 @@ void main() {
   });
 
   test('同じ遠くの店へ別の日に行けば別の遠征にする', () {
-    final farB = buildShop(id: 'farB', latitude: 35.31, longitude: 139.0);
+    final farB = buildShop(id: 'farB', latitude: 35.81, longitude: 139.0);
     final list = expeditions(
       scored([
         for (var d = 1; d <= 5; d++) buildEntry(shop: home, eatenAt: day(1, d)),

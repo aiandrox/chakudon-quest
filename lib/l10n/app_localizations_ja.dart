@@ -675,7 +675,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get journeyExpeditionsTitle => '遠征の記録';
 
   @override
-  String get journeyExpeditionsNone => '拠点から20km以上離れた店で食べた日が、遠征として並びます';
+  String get journeyExpeditionsNone => '拠点から80km以上離れた店で食べた日が、遠征として並びます';
 
   @override
   String homeBaseLine(String shop, int bowls) {

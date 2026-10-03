@@ -47,8 +47,8 @@ double journeyKilometers(List<JourneyStop> stops) {
   return meters / 1000;
 }
 
-/// 遠征とみなす、拠点からの距離。
-const expeditionKilometers = 20;
+/// 遠征とみなす、拠点からの距離。首都圏から北関東や関東の外へ出かけるくらい。
+const expeditionKilometers = 80;
 
 /// 拠点とみなす「同じ地域」の広さ（半径）と、そこで食べた杯数。
 const homeBaseKilometers = 2;
