@@ -8,6 +8,7 @@ import 'package:chakudon_quest/features/record/record_result_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
+import 'package:chakudon_quest/theme/kami_fubuki.dart';
 import 'package:chakudon_quest/theme/washi.dart';
 
 import '../../support/builders.dart';
@@ -114,6 +115,8 @@ void main() {
 
     expect(find.text(ja.rankUp), findsOneWidget);
     expect(find.text(ja.rankDan('三')), findsOneWidget);
+    // 節目は紙吹雪で祝う。
+    expect(find.byType(KamiFubuki), findsOneWidget);
   });
 
   testWidgets('最高ランクでは、次のランクの代わりに到達を表示する', (tester) async {
@@ -183,5 +186,17 @@ void main() {
     await pumpResult(tester, [entry], entry.visit.id);
 
     expect(find.text(ja.wishFulfilled), findsNothing);
+  });
+
+  testWidgets('節目の無いいつもの1杯には紙吹雪を出さない', (tester) async {
+    final shop = buildShop(id: 'shop');
+    final entries = [
+      for (var d = 1; d <= 3; d++) buildEntry(shop: shop, eatenAt: day(d)),
+    ];
+    await pumpResult(tester, entries, entries.last.visit.id);
+
+    expect(find.text(ja.rankUp), findsNothing);
+    expect(find.text(ja.questLevelUp), findsNothing);
+    expect(find.byType(KamiFubuki), findsNothing);
   });
 }

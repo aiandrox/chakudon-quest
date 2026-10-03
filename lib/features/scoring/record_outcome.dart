@@ -24,6 +24,10 @@ class RecordOutcome {
   AdventurerRank get rankAfter => adventurerRankFor(totalAfter);
 
   bool get isRankUp => rankAfter.index > rankBefore.index;
+
+  /// 紙吹雪で祝う節目か（昇段・クエストの達成・願成就）。
+  bool get isMilestone =>
+      isRankUp || questLevelUps.isNotEmpty || scored.fulfilledWish != null;
 }
 
 /// [visitId]の記録が無ければnull。累計の変化は、その記録が無かった場合との差で求める

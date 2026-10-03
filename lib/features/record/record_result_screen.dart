@@ -20,6 +20,7 @@ import '../wishes/wishes.dart';
 import '../inkan/inkan_stamp.dart';
 import '../records/visit_photo.dart';
 import '../scoring/points.dart';
+import '../../theme/kami_fubuki.dart';
 import '../../theme/washi.dart';
 
 /// 保存した記録で得たポイントの内訳と、累計・ランクの変化を見せる。
@@ -88,7 +89,13 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
           title: Text(l10n.resultTitle),
         ),
         body: switch (outcome) {
-          final outcome? => _ResultBody(outcome: outcome),
+          final outcome? => Stack(
+            children: [
+              _ResultBody(outcome: outcome),
+              if (outcome.isMilestone)
+                const Positioned.fill(child: KamiFubuki()),
+            ],
+          ),
           null when visitsState.hasError => Center(
             child: Text(l10n.homeLoadFailed),
           ),
