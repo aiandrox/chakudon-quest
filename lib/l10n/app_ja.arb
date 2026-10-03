@@ -484,7 +484,6 @@
     }
   },
   "shopStamps": "この道場の印",
-  "resultStamped": "印をいただきました",
   "recordPhotoDate": "食べた日時: {date}（写真の撮影日時）",
   "@recordPhotoDate": {
     "placeholders": {

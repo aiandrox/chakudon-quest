@@ -119,22 +119,13 @@ class _ResultBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     final scored = outcome.scored;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
       children: [
-        Text(
-          l10n.resultStamped,
-          style: textTheme.bodySmall?.copyWith(
-            color: Washi.nightSoft,
-            letterSpacing: 4,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         _StampedPage(scored: scored),
         if (scored.fulfilledWish case final wish?) ...[
           const SizedBox(height: 16),
@@ -192,27 +183,23 @@ class _StampedPage extends StatefulWidget {
   State<_StampedPage> createState() => _StampedPageState();
 }
 
-/// 印を「ポンッ」と押す。上から落ちてきて紙に当たった瞬間に少しつぶれて戻り、
-/// 朱肉がにじむように輪が広がる。当たった瞬間に強めに震わせる。
+/// 印を「ポンッ」と押す。上から落ちてきて、紙に当たったところでぴたりと止まり、強めに震わせる。
 class _StampedPageState extends State<_StampedPage>
     with SingleTickerProviderStateMixin {
-  // 0〜0.2: 待つ／0.2〜0.45: 落ちる／0.45: 当たる／0.45〜0.75: つぶれて戻る・輪が広がる
-  static const _impact = 0.45;
+  /// 0〜この割合までは待ち、そこから当たるまで落ちる（最後に当たる）。
+  static const _wait = 0.35;
 
   late final _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1300),
+    duration: const Duration(milliseconds: 700),
   );
-  bool _hit = false;
 
   @override
   void initState() {
     super.initState();
     _controller
-      ..addListener(() {
-        if (_hit || _controller.value < _impact) return;
-        _hit = true;
-        HapticFeedback.heavyImpact();
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) HapticFeedback.heavyImpact();
       })
       ..forward();
   }
@@ -268,38 +255,16 @@ class _StampedPageState extends State<_StampedPage>
                     child: InkanStamp(scored: scored, size: 136),
                     builder: (context, stamp) {
                       final t = _controller.value;
+                      if (t < _wait) return Opacity(opacity: 0, child: stamp);
                       final drop = Curves.easeInCubic.transform(
-                        _phase(t, 0.2, _impact),
+                        _phase(t, _wait, 1),
                       );
-                      final squash = _phase(t, _impact, 0.75);
-                      // 当たった直後に0.9までつぶれ、少し跳ねて1に戻る。
-                      final settle = squash == 0
-                          ? 1.0
-                          : 1 - 0.1 * math.sin(squash * math.pi) * (1 - squash);
-                      final scale = t < _impact ? 1.9 - 0.9 * drop : settle;
-                      final ring = _phase(t, _impact, 0.9);
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          if (ring > 0 && ring < 1)
-                            Container(
-                              width: 136 * (1 + 0.5 * ring),
-                              height: 136 * (1 + 0.5 * ring),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Washi.shuLight.withValues(
-                                    alpha: 0.6 * (1 - ring),
-                                  ),
-                                  width: 3,
-                                ),
-                              ),
-                            ),
-                          Opacity(
-                            opacity: t < 0.2 ? 0 : (0.3 + 0.7 * drop),
-                            child: Transform.scale(scale: scale, child: stamp),
-                          ),
-                        ],
+                      return Opacity(
+                        opacity: 0.3 + 0.7 * drop,
+                        child: Transform.scale(
+                          scale: 1.9 - 0.9 * drop,
+                          child: stamp,
+                        ),
                       );
                     },
                   ),

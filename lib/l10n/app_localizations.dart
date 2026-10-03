@@ -1636,12 +1636,6 @@ abstract class AppLocalizations {
   /// **'この道場の印'**
   String get shopStamps;
 
-  /// No description provided for @resultStamped.
-  ///
-  /// In ja, this message translates to:
-  /// **'印をいただきました'**
-  String get resultStamped;
-
   /// No description provided for @recordPhotoDate.
   ///
   /// In ja, this message translates to:
