@@ -1313,50 +1313,50 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingNext => '先へ進む';
 
   @override
-  String get onboardingWelcomeTitle => 'よくぞ参られた';
+  String get onboardingWelcomeTitle => '門を叩く';
 
   @override
   String get onboardingWelcomeBody =>
-      'ここは麺の道を歩む者の道場、麺印帳。\n食べた一杯ごとに印を授け、並んだ時間も、遠き店への旅路も、すべて修行点として刻んでゆく。\n\nまずは、そなたの「いま」を聞かせよ。';
+      '麺印帳は、麺の道を歩む者のための修行の帳面である。\n食べた一杯ごとに印を授かり、並んだ時間も、遠い店への道のりも、すべて修行点として刻まれていく。\n\n始め方は三つある。';
 
   @override
   String get onboardingWelcomeRecord => '写真から一杯を刻む';
 
   @override
-  String get onboardingWelcomeQueue => 'いま行列に並んでおる';
+  String get onboardingWelcomeQueue => 'いま行列に並んでいる';
 
   @override
   String get onboardingWelcomeBackup => '前の帳面を引き継ぐ（バックアップ）';
 
   @override
-  String get onboardingRecordTitle => '最初の一杯を刻め';
+  String get onboardingRecordTitle => '最初の一杯を刻む';
 
   @override
   String get onboardingRecordBody =>
-      '撮りためた一杯の写真があれば、それで足りる。撮った日と場所から、店の候補はこちらで探し出そう。\n\n次の間で「ギャラリーから選ぶ」を押し、店を選んで「着丼！」と唱えるのじゃ。';
+      '撮りためた一杯の写真が一枚あれば足りる。撮影した日時と場所から、店の候補を探し出す。\n\n次の画面で「ギャラリーから選ぶ」を押し、店を選んで「着丼！」を押す。これで一杯目が刻まれる。';
 
   @override
   String get onboardingRecordButton => '写真を選んで刻む';
 
   @override
-  String get onboardingShareTitle => '見事。一杯目の印じゃ';
+  String get onboardingShareTitle => '一杯目の印';
 
   @override
   String get onboardingShareBody =>
-      '刻んだ一杯は、こうして印となり帳面に並ぶ。長く並ぶほど、攻め難い店ほど、印は立派になってゆく。\n\n写真と印と店の名を一枚の絵にして、同じ道を行く者に見せることもできる。';
+      '刻んだ一杯は、このような印となって帳面に並ぶ。長く並んだ一杯ほど、攻め難い店ほど、印は格を増していく。\n\n写真と印と店の名を一枚の絵にまとめ、同じ道を行く者に見せることもできる。';
 
   @override
   String get onboardingShareButton => '絵にして分かち合う';
 
   @override
-  String get onboardingWishTitle => '次なる一杯に願を掛けよ';
+  String get onboardingWishTitle => '次なる一杯に願を掛ける';
 
   @override
   String get onboardingWishBody =>
-      '行きたい店を願掛け帳に記しておけば、食べに行った日に願が成就する。\n\n地図の右下「探す」を押せば、近くのまだ見ぬ店が灰色の印で現れる。気になる店に触れ、「願を掛ける」のじゃ。';
+      '行きたい店を願掛け帳に記しておけば、その店で食べた日に願が成就する。\n\n地図の右下の「探す」を押すと、近くのまだ訪れていない店が灰色の印で現れる。気になる店に触れ、「願を掛ける」を押す。';
 
   @override
-  String get onboardingWishNotYet => 'まだ願は掛かっておらぬ。店の名からでも掛けられるぞ。';
+  String get onboardingWishNotYet => 'まだ願は掛かっていない。店の名からも掛けられる。';
 
   @override
   String get onboardingWishMap => '地図で近くの店を探す';
@@ -1365,11 +1365,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingWishByName => '店の名で願を掛ける';
 
   @override
-  String get onboardingFinishTitle => 'あとは、精進あるのみ';
+  String get onboardingFinishTitle => 'あとは精進あるのみ';
 
   @override
   String get onboardingFinishBody =>
-      '「修行」の間では、段位、型と秘伝、修行録、一年の振り返りを見ることができる。\n\n一杯ごとに印は増え、段位は上がる。\nいざ、麺の道へ。';
+      '「修行」では、段位、型と秘伝、修行録、一年の振り返りを見ることができる。\n\n一杯ごとに印は増え、段位は上がっていく。\nいざ、麺の道へ。';
 
   @override
   String get onboardingFinishShugyo => '修行の間をのぞく';
@@ -1387,29 +1387,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingWelcomeChapter => '其の一　入門';
 
   @override
-  String get onboardingWelcomeSeal => '入';
-
-  @override
   String get onboardingRecordChapter => '其の二　初陣';
-
-  @override
-  String get onboardingRecordSeal => '刻';
 
   @override
   String get onboardingShareChapter => '其の三　授印';
 
   @override
-  String get onboardingShareSeal => '印';
-
-  @override
   String get onboardingWishChapter => '其の四　願掛';
 
   @override
-  String get onboardingWishSeal => '願';
-
-  @override
   String get onboardingFinishChapter => '其の五　精進';
-
-  @override
-  String get onboardingFinishSeal => '進';
 }

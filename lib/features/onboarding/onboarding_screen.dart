@@ -7,7 +7,6 @@ import '../../theme/washi_buttons.dart';
 import '../backup/backup_screen.dart';
 import '../checkin/checkin_screen.dart';
 import '../home/app_tab.dart';
-import '../../theme/ink_wear.dart';
 import '../inkan/inkan_stamp.dart';
 import '../map/map_screen.dart';
 import '../record/record_screen.dart';
@@ -160,7 +159,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         chapter: l10n.onboardingWelcomeChapter,
         title: l10n.onboardingWelcomeTitle,
         body: l10n.onboardingWelcomeBody,
-        hero: _StepSeal(glyph: l10n.onboardingWelcomeSeal),
         actions: [
           AiFuda(
             expand: true,
@@ -183,7 +181,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         chapter: l10n.onboardingRecordChapter,
         title: l10n.onboardingRecordTitle,
         body: l10n.onboardingRecordBody,
-        hero: _StepSeal(glyph: l10n.onboardingRecordSeal),
         actions: [
           AiFuda(
             expand: true,
@@ -199,7 +196,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         body: l10n.onboardingShareBody,
         hero: switch (ref.watch(scoredVisitByIdProvider)[_visitId]) {
           final scored? => InkanStamp(scored: scored, size: 132),
-          null => _StepSeal(glyph: l10n.onboardingShareSeal),
+          null => null,
         },
         actions: [
           AiFuda(
@@ -219,7 +216,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         chapter: l10n.onboardingWishChapter,
         title: l10n.onboardingWishTitle,
         body: l10n.onboardingWishBody,
-        hero: _StepSeal(glyph: l10n.onboardingWishSeal),
         note: _noWishYet ? l10n.onboardingWishNotYet : null,
         actions: [
           AiFuda(
@@ -239,7 +235,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         chapter: l10n.onboardingFinishChapter,
         title: l10n.onboardingFinishTitle,
         body: l10n.onboardingFinishBody,
-        hero: _StepSeal(glyph: l10n.onboardingFinishSeal, filled: true),
         actions: [
           AiFuda(
             expand: true,
@@ -319,61 +314,12 @@ class _StepMarks extends StatelessWidget {
   }
 }
 
-/// 心得の段ごとの印。朱の枠に筆文字1字。最後の段だけ朱塗り。
-class _StepSeal extends StatelessWidget {
-  const _StepSeal({required this.glyph, this.filled = false});
-
-  final String glyph;
-  final bool filled;
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform.rotate(
-      angle: -0.07,
-      child: InkWear(
-        seed: inkSeed('onboarding-$glyph'),
-        child: Container(
-          width: 112,
-          height: 112,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: filled ? Washi.shu : null,
-            border: Border.all(color: Washi.shu, width: 4),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Container(
-            width: 96,
-            height: 96,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: filled ? Washi.page : Washi.shu,
-                width: 1.2,
-              ),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              glyph,
-              style: TextStyle(
-                fontFamily: Washi.brush,
-                fontSize: 64,
-                height: 1.1,
-                color: filled ? Washi.page : Washi.shu,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _OnboardingPage extends StatelessWidget {
   const _OnboardingPage({
     required this.chapter,
     required this.title,
     required this.body,
-    required this.hero,
+    this.hero,
     required this.actions,
     this.note,
   });
@@ -381,7 +327,7 @@ class _OnboardingPage extends StatelessWidget {
   final String chapter;
   final String title;
   final String body;
-  final Widget hero;
+  final Widget? hero;
   final List<Widget> actions;
   final String? note;
 
@@ -397,9 +343,7 @@ class _OnboardingPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 8),
-                Center(child: hero),
-                const SizedBox(height: 28),
+                const SizedBox(height: 24),
                 Text(
                   chapter,
                   style: const TextStyle(
@@ -421,6 +365,10 @@ class _OnboardingPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 const _BrushRule(),
+                if (hero case final hero?) ...[
+                  const SizedBox(height: 24),
+                  Center(child: hero),
+                ],
                 const SizedBox(height: 18),
                 Text(
                   body,
