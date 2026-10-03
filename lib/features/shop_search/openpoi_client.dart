@@ -49,10 +49,22 @@ class OpenPoiClient {
     String name, {
     GeoPoint? near,
     Duration timeout = OverpassClient.timeout,
-  }) async => mergeFoundShops(
-    const [],
-    await _search(buildOpenPoiNameUri(name, near: near), timeout),
-  );
+  }) async {
+    final uri = buildOpenPoiNameUri(name, near: near);
+    final response = await _client
+        .get(uri, headers: const {'User-Agent': shopSearchUserAgent})
+        .timeout(timeout);
+    if (response.statusCode != 200) {
+      throw http.ClientException(
+        'OpenPOI API: HTTP ${response.statusCode}',
+        uri,
+      );
+    }
+    return mergeFoundShops(
+      const [],
+      parseOpenPoiNameResults(utf8.decode(response.bodyBytes)),
+    );
+  }
 
   /// [location]のある市区町村（道中記で地名に触れるため）。わからなければnull。
   Future<String?> areaAt(

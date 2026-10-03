@@ -148,7 +148,7 @@ void main() {
           (_) async => http.Response.bytes(
             utf8.encode(
               jsonEncode({
-                'results': [
+                'suggestions': [
                   {
                     'name': '麺屋藤ろう',
                     'prefecture': '神奈川県',
@@ -198,5 +198,37 @@ void main() {
       buildOpenPoiAreaUri(const GeoPoint(35.44, 139.36)).queryParameters,
       containsPair('center', '139.36,35.44'),
     );
+  });
+
+  test('店名で探した結果は、飲食店でない施設を除き、ラーメン屋らしい店を先に並べる', () {
+    final shops = parseOpenPoiNameResults(
+      jsonEncode({
+        'suggestions': [
+          {'name': '藤の家', 'category': 'restaurant', 'lat': 35.0, 'lng': 139.0},
+          {
+            'name': '藤森工業',
+            'category': 'retail_other',
+            'lat': 35.0,
+            'lng': 139.0,
+          },
+          {'name': '藤井施術院', 'category': 'medical', 'lat': 35.0, 'lng': 139.0},
+          {
+            'name': '麺屋藤ろう',
+            'category': 'restaurant',
+            'lat': 35.1,
+            'lng': 139.0,
+          },
+          {'name': '藤ストアー', 'category': 'unknown', 'lat': 35.2, 'lng': 139.0},
+        ],
+      }),
+    );
+
+    expect(shops.map((s) => s.name), ['麺屋藤ろう', '藤の家', '藤ストアー']);
+  });
+
+  test('店名で探すときは、すべての語に合う店だけを返す窓口を使う', () {
+    final uri = buildOpenPoiNameUri('麺屋 藤ろう');
+    expect(uri.path, '/v1/suggest');
+    expect(uri.queryParameters['q'], '麺屋 藤ろう');
   });
 }
