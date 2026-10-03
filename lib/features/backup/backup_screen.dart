@@ -33,9 +33,13 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       final file = await ref
           .read(backupServiceProvider)
           .writeBackup(ref.read(clockProvider)());
-      await SharePlus.instance.share(
+      final result = await SharePlus.instance.share(
         ShareParams(files: [XFile(file.path)], sharePositionOrigin: origin),
       );
+      // ドライブの「マイドライブ」などは画面を出さずに保存するので、送ったことを知らせる。
+      if (result.status == ShareResultStatus.success) {
+        messenger.showSnackBar(SnackBar(content: Text(l10n.backupExportSent)));
+      }
     } catch (e) {
       debugPrint('Backup export failed: $e');
       messenger.showSnackBar(SnackBar(content: Text(l10n.backupExportFailed)));

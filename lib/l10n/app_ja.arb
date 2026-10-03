@@ -423,6 +423,7 @@
   "backupImport": "読み込む",
   "backupImportNote": "書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません",
   "backupExportFailed": "書き出せませんでした。もう一度お試しください",
+  "backupExportSent": "保存先に送りました。ドライブなどにファイルがあるか確かめてください",
   "backupImportDone": "{added}件の記録を読み込みました（ファイルの記録 {total}件のうち、このスマホに無かったもの）",
   "@backupImportDone": {
     "placeholders": {

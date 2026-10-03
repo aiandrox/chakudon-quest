@@ -883,6 +883,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupExportFailed => '書き出せませんでした。もう一度お試しください';
 
   @override
+  String get backupExportSent => '保存先に送りました。ドライブなどにファイルがあるか確かめてください';
+
+  @override
   String backupImportDone(int added, int total) {
     return '$added件の記録を読み込みました（ファイルの記録 $total件のうち、このスマホに無かったもの）';
   }

@@ -1594,6 +1594,12 @@ abstract class AppLocalizations {
   /// **'書き出せませんでした。もう一度お試しください'**
   String get backupExportFailed;
 
+  /// No description provided for @backupExportSent.
+  ///
+  /// In ja, this message translates to:
+  /// **'保存先に送りました。ドライブなどにファイルがあるか確かめてください'**
+  String get backupExportSent;
+
   /// No description provided for @backupImportDone.
   ///
   /// In ja, this message translates to:
