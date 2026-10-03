@@ -1123,12 +1123,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String reviewCoverEra(String era, String eraYear) {
-    return '$era$eraYear年';
+    return '$era$eraYear年の修行';
   }
 
   @override
   String reviewCoverYear(int year) {
-    return '（$year年）の修行';
+    return '$year年';
   }
 
   @override

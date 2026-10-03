@@ -2005,13 +2005,13 @@ abstract class AppLocalizations {
   /// No description provided for @reviewCoverEra.
   ///
   /// In ja, this message translates to:
-  /// **'{era}{eraYear}年'**
+  /// **'{era}{eraYear}年の修行'**
   String reviewCoverEra(String era, String eraYear);
 
   /// No description provided for @reviewCoverYear.
   ///
   /// In ja, this message translates to:
-  /// **'（{year}年）の修行'**
+  /// **'{year}年'**
   String reviewCoverYear(int year);
 
   /// No description provided for @reviewCoverHint.
