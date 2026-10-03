@@ -167,6 +167,9 @@ class RecordController extends Notifier<RecordState> {
     );
   }
 
+  /// 店名で探すときに近い順に並べる基準（写真の撮影場所か現在地）。
+  GeoPoint? get searchCenter => state.photoLocation ?? _here;
+
   void selectShop(ShopCandidate shop) {
     state = state.copyWith(
       selectedShop: shop,

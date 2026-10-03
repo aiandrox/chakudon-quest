@@ -44,6 +44,16 @@ class OpenPoiClient {
     return mergeFoundShops(const [], [for (final shops in results) ...?shops]);
   }
 
+  /// 店名で全国から探す（過去の1杯を、あとから地図に載せるため）。
+  Future<List<FoundShop>> searchByName(
+    String name, {
+    GeoPoint? near,
+    Duration timeout = OverpassClient.timeout,
+  }) async => mergeFoundShops(
+    const [],
+    await _search(buildOpenPoiNameUri(name, near: near), timeout),
+  );
+
   Future<List<FoundShop>> _search(Uri uri, Duration timeout) async {
     final response = await _client
         .get(uri, headers: const {'User-Agent': shopSearchUserAgent})

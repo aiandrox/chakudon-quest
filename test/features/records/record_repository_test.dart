@@ -245,6 +245,23 @@ void main() {
     });
   });
 
+  test('位置のわからない店に、店名で探した位置を付けられる', () async {
+    final visit = await save(const ShopInput(name: '麺屋藤ろう'));
+
+    await repository.setShopLocation(
+      visit.shopId,
+      latitude: 35.44,
+      longitude: 139.36,
+      dataSource: const ShopSource(licenses: ['CDLA-Permissive-2.0']),
+    );
+
+    final shop = (await repository.allShops()).single;
+    expect(shop.latitude, 35.44);
+    expect(shop.longitude, 139.36);
+    expect(shop.osmId, isNull);
+    expect(shop.dataSource!.licenses, ['CDLA-Permissive-2.0']);
+  });
+
   test('同じ名前でも別のOSMの店は別の店にする', () async {
     final first = await save(const ShopInput(osmId: 'node/1', name: '一風堂'));
     final second = await save(const ShopInput(osmId: 'node/2', name: '一風堂'));

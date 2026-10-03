@@ -57,6 +57,7 @@ List<FoundShop> parseOpenPoiResponse(String body) {
           licenses: _strings(result['licenses']),
           attributions: _strings(result['attributions']),
         ),
+        address: _address(result),
       ),
     );
   }
@@ -65,3 +66,23 @@ List<FoundShop> parseOpenPoiResponse(String body) {
 
 List<String> _strings(Object? value) =>
     value is List ? [...value.whereType<String>()] : const [];
+
+/// 住所があればそれを、無ければ都道府県と市区町村をつなぐ。
+String? _address(Map<String, dynamic> result) {
+  String text(String key) =>
+      result[key] is String ? (result[key] as String).trim() : '';
+  final address = text('address');
+  if (address.isNotEmpty) return address;
+  final area = '${text('prefecture')}${text('city')}';
+  return area.isEmpty ? null : area;
+}
+
+/// 店名で探す（全国）。[near]があれば、そこから近い順に並ぶ。
+Uri buildOpenPoiNameUri(String name, {GeoPoint? near}) =>
+    Uri.https('api.openpoiapi.com', '/v1/search', {
+      'q': name.trim(),
+      'limit': '30',
+      if (near != null) 'center': '${near.longitude},${near.latitude}',
+      // 既定の50kmより広く、国内のどこでも見つかるようにする。
+      if (near != null) 'radius': '2000000',
+    });

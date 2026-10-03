@@ -13,6 +13,7 @@ import '../records/date_format.dart';
 import '../records/visit_details_form.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
+import '../shop_search/shop_name_search_sheet.dart';
 import '../shop_search/shop_tile.dart';
 import 'record_controller.dart';
 import 'record_result_screen.dart';
@@ -413,6 +414,30 @@ class _ShopSection extends ConsumerWidget {
         ),
         for (final shop in state.nameMatches)
           ShopTile(shop: shop, selected: false, onTap: () => onSelect(shop)),
+        if (state.manualName.trim().isNotEmpty)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              icon: const Icon(Icons.travel_explore),
+              label: Text(l10n.nameSearchOpen(state.manualName.trim())),
+              onPressed: () async {
+                final found = await showShopNameSearch(
+                  context,
+                  initialName: state.manualName,
+                  near: controller.searchCenter,
+                );
+                if (found == null) return;
+                onSelect(
+                  ShopCandidate(
+                    osmId: found.osmId,
+                    name: found.name,
+                    location: found.location,
+                    dataSource: found.dataSource,
+                  ),
+                );
+              },
+            ),
+          ),
       ],
     );
   }
