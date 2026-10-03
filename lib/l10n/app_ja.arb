@@ -137,7 +137,7 @@
   "retreatReasonNoTime": "時間切れ",
   "retreatMemoLabel": "メモ（任意）",
   "retreatConfirm": "撤退を記録",
-  "retreatSaved": "撤退を記録しました",
+  "retreatSaved": "撤退を記録し、願掛け帳に入れました",
   "retreatFailed": "記録できませんでした。もう一度お試しください",
   "retreatBadge": "撤退",
   "waitTime": "待ち時間 {minutes}分",
@@ -554,5 +554,6 @@
   "navGlyphRecords": "印",
   "navGlyphWishes": "願",
   "navGlyphShugyo": "修",
-  "navGlyphMap": "地"
+  "navGlyphMap": "地",
+  "wishTriggerRetreat": "撤退した店"
 }

@@ -81,6 +81,7 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
       final visit = await repository.saveRetreat(
         checkin: widget.checkin,
         memo: memo,
+        wishTrigger: l10n.wishTriggerRetreat,
         now: clock(),
       );
       messenger.showSnackBar(

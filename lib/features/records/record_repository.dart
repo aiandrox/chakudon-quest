@@ -174,9 +174,12 @@ class RecordRepository {
   Future<void> cancelCheckin() => _db.delete(_db.activeCheckins).go();
 
   /// 並んだが食べられなかった記録を残し、チェックインを終える。
+  /// [wishTrigger]を渡すと、その店を願掛け帳に入れる（まだの願が無いときだけ）。
+  /// 次にその店で食べると、願が叶ったことになる。
   Future<Visit> saveRetreat({
     required Checkin checkin,
     String memo = '',
+    String? wishTrigger,
     required DateTime now,
   }) {
     return _db.transaction(() async {
@@ -194,8 +197,42 @@ class RecordRepository {
       );
       await _insertVisit(visit);
       await cancelCheckin();
+      if (wishTrigger != null) {
+        await _wishAfterRetreat(checkin, shopId, wishTrigger, now);
+      }
       return visit;
     });
+  }
+
+  Future<void> _wishAfterRetreat(
+    Checkin checkin,
+    String shopId,
+    String trigger,
+    DateTime now,
+  ) async {
+    final pending =
+        await (_db.select(_db.wishes)
+              ..where(
+                (w) => w.fulfilledVisitId.isNull() & w.shopId.equals(shopId),
+              )
+              ..limit(1))
+            .getSingleOrNull();
+    if (pending != null) return;
+    await _db
+        .into(_db.wishes)
+        .insert(
+          WishesCompanion.insert(
+            id: _uuid.v4(),
+            shopId: Value(shopId),
+            osmId: Value(checkin.osmId),
+            name: checkin.name.trim(),
+            latitude: Value(checkin.latitude),
+            longitude: Value(checkin.longitude),
+            dataSource: Value(checkin.dataSource),
+            trigger: Value(trigger),
+            createdAt: now,
+          ),
+        );
   }
 
   ShopInput _shopInputOf(Checkin checkin) => ShopInput(

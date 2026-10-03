@@ -649,7 +649,7 @@ abstract class AppLocalizations {
   /// No description provided for @retreatSaved.
   ///
   /// In ja, this message translates to:
-  /// **'撤退を記録しました'**
+  /// **'撤退を記録し、願掛け帳に入れました'**
   String get retreatSaved;
 
   /// No description provided for @retreatFailed.
@@ -1899,6 +1899,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'地'**
   String get navGlyphMap;
+
+  /// No description provided for @wishTriggerRetreat.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退した店'**
+  String get wishTriggerRetreat;
 }
 
 class _AppLocalizationsDelegate
