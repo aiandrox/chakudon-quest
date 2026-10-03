@@ -826,6 +826,12 @@ abstract class AppLocalizations {
   /// **'印帳にもどる'**
   String get resultOk;
 
+  /// No description provided for @resultShare.
+  ///
+  /// In ja, this message translates to:
+  /// **'共有する'**
+  String get resultShare;
+
   /// No description provided for @navRecords.
   ///
   /// In ja, this message translates to:

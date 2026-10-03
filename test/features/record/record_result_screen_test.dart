@@ -187,4 +187,16 @@ void main() {
 
     expect(find.text(ja.wishFulfilled), findsNothing);
   });
+
+  testWidgets('下に固定した「共有する」から、この一杯の共有の画面を開ける', (tester) async {
+    final entry = buildEntry(eatenAt: day(1));
+    await pumpResult(tester, [entry], entry.visit.id);
+
+    expect(find.text(ja.resultOk), findsOneWidget);
+    await tester.tap(find.text(ja.resultShare));
+    await tester.pumpAndSettle();
+
+    expect(find.text(ja.shareTitle), findsOneWidget);
+    expect(find.text(ja.shareButton), findsOneWidget);
+  });
 }

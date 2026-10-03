@@ -93,16 +93,43 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
           ),
           null => const Center(child: CircularProgressIndicator()),
         },
+        // 共有は、結果を見ているどの時点でも押せるよう、下に固定して「印帳にもどる」と並べる。
         bottomNavigationBar: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(56),
-              foregroundColor: Washi.paper,
-              side: const BorderSide(color: Washi.paper),
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.resultOk),
+          child: Row(
+            children: [
+              if (outcome != null) ...[
+                Expanded(
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(56),
+                      backgroundColor: Washi.shu,
+                      foregroundColor: Washi.paper,
+                    ),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            ShareScreen(visitId: outcome.scored.visit.id),
+                      ),
+                    ),
+                    icon: const Icon(Icons.ios_share),
+                    label: Text(l10n.resultShare),
+                  ),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(56),
+                    foregroundColor: Washi.paper,
+                    side: const BorderSide(color: Washi.paper),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.resultOk),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -160,16 +187,6 @@ class _ResultBody extends StatelessWidget {
           const SizedBox(height: 12),
           _QuestAchievedBanner(levelUp: levelUp),
         ],
-        const SizedBox(height: 20),
-        OutlinedButton.icon(
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => ShareScreen(visitId: scored.visit.id),
-            ),
-          ),
-          icon: const Icon(Icons.ios_share),
-          label: Text(l10n.shareTitle),
-        ),
       ],
     );
   }

@@ -418,6 +418,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get resultOk => '印帳にもどる';
 
   @override
+  String get resultShare => '共有する';
+
+  @override
   String get navRecords => '印帳';
 
   @override
