@@ -424,7 +424,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get questStanding => '型';
 
   @override
-  String get questSpot => '奥義';
+  String get questSpot => '秘伝';
 
   @override
   String questLevelTotal(int total) {
@@ -466,7 +466,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get questAchieved => '奥義会得！';
+  String get questAchieved => '秘伝会得！';
 
   @override
   String get statsEmpty => '記録が増えると、ここに統計が出ます';
@@ -1103,7 +1103,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get wishTriggerRetreat => '撤退した店';
 
   @override
-  String get questSpotNone => 'まだ会得した奥義はありません';
+  String get questSpotNone => 'まだ会得した秘伝はありません';
 
   @override
   String reviewEntry(int year) {
@@ -1201,7 +1201,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get reviewRanks => '上がった段位';
 
   @override
-  String get reviewQuests => '会得した型と奥義';
+  String get reviewQuests => '会得した型と秘伝';
 
   @override
   String get reviewWishes => '叶った願';

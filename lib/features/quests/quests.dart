@@ -8,7 +8,7 @@ import '../wishes/wishes.dart';
 /// 常設: 回数を重ねるごとにレベルが上がる。スポット: 1回達成すれば終わり。
 enum QuestKind { standing, spot }
 
-/// 奥義の印の形。
+/// 秘伝の印の形。
 enum QuestSealShape {
   eightRing,
   doubleCircle,
@@ -21,7 +21,7 @@ enum QuestSealShape {
   castle,
 }
 
-/// 奥義の印の字（1文字）と形。
+/// 秘伝の印の字（1文字）と形。
 class QuestSealDesign {
   const QuestSealDesign(this.glyph, this.shape);
 
@@ -216,7 +216,7 @@ class Quest {
   /// 採点済みの記録（古い順）から、今の数を数える。
   final int Function(List<ScoredVisit> scored) count;
 
-  /// 奥義の印の字と形。奥義ごとに違う印にする。
+  /// 秘伝の印の字と形。秘伝ごとに違う印にする。
   final QuestSealDesign? seal;
 
   int get maxLevel => thresholds.length;

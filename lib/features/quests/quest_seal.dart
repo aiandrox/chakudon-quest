@@ -14,7 +14,7 @@ const _daiji = ['壱', '弐', '参', '肆', '伍', '陸', '漆', '捌', '玖', '
 String daijiNumber(int value) =>
     value >= 1 && value <= _daiji.length ? _daiji[value - 1] : '$value';
 
-/// 型と奥義の印。型は段を角印に、奥義は会得を丸印に。未達成は灰色の点線。
+/// 型と秘伝の印。型は段を角印に、秘伝は会得を丸印に。未達成は灰色の点線。
 /// 最高段まで上がった型は朱で塗りつぶす。
 class QuestSeal extends StatelessWidget {
   const QuestSeal({
@@ -29,7 +29,7 @@ class QuestSeal extends StatelessWidget {
   final int level;
   final double size;
 
-  /// 奥義の印に入れる、会得した日。
+  /// 秘伝の印に入れる、会得した日。
   final DateTime? achievedAt;
 
   @override
@@ -152,7 +152,7 @@ class QuestSeal extends StatelessWidget {
   }
 }
 
-/// 奥義ごとの印の枠。
+/// 秘伝ごとの印の枠。
 class _SpotSealPainter extends CustomPainter {
   const _SpotSealPainter(this.shape);
 

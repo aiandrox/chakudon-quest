@@ -5,7 +5,7 @@ import '../scoring/points.dart';
 import '../scoring/rank_history.dart';
 import '../stats/stats.dart';
 
-/// その年に届いた型・奥義。型は、その年に上がったいちばん上の段。
+/// その年に届いた型・秘伝。型は、その年に上がったいちばん上の段。
 class QuestReached {
   const QuestReached({required this.quest, required this.level});
 

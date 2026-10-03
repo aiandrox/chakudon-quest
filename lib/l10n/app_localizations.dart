@@ -841,7 +841,7 @@ abstract class AppLocalizations {
   /// No description provided for @questSpot.
   ///
   /// In ja, this message translates to:
-  /// **'奥義'**
+  /// **'秘伝'**
   String get questSpot;
 
   /// No description provided for @questLevelTotal.
@@ -901,7 +901,7 @@ abstract class AppLocalizations {
   /// No description provided for @questAchieved.
   ///
   /// In ja, this message translates to:
-  /// **'奥義会得！'**
+  /// **'秘伝会得！'**
   String get questAchieved;
 
   /// No description provided for @statsEmpty.
@@ -1975,7 +1975,7 @@ abstract class AppLocalizations {
   /// No description provided for @questSpotNone.
   ///
   /// In ja, this message translates to:
-  /// **'まだ会得した奥義はありません'**
+  /// **'まだ会得した秘伝はありません'**
   String get questSpotNone;
 
   /// No description provided for @reviewEntry.
@@ -2131,7 +2131,7 @@ abstract class AppLocalizations {
   /// No description provided for @reviewQuests.
   ///
   /// In ja, this message translates to:
-  /// **'会得した型と奥義'**
+  /// **'会得した型と秘伝'**
   String get reviewQuests;
 
   /// No description provided for @reviewWishes.

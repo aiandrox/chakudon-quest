@@ -14,7 +14,7 @@ import '../scoring/scoring_providers.dart';
 import '../stats/stats_screen.dart';
 import '../streak/streak_line.dart';
 
-/// 修行の記録をひとまとめにした画面。段位 → 型と奥義 → 数字 → 設定の順に並べる。
+/// 修行の記録をひとまとめにした画面。段位 → 型と秘伝 → 数字 → 設定の順に並べる。
 class ShugyoScreen extends ConsumerWidget {
   const ShugyoScreen({super.key});
 
