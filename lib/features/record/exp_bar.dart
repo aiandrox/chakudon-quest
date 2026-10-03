@@ -141,7 +141,7 @@ class _ExpBarState extends State<ExpBar> with TickerProviderStateMixin {
                       ),
                       if (_rankedUp)
                         Text(
-                          l10n.rankUp,
+                          _rank.isKyu ? l10n.rankUpKyu : l10n.rankUp,
                           style: textTheme.titleSmall?.copyWith(
                             fontFamily: Washi.brush,
                             color: colors.primary,

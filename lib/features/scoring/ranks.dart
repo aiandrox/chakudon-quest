@@ -1,24 +1,33 @@
 import '../records/models.dart';
 import 'points.dart';
 
-/// 段位。入門から初段〜九段を経て、師範代・免許皆伝へ。序盤ほど間隔を短くし、数杯で昇段できるようにする。
+/// 段位。入門から五級〜一級、初段〜九段を経て、師範代・免許皆伝へ。
+/// 序盤ほど間隔を短くし、1杯目で五級、そのあとも1〜2杯ごとに昇級できるようにする。
 enum AdventurerRank {
   apprentice(0),
-  dan1(50),
-  dan2(120),
-  dan3(200),
-  dan4(300),
-  dan5(450),
-  dan6(650),
-  dan7(900),
-  dan8(1200),
-  dan9(1600),
+  kyu5(15),
+  kyu4(40),
+  kyu3(70),
+  kyu2(110),
+  kyu1(160),
+  dan1(220),
+  dan2(300),
+  dan3(400),
+  dan4(520),
+  dan5(660),
+  dan6(820),
+  dan7(1000),
+  dan8(1300),
+  dan9(1650),
   master(2100),
   grandmaster(2800);
 
   const AdventurerRank(this.requiredPoints);
 
   final int requiredPoints;
+
+  /// 級（五級〜一級）か。
+  bool get isKyu => index >= kyu5.index && index <= kyu1.index;
 
   /// 次のランク。最高ランクならnull。
   AdventurerRank? get next =>

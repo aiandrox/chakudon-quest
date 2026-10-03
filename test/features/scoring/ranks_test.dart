@@ -10,14 +10,16 @@ void main() {
   group('adventurerRankFor', () {
     test('累計ポイントの境界でランクが上がる', () {
       expect(adventurerRankFor(0), AdventurerRank.apprentice);
-      expect(adventurerRankFor(49), AdventurerRank.apprentice);
-      expect(adventurerRankFor(50), AdventurerRank.dan1);
-      expect(adventurerRankFor(119), AdventurerRank.dan1);
-      expect(adventurerRankFor(120), AdventurerRank.dan2);
-      expect(adventurerRankFor(199), AdventurerRank.dan2);
-      expect(adventurerRankFor(200), AdventurerRank.dan3);
-      expect(adventurerRankFor(1599), AdventurerRank.dan8);
-      expect(adventurerRankFor(1600), AdventurerRank.dan9);
+      expect(adventurerRankFor(14), AdventurerRank.apprentice);
+      expect(adventurerRankFor(15), AdventurerRank.kyu5);
+      expect(adventurerRankFor(159), AdventurerRank.kyu2);
+      expect(adventurerRankFor(160), AdventurerRank.kyu1);
+      expect(adventurerRankFor(219), AdventurerRank.kyu1);
+      expect(adventurerRankFor(220), AdventurerRank.dan1);
+      expect(adventurerRankFor(299), AdventurerRank.dan1);
+      expect(adventurerRankFor(300), AdventurerRank.dan2);
+      expect(adventurerRankFor(1649), AdventurerRank.dan8);
+      expect(adventurerRankFor(1650), AdventurerRank.dan9);
       expect(adventurerRankFor(2099), AdventurerRank.dan9);
       expect(adventurerRankFor(2100), AdventurerRank.master);
       expect(adventurerRankFor(2799), AdventurerRank.master);
@@ -25,17 +27,19 @@ void main() {
       expect(adventurerRankFor(100000), AdventurerRank.grandmaster);
     });
 
-    test('段位は12段階で、必要ポイントは小さい順', () {
+    test('段位は17段階（入門・五級〜一級・初段〜九段・師範代・免許皆伝）で、必要ポイントは小さい順', () {
       final points = [
         for (final rank in AdventurerRank.values) rank.requiredPoints,
       ];
-      expect(points, hasLength(12));
+      expect(points, hasLength(17));
+      expect(AdventurerRank.values.where((r) => r.isKyu), hasLength(5));
       expect(points, [...points]..sort());
     });
 
     test('次のランクと必要ポイントがわかる。最高ランクの次は無い', () {
-      expect(AdventurerRank.apprentice.next, AdventurerRank.dan1);
-      expect(AdventurerRank.apprentice.next!.requiredPoints, 50);
+      expect(AdventurerRank.apprentice.next, AdventurerRank.kyu5);
+      expect(AdventurerRank.apprentice.next!.requiredPoints, 15);
+      expect(AdventurerRank.kyu1.next, AdventurerRank.dan1);
       expect(AdventurerRank.dan9.next, AdventurerRank.master);
       expect(AdventurerRank.grandmaster.next, isNull);
     });

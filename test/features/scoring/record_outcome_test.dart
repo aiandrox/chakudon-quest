@@ -19,11 +19,11 @@ void main() {
     expect(outcome.scored.points.total, 30);
     expect(outcome.totalBefore, 20);
     expect(outcome.totalAfter, 50);
-    // 50点で初段に上がる。
+    // 40点の四級を越える。
     expect(outcome.isRankUp, isTrue);
   });
 
-  test('累計が200点（三段）に届くとランクアップ。届かなければしない', () {
+  test('累計が220点（初段）に届くとランクアップ。届かなければしない', () {
     final rare = buildShop(
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
@@ -35,18 +35,18 @@ void main() {
       isLimited: true,
       waitMinutes: 100,
     );
-    // 初訪問 10 + 10 = 20 → 累計 200
-    final reaches = buildEntry(shop: shop, eatenAt: day(2));
+    // 初訪問 10 + 限定 20 + 10 = 40 → 累計 220
+    final reaches = buildEntry(shop: shop, eatenAt: day(2), isLimited: true);
     final up = computeRecordOutcome([big, reaches], reaches.visit.id)!;
 
     expect(up.totalBefore, 180);
-    expect(up.totalAfter, 200);
-    expect(up.rankBefore, AdventurerRank.dan2);
-    expect(up.rankAfter, AdventurerRank.dan3);
+    expect(up.totalAfter, 220);
+    expect(up.rankBefore, AdventurerRank.kyu1);
+    expect(up.rankAfter, AdventurerRank.dan1);
     expect(up.isRankUp, isTrue);
 
-    // 昼のみの店の初訪問 (10 + 10) × 1.3 = 26 → 累計 206。すでに上がっているので、
-    // 2回目の「昼のみ」の店 10 × 1.3 = 13 ではランクアップしない
+    // 昼のみの店の初訪問 (10 + 10) × 1.3 = 26 → 累計 206（一級）。
+    // 2回目の「昼のみ」の店 10 × 1.3 = 13 で 219 になっても、初段（220）には届かない
     final lunch = buildShop(
       id: 'lunch',
       hoursConditions: {HoursCondition.lunchOnly},
@@ -60,9 +60,9 @@ void main() {
       lunchAgain,
     ], lunchAgain.visit.id)!;
 
-    // 180点で入門から二段まで一気に上がる。
+    // 180点で入門から一級まで一気に上がる。
     expect(bigOnly.isRankUp, isTrue);
-    expect(bigOnly.rankAfter, AdventurerRank.dan2);
+    expect(bigOnly.rankAfter, AdventurerRank.kyu1);
     expect(notYet.totalBefore, 206);
     expect(notYet.isRankUp, isFalse);
   });
