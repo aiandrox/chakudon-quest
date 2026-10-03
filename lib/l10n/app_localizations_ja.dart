@@ -1054,7 +1054,4 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get navGlyphMap => '地';
-
-  @override
-  String get mapVisitedChar => '着';
 }

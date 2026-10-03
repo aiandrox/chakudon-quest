@@ -1899,12 +1899,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'地'**
   String get navGlyphMap;
-
-  /// No description provided for @mapVisitedChar.
-  ///
-  /// In ja, this message translates to:
-  /// **'着'**
-  String get mapVisitedChar;
 }
 
 class _AppLocalizationsDelegate
