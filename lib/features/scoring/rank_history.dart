@@ -1,3 +1,4 @@
+import '../records/models.dart';
 import 'points.dart';
 import 'ranks.dart';
 
@@ -12,8 +13,9 @@ class RankAttainment {
   DateTime? get reachedAt => visit?.visit.eatenAt;
 }
 
-/// これまでに上がった段位を、低い順に返す。1杯で複数の段位を越えたときは、
-/// 越えた段位すべてにその1杯をつける。[scored]は古い順（[scoreVisits]の結果）。
+/// これまでに上がった段位を、低い順に返す。[scored]は古い順（[scoreVisits]の結果）。
+/// 1杯で上がれるのは1つだけ（飛び級しない）。累計が先の段位に届いていても、
+/// 次に食べた1杯ごとに1つずつ上がる。撤退の記録では上がらない。
 List<RankAttainment> rankHistory(List<ScoredVisit> scored) {
   final history = [
     RankAttainment(
@@ -24,13 +26,15 @@ List<RankAttainment> rankHistory(List<ScoredVisit> scored) {
   var total = 0;
   for (final entry in scored) {
     total += entry.points.total;
-    for (
-      var next = history.last.rank.next;
-      next != null && total >= next.requiredPoints;
-      next = next.next
-    ) {
+    if (entry.visit.result != VisitResult.eaten) continue;
+    final next = history.last.rank.next;
+    if (next != null && total >= next.requiredPoints) {
       history.add(RankAttainment(rank: next, visit: entry));
     }
   }
   return history;
 }
+
+/// 今の段位。
+AdventurerRank currentRank(List<ScoredVisit> scored) =>
+    rankHistory(scored).last.rank;

@@ -23,47 +23,36 @@ void main() {
     expect(outcome.isRankUp, isTrue);
   });
 
-  test('累計が220点（初段）に届くとランクアップ。届かなければしない', () {
+  test('1杯で上がるのは1つだけ。必要点に届かなければ上がらない', () {
     final rare = buildShop(
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // (10 + 10 + 20 + 50) × 2 = 180
+    // (10 + 10 + 20 + 50) × 2 = 180。一級まで届くが、上がるのは五級だけ。
     final big = buildEntry(
       shop: rare,
       eatenAt: day(1),
       isLimited: true,
       waitMinutes: 100,
     );
-    // 初訪問 10 + 限定 20 + 10 = 40 → 累計 220
-    final reaches = buildEntry(shop: shop, eatenAt: day(2), isLimited: true);
-    final up = computeRecordOutcome([big, reaches], reaches.visit.id)!;
+    final bigOnly = computeRecordOutcome([big], big.visit.id)!;
+    expect(bigOnly.rankBefore, AdventurerRank.apprentice);
+    expect(bigOnly.rankAfter, AdventurerRank.kyu5);
+    expect(bigOnly.isRankUp, isTrue);
 
-    expect(up.totalBefore, 180);
-    expect(up.totalAfter, 220);
-    expect(up.rankBefore, AdventurerRank.kyu1);
-    expect(up.rankAfter, AdventurerRank.dan1);
+    // 次の1杯で、四級に1つだけ上がる。
+    final next = buildEntry(shop: shop, eatenAt: day(2));
+    final up = computeRecordOutcome([big, next], next.visit.id)!;
+    expect(up.totalAfter, 200);
+    expect(up.rankBefore, AdventurerRank.kyu5);
+    expect(up.rankAfter, AdventurerRank.kyu4);
     expect(up.isRankUp, isTrue);
 
-    // 昼のみの店の初訪問 (10 + 10) × 1.3 = 26 → 累計 206（一級）。
-    // 2回目の「昼のみ」の店 10 × 1.3 = 13 で 219 になっても、初段（220）には届かない
-    final lunch = buildShop(
-      id: 'lunch',
-      hoursConditions: {HoursCondition.lunchOnly},
-    );
-    final lunchFirst = buildEntry(shop: lunch, eatenAt: day(1));
-    final lunchAgain = buildEntry(shop: lunch, eatenAt: day(3));
-    final bigOnly = computeRecordOutcome([big], big.visit.id)!;
-    final notYet = computeRecordOutcome([
-      big,
-      lunchFirst,
-      lunchAgain,
-    ], lunchAgain.visit.id)!;
-
-    // 180点で入門から一級まで一気に上がる。
-    expect(bigOnly.isRankUp, isTrue);
-    expect(bigOnly.rankAfter, AdventurerRank.kyu1);
-    expect(notYet.totalBefore, 206);
+    // 20 点（五級）→ 30 点では、四級（40）に届かない。
+    final first = buildEntry(shop: shop, eatenAt: day(1));
+    final again = buildEntry(shop: shop, eatenAt: day(2));
+    final notYet = computeRecordOutcome([first, again], again.visit.id)!;
+    expect(notYet.totalAfter, 30);
     expect(notYet.isRankUp, isFalse);
   });
 

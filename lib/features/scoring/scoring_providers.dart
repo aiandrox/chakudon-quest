@@ -4,6 +4,8 @@ import '../quests/quests.dart';
 import '../records/record_repository.dart';
 import '../wishes/wish_repository.dart';
 import 'points.dart';
+import 'rank_history.dart';
+import 'ranks.dart';
 
 /// 採点済みの全記録（古い順）。ポイントは保存せず、記録が変わるたびに計算し直す。
 final scoredVisitsProvider = Provider<List<ScoredVisit>>(
@@ -15,6 +17,11 @@ final scoredVisitsProvider = Provider<List<ScoredVisit>>(
 
 final totalPointsProvider = Provider<int>(
   (ref) => totalPoints(ref.watch(scoredVisitsProvider)),
+);
+
+/// 今の段位（1杯で1つずつ上がる）。
+final currentRankProvider = Provider<AdventurerRank>(
+  (ref) => currentRank(ref.watch(scoredVisitsProvider)),
 );
 
 /// 記録のIDから、その記録の採点結果を引く。

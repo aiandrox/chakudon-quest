@@ -404,6 +404,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get maxRank => '免許皆伝に至りました';
 
   @override
+  String nextRankReady(String rank) {
+    return '次の一杯で$rank';
+  }
+
+  @override
+  String get rankHistoryReady => '次の一杯で上がる';
+
+  @override
   String get rankUp => '昇段！';
 
   @override

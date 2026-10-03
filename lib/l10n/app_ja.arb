@@ -206,6 +206,9 @@
     }
   },
   "maxRank": "免許皆伝に至りました",
+  "nextRankReady": "次の一杯で{rank}",
+  "@nextRankReady": {"placeholders": {"rank": {"type": "String"}}},
+  "rankHistoryReady": "次の一杯で上がる",
   "rankUp": "昇段！",
   "rankUpKyu": "昇級！",
   "rankHistoryTitle": "昇段の記録",

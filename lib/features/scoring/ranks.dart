@@ -34,9 +34,6 @@ enum AdventurerRank {
       index + 1 < values.length ? values[index + 1] : null;
 }
 
-AdventurerRank adventurerRankFor(int totalPoints) => AdventurerRank.values
-    .lastWhere((rank) => totalPoints >= rank.requiredPoints);
-
 enum ShopRank {
   s(60),
   a(40),

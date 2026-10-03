@@ -9,17 +9,22 @@ import '../scoring/ranks.dart';
 import '../words/words.dart';
 
 /// 着丼の直後に、修行点の帯を前の累計から今の累計まで伸ばす。
-/// 途中で段位が上がったら、段位の印をぴかっと光らせて新しい段位に替える。
+/// 段位が上がるときは、帯が新しい段位の必要点に届いたところ（すでに届いていれば伸ばし終えたところ）で、
+/// 段位の印をぴかっと光らせて新しい段位に替える。1杯で上がるのは1つだけ。
 class ExpBar extends StatefulWidget {
   const ExpBar({
     super.key,
     required this.before,
     required this.after,
+    required this.rankBefore,
+    required this.rankAfter,
     this.delay = const Duration(milliseconds: 900),
   });
 
   final int before;
   final int after;
+  final AdventurerRank rankBefore;
+  final AdventurerRank rankAfter;
 
   /// 印を押し終えるのを待ってから伸ばしはじめる。
   final Duration delay;
@@ -41,23 +46,27 @@ class _ExpBarState extends State<ExpBar> with TickerProviderStateMixin {
     begin: widget.before.toDouble(),
     end: widget.after.toDouble(),
   ).animate(CurvedAnimation(parent: _grow, curve: Curves.easeOutCubic));
-  late AdventurerRank _rank = adventurerRankFor(widget.before);
+  late AdventurerRank _rank = widget.rankBefore;
   bool _rankedUp = false;
 
   @override
   void initState() {
     super.initState();
-    _grow.addListener(_checkRank);
+    _grow
+      ..addListener(_checkRank)
+      ..addStatusListener((_) => _checkRank());
     Future<void>.delayed(widget.delay, () {
       if (mounted) _grow.forward();
     });
   }
 
   void _checkRank() {
-    final rank = adventurerRankFor(_points.value.floor());
-    if (rank == _rank) return;
+    final target = widget.rankAfter;
+    if (_rankedUp || target.index <= _rank.index) return;
+    final reached = _points.value >= target.requiredPoints || _grow.isCompleted;
+    if (!reached) return;
     setState(() {
-      _rank = rank;
+      _rank = target;
       _rankedUp = true;
     });
     _flash.forward(from: 0);

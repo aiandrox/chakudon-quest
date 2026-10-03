@@ -48,40 +48,38 @@ void main() {
     expect(history[2].reachedAt, day(3));
   });
 
-  test('1杯で複数の段位を越えたら、越えた段位すべてに同じ1杯をつける', () {
+  test('1杯で上がるのは1つだけ。累計が先に届いていても、食べた1杯ごとに1つずつ上がる', () {
     final rare = buildShop(
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // (10 + 50 + 20 + 10) × 2 = 180 → 五級〜一級（15〜160）を一度に越える。
+    // (10 + 50 + 20 + 10) × 2 = 180 → 一級（160）まで届くが、上がるのは五級だけ。
     final big = buildEntry(
       shop: rare,
       eatenAt: day(1),
       isLimited: true,
       waitMinutes: 100,
     );
-    // 10 + 20 + 10 = 40 → 累計 220 で初段（220）。
-    final next = buildEntry(
-      shop: buildShop(id: 'shop'),
+    // 撤退では上がらない。
+    final retreat = buildEntry(
+      shop: buildShop(id: 'closed'),
       eatenAt: day(2),
-      isLimited: true,
+      result: VisitResult.retreated,
     );
-    final history = rankHistory(scoreVisits([big, next]));
+    final second = buildEntry(shop: rare, eatenAt: day(3));
+    final third = buildEntry(shop: rare, eatenAt: day(4));
+    final history = rankHistory(scoreVisits([big, retreat, second, third]));
 
     expect(history.map((e) => e.rank), [
       AdventurerRank.apprentice,
       AdventurerRank.kyu5,
       AdventurerRank.kyu4,
       AdventurerRank.kyu3,
-      AdventurerRank.kyu2,
-      AdventurerRank.kyu1,
-      AdventurerRank.dan1,
     ]);
-    for (var i = 1; i <= 5; i++) {
-      expect(history[i].visit!.visit.id, big.visit.id);
-    }
-    expect(history[6].visit!.visit.id, next.visit.id);
-    expect(history[6].reachedAt, day(2));
+    expect(history[1].visit!.visit.id, big.visit.id);
+    expect(history[2].visit!.visit.id, second.visit.id);
+    expect(history[3].visit!.visit.id, third.visit.id);
+    expect(currentRank(scoreVisits([big, retreat])), AdventurerRank.kyu5);
   });
 
   test('撤退の記録（0点）では昇段しない', () {

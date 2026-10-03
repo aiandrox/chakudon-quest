@@ -78,10 +78,10 @@ void main() {
 
     expect(find.text(ja.pointsRetry), findsNothing);
 
-    // 82点で入門から三級へ上がる（70点で三級）。
+    // 82点は三級（70）まで届くが、1杯で上がるのは五級だけ。
     expect(find.text(ja.rankUpKyu), findsOneWidget);
-    expect(find.text(ja.rankKyu('三')), findsWidgets);
-    expect(find.text(masterWords(AdventurerRank.kyu3)), findsOneWidget);
+    expect(find.text(ja.rankKyu('五')), findsWidgets);
+    expect(find.text(masterWords(AdventurerRank.kyu5)), findsOneWidget);
 
     // スポット「はじめての着丼」の達成と、常設の Lv.1 到達
     // （35分待ち・限定・1杯で60点以上のSランク）を知らせる。
@@ -116,8 +116,9 @@ void main() {
     );
     await pumpResult(tester, [reaches, big], reaches.visit.id);
 
-    expect(find.text(ja.rankUp), findsOneWidget);
-    expect(find.text(ja.rankFirstDan), findsOneWidget);
+    // 1杯目で五級、2杯目で四級に1つだけ上がる。
+    expect(find.text(ja.rankUpKyu), findsOneWidget);
+    expect(find.text(ja.rankKyu('四')), findsOneWidget);
   });
 
   testWidgets('最高ランクでは、次のランクの代わりに到達を表示する', (tester) async {

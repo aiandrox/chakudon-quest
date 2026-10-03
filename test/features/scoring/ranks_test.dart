@@ -7,24 +7,30 @@ import 'package:chakudon_quest/features/scoring/ranks.dart';
 import '../../support/builders.dart';
 
 void main() {
-  group('adventurerRankFor', () {
-    test('累計ポイントの境界でランクが上がる', () {
-      expect(adventurerRankFor(0), AdventurerRank.apprentice);
-      expect(adventurerRankFor(14), AdventurerRank.apprentice);
-      expect(adventurerRankFor(15), AdventurerRank.kyu5);
-      expect(adventurerRankFor(159), AdventurerRank.kyu2);
-      expect(adventurerRankFor(160), AdventurerRank.kyu1);
-      expect(adventurerRankFor(219), AdventurerRank.kyu1);
-      expect(adventurerRankFor(220), AdventurerRank.dan1);
-      expect(adventurerRankFor(299), AdventurerRank.dan1);
-      expect(adventurerRankFor(300), AdventurerRank.dan2);
-      expect(adventurerRankFor(1649), AdventurerRank.dan8);
-      expect(adventurerRankFor(1650), AdventurerRank.dan9);
-      expect(adventurerRankFor(2099), AdventurerRank.dan9);
-      expect(adventurerRankFor(2100), AdventurerRank.master);
-      expect(adventurerRankFor(2799), AdventurerRank.master);
-      expect(adventurerRankFor(2800), AdventurerRank.grandmaster);
-      expect(adventurerRankFor(100000), AdventurerRank.grandmaster);
+  group('AdventurerRank', () {
+    test('必要な修行点', () {
+      expect(
+        {for (final r in AdventurerRank.values) r: r.requiredPoints},
+        {
+          AdventurerRank.apprentice: 0,
+          AdventurerRank.kyu5: 15,
+          AdventurerRank.kyu4: 40,
+          AdventurerRank.kyu3: 70,
+          AdventurerRank.kyu2: 110,
+          AdventurerRank.kyu1: 160,
+          AdventurerRank.dan1: 220,
+          AdventurerRank.dan2: 300,
+          AdventurerRank.dan3: 400,
+          AdventurerRank.dan4: 520,
+          AdventurerRank.dan5: 660,
+          AdventurerRank.dan6: 820,
+          AdventurerRank.dan7: 1000,
+          AdventurerRank.dan8: 1300,
+          AdventurerRank.dan9: 1650,
+          AdventurerRank.master: 2100,
+          AdventurerRank.grandmaster: 2800,
+        },
+      );
     });
 
     test('段位は17段階（入門・五級〜一級・初段〜九段・師範代・免許皆伝）で、必要ポイントは小さい順', () {
