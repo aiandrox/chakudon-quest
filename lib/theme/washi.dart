@@ -94,19 +94,22 @@ class VerticalText extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     for (final char in line)
-                      SizedBox(
-                        width: cell * 1.1,
-                        height: cell * 1.15,
-                        child: Center(
-                          child: Text(
-                            char,
-                            style: charStyle,
-                            textAlign: TextAlign.center,
-                            softWrap: false,
-                            overflow: TextOverflow.visible,
+                      if (char == verticalSpace)
+                        SizedBox(height: cell * 0.5)
+                      else
+                        SizedBox(
+                          width: cell * 1.1,
+                          height: cell * 1.15,
+                          child: Center(
+                            child: Text(
+                              char,
+                              style: charStyle,
+                              textAlign: TextAlign.center,
+                              softWrap: false,
+                              overflow: TextOverflow.visible,
+                            ),
                           ),
                         ),
-                      ),
                   ],
                 ),
             ],
@@ -122,6 +125,9 @@ class VerticalText extends StatelessWidget {
 /// 小さい「ゃ」や「ー」「ん」で行が始まる分け方は避ける。きりのいいところなら、
 /// 1文字だけ長くてもよい（少し縮めて表示する）。[maxLines]行に収まらないときは、
 /// 最後の文字を「…」（縦書きでは縦向き）にする。
+/// [verticalLines]の結果で、半文字分のすき間を表す。
+const verticalSpace = ' ';
+
 List<List<String>> verticalLines(
   String text, {
   int? maxChars,
@@ -137,7 +143,17 @@ List<List<String>> verticalLines(
       chars.add(char);
     }
   }
-  if (maxChars == null || chars.length <= maxChars) return [chars];
+  if (maxChars == null || chars.length <= maxChars) {
+    // 1行に収まるときは、区切りの空白を半文字分のすき間として残す。
+    return [
+      [
+        for (var i = 0; i < chars.length; i++) ...[
+          if (spaceBefore.contains(i)) verticalSpace,
+          chars[i],
+        ],
+      ],
+    ];
+  }
   if (maxLines >= 2) {
     final at = _bestBreak(chars, spaceBefore, maxChars);
     if (at != null) return [chars.sublist(0, at), chars.sublist(at)];
