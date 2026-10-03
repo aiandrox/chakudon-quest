@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
 import '../inkan/inkan_stamp.dart';
+import 'rank_history_screen.dart';
 import 'rank_labels.dart';
 import 'ranks.dart';
 
-/// 段位と修行点、次の段位までの進み具合。
+/// 段位と修行点、次の段位までの進み具合。タップで昇段の記録を開く。
 class RankProgress extends StatelessWidget {
   const RankProgress({
     super.key,
@@ -31,7 +32,7 @@ class RankProgress extends StatelessWidget {
         : (totalPoints - rank.requiredPoints) /
               (next.requiredPoints - rank.requiredPoints);
 
-    return Row(
+    final row = Row(
       children: [
         RankSeal(
           label: adventurerRankLabel(l10n, rank),
@@ -75,7 +76,18 @@ class RankProgress extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(width: 4),
+        Icon(Icons.chevron_right, color: colors.onSurfaceVariant),
       ],
+    );
+    return InkWell(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const RankHistoryScreen()),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: row,
+      ),
     );
   }
 }

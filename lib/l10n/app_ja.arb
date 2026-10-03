@@ -203,6 +203,15 @@
   },
   "maxRank": "免許皆伝に至りました",
   "rankUp": "昇段！",
+  "rankHistoryTitle": "昇段の記録",
+  "rankHistoryNoRecord": "最初の一杯から修行が始まります",
+  "rankHistoryRemaining": "あと {points}点",
+  "@rankHistoryRemaining": {
+    "placeholders": {
+      "points": {"type": "int"}
+    }
+  },
+  "rankHistoryHidden": "？？",
   "resultTitle": "着丼！",
   "resultOk": "印帳にもどる",
   "navRecords": "印帳",

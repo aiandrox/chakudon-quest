@@ -790,6 +790,30 @@ abstract class AppLocalizations {
   /// **'昇段！'**
   String get rankUp;
 
+  /// No description provided for @rankHistoryTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'昇段の記録'**
+  String get rankHistoryTitle;
+
+  /// No description provided for @rankHistoryNoRecord.
+  ///
+  /// In ja, this message translates to:
+  /// **'最初の一杯から修行が始まります'**
+  String get rankHistoryNoRecord;
+
+  /// No description provided for @rankHistoryRemaining.
+  ///
+  /// In ja, this message translates to:
+  /// **'あと {points}点'**
+  String rankHistoryRemaining(int points);
+
+  /// No description provided for @rankHistoryHidden.
+  ///
+  /// In ja, this message translates to:
+  /// **'？？'**
+  String get rankHistoryHidden;
+
   /// No description provided for @resultTitle.
   ///
   /// In ja, this message translates to:
