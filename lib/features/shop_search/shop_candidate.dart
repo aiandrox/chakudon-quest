@@ -15,6 +15,7 @@ class ShopCandidate {
     this.strategyMemo = '',
     this.dataSource,
     this.wishId,
+    this.conditionsFromMap = false,
   });
 
   factory ShopCandidate.fromShop(Shop shop, {double? distanceMeters}) {
@@ -52,17 +53,25 @@ class ShopCandidate {
   /// 願掛け帳に書き留めた店なら、その願。
   final String? wishId;
 
-  ShopCandidate withWish(Wish wish) => ShopCandidate(
-    shopId: shopId,
-    osmId: osmId,
-    name: name,
-    location: location,
-    distanceMeters: distanceMeters,
-    hoursConditions: hoursConditions ?? wishedConditions(wish),
-    strategyMemo: strategyMemo,
-    dataSource: dataSource,
-    wishId: wish.id,
-  );
+  /// [hoursConditions]が、地図（OpenStreetMap）の営業時間から推し量った下書きか。
+  final bool conditionsFromMap;
+
+  /// 願で入れた条件は、地図の営業時間からの下書きより優先する。
+  ShopCandidate withWish(Wish wish) {
+    final wished = conditionsFromMap ? wishedConditions(wish) : null;
+    return ShopCandidate(
+      shopId: shopId,
+      osmId: osmId,
+      name: name,
+      location: location,
+      distanceMeters: distanceMeters,
+      hoursConditions: wished ?? hoursConditions ?? wishedConditions(wish),
+      strategyMemo: strategyMemo,
+      dataSource: dataSource,
+      wishId: wish.id,
+      conditionsFromMap: conditionsFromMap && wished == null,
+    );
+  }
 }
 
 /// 願を掛けたときに入れておいた条件。入れていなければnull。
@@ -112,12 +121,15 @@ List<ShopCandidate> rankShopCandidates({
     if (knownNames.contains(shop.name)) continue;
     final distance = distanceMeters(here, shop.location);
     if (distance > radiusMeters) continue;
+    final suggested = shop.suggestedConditions;
     final candidate = ShopCandidate(
       osmId: shop.osmId,
       name: shop.name,
       location: shop.location,
       distanceMeters: distance,
+      hoursConditions: suggested,
       dataSource: shop.dataSource,
+      conditionsFromMap: suggested != null,
     );
     if (known.any((k) => isSameShop(k, candidate))) continue;
     candidates.add(candidate);

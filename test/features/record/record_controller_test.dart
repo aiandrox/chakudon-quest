@@ -363,6 +363,35 @@ void main() {
     expect(await visits(), hasLength(2));
   });
 
+  test('地図の営業時間からの下書きは、選び直さなければそのまま初めての店に入る', () async {
+    overpass.shops = const [
+      FoundShop(
+        osmId: 'node/lunch',
+        name: '昼の店',
+        location: GeoPoint(35.001, 139.0),
+        openingHours: 'Mo-Fr 11:00-15:00',
+      ),
+    ];
+    await controller().start();
+    await controller().takePhoto();
+    await pumpEventQueue();
+    controller().selectShop(state().candidates.single);
+
+    expect(state().hoursConditions, {
+      HoursCondition.lunchOnly,
+      HoursCondition.weekdaysOnly,
+    });
+    expect(state().selectedShop!.conditionsFromMap, isTrue);
+    await controller().save();
+
+    expect(
+      (await container.read(recordRepositoryProvider).allShops())
+          .single
+          .hoursConditions,
+      {HoursCondition.lunchOnly, HoursCondition.weekdaysOnly},
+    );
+  });
+
   test('記録済みの店を選んだあと別の店にしても、営業の条件を引き継がない', () async {
     await container
         .read(recordRepositoryProvider)

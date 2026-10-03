@@ -518,6 +518,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shopConditionsEdit => '店の条件を選ぶ';
 
   @override
+  String shopConditionsFromMap(String label) {
+    return '$label（地図の営業時間から）';
+  }
+
+  @override
+  String mapOpeningHoursConditions(String label) {
+    return '地図の営業時間では $label';
+  }
+
+  @override
   String get shopMemoEmpty => 'まだありません';
 
   @override

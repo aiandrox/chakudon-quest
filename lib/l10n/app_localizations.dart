@@ -994,6 +994,18 @@ abstract class AppLocalizations {
   /// **'店の条件を選ぶ'**
   String get shopConditionsEdit;
 
+  /// No description provided for @shopConditionsFromMap.
+  ///
+  /// In ja, this message translates to:
+  /// **'{label}（地図の営業時間から）'**
+  String shopConditionsFromMap(String label);
+
+  /// No description provided for @mapOpeningHoursConditions.
+  ///
+  /// In ja, this message translates to:
+  /// **'地図の営業時間では {label}'**
+  String mapOpeningHoursConditions(String label);
+
   /// No description provided for @shopMemoEmpty.
   ///
   /// In ja, this message translates to:

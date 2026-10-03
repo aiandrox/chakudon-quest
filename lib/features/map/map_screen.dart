@@ -7,6 +7,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../records/date_format.dart';
+import '../records/labels.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/scoring_providers.dart';
 import '../shop_search/geo.dart';
@@ -562,6 +563,12 @@ class _UnvisitedPin extends ConsumerWidget {
                       distanceMeters(here, shop.location).round(),
                     ),
                   ),
+                if (shop.suggestedConditions case final conditions?)
+                  Text(
+                    l10n.mapOpeningHoursConditions(
+                      hoursConditionsLabel(l10n, conditions),
+                    ),
+                  ),
                 const SizedBox(height: 16),
                 FilledButton.icon(
                   icon: const Icon(Icons.bookmark_add),
@@ -578,6 +585,7 @@ class _UnvisitedPin extends ConsumerWidget {
                         longitude: shop.location.longitude,
                         dataSource: shop.dataSource,
                       ),
+                      suggestedConditions: shop.suggestedConditions,
                     );
                   },
                 ),

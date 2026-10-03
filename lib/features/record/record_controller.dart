@@ -246,7 +246,7 @@ class RecordController extends Notifier<RecordState> {
           .read(recordRepositoryProvider)
           .saveEatenVisit(
             shop: _shopInput(draft),
-            hoursConditions: draft.chosenHoursConditions,
+            hoursConditions: _hoursConditions(draft),
             eatenAt: eatenAt,
             rating: draft.rating,
             photoPath: savedPhoto,
@@ -280,6 +280,15 @@ class RecordController extends Notifier<RecordState> {
     final checkedInAt = draft.checkin?.checkedInAt;
     if (!draft.isCheckinShopSelected || checkedInAt == null) return null;
     return eatenAt.isBefore(checkedInAt) ? null : checkedInAt;
+  }
+
+  /// 選び直していなければ、初めての店には候補に付いていた条件（願で入れた条件・地図の営業時間からの下書き）を使う。
+  Set<HoursCondition>? _hoursConditions(RecordState draft) {
+    final selected = draft.selectedShop;
+    return draft.chosenHoursConditions ??
+        (selected != null && selected.shopId == null
+            ? selected.hoursConditions
+            : null);
   }
 
   ShopInput _shopInput(RecordState draft) {

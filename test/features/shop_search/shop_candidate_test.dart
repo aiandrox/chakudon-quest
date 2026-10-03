@@ -108,6 +108,54 @@ void main() {
       expect(candidates.map((c) => c.shopId), ['shop-壱角家', 'shop-らぁ麺　はやし田']);
     });
 
+    test('地図の営業時間から推し量った条件を、初めての店の下書きにする。願の条件があれば願を優先する', () {
+      final candidates = rankShopCandidates(
+        here: _here,
+        found: [
+          const FoundShop(
+            osmId: 'node/lunch',
+            name: '昼の店',
+            location: GeoPoint(35.0001, 139.0),
+            openingHours: 'Mo-Fr 11:00-15:00',
+          ),
+          const FoundShop(
+            osmId: 'node/wish',
+            name: '願の店',
+            location: GeoPoint(35.0002, 139.0),
+            openingHours: 'Mo-Fr 11:00-15:00',
+          ),
+          const FoundShop(
+            osmId: 'node/normal',
+            name: 'ふつうの店',
+            location: GeoPoint(35.0003, 139.0),
+            openingHours: 'Mo-Su 11:00-22:00',
+          ),
+        ],
+        knownShops: const [],
+        wishes: [
+          Wish(
+            id: 'w',
+            osmId: 'node/wish',
+            name: '願の店',
+            createdAt: DateTime(2026),
+            hoursConditions: const {HoursCondition.irregular},
+          ),
+        ],
+      );
+      ShopCandidate named(String name) =>
+          candidates.firstWhere((c) => c.name == name);
+
+      expect(named('昼の店').hoursConditions, {
+        HoursCondition.lunchOnly,
+        HoursCondition.weekdaysOnly,
+      });
+      expect(named('昼の店').conditionsFromMap, isTrue);
+      expect(named('願の店').hoursConditions, {HoursCondition.irregular});
+      expect(named('願の店').conditionsFromMap, isFalse);
+      expect(named('ふつうの店').hoursConditions, isNull);
+      expect(named('ふつうの店').conditionsFromMap, isFalse);
+    });
+
     test('まだの願の店は「願」を付けて先頭に出し、候補に無ければ願の店を足す', () {
       final candidates = rankShopCandidates(
         here: _here,
