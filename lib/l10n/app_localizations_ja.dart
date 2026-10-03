@@ -1098,14 +1098,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get questSpotNone => 'まだ会得した奥義はありません';
 
   @override
-  String questSpotAchievedAt(String date, String shop) {
-    return '$date $shopにて会得';
-  }
-
-  @override
-  String get questSpotOpenShop => 'その一杯を見る';
-
-  @override
   String reviewEntry(int year) {
     return '$year年の振り返り';
   }
@@ -1226,4 +1218,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String reviewSummaryLine(int bowls, int shops, int points) {
     return '$bowls杯・$shops軒・$points点';
   }
+
+  @override
+  String questSpotAchievedShop(String shop) {
+    return '$shopにて会得';
+  }
+
+  @override
+  String get questSpotOpenShop => 'その一杯を見る';
 }

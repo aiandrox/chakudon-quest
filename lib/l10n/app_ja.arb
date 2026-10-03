@@ -571,9 +571,6 @@
   "navGlyphMap": "地",
   "wishTriggerRetreat": "撤退した店",
   "questSpotNone": "まだ会得した奥義はありません",
-  "questSpotAchievedAt": "{date} {shop}にて会得",
-  "@questSpotAchievedAt": {"placeholders": {"date": {"type": "String"}, "shop": {"type": "String"}}},
-  "questSpotOpenShop": "その一杯を見る",
   "reviewEntry": "{year}年の振り返り",
   "@reviewEntry": {"placeholders": {"year": {"type": "int"}}},
   "reviewInvite": "{year}年の修行を振り返りませんか",
@@ -634,5 +631,8 @@
       "shops": {"type": "int"},
       "points": {"type": "int"}
     }
-  }
+  },
+  "questSpotAchievedShop": "{shop}にて会得",
+  "@questSpotAchievedShop": {"placeholders": {"shop": {"type": "String"}}},
+  "questSpotOpenShop": "その一杯を見る"
 }
