@@ -30,6 +30,7 @@ import '../journal/shop_area.dart';
 import '../share/share_screen.dart';
 import '../shop_search/shop_name_search_sheet.dart';
 import 'visit_edit_screen.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 1つの店のページ。開いた1杯を大きく見せ、この店で集めた印をタップすると切り替わる。
 class VisitDetailScreen extends ConsumerStatefulWidget {
@@ -56,7 +57,7 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(l10n.cancel),
           ),
-          TextButton(
+          KeshiFuda(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(l10n.delete),
           ),
@@ -243,10 +244,13 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
           if (entry.shop.latitude == null || entry.shop.longitude == null)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: OutlinedButton.icon(
-                icon: const Icon(Icons.travel_explore),
-                label: Text(l10n.shopLocate),
-                onPressed: () => _locateShop(entry.shop),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FudeLink(
+                  icon: const Icon(Icons.travel_explore),
+                  child: Text(l10n.shopLocate),
+                  onPressed: () => _locateShop(entry.shop),
+                ),
               ),
             ),
           if (canFulfill)
@@ -256,7 +260,7 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.bookmark),
                   title: Text(l10n.wishFulfillPrompt(pendingWish.name)),
-                  trailing: TextButton(
+                  trailing: FudeLink(
                     onPressed: () => ref
                         .read(recordRepositoryProvider)
                         .fulfillWish(

@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../l10n/app_localizations.dart';
 import '../records/clock.dart';
 import 'backup_service.dart';
+import '../../theme/washi_buttons.dart';
 
 class BackupScreen extends ConsumerStatefulWidget {
   const BackupScreen({super.key});
@@ -91,19 +92,19 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
         children: [
           Text(l10n.backupDescription, style: textTheme.bodyLarge),
           const SizedBox(height: 24),
-          FilledButton.icon(
+          ShuFuda(
             key: _exportButtonKey,
             onPressed: _isBusy ? null : _export,
             icon: const Icon(Icons.upload_file),
-            label: Text(l10n.backupExport),
+            child: Text(l10n.backupExport),
           ),
           const SizedBox(height: 4),
           Text(l10n.backupExportNote, style: textTheme.bodySmall),
           const SizedBox(height: 24),
-          OutlinedButton.icon(
+          SumiFuda(
             onPressed: _isBusy ? null : _import,
             icon: const Icon(Icons.download),
-            label: Text(l10n.backupImport),
+            child: Text(l10n.backupImport),
           ),
           const SizedBox(height: 4),
           Text(l10n.backupImportNote, style: textTheme.bodySmall),

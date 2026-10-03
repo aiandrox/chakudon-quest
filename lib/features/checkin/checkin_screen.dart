@@ -8,6 +8,7 @@ import '../shop_search/shop_tile.dart';
 import '../shop_search/yahoo_local.dart';
 import 'checkin_controller.dart';
 import 'checkin_rules.dart';
+import '../../theme/washi_buttons.dart';
 
 /// チェックインできたら、店名を返して閉じる。
 class CheckinScreen extends ConsumerStatefulWidget {
@@ -99,12 +100,12 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
             if (result.here == null)
               Align(
                 alignment: Alignment.centerLeft,
-                child: OutlinedButton.icon(
+                child: SumiFuda(
                   onPressed: ref
                       .read(checkinControllerProvider.notifier)
                       .search,
                   icon: const Icon(Icons.refresh),
-                  label: Text(l10n.checkinRetry),
+                  child: Text(l10n.checkinRetry),
                 ),
               )
             else ...[
@@ -129,7 +130,7 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
                 onChanged: (_) => setState(() {}),
               ),
               const SizedBox(height: 8),
-              FilledButton.tonal(
+              SumiFuda(
                 onPressed:
                     state.canCheckInManually &&
                         _nameController.text.trim().isNotEmpty

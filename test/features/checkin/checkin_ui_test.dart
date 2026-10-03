@@ -12,6 +12,7 @@ import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/shop_candidate.dart';
 import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
 import 'package:chakudon_quest/features/words/words.dart';
+import 'package:chakudon_quest/theme/washi_buttons.dart';
 
 import '../../support/fakes.dart';
 import '../../support/l10n.dart';
@@ -91,8 +92,8 @@ void main() {
       );
 
       expect(find.text(ja.checkinSearchFailed), findsOneWidget);
-      final button = find.widgetWithText(FilledButton, ja.checkinManualButton);
-      expect(tester.widget<FilledButton>(button).onPressed, isNull);
+      final button = find.widgetWithText(SumiFuda, ja.checkinManualButton);
+      expect(tester.widget<SumiFuda>(button).onPressed, isNull);
 
       await tester.enterText(find.byType(TextField), '電波のない店');
       await tester.pump();
@@ -176,7 +177,7 @@ void main() {
 
       await tester.tap(find.text(ja.checkinCancel));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(TextButton, ja.checkinCancel).last);
+      await tester.tap(find.widgetWithText(KeshiFuda, ja.checkinCancel));
       await tester.pumpAndSettle();
       expect(repository.cancelCount, 1);
     });

@@ -7,6 +7,7 @@ import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/wishes/wish_list_screen.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
+import 'package:chakudon_quest/theme/washi_buttons.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
@@ -89,7 +90,7 @@ void main() {
     await tester.drag(find.text('麺屋藤ろう'), const Offset(-500, 0));
     await tester.pumpAndSettle();
     expect(find.text(ja.wishDeleteConfirm('麺屋藤ろう')), findsOneWidget);
-    await tester.tap(find.widgetWithText(TextButton, ja.delete));
+    await tester.tap(find.widgetWithText(KeshiFuda, ja.delete));
     await tester.pumpAndSettle();
 
     expect(repository.deleted, ['b']);

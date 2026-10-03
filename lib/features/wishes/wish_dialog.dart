@@ -8,6 +8,7 @@ import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../shop/hours_condition_chips.dart';
 import 'wish_repository.dart';
+import '../../theme/washi_buttons.dart';
 
 class WishText {
   const WishText({
@@ -197,7 +198,7 @@ class _WishDialogState extends State<_WishDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        TextButton(
+        ShuFuda(
           onPressed: _name.text.trim().isEmpty ? null : _submit,
           child: Text(widget.isEditing ? l10n.editSave : l10n.wishAddButton),
         ),

@@ -24,6 +24,7 @@ import '../stats/stats.dart';
 import '../stats/stats_screen.dart';
 import '../words/words.dart';
 import 'year_review.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 1年の振り返り。紙芝居のように、横にめくって1枚ずつ見る。数字の無いページは飛ばす。
 class YearReviewScreen extends ConsumerStatefulWidget {
@@ -760,11 +761,11 @@ class _ClosingPage extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Center(
-          child: FilledButton.icon(
+          child: ShuFuda(
             key: buttonKey,
             onPressed: onShare,
             icon: const Icon(Icons.ios_share),
-            label: Text(l10n.shareButton),
+            child: Text(l10n.shareButton),
           ),
         ),
       ],

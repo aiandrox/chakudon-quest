@@ -11,6 +11,7 @@ import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
 import '../words/words.dart';
 import 'memory.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 一覧の上に、何年か前の今日の1杯をそっと出す。×で閉じる（アプリを開き直すとまた出る）。
 class MemoryCard extends ConsumerStatefulWidget {
@@ -89,9 +90,9 @@ class _MemoryCardState extends ConsumerState<MemoryCard> {
                     if (canWish)
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: TextButton.icon(
+                        child: FudeLink(
                           icon: const Icon(Icons.bookmark_add_outlined),
-                          label: Text(l10n.wishMakeButton),
+                          child: Text(l10n.wishMakeButton),
                           onPressed: () => addWishFor(
                             context,
                             ref,

@@ -6,6 +6,7 @@ import '../../theme/washi.dart';
 import '../records/clock.dart';
 import '../records/record_repository.dart';
 import 'queue_suggestion.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 店の近くでアプリを開いたときの「〇〇に並んだ？」。1タップで並び始める。
 class QueueSuggestionCard extends ConsumerStatefulWidget {
@@ -96,7 +97,9 @@ class _QueueSuggestionCardState extends ConsumerState<QueueSuggestionCard> {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
-            FilledButton(
+            ShuFuda(
+              height: 48,
+              fontSize: 18,
               onPressed: _isSaving ? null : checkIn,
               child: Text(l10n.queueSuggestionYes),
             ),

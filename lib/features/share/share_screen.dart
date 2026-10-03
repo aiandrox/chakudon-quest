@@ -14,6 +14,7 @@ import '../journal/journal.dart';
 import '../records/record_repository.dart';
 import '../scoring/scoring_providers.dart';
 import 'share_card.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 1杯を1枚の絵にして、OSの共有画面で送る。写真・道中記・修行点を入れるかは送る前に選べる。
 class ShareScreen extends ConsumerStatefulWidget {
@@ -131,12 +132,13 @@ class _ShareScreenState extends ConsumerState<ShareScreen> {
       // スマホの戻るボタンの帯に重ならないよう、画面の下に固定する。
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        child: FilledButton.icon(
+        child: ShuFuda(
           key: _buttonKey,
-          style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(56)),
+          expand: true,
+          height: 56,
           onPressed: _isSharing ? null : _share,
           icon: const Icon(Icons.ios_share),
-          label: Text(l10n.shareButton),
+          child: Text(l10n.shareButton),
         ),
       ),
     );

@@ -20,6 +20,7 @@ import '../inkan/inkan_stamp.dart';
 import '../records/visit_photo.dart';
 import '../scoring/points.dart';
 import '../../theme/washi.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 保存した記録で得たポイントの内訳と、累計・ランクの変化を見せる。
 class RecordResultScreen extends ConsumerStatefulWidget {
@@ -100,12 +101,10 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
             children: [
               if (outcome != null) ...[
                 Expanded(
-                  child: FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(56),
-                      backgroundColor: Washi.shu,
-                      foregroundColor: Washi.paper,
-                    ),
+                  child: ShuFuda(
+                    night: true,
+                    expand: true,
+                    height: 56,
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (_) =>
@@ -113,18 +112,16 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
                       ),
                     ),
                     icon: const Icon(Icons.ios_share),
-                    label: Text(l10n.resultShare),
+                    child: Text(l10n.resultShare),
                   ),
                 ),
                 const SizedBox(width: 12),
               ],
               Expanded(
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(56),
-                    foregroundColor: Washi.paper,
-                    side: const BorderSide(color: Washi.paper),
-                  ),
+                child: SumiFuda(
+                  night: true,
+                  expand: true,
+                  height: 56,
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(l10n.resultOk),
                 ),

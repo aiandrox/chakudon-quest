@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 撤退を記録するか確かめる。記録するならメモ（空でもよい）、やめるならnullを返す。
 Future<String?> showRetreatDialog(BuildContext context) => showDialog<String>(
@@ -66,7 +67,7 @@ class _RetreatDialogState extends State<_RetreatDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        TextButton(
+        KeshiFuda(
           onPressed: () =>
               Navigator.of(context).pop(_memoController.text.trim()),
           child: Text(l10n.retreatConfirm),
