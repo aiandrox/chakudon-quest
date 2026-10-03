@@ -66,4 +66,33 @@ void main() {
     expect(repository.added.single.name, '豚山');
     expect(find.text(ja.wishAdded('豚山')), findsOneWidget);
   });
+
+  testWidgets('願を左にすべらせると、確かめてから消し、すぐ一覧から外す', (tester) async {
+    final repository = FakeWishRepository();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          wishRepositoryProvider.overrideWithValue(repository),
+          wishesProvider.overrideWithValue(
+            AsyncData([
+              Wish(id: 'b', name: '麺屋藤ろう', createdAt: DateTime(2026, 9, 28)),
+            ]),
+          ),
+          visitsProvider.overrideWithValue(const AsyncData([])),
+          clockProvider.overrideWithValue(() => DateTime(2026, 10, 3, 18)),
+        ],
+        child: localizedApp(home: const WishListScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.text('麺屋藤ろう'), const Offset(-500, 0));
+    await tester.pumpAndSettle();
+    expect(find.text(ja.wishDeleteConfirm('麺屋藤ろう')), findsOneWidget);
+    await tester.tap(find.widgetWithText(TextButton, ja.delete));
+    await tester.pumpAndSettle();
+
+    expect(repository.deleted, ['b']);
+    expect(find.text('麺屋藤ろう'), findsNothing);
+  });
 }

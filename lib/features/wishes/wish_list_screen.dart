@@ -12,6 +12,18 @@ import 'wish_providers.dart';
 import 'wish_repository.dart';
 import 'wishes.dart';
 
+/// すべらせて消した願。データベースから消えて一覧が更新されるまでの間も、すぐ隠すため。
+final _removedWishIdsProvider = NotifierProvider<_RemovedWishIds, Set<String>>(
+  _RemovedWishIds.new,
+);
+
+class _RemovedWishIds extends Notifier<Set<String>> {
+  @override
+  Set<String> build() => const {};
+
+  void add(String id) => state = {...state, id};
+}
+
 /// 願掛け帳。行きたい店（まだの願）と、食べに行けた店（叶った願）を分けて見せる。
 class WishListScreen extends ConsumerWidget {
   const WishListScreen({super.key});
@@ -43,9 +55,10 @@ class WishListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final statuses = ref.watch(wishStatusesProvider);
+    final removed = ref.watch(_removedWishIdsProvider);
     final pending = [
       for (final status in statuses)
-        if (!status.isFulfilled) status,
+        if (!status.isFulfilled && !removed.contains(status.wish.id)) status,
     ];
     final fulfilled =
         [
@@ -178,7 +191,10 @@ class _PendingWishCard extends ConsumerWidget {
       key: ValueKey(wish.id),
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) => _confirmDelete(context),
-      onDismissed: (_) => ref.read(wishRepositoryProvider).deleteWish(wish.id),
+      onDismissed: (_) {
+        ref.read(_removedWishIdsProvider.notifier).add(wish.id);
+        ref.read(wishRepositoryProvider).deleteWish(wish.id);
+      },
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),
