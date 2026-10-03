@@ -115,6 +115,8 @@ class InkanStamp extends StatelessWidget {
           angle: inkanAngle(visit.id),
           child: InkWear(
             seed: inkSeed(visit.id),
+            // 極は朱で塗りつぶすので、かすれが強いと白い日付が読みにくい。
+            strength: shape == InkanShape.filled ? 0.5 : 1,
             child: SizedBox.square(
               dimension: size,
               child: CustomPaint(

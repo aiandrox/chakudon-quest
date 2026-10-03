@@ -357,8 +357,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   for (final wish in pendingWishes)
                     Marker(
                       point: LatLng(wish.latitude!, wish.longitude!),
-                      width: 40,
-                      height: 40,
+                      width: 44,
+                      height: 44,
                       alignment: Alignment.topCenter,
                       child: _WishPin(wish: wish),
                     ),
@@ -602,31 +602,11 @@ class _Pin extends StatelessWidget {
       child: Semantics(
         button: true,
         label: pin.shop.name,
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Icon(
-              Icons.location_on,
-              size: 44,
-              color: rank == null
-                  ? colors.outline
-                  : rank == ShopRank.s
-                  ? colors.primary
-                  : colors.secondary,
-            ),
-            if (rank != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  shopRankLabel(l10n, rank),
-                  style: TextStyle(
-                    color: colors.onPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-          ],
+        // 丸い印の頭に格の字を入れ、細い足の先を店の場所にする（字が場所に重ならないように）。
+        child: _SealPin(
+          color: rank == null ? colors.outline : Washi.shu,
+          filled: rank == ShopRank.s,
+          label: rank == null ? null : shopRankLabel(l10n, rank),
         ),
       ),
     );
@@ -708,22 +688,10 @@ class _WishPin extends StatelessWidget {
       child: Semantics(
         button: true,
         label: l10n.mapWishedLabel(wish.name),
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Icon(Icons.location_on_outlined, size: 40, color: colors.primary),
-            Padding(
-              padding: const EdgeInsets.only(top: 7),
-              child: Text(
-                l10n.wishSealChar,
-                style: TextStyle(
-                  color: colors.primary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
+        child: _SealPin(
+          color: colors.primary,
+          filled: false,
+          label: l10n.wishSealChar,
         ),
       ),
     );
@@ -843,6 +811,50 @@ class _LoadingBadge extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// 地図の印のピン。上の丸に字を入れ、下の細い足の先が店の場所を指す。
+class _SealPin extends StatelessWidget {
+  const _SealPin({required this.color, required this.filled, this.label});
+
+  final Color color;
+  final bool filled;
+  final String? label;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = this.label;
+    return SizedBox(
+      width: 30,
+      height: 44,
+      child: Column(
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: filled ? color : Washi.page,
+              border: Border.all(color: color, width: 2.5),
+            ),
+            child: label == null
+                ? null
+                : Text(
+                    label,
+                    style: TextStyle(
+                      fontFamily: Washi.brush,
+                      fontSize: 16,
+                      height: 1,
+                      color: filled ? Washi.page : color,
+                    ),
+                  ),
+          ),
+          Container(width: 2.5, height: 14, color: color),
+        ],
       ),
     );
   }

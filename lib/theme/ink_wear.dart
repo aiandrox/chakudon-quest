@@ -76,10 +76,18 @@ InkWearPattern inkWearPattern(int seed) {
 
 /// 子（印）のインクをかすれさせる。同じ[seed]なら同じかすれ方。
 class InkWear extends StatelessWidget {
-  const InkWear({super.key, required this.seed, required this.child});
+  const InkWear({
+    super.key,
+    required this.seed,
+    required this.child,
+    this.strength = 1,
+  });
 
   final int seed;
   final Widget child;
+
+  /// かすれの強さ（1が標準）。文字が読みにくい印では弱める。
+  final double strength;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +95,7 @@ class InkWear extends StatelessWidget {
     return Opacity(
       opacity: 0.94,
       child: CustomPaint(
-        foregroundPainter: _InkWearPainter(seed),
+        foregroundPainter: _InkWearPainter(seed, strength),
         child: child,
       ),
     );
@@ -95,9 +103,10 @@ class InkWear extends StatelessWidget {
 }
 
 class _InkWearPainter extends CustomPainter {
-  _InkWearPainter(this.seed) : pattern = inkWearPattern(seed);
+  _InkWearPainter(this.seed, this.strength) : pattern = inkWearPattern(seed);
 
   final int seed;
+  final double strength;
   final InkWearPattern pattern;
 
   // 描く回数を少なくまとめる（1点ずつぼかして描くと、Android の描画で
@@ -119,7 +128,7 @@ class _InkWearPainter extends CustomPainter {
           end: Alignment(direction.dx, direction.dy),
           colors: [
             Colors.transparent,
-            Colors.black.withValues(alpha: pattern.fadeStrength),
+            Colors.black.withValues(alpha: pattern.fadeStrength * strength),
           ],
         ).createShader(rect),
     );
@@ -138,7 +147,7 @@ class _InkWearPainter extends CustomPainter {
             ..blendMode = BlendMode.dstOut
             ..shader = RadialGradient(
               colors: [
-                Colors.black.withValues(alpha: mark.strength),
+                Colors.black.withValues(alpha: mark.strength * strength),
                 Colors.transparent,
               ],
             ).createShader(Rect.fromCircle(center: center, radius: radius)),
@@ -153,13 +162,13 @@ class _InkWearPainter extends CustomPainter {
       strongSpecks,
       Paint()
         ..blendMode = BlendMode.dstOut
-        ..color = Colors.black.withValues(alpha: 0.9),
+        ..color = Colors.black.withValues(alpha: 0.9 * strength),
     );
     canvas.drawPath(
       faintSpecks,
       Paint()
         ..blendMode = BlendMode.dstOut
-        ..color = Colors.black.withValues(alpha: 0.6),
+        ..color = Colors.black.withValues(alpha: 0.6 * strength),
     );
 
     final streaks = Path();
@@ -185,10 +194,11 @@ class _InkWearPainter extends CustomPainter {
       streaks,
       Paint()
         ..blendMode = BlendMode.dstOut
-        ..color = Colors.black.withValues(alpha: 0.75),
+        ..color = Colors.black.withValues(alpha: 0.75 * strength),
     );
   }
 
   @override
-  bool shouldRepaint(_InkWearPainter oldDelegate) => oldDelegate.seed != seed;
+  bool shouldRepaint(_InkWearPainter oldDelegate) =>
+      oldDelegate.seed != seed || oldDelegate.strength != strength;
 }

@@ -39,7 +39,7 @@ class _MemoryCardState extends ConsumerState<MemoryCard> {
         memory.notVisitedSince &&
         pendingWishFor(ref.watch(wishStatusesProvider), shop) == null;
 
-    return Card(
+    final card = Card(
       elevation: 0,
       color: Washi.page,
       shape: RoundedRectangleBorder(
@@ -109,16 +109,29 @@ class _MemoryCardState extends ConsumerState<MemoryCard> {
                   ],
                 ),
               ),
-              IconButton(
-                tooltip: l10n.memoryDismiss,
-                icon: const Icon(Icons.close),
-                onPressed: () =>
-                    setState(() => _dismissedVisitId = memory.scored.visit.id),
-              ),
+              // 右上の角の閉じるボタンのぶん、文字を少し離す。
+              const SizedBox(width: 28),
             ],
           ),
         ),
       ),
+    );
+    return Stack(
+      children: [
+        card,
+        Positioned(
+          top: 12,
+          right: 12,
+          child: IconButton(
+            tooltip: l10n.memoryDismiss,
+            visualDensity: VisualDensity.compact,
+            iconSize: 18,
+            icon: const Icon(Icons.close),
+            onPressed: () =>
+                setState(() => _dismissedVisitId = memory.scored.visit.id),
+          ),
+        ),
+      ],
     );
   }
 }
