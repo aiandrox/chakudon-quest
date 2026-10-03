@@ -993,6 +993,16 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String inchoMonth(String era, String eraYear, String month) {
+    return '$era$eraYear年 $month月';
+  }
+
+  @override
+  String inchoMonthCount(int count) {
+    return '$count杯';
+  }
+
+  @override
   String get eraReiwa => '令和';
 
   @override
