@@ -65,8 +65,8 @@ void main() {
     expect(seal(ja.rankApprentice), findsOneWidget);
     expect(seal(ja.rankFirstDan), findsOneWidget);
     expect(seal(ja.rankDan('二')), findsOneWidget);
-    expect(find.text(formatDate(day(5))), findsNWidgets(3));
-    expect(find.text('幻の店'), findsNWidgets(3));
+    final achieved = ja.rankHistoryAchievedAt(formatDate(day(5)), '幻の店');
+    expect(find.text(achieved), findsNWidgets(3));
 
     // 三段（200点）まで、あと 20 点。名前は見える。
     expect(seal(ja.rankDan('三')), findsOneWidget);
@@ -79,7 +79,7 @@ void main() {
     expect(seal(ja.rankGrandmaster), findsNothing);
     expect(seal(ja.rankHistoryHidden), findsNWidgets(8));
 
-    await tester.tap(find.text('幻の店').at(1));
+    await tester.tap(find.text(achieved).at(1));
     await tester.pumpAndSettle();
     expect(find.byType(VisitDetailScreen), findsOneWidget);
   });

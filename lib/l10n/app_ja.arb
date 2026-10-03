@@ -203,6 +203,8 @@
   "maxRank": "免許皆伝に至りました",
   "rankUp": "昇段！",
   "rankHistoryTitle": "昇段の記録",
+  "rankHistoryAchievedAt": "{date}　{shop}にて達成",
+  "@rankHistoryAchievedAt": {"placeholders": {"date": {"type": "String"}, "shop": {"type": "String"}}},
   "rankHistoryNoRecord": "最初の一杯から修行が始まります",
   "rankHistoryRemaining": "あと {points}点",
   "@rankHistoryRemaining": {

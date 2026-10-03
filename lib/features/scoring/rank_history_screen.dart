@@ -52,14 +52,14 @@ class _RankRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Washi.line, width: 0.5)),
         ),
         child: Row(
           children: [
-            SizedBox(width: 112, child: Center(child: seal)),
-            const SizedBox(width: 12),
+            SizedBox(width: 76, child: Center(child: seal)),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +88,7 @@ class _ReachedRow extends StatelessWidget {
     return _RankRow(
       seal: RankSeal(
         label: adventurerRankLabel(l10n, attainment.rank),
-        fontSize: 20,
+        fontSize: 15,
       ),
       lines: [
         if (visit == null)
@@ -96,16 +96,17 @@ class _ReachedRow extends StatelessWidget {
             l10n.rankHistoryNoRecord,
             style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
           )
-        else ...[
-          Text(formatDate(visit.visit.eatenAt), style: textTheme.bodyLarge),
+        else
           Text(
-            visit.shop.name,
-            style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
+            l10n.rankHistoryAchievedAt(
+              formatDate(visit.visit.eatenAt),
+              visit.shop.name,
+            ),
+            style: textTheme.bodyMedium,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-        ],
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           masterWords(attainment.rank),
           style: textTheme.bodyMedium?.copyWith(fontFamily: Washi.brush),
@@ -134,7 +135,7 @@ class _NextRow extends StatelessWidget {
     return _RankRow(
       seal: RankSeal(
         label: adventurerRankLabel(l10n, rank),
-        fontSize: 20,
+        fontSize: 15,
         color: Washi.faded,
       ),
       lines: [
@@ -156,7 +157,7 @@ class _HiddenRow extends StatelessWidget {
     return _RankRow(
       seal: RankSeal(
         label: AppLocalizations.of(context).rankHistoryHidden,
-        fontSize: 20,
+        fontSize: 15,
         color: Washi.line,
       ),
       lines: const [],
