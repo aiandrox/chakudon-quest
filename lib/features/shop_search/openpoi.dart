@@ -29,18 +29,47 @@ Uri buildOpenPoiUri(
 /// 住所から位置を推定した施設は、精度が町丁目（level 3）以下だと数百 m ずれるため捨てる。
 const _minGeocodingLevel = 8;
 
-List<FoundShop> parseOpenPoiResponse(String body) {
+List<FoundShop> parseOpenPoiResponse(String body) =>
+    _parseShops(body, key: 'results');
+
+/// 店名で探した結果（/v1/suggest）。飲食店でない施設（会社・病院・教室など）を除き、
+/// 名前がラーメン屋らしい店を先に並べる（ほかは届いた順＝近い順のまま）。
+List<FoundShop> parseOpenPoiNameResults(String body) {
+  final shops = _parseShops(body, key: 'suggestions', foodOnly: true);
+  final ramen = [
+    for (final s in shops)
+      if (_looksLikeRamen(s.name)) s,
+  ];
+  return [...ramen, ...shops.where((s) => !ramen.contains(s))];
+}
+
+/// 飲食店とみなす種類。OpenPOI は分類が乏しい施設を unknown にするため、unknown も残す。
+const _foodCategories = {'restaurant', 'fast_food', 'food_court', 'unknown'};
+
+final _ramenName = RegExp('ラーメン|らーめん|らぁ麺|らぁ麵|拉麺|中華そば|つけ麺|まぜそば|油そば|麺|麵');
+
+bool _looksLikeRamen(String name) => _ramenName.hasMatch(name);
+
+List<FoundShop> _parseShops(
+  String body, {
+  required String key,
+  bool foodOnly = false,
+}) {
   final decoded = jsonDecode(body);
   if (decoded is! Map<String, dynamic>) {
     throw const FormatException('OpenPOIの応答がオブジェクトではありません');
   }
-  final results = decoded['results'];
+  final results = decoded[key];
   if (results is! List) {
-    throw const FormatException('OpenPOIの応答にresultsがありません');
+    throw FormatException('OpenPOIの応答に$keyがありません');
   }
   final shops = <FoundShop>[];
   for (final result in results) {
     if (result is! Map<String, dynamic>) continue;
+    final category = result['category'];
+    if (foodOnly && category is String && !_foodCategories.contains(category)) {
+      continue;
+    }
     final name = result['name'];
     if (name is! String || name.trim().isEmpty) continue;
     if (_notRamenNameParts.any(name.contains)) continue;
@@ -77,11 +106,13 @@ String? _address(Map<String, dynamic> result) {
   return area.isEmpty ? null : area;
 }
 
-/// 店名で探す（全国）。[near]があれば、そこから近い順に並ぶ。
+/// 店名で探す（全国）。/v1/suggest は空白で区切った語をすべて含む店だけを返し、表記ゆれもまとめる
+/// （/v1/search は語を OR で探すため、店名の一部だけが合う別の店まで出てしまう）。
+/// [near]があれば、そこから近い順に並ぶ。
 Uri buildOpenPoiNameUri(String name, {GeoPoint? near}) =>
-    Uri.https('api.openpoiapi.com', '/v1/search', {
+    Uri.https('api.openpoiapi.com', '/v1/suggest', {
       'q': name.trim(),
-      'limit': '30',
+      'limit': '20',
       if (near != null) 'center': '${near.longitude},${near.latitude}',
       // 既定の50kmより広く、国内のどこでも見つかるようにする。
       if (near != null) 'radius': '2000000',
