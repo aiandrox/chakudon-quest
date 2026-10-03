@@ -2,25 +2,26 @@ import '../records/models.dart';
 import 'points.dart';
 
 /// 段位。入門から五級〜一級、初段〜九段を経て、師範代・免許皆伝へ。
-/// 序盤ほど間隔を短くし、1杯目で五級、そのあとも1〜2杯ごとに昇級できるようにする。
+/// ふつうの1杯（20〜30点）で数えて、級は1〜3杯ごと、段は4杯ほどから少しずつ間をあけ、
+/// 免許皆伝はおよそ140杯で届く。点の多い1杯でも上がるのは1つだけ（rank_history.dart）。
 enum AdventurerRank {
   apprentice(0),
-  kyu5(15),
-  kyu4(40),
-  kyu3(70),
-  kyu2(110),
-  kyu1(160),
-  dan1(220),
-  dan2(300),
-  dan3(400),
-  dan4(520),
-  dan5(660),
-  dan6(820),
-  dan7(1000),
-  dan8(1300),
-  dan9(1650),
-  master(2100),
-  grandmaster(2800);
+  kyu5(20),
+  kyu4(65),
+  kyu3(115),
+  kyu2(185),
+  kyu1(260),
+  dan1(360),
+  dan2(485),
+  dan3(635),
+  dan4(810),
+  dan5(1010),
+  dan6(1260),
+  dan7(1560),
+  dan8(1910),
+  dan9(2310),
+  master(2810),
+  grandmaster(3510);
 
   const AdventurerRank(this.requiredPoints);
 

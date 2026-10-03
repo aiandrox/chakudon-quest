@@ -19,16 +19,16 @@ void main() {
     expect(history.single.reachedAt, isNull);
   });
 
-  test('入門は最初の記録の日。1杯目（20点）で五級、累計40点ちょうどの1杯で四級に上がる', () {
+  test('入門は最初の記録の日。1杯目（20点）で五級、累計が65点を越えた1杯で四級に上がる', () {
     final a = buildShop(id: 'a');
-    // 初訪問 20 点 → 五級（15）。同じ店の 10 点 2 杯で 40 点 → 四級（40）。
+    // 初訪問 20 点 → 五級（20）。限定 30 点ずつで 50 → 80 点 → 四級（65）。
     final first = buildEntry(shop: a, eatenAt: day(1));
-    final second = buildEntry(shop: a, eatenAt: day(2));
-    final third = buildEntry(shop: a, eatenAt: day(3));
+    final second = buildEntry(shop: a, eatenAt: day(2), isLimited: true);
+    final third = buildEntry(shop: a, eatenAt: day(3), isLimited: true);
     final scored = scoreVisits([third, first, second]);
 
     final before = rankHistory(scored.take(2).toList());
-    expect(totalPoints(scored.take(2).toList()), 30);
+    expect(totalPoints(scored.take(2).toList()), 50);
     expect(before.map((e) => e.rank), [
       AdventurerRank.apprentice,
       AdventurerRank.kyu5,

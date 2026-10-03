@@ -71,11 +71,8 @@ void main() {
   test('その年に上がった段位と、届いた型・秘伝', () {
     final r = review(2026);
 
-    // 累計 20（2025年・五級）→ 30 → 60（四級）→ 95（三級）。
-    expect(r.ranks.map((a) => a.rank), [
-      AdventurerRank.kyu4,
-      AdventurerRank.kyu3,
-    ]);
+    // 累計 20（2025年・五級）→ 30 → 60 → 95（四級）。
+    expect(r.ranks.map((a) => a.rank), [AdventurerRank.kyu4]);
     expect(r.quests.map((q) => q.quest.id), containsAll(['queue', 'retry']));
     expect(r.quests.map((q) => q.quest.id), isNot(contains('first_bowl')));
     expect(r.hasAchievements, isTrue);
