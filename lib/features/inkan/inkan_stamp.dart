@@ -62,10 +62,13 @@ class InkanStamp extends StatelessWidget {
     final center = isRetreat
         ? l10n.inkanRetreat
         : inkanStyleName(l10n, visit.style);
+    // 撤退の印は灰色の地に文字を透明に抜く（下の紙が見える）。
+    final knockout = isRetreat ? (Paint()..blendMode = BlendMode.dstOut) : null;
     final small = TextStyle(
       fontFamily: Washi.brush,
       fontSize: math.max(8, size * 0.13),
-      color: color,
+      color: knockout == null ? color : null,
+      foreground: knockout,
       height: 0.95,
     );
 
@@ -91,7 +94,8 @@ class InkanStamp extends StatelessWidget {
             style: TextStyle(
               fontFamily: Washi.brush,
               fontSize: size * 0.34,
-              color: color,
+              color: knockout == null ? color : null,
+              foreground: knockout,
               height: 1.0,
             ),
           ),
@@ -160,7 +164,11 @@ class _InkanPainter extends CustomPainter {
     switch (shape) {
       // 並: 細い丸だけ。
       case InkanShape.circle:
-        canvas.drawCircle(center, radius - stroke, line(Washi.shu, stroke));
+        canvas.drawCircle(
+          center,
+          radius - stroke * 1.3,
+          line(Washi.shu, stroke * 1.7),
+        );
       // 上: 二重丸のあいだに、小さな点を一周並べる。
       case InkanShape.doubleCircle:
         canvas.drawCircle(center, radius - stroke, line(Washi.shu, stroke));
@@ -237,8 +245,9 @@ class _InkanPainter extends CustomPainter {
       case InkanShape.filled:
         const petals = 16;
         final flower = Path();
-        final petalR = radius * 0.17;
-        final ringR = radius - petalR;
+        final petalR = radius * 0.15;
+        // 外側に点の輪を散らすぶん、花びらを少し内側に。
+        final ringR = radius * 0.86 - petalR;
         for (var i = 0; i < petals; i++) {
           final a = 2 * math.pi * i / petals;
           flower.addOval(
@@ -260,19 +269,26 @@ class _InkanPainter extends CustomPainter {
           ringR - stroke * 1.8,
           line(Washi.page, stroke * 0.3),
         );
-      case InkanShape.retreat:
-        final paint = line(Washi.faded, stroke * 0.7);
-        const dashes = 24;
-        final rect = Rect.fromCircle(center: center, radius: radius - stroke);
-        for (var i = 0; i < dashes; i++) {
-          canvas.drawArc(
-            rect,
-            2 * math.pi * i / dashes,
-            math.pi / dashes,
-            false,
-            paint,
+        final dots = Path();
+        const count = 32;
+        for (var i = 0; i < count; i++) {
+          final a = 2 * math.pi * (i + 0.5) / count;
+          dots.addOval(
+            Rect.fromCircle(
+              center:
+                  center +
+                  Offset(math.cos(a), math.sin(a)) * (radius - stroke * 0.6),
+              radius: stroke * 0.38,
+            ),
           );
         }
+        canvas.drawPath(dots, fill());
+      case InkanShape.retreat:
+        canvas.drawCircle(
+          center,
+          radius - stroke * 0.6,
+          fill(Washi.faded.withValues(alpha: 0.85)),
+        );
     }
   }
 
