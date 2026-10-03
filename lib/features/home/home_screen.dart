@@ -20,6 +20,7 @@ import '../inkan/inkan.dart';
 import '../inkan/inkan_stamp.dart';
 import '../../theme/washi.dart';
 import '../scoring/rank_progress.dart';
+import '../shop_search/curated_shops_store.dart';
 import '../streak/streak.dart';
 import '../memory/memory_card.dart';
 import 'rating_prompt.dart';
@@ -84,6 +85,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _recoverLostPhoto();
+      // 手で持つ店（ラーメン二郎の直系店など）の一覧を、1日1回までサーバーから取り直す。
+      ref.read(curatedShopsProvider.notifier).refresh();
       // 通知の文言に画面の言語設定を使うため、最初の描画のあとで見張りはじめる。
       if (mounted) _listenForNotifications();
     });

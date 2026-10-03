@@ -1,9 +1,9 @@
 import 'found_shop.dart';
 import 'geo.dart';
 
-/// 地図の検索で見つからないことのある店を、アプリに持たせておく（通信しなくても候補に出る）。
-/// 今はラーメン二郎の直系店だけ。位置は住所から国土地理院の住所検索で求めた（2026-10-03）。
-/// 開店・閉店・移転があったら、ここを直す。
+/// 地図の検索で見つからないことのある店（手で持つ店）。今はラーメン二郎の直系店だけ。
+/// 正本は `data/curated_shops.json`。アプリはサーバーから1日1回まで取り直し（[CuratedShopsStore]）、
+/// 取れないときはこのファイルに同梱した一覧（[builtinShops]）を使う。同梱分は正本と同じにする（テストで確かめる）。
 class BuiltinShop {
   const BuiltinShop({
     required this.name,
@@ -15,13 +15,44 @@ class BuiltinShop {
   final String address;
   final GeoPoint location;
 
+  /// サーバーや保存したファイルの1件。閉店した店と、形の崩れた店はnull。
+  static BuiltinShop? fromJson(Map<String, dynamic> json) {
+    final (name, address, lat, lon, status) = (
+      json['name'],
+      json['address'],
+      json['latitude'],
+      json['longitude'],
+      json['status'],
+    );
+    if (name is! String || address is! String) return null;
+    if (lat is! num || lon is! num) return null;
+    if (status != null && status != 'open') return null;
+    return BuiltinShop(
+      name: name,
+      address: address,
+      location: GeoPoint(lat.toDouble(), lon.toDouble()),
+    );
+  }
+
+  Map<String, Object> toJson() => {
+    'name': name,
+    'address': address,
+    'latitude': location.latitude,
+    'longitude': location.longitude,
+    'status': 'open',
+  };
+
   FoundShop toFoundShop() =>
       FoundShop(name: name, location: location, address: address);
 }
 
-/// [center]から[radiusMeters]以内の、アプリに持たせている店。
-List<FoundShop> builtinShopsNear(GeoPoint center, int radiusMeters) => [
-  for (final shop in builtinShops)
+/// [center]から[radiusMeters]以内の、手で持つ店。
+List<FoundShop> builtinShopsNear(
+  GeoPoint center,
+  int radiusMeters, {
+  List<BuiltinShop> shops = builtinShops,
+}) => [
+  for (final shop in shops)
     if (distanceMeters(center, shop.location) <= radiusMeters)
       shop.toFoundShop(),
 ];
@@ -34,6 +65,7 @@ List<FoundShop> builtinShopsNamed(
   String query, {
   GeoPoint? near,
   int limit = 5,
+  List<BuiltinShop> shops = builtinShops,
 }) {
   final words = [
     for (final word in query.replaceAll('\u3000', ' ').split(' '))
@@ -47,7 +79,7 @@ List<FoundShop> builtinShopsNamed(
   }
 
   final matched = [
-    for (final shop in builtinShops)
+    for (final shop in shops)
       if (matches(shop)) shop,
   ];
   if (near != null) {

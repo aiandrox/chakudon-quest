@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'builtin_shops.dart';
+import 'curated_shops_store.dart';
 import 'found_shop.dart';
 import 'geo.dart';
 import 'openpoi_client.dart';
+import 'ramen_in_cho_api.dart';
 import 'yahoo_local.dart';
 import 'yahoo_local_client.dart';
 
@@ -64,6 +66,26 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
     try {
       // Yahoo! はラーメン店の業種で絞れるので先に並べ、OpenPOI で補う。
       // Yahoo! が使えないとき（Client ID が無い・失敗）も、OpenPOI の結果は出す。
+      // まずサーバーに聞く（空白の言い換えもサーバーで行う）。だめなら端末から直接探す。
+      final curated = builtinShopsNamed(
+        name,
+        near: widget.near,
+        shops: ref.read(curatedShopsProvider),
+      );
+      final api = ref.read(ramenInChoApiProvider);
+      if (api != null) {
+        try {
+          final shops = await api.searchByName(name, near: widget.near);
+          if (!mounted || generation != _generation) return;
+          setState(() {
+            _results = mergeFoundShops(curated, shops);
+            _isSearching = false;
+          });
+          return;
+        } catch (e) {
+          debugPrint('Ramen-In-Cho API name search failed: $e');
+        }
+      }
       // 空白の有無で結果が変わるので、空白を詰めた言葉でも探してまとめる。
       final queries = nameQueryVariants(name);
       Future<List<FoundShop>?> searchAll(
@@ -101,7 +123,7 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
       final yahooShops = await yahoo;
       final poiShops = await poi;
       // アプリに持たせている店（ラーメン二郎の直系店）は先に並べ、通信できなくても出す。
-      final builtin = builtinShopsNamed(name, near: widget.near);
+      final builtin = curated;
       if (yahooShops == null && poiShops == null && builtin.isEmpty) {
         throw StateError('店名の検索がすべて失敗しました');
       }
