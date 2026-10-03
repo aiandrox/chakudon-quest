@@ -10,6 +10,7 @@ import '../checkin/checkin_rules.dart';
 import '../checkin/checkin_screen.dart';
 import '../records/clock.dart';
 import '../records/date_format.dart';
+import '../records/models.dart';
 import '../records/visit_details_form.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
@@ -32,6 +33,10 @@ class RecordScreen extends ConsumerStatefulWidget {
 
 class _RecordScreenState extends ConsumerState<RecordScreen> {
   final _nameController = TextEditingController();
+
+  /// 上の部品が出たり消えたりしても店名の欄が作り直されないよう、同じ鍵で持ち続ける
+  /// （作り直されると、日本語入力の変換中の文字が1文字目で確定してしまうため）。
+  final _nameFieldKey = GlobalKey();
   final _memoController = TextEditingController();
   final _waitController = TextEditingController();
 
@@ -126,6 +131,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
   Widget _buildScaffold(BuildContext context, RecordState state) {
     final l10n = AppLocalizations.of(context);
+    final showCheckinStart =
+        !state.hasInput &&
+        ref.watch(activeCheckinProvider) is AsyncData<Checkin?> &&
+        ref.watch(activeCheckinProvider).value == null;
     final controller = ref.read(recordControllerProvider.notifier);
 
     return Scaffold(
@@ -134,25 +143,28 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           // 何か入れたあとは食べた記録なので出さない（並び始めると入力が消えるため）。
-          if (!state.hasInput)
-            if (ref.watch(activeCheckinProvider) case AsyncData(value: null))
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                  ),
-                  onPressed: _startCheckin,
-                  icon: const Icon(Icons.groups),
-                  label: Text(l10n.checkinStart),
+          // 消えても下の部品の並びがずれないよう、場所は常に1つ取っておく。
+          if (showCheckinStart)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
                 ),
+                onPressed: _startCheckin,
+                icon: const Icon(Icons.groups),
+                label: Text(l10n.checkinStart),
               ),
+            )
+          else
+            const SizedBox.shrink(),
           _PhotoSection(state: state),
           const SizedBox(height: 16),
           SectionTitle(l10n.shopSection),
           _ShopSection(
             state: state,
             nameController: _nameController,
+            nameFieldKey: _nameFieldKey,
             onSelect: _selectShop,
           ),
           const SizedBox(height: 16),
@@ -326,11 +338,13 @@ class _ShopSection extends ConsumerWidget {
   const _ShopSection({
     required this.state,
     required this.nameController,
+    required this.nameFieldKey,
     required this.onSelect,
   });
 
   final RecordState state;
   final TextEditingController nameController;
+  final GlobalKey nameFieldKey;
   final ValueChanged<ShopCandidate> onSelect;
 
   @override
@@ -404,6 +418,7 @@ class _ShopSection extends ConsumerWidget {
           ),
         const SizedBox(height: 8),
         TextField(
+          key: nameFieldKey,
           controller: nameController,
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
