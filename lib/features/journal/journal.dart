@@ -3,10 +3,11 @@ import '../records/models.dart';
 import '../scoring/points.dart';
 import '../shop_search/geo.dart';
 import '../wishes/wishes.dart';
+import 'journal_phrases.dart';
 
 /// 1杯にたどり着くまでの短い物語（道中記）。保存せず、記録からその場で組み立てる。
 ///
-/// 文のひな形はこのファイルにまとめる（クエストと同じく、足す・直すときはここだけを書き換える）。
+/// 文のひな形は `journal_phrases.dart` にまとめる（足す・直すときはそこだけを書き換える）。
 /// 同じ材料でも言い回しを数通り用意し、記録のIDで1つに決める（開くたびに変わらないように）。
 /// [includeMemo]をfalseにすると、本人のメモの引用を入れない（人に送る共有カード用）。
 List<String> buildJournal(
@@ -39,27 +40,21 @@ List<String> buildJournal(
     final trigger = wish.trigger;
     final day = _monthDay(wish.createdAt, visit.eatenAt);
     lines.add(
-      trigger.isEmpty ? '$day、願を掛けた店。' : '$day、願を掛けた店。きっかけは「$trigger」。',
+      (trigger.isEmpty ? wishOpening : wishOpeningWithTrigger).fill({
+        '日付': day,
+        'きっかけ': trigger,
+      }).single,
     );
   } else if (eatenBefore == 0 &&
       retreats.isEmpty &&
       visit.result == VisitResult.retreated) {
-    lines.add(pick(['初めて挑む道場。', 'まだ見ぬ道場へ。']));
+    lines.add(pick(firstRetreatOpening.fill()));
   } else if (eatenBefore == 0 && retreats.isEmpty) {
     final shops = _shopNumber(target, all);
-    lines.add(
-      pick(['まだ見ぬ$shops軒目の道場へ。', '$shops軒目の道場の暖簾をくぐる。', '新たな道場、$shops軒目。']),
-    );
+    lines.add(pick(firstVisitOpening.fill({'軒': shops})));
   } else if (eatenBefore > 0) {
     final times = eatenBefore + 1;
-    lines.add(
-      pick([
-        '通うこと$times度目。',
-        '$times度目の来訪。',
-        'またこの暖簾をくぐる。$times度目。',
-        '勝手知ったる道場、$times度目。',
-      ]),
-    );
+    lines.add(pick(repeatOpening.fill({'度': times})));
   }
 
   // 節目・間隔・特別な日（当てはまるものを2つまで）。
@@ -78,84 +73,80 @@ List<String> buildJournal(
   final area = target.shop.area;
   if (area != null && area.isNotEmpty) {
     final pickArea = _Picker('${visit.id}#area');
-    final line = pickArea(switch (_distanceFromHome(target, all)) {
-      final m? when m >= expeditionKilometers * 1000 => expeditionAreaLines(
-        area,
-      ),
-      final m? when m >= _farMeters => farAreaLines(area),
-      _ => nearAreaLines(area),
-    });
+    final phrases = switch (_distanceFromHome(target, all)) {
+      final m? when m >= expeditionKilometers * 1000 => expeditionArea,
+      final m? when m >= _farMeters => farArea,
+      _ => nearArea,
+    };
+    final line = pickArea(phrases.fill({'地名': area}));
     if (line.isNotEmpty) lines.add(line);
   }
 
   if (retreats.length == 1) {
-    lines.add('前回は${_reason(retreats.single)}に阻まれ、撤退した。');
+    lines.add(
+      retreatedOnceBefore.fill({'理由': _reason(retreats.single)}).single,
+    );
   } else if (retreats.length > 1) {
-    lines.add('${retreats.length}度の撤退を越えて、ここまで来た。');
+    lines.add(retreatedManyBefore.fill({'回': retreats.length}).single);
   }
 
   if (visit.result == VisitResult.retreated) {
-    if (waited != null && waited > 0) lines.add('$waited分並んだが、');
-    lines.add('${_reason(visit)}に阻まれ、撤退。');
-    lines.add(pick(['次こそは。', 'この借りは、必ず返す。']));
+    if (waited != null && waited > 0) {
+      lines.add(retreatWaited.fill({'分': waited}).single);
+    }
+    lines.add(retreatBlocked.fill({'理由': _reason(visit)}).single);
+    lines.add(pick(retreatClosing.fill()));
     return lines;
   }
 
   if (waited != null && waited >= 60) {
-    lines.add(pick(['$waited分の長い行列を耐え抜き、', '並ぶこと$waited分。足が棒になっても、']));
+    lines.add(pick(longWait.fill({'分': waited})));
   } else if (waited != null && waited > 0) {
-    lines.add(pick(['行列に並ぶこと$waited分、', '$waited分の行列を越え、']));
+    lines.add(pick(shortWait.fill({'分': waited})));
   }
 
-  final flavors = _flavors[visit.style];
-  if (flavors != null) {
-    final flavor = _Picker('${visit.id}#flavor')([...flavors, '']);
+  final style = flavors[visit.style];
+  if (style != null) {
+    final flavor = _Picker('${visit.id}#flavor')(style.fill());
     if (flavor.isNotEmpty) lines.add(flavor);
   }
 
-  final bowl = '${visit.isLimited ? '限定の' : ''}${_styleName(visit.style)}の一杯';
+  final bowlName =
+      '${visit.isLimited ? '限定の' : ''}${_styleName(visit.style)}の一杯';
   final dramatic = wish != null || retreats.isNotEmpty || (waited ?? 0) >= 60;
   final points = target.points.total;
   // 共有カードで修行点を外すとき「、修行点 N」を消すので、この形は崩さない。
+  final bowlValues = {'一杯': bowlName, '点': points};
   lines.add(
     dramatic
-        ? 'ついに着丼。$bowl、修行点 $points。'
-        : pick([
-            '着丼。$bowl、修行点 $points。',
-            '丼が置かれた。$bowl、修行点 $points。',
-            '湯気の向こうに$bowl、修行点 $points。',
-            '待望の$bowl、修行点 $points。',
-          ]),
+        ? dramaticBowl.fill(bowlValues).single
+        : pick(bowl.fill(bowlValues)),
   );
 
   lines.addAll(_records(target, all).take(1));
 
-  final verdict = _verdicts[visit.rating];
-  if (verdict != null) lines.add(pick(verdict));
+  final verdict = verdicts[visit.rating];
+  if (verdict != null) lines.add(pick(verdict.fill()));
 
   final memo = visit.memo.trim();
   if (includeMemo &&
       memo.isNotEmpty &&
       memo.length <= 20 &&
       !memo.contains('\n')) {
-    lines.add('――「$memo」と書き残す。');
+    lines.add(memoQuote.fill({'メモ': memo}).single);
   }
 
   if (wish != null) {
     final days = daysToFulfill(wish, visit.eatenAt);
-    lines.add(days == 0 ? '願を掛けたその日に、願成就。' : '$days日越しの願成就。');
-  } else if (target.isRetrySuccess) {
-    lines.add('再挑戦、成功。');
-  } else {
-    final count = _yearNumber(target, all);
     lines.add(
-      pick([
-        '今年 $count杯目。',
-        '今年 $count杯目の修行。',
-        '修行は続く。今年 $count杯目。',
-        '麺道、今年 $count杯目。',
-      ]),
+      days == 0
+          ? wishSameDayClosing.fill().single
+          : wishClosing.fill({'日': days}).single,
     );
+  } else if (target.isRetrySuccess) {
+    lines.add(retryClosing.fill().single);
+  } else {
+    lines.add(pick(yearClosing.fill({'杯': _yearNumber(target, all)})));
   }
   return lines;
 }
@@ -164,35 +155,6 @@ bool _isEaten(Visit visit) => visit.result == VisitResult.eaten;
 
 /// 遠出とみなす、いつもの店からの距離。遠征（[expeditionKilometers]）より近い。
 const _farMeters = 20000;
-
-/// いつもの店の近く・遠出・遠征のときの、地名の一文。空の文は「添えない」。
-List<String> nearAreaLines(String area) => [
-  '$areaの街で。',
-  '$areaの空の下で。',
-  '$areaにて。',
-  '$areaの町角で。',
-  'ふらりと$areaへ。',
-  '$areaの路地をゆく。',
-  '',
-];
-
-List<String> farAreaLines(String area) => [
-  '遠く$areaまで足をのばして。',
-  'はるばる$areaへ。',
-  '少し遠出して$areaへ。',
-  '今日は$areaまで遠出。',
-  '$areaまで、ひと足のばして。',
-  '見知らぬ$areaの街で。',
-];
-
-List<String> expeditionAreaLines(String area) => [
-  '今日は$areaまで遠征。',
-  '遠征の地、$area。',
-  'はるばる$areaまで遠征。',
-  '旅の空の下、$areaにて。',
-  '$areaへ、修行の旅。',
-  '旅先の$areaで一杯。',
-];
 
 /// この1杯の店と、いつもの店（この1杯までにいちばん多く食べた店）との距離（m）。位置が分からなければnull。
 /// あとから記録を足しても過去の道中記が変わらないよう、この1杯までの記録だけで決める。
@@ -243,7 +205,7 @@ List<Visit> _retreatsSinceLastEaten(List<Visit> before) {
 String _reason(Visit retreat) {
   final memo = retreat.memo.trim();
   // 撤退の理由は「売り切れ」「臨時休業」など短い言葉で残る。長いメモは文に入れない。
-  return memo.isNotEmpty && memo.length <= 10 ? '「$memo」' : '思わぬ壁';
+  return memo.isNotEmpty && memo.length <= 10 ? '「$memo」' : unknownReason;
 }
 
 String _monthDay(DateTime date, DateTime now) => date.year == now.year
@@ -267,9 +229,6 @@ int _yearNumber(ScoredVisit target, List<ScoredVisit> all) => all
     )
     .length;
 
-/// 通算の杯数の節目。
-const _milestones = {10, 30, 50, 100, 200, 300, 500, 1000};
-
 /// 節目・間隔・特別な日の一文（大事な順）。
 List<String> _moments(
   ScoredVisit target,
@@ -287,17 +246,19 @@ List<String> _moments(
   final moments = <String>[];
   final sameDay = upTo.where((v) => _sameDate(v.eatenAt, at)).length;
   final isNewYearsFirst = at.month == 1 && at.day == 1 && sameDay == 1;
-  if (isNewYearsFirst) moments.add('年明け最初の一杯。');
-  if (at.month == 12 && at.day == 31) moments.add('大晦日の一杯。');
+  if (isNewYearsFirst) moments.add(newYearsFirstMoment.fill().single);
+  if (at.month == 12 && at.day == 31) {
+    moments.add(newYearsEveMoment.fill().single);
+  }
   if (!isNewYearsFirst && _yearNumber(target, all) == 1 && upTo.length > 1) {
-    moments.add('今年の初麺。');
+    moments.add(firstOfYearMoment.fill().single);
   }
-  if (_milestones.contains(upTo.length)) {
-    moments.add('通算${upTo.length}杯目の節目。');
+  if (milestoneBowls.contains(upTo.length)) {
+    moments.add(milestoneMoment.fill({'杯': upTo.length}).single);
   }
-  if (sameDay >= 2) moments.add('本日$sameDay杯目。');
+  if (sameDay >= 2) moments.add(sameDayMoment.fill({'杯': sameDay}).single);
   final streak = _dayStreak(upTo, at);
-  if (streak >= 3) moments.add('$streak日連続の麺修行。');
+  if (streak >= 3) moments.add(streakMoment.fill({'日': streak}).single);
   // 撤退した日も、その店に行った日として数える。
   final lastHere = all
       .map((e) => e.visit)
@@ -307,14 +268,14 @@ List<String> _moments(
   if (lastHere != null) {
     final gap = _dateOnly(at).difference(_dateOnly(lastHere)).inDays;
     if (gap >= 365) {
-      moments.add('${gap ~/ 365}年ぶりの再会。');
+      moments.add(yearsApartMoment.fill({'年': gap ~/ 365}).single);
     } else if (gap >= 90) {
-      moments.add('久しぶりの暖簾。');
+      moments.add(longGapMoment.fill().single);
     }
   }
   final times = eatenBefore + 1;
-  if (times == 5) moments.add('常連の域に入った。');
-  if (times == 10) moments.add('十度目。もはや第二の我が家。');
+  if (times == 5) moments.add(regularMoment.fill().single);
+  if (times == 10) moments.add(secondHomeMoment.fill().single);
   return moments;
 }
 
@@ -347,7 +308,7 @@ List<String> _records(ScoredVisit target, List<ScoredVisit> all) {
   final points = target.points.total;
   final records = <String>[];
   if (points > before.map((e) => e.points.total).reduce(_max)) {
-    records.add('自己最高の修行点を更新。');
+    records.add(bestPointsRecord.fill().single);
   }
   final here = [
     for (final entry in before)
@@ -356,14 +317,14 @@ List<String> _records(ScoredVisit target, List<ScoredVisit> all) {
   if (here.isNotEmpty &&
       points >= _rankSPoints &&
       here.map((e) => e.points.total).reduce(_max) < _rankSPoints) {
-    records.add('この道場の印は「極」に。');
+    records.add(shopRankSRecord.fill().single);
   }
   final waited = _waitOf(visit);
   final waitsHere = [for (final e in here) ?_waitOf(e.visit)];
   if (waited != null &&
       waitsHere.isNotEmpty &&
       waited > waitsHere.reduce(_max)) {
-    records.add('この店で最長の待ち。');
+    records.add(longestWaitRecord.fill().single);
   }
   return records;
 }
@@ -380,53 +341,35 @@ int? _waitOf(Visit visit) {
       : visit.eatenAt.difference(checkedInAt).inMinutes;
 }
 
-/// 系統ごとの一文の候補。
-const _flavors = <RamenStyle, List<String>>{
-  RamenStyle.shoyu: ['澄んだ醤油の香りが立つ。', '黄金色のスープに顔が映る。'],
-  RamenStyle.miso: ['濃厚な湯気に包まれる。', '味噌の香りが鼻をくすぐる。'],
-  RamenStyle.shio: ['透きとおるスープをひと口。', '塩の一杯は、ごまかしがきかない。'],
-  RamenStyle.tonkotsu: ['白濁のスープが香り立つ。', '替え玉の誘惑と戦う。'],
-  RamenStyle.iekei: ['海苔をスープに浸して。', '「お好みは？」に「硬め濃いめ多め」。'],
-  RamenStyle.jiro: ['「ニンニク入れますか？」に静かに頷く。', '野菜の山を崩しにかかる。'],
-  RamenStyle.tsukemen: ['麺をつけ汁にくぐらせて。', '最後はスープ割りで締める。'],
-  RamenStyle.shirunashi: ['底からよく混ぜて。', '追い飯まで抜かりなく。'],
-};
-
-/// ★の数ごとの、食べ終わったあとのひとこと。★がまだ無ければ何も言わない。
-const _verdicts = <int, List<String>>{
-  5: ['文句なしの一杯。また必ず来る。', 'これぞ求めていた味。', '箸が止まらなかった。', 'スープまで一滴残らず。'],
-  4: ['満足の一杯。', 'いい道場に出会えた。', 'また来たいと思える味。'],
-  3: ['悪くない。', '可もなく不可もなく、それもまた修行。', 'いつもの安心する味。'],
-  2: ['今日はあと一歩。', '好みとは少し違った。'],
-  1: ['これもまた修行。', '合わない味を知るのも道のうち。'],
-};
-
 /// 食べた時間帯・曜日・季節に合う一文の候補。空文字は「添えない」。
 List<String> _scenes(DateTime at) {
   final hour = at.hour;
   final time = switch (hour) {
-    6 => ['明け六つ、朝一番の一杯。', '朝の澄んだ空気の中、朝ラーの暖簾へ。'],
-    18 => ['暮れ六つの鐘とともに。', '一日の終わりに、夜の暖簾へ。'],
-    2 => ['丑三つ時の一杯。', '真夜中の一杯は、背徳の味。'],
-    >= 5 && < 11 => ['朝の澄んだ空気の中、朝ラーの暖簾へ。', '一日の始まりは一杯から。'],
-    >= 11 && < 15 => ['昼どきの喧騒をくぐり抜けて。', '腹の虫が鳴る昼下がり。'],
-    >= 15 && < 18 => ['中休み前のすき間を狙って。', '夕暮れ前のひと休み。'],
-    >= 18 && < 23 => ['一日の終わりに、夜の暖簾へ。', '夜風に誘われて。'],
-    _ => ['真夜中の一杯は、背徳の味。', '眠らない街の灯りの下で。'],
+    6 => sceneHour6,
+    18 => sceneHour18,
+    2 => sceneHour2,
+    >= 5 && < 11 => sceneMorning,
+    >= 11 && < 15 => sceneNoon,
+    >= 15 && < 18 => sceneAfternoon,
+    >= 18 && < 23 => sceneEvening,
+    _ => sceneNight,
   };
   final weekend = switch (at.weekday) {
-    DateTime.saturday || DateTime.sunday => ['休日の気ままな一杯。'],
-    DateTime.friday when hour >= 18 => ['花金の一杯。'],
-    DateTime.monday => ['週の始まりに気合を入れる。'],
-    _ => const <String>[],
+    DateTime.saturday || DateTime.sunday => sceneWeekend,
+    DateTime.friday when hour >= 18 => sceneFridayNight,
+    DateTime.monday => sceneMonday,
+    _ => null,
   };
   final season = switch (at.month) {
-    12 || 1 || 2 => ['冷えた体に湯気がしみる。'],
-    6 || 7 || 8 => ['汗をぬぐいながらすする。'],
-    3 || 4 || 5 => ['春の陽気に誘われて。'],
-    _ => ['秋の夜長にもう一杯。'],
+    12 || 1 || 2 => sceneWinter,
+    6 || 7 || 8 => sceneSummer,
+    3 || 4 || 5 => sceneSpring,
+    _ => sceneAutumn,
   };
-  return [...time, ...weekend, ...season, '', ''];
+  return [
+    for (final phrases in [time, ?weekend, season, sceneSkip])
+      ...phrases.fill(),
+  ];
 }
 
 String _styleName(RamenStyle? style) => switch (style) {
