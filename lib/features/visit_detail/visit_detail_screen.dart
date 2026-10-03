@@ -216,7 +216,10 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
       ),
       backgroundColor: Washi.desk,
       body: ListView(
-        padding: const EdgeInsets.only(bottom: 24),
+        // スマホの下の操作バーに重ならないよう、その高さぶん余白をとる。
+        padding: EdgeInsets.only(
+          bottom: 24 + MediaQuery.viewPaddingOf(context).bottom,
+        ),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),

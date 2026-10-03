@@ -27,12 +27,7 @@ class QuestSections extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _SectionHeader(
-          title: l10n.questStanding,
-          summary: l10n.questLevelTotal(
-            standing.fold(0, (sum, progress) => sum + progress.level),
-          ),
-        ),
+        _SectionHeader(title: l10n.questStanding),
         for (final progress in standing) _QuestCard(progress: progress),
         const SizedBox(height: 24),
         _SectionHeader(
@@ -49,10 +44,10 @@ class QuestSections extends ConsumerWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title, required this.summary});
+  const _SectionHeader({required this.title, this.summary});
 
   final String title;
-  final String summary;
+  final String? summary;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +56,9 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8, bottom: 4),
       child: SectionTitle(
         title,
-        trailing: Text(summary, style: textTheme.titleSmall),
+        trailing: summary == null
+            ? null
+            : Text(summary!, style: textTheme.titleSmall),
       ),
     );
   }
@@ -84,7 +81,7 @@ class _QuestCard extends StatelessWidget {
         ? null
         : next == null
         ? l10n.questMaxLevel
-        : l10n.questNext(progress.current, next, quest.unit);
+        : l10n.questCount(progress.current, quest.unit);
 
     // 印・名前・数だけ。会得した日などは出さない。
     return Card(

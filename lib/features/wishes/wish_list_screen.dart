@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
 import '../records/clock.dart';
 import '../records/date_format.dart';
@@ -204,7 +205,7 @@ class _PendingWishCard extends ConsumerWidget {
       child: Card(
         child: ListTile(
           contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-          leading: const _WishSeal(fulfilled: false),
+          leading: _WishSeal(fulfilled: false, wishId: wish.id),
           title: Text(wish.name, style: textTheme.titleMedium),
           subtitle: wish.trigger.isEmpty
               ? null
@@ -231,7 +232,7 @@ class _FulfilledWishCard extends StatelessWidget {
     return Card(
       child: ListTile(
         contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-        leading: const _WishSeal(fulfilled: true),
+        leading: _WishSeal(fulfilled: true, wishId: wish.id),
         title: Text(wish.name, style: textTheme.titleMedium),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,29 +259,35 @@ class _FulfilledWishCard extends StatelessWidget {
 
 /// 「願」の丸印。叶った願は朱、まだの願は灰色の輪郭だけ。
 class _WishSeal extends StatelessWidget {
-  const _WishSeal({required this.fulfilled});
+  const _WishSeal({required this.fulfilled, required this.wishId});
 
   final bool fulfilled;
+
+  /// かすれ方を願ごとに決めるため。
+  final String wishId;
 
   @override
   Widget build(BuildContext context) {
     final color = fulfilled ? Washi.shu : Washi.faded;
-    return Container(
-      width: 40,
-      height: 40,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: fulfilled ? Washi.shu : null,
-        border: Border.all(color: color, width: 2),
-      ),
-      child: Text(
-        AppLocalizations.of(context).wishSealChar,
-        style: TextStyle(
-          fontFamily: Washi.brush,
-          fontSize: 20,
-          height: 1,
-          color: fulfilled ? Washi.page : color,
+    return InkWear(
+      seed: inkSeed('wish:$wishId'),
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: fulfilled ? Washi.shu : null,
+          border: Border.all(color: color, width: 2),
+        ),
+        child: Text(
+          AppLocalizations.of(context).wishSealChar,
+          style: TextStyle(
+            fontFamily: Washi.brush,
+            fontSize: 20,
+            height: 1,
+            color: fulfilled ? Washi.page : color,
+          ),
         ),
       ),
     );

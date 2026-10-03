@@ -11,6 +11,7 @@ import '../scoring/ranks.dart';
 import '../scoring/scoring_providers.dart';
 import 'stats.dart';
 import '../records/models.dart';
+import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
 
 /// 杯数・自己ベスト・系統の割合などの数字。修行タブの中に並べる。
@@ -59,7 +60,7 @@ class StatsSections extends ConsumerWidget {
           ),
         const SizedBox(height: 24),
         SectionTitle(l10n.statsShopRanks),
-        for (final ranked in rankedShops(scored))
+        for (final ranked in rankedShops(scored).take(5))
           ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
@@ -139,9 +140,8 @@ class _StyleBreakdown extends StatelessWidget {
               '${label(share.style)} ${l10n.percent((share.ratio * 100).round())}',
           ].join('、'),
           child: ExcludeSemantics(
-            child: Container(
+            child: SizedBox(
               height: 28,
-              decoration: BoxDecoration(border: Border.all(color: Washi.ink)),
               child: Row(
                 children: [
                   for (final (i, share) in shares.indexed)
@@ -207,21 +207,24 @@ class _RankBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isTop = rank == ShopRank.s;
-    return Container(
-      width: 34,
-      height: 34,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: isTop ? Washi.shu : Washi.page,
-        border: Border.all(color: Washi.shu, width: 2),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        shopRankLabel(l10n, rank),
-        style: TextStyle(
-          fontFamily: Washi.brush,
-          fontSize: 18,
-          color: isTop ? Washi.page : Washi.shu,
+    return InkWear(
+      seed: inkSeed('rank:${rank.name}'),
+      child: Container(
+        width: 34,
+        height: 34,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isTop ? Washi.shu : Washi.page,
+          border: Border.all(color: Washi.shu, width: 2),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          shopRankLabel(l10n, rank),
+          style: TextStyle(
+            fontFamily: Washi.brush,
+            fontSize: 18,
+            color: isTop ? Washi.page : Washi.shu,
+          ),
         ),
       ),
     );
