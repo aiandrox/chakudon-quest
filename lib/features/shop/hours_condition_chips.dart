@@ -26,16 +26,30 @@ class HoursConditionChips extends StatelessWidget {
           FilterChip(
             label: Text(hoursConditionLabel(l10n, condition)),
             selected: selected.contains(condition),
-            onSelected: (on) => onChanged({
-              for (final other in selected)
-                if (other != condition) other,
-              if (on) condition,
-            }),
+            onSelected: (on) =>
+                onChanged(toggleHoursCondition(selected, condition, on)),
           ),
       ],
     );
   }
 }
+
+/// 同時には選べない条件の組。
+const _exclusive = {
+  HoursCondition.lunchOnly: HoursCondition.nightOnly,
+  HoursCondition.nightOnly: HoursCondition.lunchOnly,
+};
+
+/// [condition]を選ぶ・外したあとの条件。昼のみと夜のみは、片方を選ぶともう片方を外す。
+Set<HoursCondition> toggleHoursCondition(
+  Set<HoursCondition> selected,
+  HoursCondition condition,
+  bool on,
+) => {
+  for (final other in selected)
+    if (other != condition && !(on && _exclusive[condition] == other)) other,
+  if (on) condition,
+};
 
 /// 店の条件を選び直す。保存するなら選んだ条件、やめるならnullを返す。
 Future<Set<HoursCondition>?> showShopConditionsDialog(
