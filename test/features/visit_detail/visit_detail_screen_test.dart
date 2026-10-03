@@ -13,6 +13,8 @@ import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
 import 'package:chakudon_quest/theme/washi.dart';
 
+import 'package:chakudon_quest/features/journal/journal_phrases.dart';
+
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
 import '../../support/l10n.dart';
@@ -189,8 +191,9 @@ void main() {
     expect(find.text(ja.previousVisit), findsOneWidget);
     expect(find.text(ja.journalTitle), findsOneWidget);
     expect(
-      find.text('2度目の来訪。').evaluate().isNotEmpty ||
-          find.text('通うこと2度目。').evaluate().isNotEmpty,
+      repeatOpening
+          .fill({'度': 2})
+          .any((line) => find.text(line).evaluate().isNotEmpty),
       isTrue,
     );
     // 前回の記録と、この道場の印の日付の2か所。
