@@ -840,6 +840,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get creditsOsm => '地図と店の情報: © OpenStreetMap contributors（ODbL）';
 
   @override
+  String get creditsGsi => 'ラーメン二郎の店の位置: 住所から国土地理院の住所検索で求めたもの';
+
+  @override
   String get creditsOpenPoi =>
       '店の情報: 出典 OpenPOI API（https://openpoiapi.com/attribution.html）';
 

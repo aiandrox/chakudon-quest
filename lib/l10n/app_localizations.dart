@@ -1516,6 +1516,12 @@ abstract class AppLocalizations {
   /// **'地図と店の情報: © OpenStreetMap contributors（ODbL）'**
   String get creditsOsm;
 
+  /// No description provided for @creditsGsi.
+  ///
+  /// In ja, this message translates to:
+  /// **'ラーメン二郎の店の位置: 住所から国土地理院の住所検索で求めたもの'**
+  String get creditsGsi;
+
   /// No description provided for @creditsOpenPoi.
   ///
   /// In ja, this message translates to:

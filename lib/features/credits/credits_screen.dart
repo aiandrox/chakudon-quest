@@ -32,6 +32,8 @@ class CreditsScreen extends ConsumerWidget {
           Text(l10n.creditsOsm),
           const SizedBox(height: 8),
           Text(l10n.creditsOpenPoi),
+          const SizedBox(height: 4),
+          Text(l10n.creditsGsi),
           if (isYahooEnabled) ...[
             const SizedBox(height: 8),
             Text(l10n.creditsYahoo),
