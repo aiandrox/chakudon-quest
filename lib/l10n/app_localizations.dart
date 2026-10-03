@@ -1953,6 +1953,198 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'その一杯を見る'**
   String get questSpotOpenShop;
+
+  /// No description provided for @reviewEntry.
+  ///
+  /// In ja, this message translates to:
+  /// **'{year}年の振り返り'**
+  String reviewEntry(int year);
+
+  /// No description provided for @reviewInvite.
+  ///
+  /// In ja, this message translates to:
+  /// **'{year}年の修行を振り返りませんか'**
+  String reviewInvite(int year);
+
+  /// No description provided for @reviewInviteSub.
+  ///
+  /// In ja, this message translates to:
+  /// **'この一年の杯数・最高の一杯・会得した型をめくって見られます'**
+  String get reviewInviteSub;
+
+  /// No description provided for @reviewDismiss.
+  ///
+  /// In ja, this message translates to:
+  /// **'閉じる'**
+  String get reviewDismiss;
+
+  /// No description provided for @reviewCoverEra.
+  ///
+  /// In ja, this message translates to:
+  /// **'{era}{eraYear}年'**
+  String reviewCoverEra(String era, String eraYear);
+
+  /// No description provided for @reviewCoverYear.
+  ///
+  /// In ja, this message translates to:
+  /// **'（{year}年）の修行'**
+  String reviewCoverYear(int year);
+
+  /// No description provided for @reviewCoverHint.
+  ///
+  /// In ja, this message translates to:
+  /// **'左へめくって、一年を振り返る'**
+  String get reviewCoverHint;
+
+  /// No description provided for @reviewCoverEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'この年の記録はありません'**
+  String get reviewCoverEmpty;
+
+  /// No description provided for @reviewYearOption.
+  ///
+  /// In ja, this message translates to:
+  /// **'{year}年'**
+  String reviewYearOption(int year);
+
+  /// No description provided for @reviewCountsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'この一年で'**
+  String get reviewCountsTitle;
+
+  /// No description provided for @reviewBowls.
+  ///
+  /// In ja, this message translates to:
+  /// **'食べた杯数'**
+  String get reviewBowls;
+
+  /// No description provided for @reviewShops.
+  ///
+  /// In ja, this message translates to:
+  /// **'訪ねた店'**
+  String get reviewShops;
+
+  /// No description provided for @reviewShopCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}軒'**
+  String reviewShopCount(int count);
+
+  /// No description provided for @reviewRetreats.
+  ///
+  /// In ja, this message translates to:
+  /// **'撤退'**
+  String get reviewRetreats;
+
+  /// No description provided for @reviewRetreatCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}回'**
+  String reviewRetreatCount(int count);
+
+  /// No description provided for @reviewPoints.
+  ///
+  /// In ja, this message translates to:
+  /// **'得た修行点'**
+  String get reviewPoints;
+
+  /// No description provided for @reviewFavoriteTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'いちばん通った店'**
+  String get reviewFavoriteTitle;
+
+  /// No description provided for @reviewFavoriteLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'この一年で {count}杯'**
+  String reviewFavoriteLine(int count);
+
+  /// No description provided for @reviewBestTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'最高の一杯'**
+  String get reviewBestTitle;
+
+  /// No description provided for @reviewWaitTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'いちばん並んだ一杯'**
+  String get reviewWaitTitle;
+
+  /// No description provided for @reviewMonthlyTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'月ごとの杯数'**
+  String get reviewMonthlyTitle;
+
+  /// No description provided for @reviewMonth.
+  ///
+  /// In ja, this message translates to:
+  /// **'{month}月'**
+  String reviewMonth(int month);
+
+  /// No description provided for @reviewMonthBowls.
+  ///
+  /// In ja, this message translates to:
+  /// **'{month}月 {count}杯'**
+  String reviewMonthBowls(int month, int count);
+
+  /// No description provided for @reviewAchievementsTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'この一年の成果'**
+  String get reviewAchievementsTitle;
+
+  /// No description provided for @reviewRanks.
+  ///
+  /// In ja, this message translates to:
+  /// **'上がった段位'**
+  String get reviewRanks;
+
+  /// No description provided for @reviewQuests.
+  ///
+  /// In ja, this message translates to:
+  /// **'会得した型と奥義'**
+  String get reviewQuests;
+
+  /// No description provided for @reviewWishes.
+  ///
+  /// In ja, this message translates to:
+  /// **'叶った願'**
+  String get reviewWishes;
+
+  /// No description provided for @reviewWishCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}軒'**
+  String reviewWishCount(int count);
+
+  /// No description provided for @reviewExpeditions.
+  ///
+  /// In ja, this message translates to:
+  /// **'遠征'**
+  String get reviewExpeditions;
+
+  /// No description provided for @reviewExpeditionCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}回'**
+  String reviewExpeditionCount(int count);
+
+  /// No description provided for @reviewClosingTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'締めのひとこと'**
+  String get reviewClosingTitle;
+
+  /// No description provided for @reviewSummaryLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'{bowls}杯・{shops}軒・{points}点'**
+  String reviewSummaryLine(int bowls, int shops, int points);
 }
 
 class _AppLocalizationsDelegate

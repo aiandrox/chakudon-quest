@@ -1087,4 +1087,126 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get questSpotOpenShop => 'その一杯を見る';
+
+  @override
+  String reviewEntry(int year) {
+    return '$year年の振り返り';
+  }
+
+  @override
+  String reviewInvite(int year) {
+    return '$year年の修行を振り返りませんか';
+  }
+
+  @override
+  String get reviewInviteSub => 'この一年の杯数・最高の一杯・会得した型をめくって見られます';
+
+  @override
+  String get reviewDismiss => '閉じる';
+
+  @override
+  String reviewCoverEra(String era, String eraYear) {
+    return '$era$eraYear年';
+  }
+
+  @override
+  String reviewCoverYear(int year) {
+    return '（$year年）の修行';
+  }
+
+  @override
+  String get reviewCoverHint => '左へめくって、一年を振り返る';
+
+  @override
+  String get reviewCoverEmpty => 'この年の記録はありません';
+
+  @override
+  String reviewYearOption(int year) {
+    return '$year年';
+  }
+
+  @override
+  String get reviewCountsTitle => 'この一年で';
+
+  @override
+  String get reviewBowls => '食べた杯数';
+
+  @override
+  String get reviewShops => '訪ねた店';
+
+  @override
+  String reviewShopCount(int count) {
+    return '$count軒';
+  }
+
+  @override
+  String get reviewRetreats => '撤退';
+
+  @override
+  String reviewRetreatCount(int count) {
+    return '$count回';
+  }
+
+  @override
+  String get reviewPoints => '得た修行点';
+
+  @override
+  String get reviewFavoriteTitle => 'いちばん通った店';
+
+  @override
+  String reviewFavoriteLine(int count) {
+    return 'この一年で $count杯';
+  }
+
+  @override
+  String get reviewBestTitle => '最高の一杯';
+
+  @override
+  String get reviewWaitTitle => 'いちばん並んだ一杯';
+
+  @override
+  String get reviewMonthlyTitle => '月ごとの杯数';
+
+  @override
+  String reviewMonth(int month) {
+    return '$month月';
+  }
+
+  @override
+  String reviewMonthBowls(int month, int count) {
+    return '$month月 $count杯';
+  }
+
+  @override
+  String get reviewAchievementsTitle => 'この一年の成果';
+
+  @override
+  String get reviewRanks => '上がった段位';
+
+  @override
+  String get reviewQuests => '会得した型と奥義';
+
+  @override
+  String get reviewWishes => '叶った願';
+
+  @override
+  String reviewWishCount(int count) {
+    return '$count軒';
+  }
+
+  @override
+  String get reviewExpeditions => '遠征';
+
+  @override
+  String reviewExpeditionCount(int count) {
+    return '$count回';
+  }
+
+  @override
+  String get reviewClosingTitle => '締めのひとこと';
+
+  @override
+  String reviewSummaryLine(int bowls, int shops, int points) {
+    return '$bowls杯・$shops軒・$points点';
+  }
 }

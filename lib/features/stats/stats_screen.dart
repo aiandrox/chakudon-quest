@@ -43,7 +43,7 @@ class StatsSections extends ConsumerWidget {
         ..._bests(l10n, textTheme, personalBests(scored)),
         const SizedBox(height: 24),
         SectionTitle(l10n.statsStyles),
-        _StyleBreakdown(shares: styleShares(scored)),
+        StyleBreakdown(shares: styleShares(scored)),
         const SizedBox(height: 24),
         SectionTitle(l10n.statsFrequent),
         if (frequentShops(scored).isEmpty)
@@ -120,8 +120,8 @@ Color styleColor(RamenStyle? style) => switch (style) {
 };
 
 /// 全体を100とした1本の帯を系統ごとに色分けし、下に色・系統・杯数・割合を並べる。
-class _StyleBreakdown extends StatelessWidget {
-  const _StyleBreakdown({required this.shares});
+class StyleBreakdown extends StatelessWidget {
+  const StyleBreakdown({super.key, required this.shares});
 
   final List<StyleShare> shares;
 
