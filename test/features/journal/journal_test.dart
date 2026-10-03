@@ -226,7 +226,8 @@ void main() {
         ),
       ]);
 
-      expect(lines, contains('年明け最初の一杯。'));
+      // 2杯目なので「年明け最初」とは言わない。
+      expect(lines, isNot(contains('年明け最初の一杯。')));
       expect(lines, contains('本日2杯目。'));
     });
 
@@ -281,9 +282,25 @@ void main() {
     });
   });
 
-  test('短いメモは引用して書き残す', () {
+  test('短いメモは引用して書き残す。共有カード用には入れない', () {
     final entry = buildEntry(shop: shop, eatenAt: day(9, 5), memo: '海苔多めが正解');
     expect(journalOf([entry]), contains('――「海苔多めが正解」と書き残す。'));
+
+    final scored = scoreVisits([entry]);
+    expect(
+      buildJournal(scored.single, scored, includeMemo: false),
+      isNot(contains('――「海苔多めが正解」と書き残す。')),
+    );
+  });
+
+  test('撤退した日も、その店に行った日として数える（久しぶりとは言わない）', () {
+    final lines = journalOf([
+      buildEntry(shop: shop, eatenAt: day(1, 10)),
+      buildEntry(shop: shop, eatenAt: day(5, 1), result: VisitResult.retreated),
+      buildEntry(shop: shop, eatenAt: day(5, 8)),
+    ]);
+
+    expect(lines, isNot(contains('久しぶりの暖簾。')));
   });
 
   test('系統ごとの一文は、添える1杯と添えない1杯がある', () {

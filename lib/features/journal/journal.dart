@@ -7,7 +7,12 @@ import '../wishes/wishes.dart';
 ///
 /// 文のひな形はこのファイルにまとめる（クエストと同じく、足す・直すときはここだけを書き換える）。
 /// 同じ材料でも言い回しを数通り用意し、記録のIDで1つに決める（開くたびに変わらないように）。
-List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
+/// [includeMemo]をfalseにすると、本人のメモの引用を入れない（人に送る共有カード用）。
+List<String> buildJournal(
+  ScoredVisit target,
+  List<ScoredVisit> all, {
+  bool includeMemo = true,
+}) {
   final visit = target.visit;
   final before = [
     for (final entry in all)
@@ -126,7 +131,10 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
   if (verdict != null) lines.add(pick(verdict));
 
   final memo = visit.memo.trim();
-  if (memo.isNotEmpty && memo.length <= 20 && !memo.contains('\n')) {
+  if (includeMemo &&
+      memo.isNotEmpty &&
+      memo.length <= 20 &&
+      !memo.contains('\n')) {
     lines.add('――「$memo」と書き残す。');
   }
 
@@ -246,20 +254,23 @@ List<String> _moments(
         entry.visit,
   ];
   final moments = <String>[];
-  if (at.month == 1 && at.day == 1) moments.add('年明け最初の一杯。');
-  if (at.month == 12 && at.day == 31) moments.add('年納めの一杯。');
-  if (_yearNumber(target, all) == 1 && upTo.length > 1) {
+  final sameDay = upTo.where((v) => _sameDate(v.eatenAt, at)).length;
+  final isNewYearsFirst = at.month == 1 && at.day == 1 && sameDay == 1;
+  if (isNewYearsFirst) moments.add('年明け最初の一杯。');
+  if (at.month == 12 && at.day == 31) moments.add('大晦日の一杯。');
+  if (!isNewYearsFirst && _yearNumber(target, all) == 1 && upTo.length > 1) {
     moments.add('今年の初麺。');
   }
   if (_milestones.contains(upTo.length)) {
     moments.add('通算${upTo.length}杯目の節目。');
   }
-  final sameDay = upTo.where((v) => _sameDate(v.eatenAt, at)).length;
   if (sameDay >= 2) moments.add('本日$sameDay杯目。');
   final streak = _dayStreak(upTo, at);
   if (streak >= 3) moments.add('$streak日連続の麺修行。');
-  final lastHere = upTo
-      .where((v) => v.shopId == visit.shopId && v.id != visit.id)
+  // 撤退した日も、その店に行った日として数える。
+  final lastHere = all
+      .map((e) => e.visit)
+      .where((v) => v.shopId == visit.shopId && _isBefore(v, visit))
       .map((v) => v.eatenAt)
       .fold<DateTime?>(null, (a, b) => a == null || b.isAfter(a) ? b : a);
   if (lastHere != null) {
