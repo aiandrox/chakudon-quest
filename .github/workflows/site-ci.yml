@@ -6,6 +6,8 @@ on:
     paths:
       - "site/**"
       - "data/**"
+      # サーバーの検索のテストは、アプリと同じ保存した応答（test/fixtures）を使う。
+      - "test/fixtures/**"
       - ".github/workflows/site-ci.yml"
 
 permissions:
