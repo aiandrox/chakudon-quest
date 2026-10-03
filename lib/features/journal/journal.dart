@@ -119,7 +119,7 @@ List<String> buildJournal(
   final bowlValues = {'一杯': bowlName, '点': points};
   lines.add(
     dramatic
-        ? dramaticBowl.fill(bowlValues).single
+        ? pick(dramaticBowl.fill(bowlValues))
         : pick(bowl.fill(bowlValues)),
   );
 
@@ -144,7 +144,7 @@ List<String> buildJournal(
           : wishClosing.fill({'日': days}).single,
     );
   } else if (target.isRetrySuccess) {
-    lines.add(retryClosing.fill().single);
+    lines.add(pick(retryClosing.fill()));
   } else {
     lines.add(pick(yearClosing.fill({'杯': _yearNumber(target, all)})));
   }

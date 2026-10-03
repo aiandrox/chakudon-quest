@@ -48,7 +48,9 @@ void main() {
     expect(lines.first, '9月1日、願を掛けた店。きっかけは「同僚に聞いた」。');
     expect(lines, contains('前回は「売り切れ」に阻まれ、撤退した。'));
     expect(lines.any((l) => l.contains('45分')), isTrue);
-    expect(lines.any((l) => l.startsWith('ついに着丼。醤油の一杯、修行点 ')), isTrue);
+    final bowlLine = lines.firstWhere((l) => l.contains('修行点'));
+    final points = RegExp(r'修行点 (\d+)').firstMatch(bowlLine)![1]!;
+    expect(dramaticBowl.fill({'一杯': '醤油の一杯', '点': points}), contains(bowlLine));
     expect(lines.last, '32日越しの願成就。');
   });
 
@@ -62,7 +64,7 @@ void main() {
 
     expect(lines.first, contains('2軒目'));
     expect(lines.first, isNot(contains('願')));
-    expect(lines.last, contains('今年 2杯目'));
+    expect(yearClosing.fill({'杯': 2}), contains(lines.last));
   });
 
   test('2回目は来訪の回数を、撤退が続いたあとの1杯は再挑戦成功を添える', () {
@@ -75,7 +77,7 @@ void main() {
 
     expect(lines.first, contains('2度目'));
     expect(lines, contains('2度の撤退を越えて、ここまで来た。'));
-    expect(lines.last, '再挑戦、成功。');
+    expect(retryClosing.fill(), contains(lines.last));
   });
 
   test('撤退の記録は、阻まれた理由と次への一言で終える', () {
@@ -91,7 +93,7 @@ void main() {
 
     expect(lines, contains('20分並んだが、'));
     expect(lines, contains('「臨時休業」に阻まれ、撤退。'));
-    expect(lines.last, anyOf('次こそは。', 'この借りは、必ず返す。'));
+    expect(retreatClosing.fill(), contains(lines.last));
   });
 
   test('同じ記録なら、何度組み立てても同じ文になる', () {
@@ -131,7 +133,7 @@ void main() {
         createdAt: day(6, 1),
       ),
     );
-    const five = ['文句なしの一杯。また必ず来る。', 'これぞ求めていた味。', '箸が止まらなかった。', 'スープまで一滴残らず。'];
+    final five = verdicts[5]!.lines;
 
     expect(journalOf([rated(5)]).any(five.contains), isTrue);
     expect(journalOf([rated(null)]).any(five.contains), isFalse);
