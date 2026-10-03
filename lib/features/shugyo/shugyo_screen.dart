@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../onboarding/onboarding_screen.dart';
 import '../../theme/washi.dart';
 import '../backup/backup_screen.dart';
 import '../credits/credits_screen.dart';
@@ -64,6 +65,12 @@ class ShugyoScreen extends ConsumerWidget {
             title: Text(l10n.creditsTitle),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => open(const CreditsScreen()),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.onboardingReplay),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => open(const OnboardingScreen()),
           ),
         ],
       ),

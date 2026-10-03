@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
@@ -7,38 +8,72 @@ import '../shugyo/shugyo_screen.dart';
 import '../wishes/wish_list_screen.dart';
 import '../../theme/washi_buttons.dart';
 import '../record/record_screen.dart';
+import '../onboarding/onboarding_flow.dart';
+import '../onboarding/onboarding_screen.dart';
+import '../onboarding/onboarding_store.dart';
+import '../records/record_repository.dart';
+import 'app_tab.dart';
 import 'home_screen.dart';
 
 /// 下のタブ（印帳・願掛け・修行・地図）で画面を切り替える、アプリの外枠。
 /// タブの真ん中には、どの画面からでも記録を始められる大きな判子を置く。
-class AppShell extends StatefulWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 
   @override
-  State<AppShell> createState() => _AppShellState();
+  ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
-  static const _mapIndex = 3;
+class _AppShellState extends ConsumerState<AppShell> {
+  static final _mapIndex = AppTab.map.index;
 
   /// 下のタブで、真ん中の判子のために空けておく位置。
   static const _gap = 2;
 
-  int _index = 0;
+  @override
+  void initState() {
+    super.initState();
+    if (ref.read(showOnboardingOnLaunchProvider)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _maybeOnboard());
+    }
+  }
+
+  Future<void> _maybeOnboard() async {
+    try {
+      final completed = await ref.read(onboardingStoreProvider).isCompleted();
+      final visits = await ref.read(visitsProvider.future);
+      if (!mounted ||
+          !shouldShowOnboarding(
+            completed: completed,
+            visitCount: visits.length,
+          )) {
+        return;
+      }
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => const OnboardingScreen(),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Onboarding check failed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final index = ref.watch(appTabProvider).index;
     return Scaffold(
       body: IndexedStack(
-        index: _index,
+        index: index,
         children: [
           const HomeScreen(),
           const WishListScreen(),
           const ShugyoScreen(),
           // 地図は開いたときだけ作る。開くたびに全部のピンが入る範囲に合わせ直し、
           // 地図を見ていないときにタイルを取りに行かないようにするため。
-          if (_index == _mapIndex)
+          if (index == _mapIndex)
             const MapScreen()
           else
             const SizedBox.shrink(),
@@ -57,10 +92,12 @@ class _AppShellState extends State<AppShell> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: NavigationBar(
         // 真ん中は判子の場所として空けておく（押しても何もしない）。
-        selectedIndex: _index < _gap ? _index : _index + 1,
-        onDestinationSelected: (index) {
-          if (index == _gap) return;
-          setState(() => _index = index < _gap ? index : index - 1);
+        selectedIndex: index < _gap ? index : index + 1,
+        onDestinationSelected: (selected) {
+          if (selected == _gap) return;
+          ref
+              .read(appTabProvider.notifier)
+              .select(AppTab.values[selected < _gap ? selected : selected - 1]);
         },
         destinations: [
           for (final (glyph, label) in [
