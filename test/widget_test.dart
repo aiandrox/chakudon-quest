@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -106,9 +108,7 @@ void main() {
     ]);
 
     expect(verticalText('麺屋テスト'), findsOneWidget);
-    // 月の見出し（令和八年 九月・1杯）を付ける。
-    expect(find.text(ja.inchoMonth('令和', '八', '九')), findsOneWidget);
-    expect(find.text(ja.inchoMonthCount(1)), findsOneWidget);
+
     expect(find.byType(InkanStamp), findsOneWidget);
     expect(find.text(ja.rankApprentice), findsOneWidget);
     expect(find.text(ja.totalPoints(20)), findsOneWidget);
@@ -244,5 +244,36 @@ void main() {
       expect(notifications.streakReminders, isEmpty);
       expect(notifications.streakCancelCount, greaterThan(0));
     });
+  });
+
+  testWidgets('印帳をスクロールしている間だけ、今の月を上に浮かべる', (tester) async {
+    final shop = Shop(id: 'shop', name: '麺屋', createdAt: DateTime(2026));
+    await pumpApp(tester, [
+      for (var i = 0; i < 40; i++)
+        VisitWithShop(
+          shop: shop,
+          visit: Visit(
+            id: 'visit-$i',
+            shopId: 'shop',
+            result: VisitResult.eaten,
+            eatenAt: DateTime(2026, 9, 30 - i ~/ 2, 12),
+            isLimited: false,
+            hasTicket: false,
+            memo: '',
+            createdAt: DateTime(2026, 9, 30 - i ~/ 2, 12),
+          ),
+        ),
+    ]);
+
+    final label = ja.inchoMonth('令和', '八', '九');
+    expect(find.text(label), findsNothing);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -1500));
+    await tester.pump();
+    expect(find.text(label), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(find.text(label), findsNothing);
   });
 }
