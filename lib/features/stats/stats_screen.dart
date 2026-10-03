@@ -34,22 +34,10 @@ class StatsSections extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _CountCard(
-                label: l10n.statsThisYear,
-                value: l10n.bowls(thisYear),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _CountCard(
-                label: l10n.statsTotal,
-                value: l10n.bowls(total),
-              ),
-            ),
-          ],
+        SectionTitle(l10n.statsBowls),
+        Text(
+          l10n.statsBowlsLine(thisYear, total),
+          style: textTheme.titleMedium,
         ),
         ..._bests(l10n, textTheme, personalBests(scored)),
         const SizedBox(height: 24),
@@ -61,7 +49,6 @@ class StatsSections extends ConsumerWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             dense: true,
-            leading: const Icon(Icons.storefront),
             title: Text(frequent.shop.name),
             trailing: Text(
               l10n.bowls(frequent.count),
@@ -91,74 +78,28 @@ List<Widget> _bests(
   TextTheme textTheme,
   PersonalBests bests,
 ) {
-  ListTile row(IconData icon, String label, PersonalBest best, String value) =>
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        dense: true,
-        leading: Icon(icon),
-        title: Text(label),
-        subtitle: Text(
-          l10n.bestDetail(
-            best.entry.shop.name,
-            formatDate(best.entry.visit.eatenAt),
-          ),
-        ),
-        trailing: Text(value, style: textTheme.titleMedium),
-      );
+  ListTile row(String label, PersonalBest best, String value) => ListTile(
+    contentPadding: EdgeInsets.zero,
+    dense: true,
+    title: Text(label),
+    subtitle: Text(
+      l10n.bestDetail(
+        best.entry.shop.name,
+        formatDate(best.entry.visit.eatenAt),
+      ),
+    ),
+    trailing: Text(value, style: textTheme.titleMedium),
+  );
   final rows = [
     if (bests.longestWait case final best?)
-      row(
-        Icons.hourglass_bottom,
-        l10n.bestLongestWait,
-        best,
-        l10n.minutes(best.value),
-      ),
+      row(l10n.bestLongestWait, best, l10n.minutes(best.value)),
     if (bests.highestPoints case final best?)
-      row(Icons.star, l10n.bestHighestPoints, best, l10n.points(best.value)),
+      row(l10n.bestHighestPoints, best, l10n.points(best.value)),
     if (bests.mostRetreats case final best?)
-      row(
-        Icons.shield,
-        l10n.bestMostRetreats,
-        best,
-        l10n.retreatCount(best.value),
-      ),
+      row(l10n.bestMostRetreats, best, l10n.retreatCount(best.value)),
   ];
   if (rows.isEmpty) return const [];
   return [const SizedBox(height: 24), SectionTitle(l10n.statsBests), ...rows];
-}
-
-class _CountCard extends StatelessWidget {
-  const _CountCard({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
-    return Card(
-      elevation: 0,
-      color: colors.surfaceContainerLow,
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: textTheme.bodyMedium),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: textTheme.headlineMedium?.copyWith(
-                fontFamily: Washi.brush,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 /// 系統ごとの色。隣り合っても見分けやすいよう、明るさも変えた和の色にする。

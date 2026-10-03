@@ -847,7 +847,7 @@ abstract class AppLocalizations {
   /// No description provided for @questNext.
   ///
   /// In ja, this message translates to:
-  /// **'次の段まで {current} / {target}{unit}'**
+  /// **'{current}／{target}{unit}'**
   String questNext(int current, int target, String unit);
 
   /// No description provided for @questCount.
@@ -855,12 +855,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{count}{unit}'**
   String questCount(int count, String unit);
-
-  /// No description provided for @questAchievedOn.
-  ///
-  /// In ja, this message translates to:
-  /// **'{date} 会得'**
-  String questAchievedOn(String date);
 
   /// No description provided for @questLevelUp.
   ///
@@ -885,18 +879,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'記録が増えると、ここに統計が出ます'**
   String get statsEmpty;
-
-  /// No description provided for @statsThisYear.
-  ///
-  /// In ja, this message translates to:
-  /// **'今年の杯数'**
-  String get statsThisYear;
-
-  /// No description provided for @statsTotal.
-  ///
-  /// In ja, this message translates to:
-  /// **'累計の杯数'**
-  String get statsTotal;
 
   /// No description provided for @bowls.
   ///
@@ -1065,18 +1047,6 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'きっかけ: {trigger}'**
   String wishTriggerLine(String trigger);
-
-  /// No description provided for @wishSinceToday.
-  ///
-  /// In ja, this message translates to:
-  /// **'今日、願を掛けた'**
-  String get wishSinceToday;
-
-  /// No description provided for @wishSinceDays.
-  ///
-  /// In ja, this message translates to:
-  /// **'願を掛けて {days}日'**
-  String wishSinceDays(int days);
 
   /// No description provided for @wishFulfilledLine.
   ///
@@ -1767,6 +1737,24 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'いま並んでいる'**
   String get checkinStart;
+
+  /// No description provided for @moreActions.
+  ///
+  /// In ja, this message translates to:
+  /// **'そのほか'**
+  String get moreActions;
+
+  /// No description provided for @statsBowls.
+  ///
+  /// In ja, this message translates to:
+  /// **'杯数'**
+  String get statsBowls;
+
+  /// No description provided for @statsBowlsLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'今年 {thisYear}杯　通算 {total}杯'**
+  String statsBowlsLine(int thisYear, int total);
 }
 
 class _AppLocalizationsDelegate

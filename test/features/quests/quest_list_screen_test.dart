@@ -57,10 +57,8 @@ void main() {
 
     // 着丼の道は10杯で Lv.2（次は30杯）。
     expect(find.text(ja.questNext(10, 30, '杯')), findsOneWidget);
-    expect(find.text(ja.questAchievedOn('2026/9/10')), findsOneWidget);
     // はじめての着丼は達成。
     expect(find.text(ja.questCleared), findsOneWidget);
-    expect(find.text(ja.questAchievedOn('2026/9/1')), findsOneWidget);
     expect(find.text(ja.questSpotSummary(1, 7)), findsOneWidget);
     // 着丼の道 Lv.2 + 開拓者 Lv.0 ...のレベル合計。
     expect(find.text(ja.questLevelTotal(2)), findsOneWidget);

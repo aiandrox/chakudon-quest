@@ -227,7 +227,7 @@
   },
   "questMaxLevel": "極み",
   "questCleared": "会得",
-  "questNext": "次の段まで {current} / {target}{unit}",
+  "questNext": "{current}／{target}{unit}",
   "@questNext": {
     "placeholders": {
       "current": {"type": "int"},
@@ -242,12 +242,6 @@
       "unit": {"type": "String"}
     }
   },
-  "questAchievedOn": "{date} 会得",
-  "@questAchievedOn": {
-    "placeholders": {
-      "date": {"type": "String"}
-    }
-  },
   "questLevelUp": "型 昇段！",
   "questLevelReached": "{title} {level}段",
   "@questLevelReached": {
@@ -258,8 +252,6 @@
   },
   "questAchieved": "奥義会得！",
   "statsEmpty": "記録が増えると、ここに統計が出ます",
-  "statsThisYear": "今年の杯数",
-  "statsTotal": "累計の杯数",
   "bowls": "{count}杯",
   "@bowls": {
     "placeholders": {
@@ -306,8 +298,6 @@
   "wishNoteHint": "限定の煮干しを食べたい など",
   "wishTriggerLine": "きっかけ: {trigger}",
   "@wishTriggerLine": {"placeholders": {"trigger": {"type": "String"}}},
-  "wishSinceToday": "今日、願を掛けた",
-  "wishSinceDays": "願を掛けて {days}日",
   "@wishSinceDays": {"placeholders": {"days": {"type": "int"}}},
   "wishFulfilledLine": "{date} 願成就（{days}日越し）",
   "@wishFulfilledLine": {"placeholders": {"date": {"type": "String"}, "days": {"type": "int"}}},
@@ -521,5 +511,14 @@
   "navShugyo": "修行",
   "shugyoTitle": "修行",
   "settingsSection": "設定",
-  "checkinStart": "いま並んでいる"
+  "checkinStart": "いま並んでいる",
+  "moreActions": "そのほか",
+  "statsBowls": "杯数",
+  "statsBowlsLine": "今年 {thisYear}杯　通算 {total}杯",
+  "@statsBowlsLine": {
+    "placeholders": {
+      "thisYear": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  }
 }

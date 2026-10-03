@@ -76,9 +76,8 @@ void main() {
 
     expect(find.text(ja.pointsRetry), findsNothing);
 
-    expect(find.text(ja.rankApprentice), findsOneWidget);
-    expect(find.text(ja.totalPoints(82)), findsOneWidget);
-    expect(find.text(ja.nextRank(ja.rankTraveler, 118)), findsOneWidget);
+    // 段位は上がったときだけ出す。
+    expect(find.text(ja.rankApprentice), findsNothing);
     expect(find.text(ja.rankUp), findsNothing);
 
     // スポット「はじめての着丼」の達成と、常設の Lv.1 到達
@@ -114,8 +113,7 @@ void main() {
     await pumpResult(tester, [reaches, big], reaches.visit.id);
 
     expect(find.text(ja.rankUp), findsOneWidget);
-    expect(find.text(ja.rankTraveler), findsNWidgets(2));
-    expect(find.text(ja.totalPoints(200)), findsOneWidget);
+    expect(find.text(ja.rankTraveler), findsOneWidget);
   });
 
   testWidgets('最高ランクでは、次のランクの代わりに到達を表示する', (tester) async {
@@ -136,8 +134,7 @@ void main() {
     await pumpResult(tester, entries, entries.last.visit.id);
 
     // この1杯で最高ランクに上がるため、お知らせとランク表示の両方に出る。
-    expect(find.text(ja.rankLegend), findsNWidgets(2));
-    expect(find.text(ja.maxRank), findsOneWidget);
+    expect(find.text(ja.rankLegend), findsOneWidget);
   });
 
   testWidgets('記録がまだ読み込まれていなければ待つ', (tester) async {

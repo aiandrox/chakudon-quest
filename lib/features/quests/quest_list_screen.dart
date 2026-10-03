@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
-import '../records/date_format.dart';
 import '../scoring/scoring_providers.dart';
 import 'quest_seal.dart';
 import 'quests.dart';
@@ -81,11 +80,13 @@ class _QuestCard extends StatelessWidget {
     final quest = progress.quest;
     final isSpot = quest.kind == QuestKind.spot;
     final next = progress.nextThreshold;
-    final previous = progress.level == 0
-        ? 0
-        : quest.thresholds[progress.level - 1];
-    final achievedAt = progress.levelAchievedAt.lastOrNull;
+    final count = isSpot
+        ? null
+        : next == null
+        ? l10n.questMaxLevel
+        : l10n.questNext(progress.current, next, quest.unit);
 
+    // 印・名前・数だけ。会得した日などは出さない。
     return Card(
       elevation: 0,
       color: progress.isAchieved
@@ -93,12 +94,11 @@ class _QuestCard extends StatelessWidget {
           : colors.surfaceContainerLow,
       margin: const EdgeInsets.symmetric(vertical: 4),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.fromLTRB(12, 10, 16, 10),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            QuestSeal(quest: quest, level: progress.level),
-            const SizedBox(width: 12),
+            QuestSeal(quest: quest, level: progress.level, size: 44),
+            const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,36 +109,22 @@ class _QuestCard extends StatelessWidget {
                       fontFamily: Washi.brush,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(quest.description, style: textTheme.bodyMedium),
-                  if (!isSpot && next != null) ...[
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: (progress.current - previous) / (next - previous),
-                      minHeight: 4,
-                      color: Washi.ink,
-                      backgroundColor: Washi.line.withValues(alpha: 0.6),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      l10n.questNext(progress.current, next, quest.unit),
-                      style: textTheme.bodySmall,
-                    ),
-                  ],
-                  if (!isSpot && next == null)
-                    Text(
-                      '${l10n.questMaxLevel}  '
-                      '${l10n.questCount(progress.current, quest.unit)}',
-                      style: textTheme.bodySmall,
-                    ),
-                  if (achievedAt != null)
-                    Text(
-                      l10n.questAchievedOn(formatDate(achievedAt)),
-                      style: textTheme.bodySmall,
-                    ),
+                  Text(
+                    quest.description,
+                    style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
+                  ),
                 ],
               ),
             ),
+            if (count != null) ...[
+              const SizedBox(width: 8),
+              Text(
+                count,
+                style: textTheme.bodyMedium?.copyWith(
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ],
           ],
         ),
       ),

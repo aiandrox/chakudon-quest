@@ -116,12 +116,10 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
         if (stamp.visit.shopId == entry.shop.id) stamp,
     ];
     final textTheme = Theme.of(context).textTheme;
-    final style = visit.style;
     final waited = waitMinutes(visit);
+    // 撤退・系統・日付は印に入っているので、札にはしない。
     final tags = [
-      if (visit.result == VisitResult.retreated) l10n.retreatBadge,
       if (waited != null) l10n.waitTime(waited),
-      if (style != null) styleLabel(l10n, style),
       if (visit.isLimited) l10n.limitedBadge,
       for (final condition in HoursCondition.values)
         if (entry.shop.hoursConditions.contains(condition))
@@ -136,35 +134,23 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
         wishPrecedes(pendingWish, visit.eatenAt) &&
         !statuses.any((s) => s.fulfilledBy?.visit.id == visit.id);
 
+    void addWish() => addWishFor(
+      context,
+      ref,
+      ShopInput(
+        shopId: entry.shop.id,
+        osmId: entry.shop.osmId,
+        name: entry.shop.name,
+        latitude: entry.shop.latitude,
+        longitude: entry.shop.longitude,
+        dataSource: entry.shop.dataSource,
+      ),
+    );
+
     return Scaffold(
+      // 店名はページの縦書きにあるので、上には出さない。よく使う「共有」以外は「…」にまとめる。
       appBar: AppBar(
-        title: Text(entry.shop.name),
         actions: [
-          if (pendingWish != null)
-            IconButton(
-              tooltip: l10n.wishAlready,
-              icon: const Icon(Icons.bookmark),
-              onPressed: () =>
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(l10n.wishAlready))),
-            )
-          else
-            IconButton(
-              tooltip: l10n.wishMakeButton,
-              icon: const Icon(Icons.bookmark_add_outlined),
-              onPressed: () => addWishFor(
-                context,
-                ref,
-                ShopInput(
-                  shopId: entry.shop.id,
-                  osmId: entry.shop.osmId,
-                  name: entry.shop.name,
-                  latitude: entry.shop.latitude,
-                  longitude: entry.shop.longitude,
-                  dataSource: entry.shop.dataSource,
-                ),
-              ),
-            ),
           IconButton(
             tooltip: l10n.shareTitle,
             icon: const Icon(Icons.ios_share),
@@ -174,19 +160,31 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
               ),
             ),
           ),
-          IconButton(
-            tooltip: l10n.edit,
-            icon: const Icon(Icons.edit),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => VisitEditScreen(entry: entry),
+          PopupMenuButton<_DetailAction>(
+            tooltip: l10n.moreActions,
+            onSelected: (action) => switch (action) {
+              _DetailAction.wish => addWish(),
+              _DetailAction.edit => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => VisitEditScreen(entry: entry),
+                ),
               ),
-            ),
-          ),
-          IconButton(
-            tooltip: l10n.delete,
-            icon: const Icon(Icons.delete),
-            onPressed: () => _delete(visit.id),
+              _DetailAction.delete => _delete(visit.id),
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: _DetailAction.wish,
+                enabled: pendingWish == null,
+                child: Text(
+                  pendingWish == null ? l10n.wishMakeButton : l10n.wishAlready,
+                ),
+              ),
+              PopupMenuItem(value: _DetailAction.edit, child: Text(l10n.edit)),
+              PopupMenuItem(
+                value: _DetailAction.delete,
+                child: Text(l10n.delete),
+              ),
+            ],
           ),
         ],
       ),
@@ -218,13 +216,6 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                 ),
               ),
             ),
-          if (scored != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-              child: JournalView(
-                lines: buildJournal(scored, ref.watch(scoredVisitsProvider)),
-              ),
-            ),
           if (shopStamps.length > 1)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -239,12 +230,7 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  formatDateTime(visit.eatenAt),
-                  style: textTheme.bodyMedium,
-                ),
                 if (visit.result == VisitResult.eaten) ...[
-                  const SizedBox(height: 4),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: StarRating(
@@ -265,6 +251,15 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                 if (visit.memo.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   Text(visit.memo, style: textTheme.bodyLarge),
+                ],
+                if (scored != null) ...[
+                  const SizedBox(height: 16),
+                  JournalView(
+                    lines: buildJournal(
+                      scored,
+                      ref.watch(scoredVisitsProvider),
+                    ),
+                  ),
                 ],
                 const Divider(height: 32),
                 Row(
@@ -290,22 +285,27 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                 ),
                 if (scored != null) ...[
                   const Divider(height: 32),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l10n.pointsSection,
+                  // 修行点は1行だけ。押すと内訳を開く。
+                  ExpansionTile(
+                    tilePadding: EdgeInsets.zero,
+                    shape: const Border(),
+                    collapsedShape: const Border(),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            l10n.pointsSection,
+                            style: textTheme.titleMedium,
+                          ),
+                        ),
+                        Text(
+                          l10n.points(scored.points.total),
                           style: textTheme.titleMedium,
                         ),
-                      ),
-                      Text(
-                        l10n.points(scored.points.total),
-                        style: textTheme.titleMedium,
-                      ),
-                    ],
+                      ],
+                    ),
+                    children: [PointsBreakdownView(scored: scored)],
                   ),
-                  const SizedBox(height: 8),
-                  PointsBreakdownView(scored: scored),
                 ],
                 if (previous != null) ...[
                   const Divider(height: 32),
@@ -516,3 +516,5 @@ class _PreviousVisit extends StatelessWidget {
     );
   }
 }
+
+enum _DetailAction { wish, edit, delete }

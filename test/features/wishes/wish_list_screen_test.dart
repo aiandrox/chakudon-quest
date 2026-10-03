@@ -50,7 +50,6 @@ void main() {
     expect(find.text(ja.wishPendingTab(1)), findsOneWidget);
     expect(find.text(ja.wishFulfilledTab(1)), findsOneWidget);
     expect(find.text('麺屋藤ろう'), findsOneWidget);
-    expect(find.text(ja.wishSinceDays(5)), findsOneWidget);
 
     await tester.tap(find.text(ja.wishFulfilledTab(1)));
     await tester.pumpAndSettle();
