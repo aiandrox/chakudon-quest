@@ -6,12 +6,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/map/map_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
+import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/location_service.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
 import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
+import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
@@ -49,6 +51,8 @@ void main() {
         overrides: [
           visitsProvider.overrideWithValue(AsyncData(visits)),
           wishesProvider.overrideWithValue(const AsyncData([])),
+          recordRepositoryProvider.overrideWithValue(FakeRecordRepository()),
+          documentsDirectoryProvider.overrideWithValue(createTempDirectory()),
           mapTilesEnabledProvider.overrideWithValue(false),
           locationServiceProvider.overrideWithValue(location),
           nearbyShopFinderProvider.overrideWithValue(overpass),
@@ -162,5 +166,58 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(ja.mapSearching), findsNothing);
     expect(find.byType(LinearProgressIndicator), findsNothing);
+  });
+
+  Future<void> openShopPageFromPin(WidgetTester tester, String name) async {
+    await tester.tap(
+      find.byWidgetPredicate(
+        (widget) => widget is Semantics && widget.properties.label == name,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(ja.mapOpenShopPage));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('行った店のピンから、いちばん新しい記録のページを開く', (tester) async {
+    final shop = buildShop(
+      id: 'eaten',
+      name: '食べた店',
+      latitude: 35.0,
+      longitude: 139.0,
+    );
+    final older = buildEntry(shop: shop, eatenAt: DateTime(2026, 9, 1, 12));
+    final newer = buildEntry(
+      shop: shop,
+      eatenAt: DateTime(2026, 9, 20, 12),
+      result: VisitResult.retreated,
+    );
+    await pumpMap(tester, [newer, older]);
+
+    await openShopPageFromPin(tester, '食べた店');
+
+    expect(find.byType(BottomSheet), findsNothing);
+    final detail = tester.widget<VisitDetailScreen>(
+      find.byType(VisitDetailScreen),
+    );
+    expect(detail.visitId, newer.visit.id);
+  });
+
+  testWidgets('撤退しただけの店のピンからも、その店のページを開ける', (tester) async {
+    final shop = buildShop(
+      id: 'retreated',
+      name: '挫折した店',
+      latitude: 35.0,
+      longitude: 139.0,
+    );
+    final retreat = buildEntry(shop: shop, result: VisitResult.retreated);
+    await pumpMap(tester, [retreat]);
+
+    await openShopPageFromPin(tester, '挫折した店');
+
+    final detail = tester.widget<VisitDetailScreen>(
+      find.byType(VisitDetailScreen),
+    );
+    expect(detail.visitId, retreat.visit.id);
   });
 }

@@ -13,6 +13,7 @@ import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
 import '../shop_search/nearby_shop_finder.dart';
 import '../shop_search/overpass.dart';
+import '../visit_detail/visit_detail_screen.dart';
 import '../../theme/washi.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
@@ -654,6 +655,24 @@ class _PinDetails extends StatelessWidget {
             Text(
               l10n.mapLastVisit(formatDate(pin.lastVisitAt)),
               style: textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.menu_book_outlined),
+                label: Text(l10n.mapOpenShopPage),
+                onPressed: () {
+                  final navigator = Navigator.of(context);
+                  navigator.pop();
+                  navigator.push(
+                    MaterialPageRoute<void>(
+                      builder: (_) =>
+                          VisitDetailScreen(visitId: pin.lastVisitId),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),

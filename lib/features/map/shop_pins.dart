@@ -12,6 +12,7 @@ class ShopPin {
     required this.eatenCount,
     required this.retreatCount,
     required this.lastVisitAt,
+    required this.lastVisitId,
     this.rank,
   });
 
@@ -21,6 +22,9 @@ class ShopPin {
   final int eatenCount;
   final int retreatCount;
   final DateTime lastVisitAt;
+
+  /// 地図からその店のページを開くときに使う、いちばん新しい記録（撤退も含む）。
+  final String lastVisitId;
 
   /// 食べたことの無い（撤退だけの）店はnull。
   final ShopRank? rank;
@@ -36,22 +40,33 @@ List<ShopPin> shopPins(List<ScoredVisit> scored) {
   return [
     for (final entries in byShop.values)
       if (entries.first.shop case Shop(:final latitude?, :final longitude?))
-        ShopPin(
-          shop: entries.first.shop,
-          latitude: latitude,
-          longitude: longitude,
-          eatenCount: entries
-              .where((e) => e.visit.result == VisitResult.eaten)
-              .length,
-          retreatCount: entries
-              .where((e) => e.visit.result == VisitResult.retreated)
-              .length,
-          lastVisitAt: entries
-              .map((e) => e.visit.eatenAt)
-              .reduce((a, b) => a.isAfter(b) ? a : b),
-          rank: ranks[entries.first.visit.shopId],
-        ),
+        _pin(entries, latitude, longitude, ranks[entries.first.visit.shopId]),
   ];
+}
+
+ShopPin _pin(
+  List<ScoredVisit> entries,
+  double latitude,
+  double longitude,
+  ShopRank? rank,
+) {
+  final last = entries.reduce(
+    (a, b) => a.visit.eatenAt.isAfter(b.visit.eatenAt) ? a : b,
+  );
+  return ShopPin(
+    shop: entries.first.shop,
+    latitude: latitude,
+    longitude: longitude,
+    eatenCount: entries
+        .where((e) => e.visit.result == VisitResult.eaten)
+        .length,
+    retreatCount: entries
+        .where((e) => e.visit.result == VisitResult.retreated)
+        .length,
+    lastVisitAt: last.visit.eatenAt,
+    lastVisitId: last.visit.id,
+    rank: rank,
+  );
 }
 
 /// 周辺の検索結果のうち、まだ食べたことのない店。記録済みの店と同じ店は除く。

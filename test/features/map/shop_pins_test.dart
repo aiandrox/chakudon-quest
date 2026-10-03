@@ -14,11 +14,12 @@ void main() {
 
   test('位置のわかる店ごとに1本、杯数・撤退数・最後に行った日・ランクつきで立てる', () {
     final shop = buildShop(id: 'a', latitude: 35.0, longitude: 139.0);
+    final last = buildEntry(shop: shop, eatenAt: day(5));
     final pins = shopPins(
       scoreVisits([
         buildEntry(shop: shop, eatenAt: day(1), result: VisitResult.retreated),
+        last,
         buildEntry(shop: shop, eatenAt: day(2)),
-        buildEntry(shop: shop, eatenAt: day(5)),
       ]),
     );
 
@@ -29,6 +30,7 @@ void main() {
     expect(pin.eatenCount, 2);
     expect(pin.retreatCount, 1);
     expect(pin.lastVisitAt, day(5));
+    expect(pin.lastVisitId, last.visit.id);
     // 撤退のあとの初訪問: 10 + 10 + 15 = 35
     expect(pin.rank, ShopRank.b);
   });

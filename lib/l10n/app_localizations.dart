@@ -1678,6 +1678,12 @@ abstract class AppLocalizations {
   /// **'撤退 {count}回'**
   String mapShopRetreats(int count);
 
+  /// No description provided for @mapOpenShopPage.
+  ///
+  /// In ja, this message translates to:
+  /// **'この店のページを見る'**
+  String get mapOpenShopPage;
+
   /// No description provided for @mapLastVisit.
   ///
   /// In ja, this message translates to:

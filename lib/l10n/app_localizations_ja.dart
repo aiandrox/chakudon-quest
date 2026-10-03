@@ -934,6 +934,9 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String get mapOpenShopPage => 'この店のページを見る';
+
+  @override
   String mapLastVisit(String date) {
     return '最後に行った日 $date';
   }
