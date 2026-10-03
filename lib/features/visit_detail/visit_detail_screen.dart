@@ -18,6 +18,7 @@ import '../inkan/inkan_stamp.dart';
 import '../scoring/points.dart';
 import '../scoring/points_breakdown_view.dart';
 import '../../theme/washi.dart';
+import '../shop/hours_condition_chips.dart';
 import '../shop/shop_memo_dialog.dart';
 import '../scoring/scoring_providers.dart';
 import '../wishes/wish_dialog.dart';
@@ -107,6 +108,23 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
     }
   }
 
+  Future<void> _editShopConditions(Shop shop) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final failed = AppLocalizations.of(context).editSaveFailed;
+    final repository = ref.read(recordRepositoryProvider);
+    final conditions = await showShopConditionsDialog(
+      context,
+      shop.hoursConditions,
+    );
+    if (conditions == null) return;
+    try {
+      await repository.setShopConditions(shop.id, conditions);
+    } catch (e) {
+      debugPrint('Shop conditions save failed: $e');
+      messenger.showSnackBar(SnackBar(content: Text(failed)));
+    }
+  }
+
   Future<void> _editShopMemo(Shop shop) async {
     final messenger = ScaffoldMessenger.of(context);
     final failed = AppLocalizations.of(context).editSaveFailed;
@@ -147,9 +165,6 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
     final tags = [
       if (waited != null) l10n.waitTime(waited),
       if (visit.isLimited) l10n.limitedBadge,
-      for (final condition in HoursCondition.values)
-        if (entry.shop.hoursConditions.contains(condition))
-          hoursConditionLabel(l10n, condition),
     ];
 
     final statuses = ref.watch(wishStatusesProvider);
@@ -300,6 +315,28 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
                   ),
                 ],
                 const Divider(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.shopConditionsSection,
+                        style: textTheme.titleMedium,
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: l10n.shopConditionsEdit,
+                      icon: const Icon(Icons.tune),
+                      onPressed: () => _editShopConditions(entry.shop),
+                    ),
+                  ],
+                ),
+                Text(
+                  entry.shop.hoursConditions.isEmpty
+                      ? l10n.shopConditionsEmpty
+                      : hoursConditionsLabel(l10n, entry.shop.hoursConditions),
+                  style: textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(

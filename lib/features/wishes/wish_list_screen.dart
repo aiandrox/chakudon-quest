@@ -6,6 +6,7 @@ import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
 import '../records/clock.dart';
 import '../records/date_format.dart';
+import '../records/labels.dart';
 import '../records/record_repository.dart';
 import '../visit_detail/visit_detail_screen.dart';
 import 'wish_dialog.dart';
@@ -139,11 +140,14 @@ class _PendingWishCard extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final failed = AppLocalizations.of(context).wishSaveFailed;
     final repository = ref.read(wishRepositoryProvider);
+    final recorded = await recordedShopFor(ref, wish.shopId);
+    if (!context.mounted) return;
     final text = await showWishDialog(
       context,
       name: wish.name,
       trigger: wish.trigger,
       note: wish.note,
+      hoursConditions: recorded?.hoursConditions ?? wish.hoursConditions,
       isEditing: true,
     );
     if (text == null) return;
@@ -152,7 +156,9 @@ class _PendingWishCard extends ConsumerWidget {
         wish.id,
         trigger: text.trigger,
         note: text.note,
+        hoursConditions: text.hoursConditions,
       );
+      await saveShopConditions(ref, recorded, text.hoursConditions);
     } catch (e) {
       debugPrint('Wish update failed: $e');
       messenger.showSnackBar(SnackBar(content: Text(failed)));
@@ -206,9 +212,16 @@ class _PendingWishCard extends ConsumerWidget {
           contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
           leading: _WishSeal(fulfilled: false, wishId: wish.id),
           title: Text(wish.name, style: textTheme.titleMedium),
-          subtitle: wish.trigger.isEmpty
+          subtitle: wish.trigger.isEmpty && wish.hoursConditions.isEmpty
               ? null
-              : Text(l10n.wishTriggerLine(wish.trigger)),
+              : Text(
+                  [
+                    if (wish.trigger.isNotEmpty)
+                      l10n.wishTriggerLine(wish.trigger),
+                    if (wish.hoursConditions.isNotEmpty)
+                      hoursConditionsLabel(l10n, wish.hoursConditions),
+                  ].join('\n'),
+                ),
           onTap: () => _edit(context, ref),
         ),
       ),

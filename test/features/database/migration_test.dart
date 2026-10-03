@@ -276,4 +276,56 @@ void main() {
     await repository.setShopArea('shop', '厚木市');
     expect((await repository.allShops()).single.area, '厚木市');
   });
+
+  test('バージョン7の願に店の条件の列を足し、願はそのまま残す', () async {
+    final seconds = DateTime(2026, 10, 3).millisecondsSinceEpoch ~/ 1000;
+    final database = AppDatabase(
+      NativeDatabase.memory(
+        setup: (raw) {
+          raw.execute(
+            'CREATE TABLE shops (id TEXT NOT NULL, name TEXT NOT NULL, '
+            'latitude REAL, longitude REAL, osm_id TEXT, '
+            "hours_conditions TEXT NOT NULL DEFAULT '', "
+            "strategy_memo TEXT NOT NULL DEFAULT '', data_source TEXT, "
+            'area TEXT, created_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(_v1Schema[1]);
+          raw.execute(
+            'CREATE TABLE active_checkins (id INTEGER NOT NULL, '
+            'shop_id TEXT, osm_id TEXT, name TEXT NOT NULL, latitude REAL, '
+            'longitude REAL, data_source TEXT, '
+            'checked_in_at INTEGER NOT NULL, PRIMARY KEY (id))',
+          );
+          raw.execute(
+            'CREATE TABLE wishes (id TEXT NOT NULL, shop_id TEXT, '
+            'osm_id TEXT, name TEXT NOT NULL, latitude REAL, longitude REAL, '
+            "data_source TEXT, \"trigger\" TEXT NOT NULL DEFAULT '', "
+            "note TEXT NOT NULL DEFAULT '', created_at INTEGER NOT NULL, "
+            'fulfilled_visit_id TEXT, PRIMARY KEY (id))',
+          );
+          raw.execute(
+            'INSERT INTO wishes VALUES '
+            "('wish', NULL, NULL, 'はやし田', NULL, NULL, NULL, "
+            "'同僚に聞いた', '', $seconds, NULL)",
+          );
+          raw.execute('PRAGMA user_version = 7');
+        },
+      ),
+    );
+    addTearDown(database.close);
+    final wishes = WishRepository(database);
+
+    final wish = (await wishes.watchWishes().first).single;
+    expect(wish.trigger, '同僚に聞いた');
+    expect(wish.hoursConditions, isEmpty);
+    await wishes.updateWish(
+      'wish',
+      trigger: '同僚に聞いた',
+      note: '',
+      hoursConditions: {HoursCondition.lunchOnly},
+    );
+    expect((await wishes.watchWishes().first).single.hoursConditions, {
+      HoursCondition.lunchOnly,
+    });
+  });
 }

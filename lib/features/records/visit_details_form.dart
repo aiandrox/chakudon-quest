@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../shop/hours_condition_chips.dart';
 import 'labels.dart';
 import 'models.dart';
 
@@ -11,11 +12,11 @@ class VisitDetailsForm extends StatelessWidget {
     super.key,
     required this.style,
     required this.isLimited,
-    required this.hoursConditions,
+    this.hoursConditions,
     required this.memoController,
     required this.onStyleChanged,
     required this.onLimitedChanged,
-    required this.onHoursConditionsChanged,
+    this.onHoursConditionsChanged,
     required this.onMemoChanged,
     this.waitController,
     this.onWaitChanged,
@@ -23,11 +24,13 @@ class VisitDetailsForm extends StatelessWidget {
 
   final RamenStyle? style;
   final bool isLimited;
-  final Set<HoursCondition> hoursConditions;
+
+  /// 店の攻略しにくさ。nullなら出さない（記録画面では別の欄に出す）。
+  final Set<HoursCondition>? hoursConditions;
   final TextEditingController memoController;
   final ValueChanged<RamenStyle?> onStyleChanged;
   final ValueChanged<bool> onLimitedChanged;
-  final ValueChanged<Set<HoursCondition>> onHoursConditionsChanged;
+  final ValueChanged<Set<HoursCondition>>? onHoursConditionsChanged;
   final ValueChanged<String> onMemoChanged;
 
   /// 待ち時間（分）の入力欄。nullなら出さない（並んだ時刻から自動で計算するときなど）。
@@ -78,24 +81,15 @@ class VisitDetailsForm extends StatelessWidget {
           ),
           const SizedBox(height: 8),
         ],
-        const SizedBox(height: 8),
-        Text(l10n.hoursSection, style: textTheme.labelLarge),
-        const SizedBox(height: 4),
-        Wrap(
-          spacing: 8,
-          children: [
-            for (final condition in HoursCondition.values)
-              FilterChip(
-                label: Text(hoursConditionLabel(l10n, condition)),
-                selected: hoursConditions.contains(condition),
-                onSelected: (selected) => onHoursConditionsChanged({
-                  for (final other in hoursConditions)
-                    if (other != condition) other,
-                  if (selected) condition,
-                }),
-              ),
-          ],
-        ),
+        if (hoursConditions case final conditions?) ...[
+          const SizedBox(height: 8),
+          Text(l10n.hoursSection, style: textTheme.labelLarge),
+          const SizedBox(height: 4),
+          HoursConditionChips(
+            selected: conditions,
+            onChanged: (value) => onHoursConditionsChanged?.call(value),
+          ),
+        ],
         const SizedBox(height: 16),
         TextField(
           controller: memoController,

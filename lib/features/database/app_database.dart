@@ -98,6 +98,9 @@ class Wishes extends Table {
   TextColumn get note => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   TextColumn get fulfilledVisitId => text().nullable()();
+  TextColumn get hoursConditions => text()
+      .map(const HoursConditionsConverter())
+      .withDefault(const Constant(''))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -127,7 +130,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'chakudon_quest'));
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -163,6 +166,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 6) await migrator.createTable(wishes);
       if (from >= 3 && from < 7) await migrator.addColumn(shops, shops.area);
+      if (from >= 6 && from < 8) {
+        await migrator.addColumn(wishes, wishes.hoursConditions);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

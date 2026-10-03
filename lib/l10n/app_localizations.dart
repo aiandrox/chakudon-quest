@@ -976,6 +976,24 @@ abstract class AppLocalizations {
   /// **'この店の攻略メモ'**
   String get shopMemoSection;
 
+  /// No description provided for @shopConditionsSection.
+  ///
+  /// In ja, this message translates to:
+  /// **'店の条件'**
+  String get shopConditionsSection;
+
+  /// No description provided for @shopConditionsEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだ入れていません'**
+  String get shopConditionsEmpty;
+
+  /// No description provided for @shopConditionsEdit.
+  ///
+  /// In ja, this message translates to:
+  /// **'店の条件を選ぶ'**
+  String get shopConditionsEdit;
+
   /// No description provided for @shopMemoEmpty.
   ///
   /// In ja, this message translates to:
@@ -1083,6 +1101,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'きっかけ（任意）'**
   String get wishTrigger;
+
+  /// No description provided for @wishConditions.
+  ///
+  /// In ja, this message translates to:
+  /// **'店の条件（わかれば）'**
+  String get wishConditions;
 
   /// No description provided for @wishTriggerHint.
   ///

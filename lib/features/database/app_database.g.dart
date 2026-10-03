@@ -1529,6 +1529,16 @@ class $WishesTable extends Wishes with TableInfo<$WishesTable, Wish> {
     requiredDuringInsert: false,
   );
   @override
+  late final GeneratedColumnWithTypeConverter<Set<HoursCondition>, String>
+  hoursConditions = GeneratedColumn<String>(
+    'hours_conditions',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  ).withConverter<Set<HoursCondition>>($WishesTable.$converterhoursConditions);
+  @override
   List<GeneratedColumn> get $columns => [
     id,
     shopId,
@@ -1541,6 +1551,7 @@ class $WishesTable extends Wishes with TableInfo<$WishesTable, Wish> {
     note,
     createdAt,
     fulfilledVisitId,
+    hoursConditions,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1675,6 +1686,12 @@ class $WishesTable extends Wishes with TableInfo<$WishesTable, Wish> {
         DriftSqlType.string,
         data['${effectivePrefix}fulfilled_visit_id'],
       ),
+      hoursConditions: $WishesTable.$converterhoursConditions.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}hours_conditions'],
+        )!,
+      ),
     );
   }
 
@@ -1687,6 +1704,8 @@ class $WishesTable extends Wishes with TableInfo<$WishesTable, Wish> {
       const ShopSourceConverter();
   static TypeConverter<ShopSource?, String?> $converterdataSourcen =
       NullAwareTypeConverter.wrap($converterdataSource);
+  static TypeConverter<Set<HoursCondition>, String> $converterhoursConditions =
+      const HoursConditionsConverter();
 }
 
 class WishesCompanion extends UpdateCompanion<Wish> {
@@ -1701,6 +1720,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
   final Value<String> note;
   final Value<DateTime> createdAt;
   final Value<String?> fulfilledVisitId;
+  final Value<Set<HoursCondition>> hoursConditions;
   final Value<int> rowid;
   const WishesCompanion({
     this.id = const Value.absent(),
@@ -1714,6 +1734,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
     this.note = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.fulfilledVisitId = const Value.absent(),
+    this.hoursConditions = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   WishesCompanion.insert({
@@ -1728,6 +1749,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
     this.note = const Value.absent(),
     required DateTime createdAt,
     this.fulfilledVisitId = const Value.absent(),
+    this.hoursConditions = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -1744,6 +1766,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
     Expression<String>? note,
     Expression<DateTime>? createdAt,
     Expression<String>? fulfilledVisitId,
+    Expression<String>? hoursConditions,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1758,6 +1781,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
       if (note != null) 'note': note,
       if (createdAt != null) 'created_at': createdAt,
       if (fulfilledVisitId != null) 'fulfilled_visit_id': fulfilledVisitId,
+      if (hoursConditions != null) 'hours_conditions': hoursConditions,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1774,6 +1798,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
     Value<String>? note,
     Value<DateTime>? createdAt,
     Value<String?>? fulfilledVisitId,
+    Value<Set<HoursCondition>>? hoursConditions,
     Value<int>? rowid,
   }) {
     return WishesCompanion(
@@ -1788,6 +1813,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
       note: note ?? this.note,
       createdAt: createdAt ?? this.createdAt,
       fulfilledVisitId: fulfilledVisitId ?? this.fulfilledVisitId,
+      hoursConditions: hoursConditions ?? this.hoursConditions,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1830,6 +1856,11 @@ class WishesCompanion extends UpdateCompanion<Wish> {
     if (fulfilledVisitId.present) {
       map['fulfilled_visit_id'] = Variable<String>(fulfilledVisitId.value);
     }
+    if (hoursConditions.present) {
+      map['hours_conditions'] = Variable<String>(
+        $WishesTable.$converterhoursConditions.toSql(hoursConditions.value),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1850,6 +1881,7 @@ class WishesCompanion extends UpdateCompanion<Wish> {
           ..write('note: $note, ')
           ..write('createdAt: $createdAt, ')
           ..write('fulfilledVisitId: $fulfilledVisitId, ')
+          ..write('hoursConditions: $hoursConditions, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3009,6 +3041,7 @@ typedef $$WishesTableCreateCompanionBuilder = WishesCompanion Function({
   Value<String> note,
   required DateTime createdAt,
   Value<String?> fulfilledVisitId,
+  Value<Set<HoursCondition>> hoursConditions,
   Value<int> rowid,
 });
 typedef $$WishesTableUpdateCompanionBuilder = WishesCompanion Function({
@@ -3023,6 +3056,7 @@ typedef $$WishesTableUpdateCompanionBuilder = WishesCompanion Function({
   Value<String> note,
   Value<DateTime> createdAt,
   Value<String?> fulfilledVisitId,
+  Value<Set<HoursCondition>> hoursConditions,
   Value<int> rowid,
 });
 
@@ -3090,6 +3124,16 @@ class $$WishesTableFilterComposer
     column: $table.fulfilledVisitId,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnWithTypeConverterFilters<
+    Set<HoursCondition>,
+    Set<HoursCondition>,
+    String
+  >
+  get hoursConditions => $composableBuilder(
+    column: $table.hoursConditions,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
 }
 
 class $$WishesTableOrderingComposer
@@ -3155,6 +3199,11 @@ class $$WishesTableOrderingComposer
     column: $table.fulfilledVisitId,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get hoursConditions => $composableBuilder(
+    column: $table.hoursConditions,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$WishesTableAnnotationComposer
@@ -3203,6 +3252,12 @@ class $$WishesTableAnnotationComposer
     column: $table.fulfilledVisitId,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<Set<HoursCondition>, String>
+  get hoursConditions => $composableBuilder(
+    column: $table.hoursConditions,
+    builder: (column) => column,
+  );
 }
 
 class $$WishesTableTableManager
@@ -3244,6 +3299,8 @@ class $$WishesTableTableManager
                 Value<String> note = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> fulfilledVisitId = const Value.absent(),
+                Value<Set<HoursCondition>> hoursConditions =
+                    const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WishesCompanion(
                 id: id,
@@ -3257,6 +3314,7 @@ class $$WishesTableTableManager
                 note: note,
                 createdAt: createdAt,
                 fulfilledVisitId: fulfilledVisitId,
+                hoursConditions: hoursConditions,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3272,6 +3330,8 @@ class $$WishesTableTableManager
                 Value<String> note = const Value.absent(),
                 required DateTime createdAt,
                 Value<String?> fulfilledVisitId = const Value.absent(),
+                Value<Set<HoursCondition>> hoursConditions =
+                    const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WishesCompanion.insert(
                 id: id,
@@ -3285,6 +3345,7 @@ class $$WishesTableTableManager
                 note: note,
                 createdAt: createdAt,
                 fulfilledVisitId: fulfilledVisitId,
+                hoursConditions: hoursConditions,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

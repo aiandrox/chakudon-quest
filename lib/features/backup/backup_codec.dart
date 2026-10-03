@@ -63,6 +63,10 @@ Map<String, Object?> encodeBackup(
         'note': wish.note,
         'createdAt': wish.createdAt.toUtc().toIso8601String(),
         'fulfilledVisitId': wish.fulfilledVisitId,
+        'hoursConditions': [
+          for (final condition in HoursCondition.values)
+            if (wish.hoursConditions.contains(condition)) condition.name,
+        ],
       },
   ],
   'visits': [
@@ -150,6 +154,10 @@ Wish _decodeWish(Object? json) {
     note: _stringOrNull(map['note']) ?? '',
     createdAt: _dateTime(map['createdAt']),
     fulfilledVisitId: _stringOrNull(map['fulfilledVisitId']),
+    hoursConditions: {
+      for (final name in _list(map['hoursConditions'] ?? const []))
+        ?HoursCondition.values.asNameMap()[name],
+    },
   );
 }
 
