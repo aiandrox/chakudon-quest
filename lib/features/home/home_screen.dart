@@ -170,7 +170,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ],
       ),
       floatingActionButton: AddButton(
-        heroTag: 'record',
         tooltip: l10n.addRecord,
         onPressed: _openRecord,
       ),

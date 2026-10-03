@@ -11,6 +11,7 @@ import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_details_form.dart';
 import '../records/wait_time.dart';
+import '../../theme/washi_buttons.dart';
 
 class VisitEditScreen extends ConsumerStatefulWidget {
   const VisitEditScreen({super.key, required this.entry});
@@ -172,10 +173,9 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
         ),
         child: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(56),
-            ),
+          child: ShuFuda(
+            expand: true,
+            height: 56,
             onPressed: _isSaving || _nameController.text.trim().isEmpty
                 ? null
                 : _save,

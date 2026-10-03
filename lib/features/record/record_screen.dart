@@ -23,6 +23,7 @@ import 'record_controller.dart';
 import 'record_result_screen.dart';
 import 'record_state.dart';
 import 'star_rating.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 保存できたら、得たポイントを見せる画面に切り替わる。
 class RecordScreen extends ConsumerStatefulWidget {
@@ -103,7 +104,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(l10n.discardCancel),
           ),
-          TextButton(
+          KeshiFuda(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(l10n.discardConfirm),
           ),
@@ -150,13 +151,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           if (showCheckinStart)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(48),
-                ),
+              child: SumiFuda(
+                expand: true,
                 onPressed: _startCheckin,
                 icon: const Icon(Icons.groups),
-                label: Text(l10n.checkinStart),
+                child: Text(l10n.checkinStart),
               ),
             )
           else
@@ -231,15 +230,10 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         ),
         child: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(60),
-              textStyle: const TextStyle(
-                fontFamily: Washi.brush,
-                fontSize: 26,
-                letterSpacing: 4,
-              ),
-            ),
+          child: ShuFuda(
+            expand: true,
+            height: 60,
+            fontSize: 26,
             onPressed: state.canSave ? _save : null,
             child: state.isSaving
                 ? const SizedBox.square(
@@ -280,17 +274,17 @@ class _PhotoSection extends ConsumerWidget {
           Row(
             children: [
               Expanded(
-                child: TextButton.icon(
+                child: FudeLink(
                   onPressed: controller.takePhoto,
                   icon: const Icon(Icons.photo_camera),
-                  label: Text(l10n.retakePhoto),
+                  child: Text(l10n.retakePhoto),
                 ),
               ),
               Expanded(
-                child: TextButton.icon(
+                child: FudeLink(
                   onPressed: controller.pickFromGallery,
                   icon: const Icon(Icons.photo_library),
-                  label: Text(l10n.pickFromGallery),
+                  child: Text(l10n.pickFromGallery),
                 ),
               ),
             ],
@@ -342,11 +336,7 @@ class _PhotoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(120),
-        backgroundColor: Washi.page,
-        side: const BorderSide(color: Washi.line),
-      ),
+      style: FudaStyle.sumi(height: 120, expand: true),
       onPressed: onPressed,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -461,9 +451,9 @@ class _ShopSection extends ConsumerWidget {
         if (state.manualName.trim().isNotEmpty)
           Align(
             alignment: Alignment.centerLeft,
-            child: TextButton.icon(
+            child: FudeLink(
               icon: const Icon(Icons.travel_explore),
-              label: Text(l10n.nameSearchOpen(state.manualName.trim())),
+              child: Text(l10n.nameSearchOpen(state.manualName.trim())),
               onPressed: () async {
                 final found = await showShopNameSearch(
                   context,

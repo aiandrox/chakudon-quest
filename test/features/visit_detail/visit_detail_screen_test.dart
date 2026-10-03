@@ -14,6 +14,7 @@ import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
 import 'package:chakudon_quest/theme/washi.dart';
 
 import 'package:chakudon_quest/features/journal/journal_phrases.dart';
+import 'package:chakudon_quest/theme/washi_buttons.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
@@ -250,7 +251,7 @@ void main() {
 
     await openMenu(tester, ja.delete);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(TextButton, ja.delete));
+    await tester.tap(find.widgetWithText(KeshiFuda, ja.delete));
     await tester.pumpAndSettle();
     // ファイルの削除は実時間で進む。
     for (var i = 0; i < 3; i++) {
@@ -274,7 +275,7 @@ void main() {
 
     await openMenu(tester, ja.delete);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(TextButton, ja.delete));
+    await tester.tap(find.widgetWithText(KeshiFuda, ja.delete));
     await tester.pumpAndSettle();
 
     expect(find.text(ja.deleteFailed), findsOneWidget);
@@ -305,7 +306,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(lunchOnly);
     await tester.pump();
-    await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
+    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(find.text(ja.editTitle), findsNothing);
@@ -333,7 +334,7 @@ void main() {
     final wait = find.widgetWithText(TextField, ja.waitMinutesLabel);
     await tester.ensureVisible(wait);
     await tester.enterText(wait, '45');
-    await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
+    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(
@@ -348,7 +349,7 @@ void main() {
     ], 'v');
     await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
+    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(repository.updates.single.checkedInAt, isNull);
@@ -374,7 +375,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('OK'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
+    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     final update = repository.updates.single;
@@ -389,7 +390,7 @@ void main() {
     await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
+    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(repository.updates.single.hoursConditions, isNull);
@@ -408,7 +409,7 @@ void main() {
     );
     await tester.pump();
 
-    final saveButton = find.widgetWithText(FilledButton, ja.editSave);
-    expect(tester.widget<FilledButton>(saveButton).onPressed, isNull);
+    final saveButton = find.widgetWithText(ShuFuda, ja.editSave);
+    expect(tester.widget<ShuFuda>(saveButton).onPressed, isNull);
   });
 }

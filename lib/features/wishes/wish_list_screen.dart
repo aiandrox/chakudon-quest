@@ -13,6 +13,7 @@ import 'wish_dialog.dart';
 import 'wish_providers.dart';
 import 'wish_repository.dart';
 import 'wishes.dart';
+import '../../theme/washi_buttons.dart';
 
 /// すべらせて消した願。データベースから消えて一覧が更新されるまでの間も、すぐ隠すため。
 final _removedWishIdsProvider = NotifierProvider<_RemovedWishIds, Set<String>>(
@@ -107,7 +108,6 @@ class WishListScreen extends ConsumerWidget {
           ],
         ),
         floatingActionButton: AddButton(
-          heroTag: 'add-wish',
           tooltip: l10n.wishAddTitle,
           onPressed: () => _addByName(context, ref),
         ),
@@ -177,7 +177,7 @@ class _PendingWishCard extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(l10n.cancel),
           ),
-          TextButton(
+          KeshiFuda(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(l10n.delete),
           ),

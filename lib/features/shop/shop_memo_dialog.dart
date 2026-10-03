@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 店の攻略メモを書く。保存するなら書いた内容、やめるならnullを返す。
 Future<String?> showShopMemoDialog(BuildContext context, String initial) =>
@@ -44,7 +45,7 @@ class _ShopMemoDialogState extends State<_ShopMemoDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        TextButton(
+        ShuFuda(
           onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
           child: Text(l10n.editSave),
         ),

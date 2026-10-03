@@ -7,6 +7,7 @@ import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
 import 'quest_seal.dart';
 import 'quests.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 型と秘伝の一覧。修行タブの中に並べる。
 class QuestSections extends ConsumerWidget {
@@ -231,7 +232,7 @@ class _SpotDetails extends StatelessWidget {
                 style: textTheme.bodyLarge,
               ),
               const Spacer(),
-              OutlinedButton(
+              SumiFuda(
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).push(

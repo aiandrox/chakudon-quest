@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'washi_buttons.dart';
+
 /// 和紙と墨と朱の色、筆文字と明朝の書体。
 abstract final class Washi {
   static const paper = Color(0xFFF3ECDF);
@@ -255,24 +257,16 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
-/// 画面の右下の「＋」ボタン。どの画面でも同じ形（朱の丸）にする。
+/// 画面の右下の「＋」ボタン。どの画面でも同じ形（朱の丸印）にする。
 class AddButton extends StatelessWidget {
-  const AddButton({
-    super.key,
-    required this.heroTag,
-    required this.tooltip,
-    required this.onPressed,
-  });
+  const AddButton({super.key, required this.tooltip, required this.onPressed});
 
-  final String heroTag;
   final String tooltip;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      heroTag: heroTag,
-      shape: const CircleBorder(),
+    return SealFab(
       tooltip: tooltip,
       onPressed: onPressed,
       child: const Icon(Icons.add),

@@ -25,6 +25,7 @@ import 'home_base_line.dart';
 import 'journey.dart';
 import '../shop_search/yahoo_local.dart';
 import 'shop_pins.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 地図の画像は OpenStreetMap のタイルサーバーから取る。送るのは表示範囲だけ（issue #8）。
 const _tileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -487,24 +488,23 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            FloatingActionButton.small(
-              heroTag: 'my-location',
+            SealFab(
+              sumi: true,
+              small: true,
               tooltip: l10n.mapMyLocation,
               onPressed: () => _locate(move: true),
               child: const Icon(Icons.my_location),
             ),
             const SizedBox(height: 12),
-            FloatingActionButton(
-              heroTag: 'search-here',
+            SealFab(
               tooltip: l10n.mapSearchHere,
-              shape: const CircleBorder(),
               onPressed: _isSearching ? null : _searchHere,
               child: _isSearching
                   ? const SizedBox.square(
                       dimension: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: Washi.page,
                       ),
                     )
                   : const Icon(Icons.search),
@@ -570,9 +570,9 @@ class _UnvisitedPin extends ConsumerWidget {
                     ),
                   ),
                 const SizedBox(height: 16),
-                FilledButton.icon(
+                ShuFuda(
                   icon: const Icon(Icons.bookmark_add),
-                  label: Text(l10n.wishMakeButton),
+                  child: Text(l10n.wishMakeButton),
                   onPressed: () {
                     Navigator.of(context).pop();
                     addWishFor(
@@ -667,9 +667,9 @@ class _PinDetails extends StatelessWidget {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
+              child: SumiFuda(
                 icon: const Icon(Icons.menu_book_outlined),
-                label: Text(l10n.mapOpenShopPage),
+                child: Text(l10n.mapOpenShopPage),
                 onPressed: () {
                   final navigator = Navigator.of(context);
                   navigator.pop();
@@ -838,17 +838,17 @@ class _JourneyPanel extends StatelessWidget {
             ),
             Row(
               children: [
-                TextButton.icon(
+                FudeLink(
                   onPressed: stops.isEmpty ? null : onReplay,
                   icon: Icon(isReplaying ? Icons.stop : Icons.play_arrow),
-                  label: Text(
+                  child: Text(
                     isReplaying ? l10n.journeyStop : l10n.journeyReplay,
                   ),
                 ),
-                TextButton.icon(
+                FudeLink(
                   onPressed: stops.isEmpty ? null : onExpeditions,
                   icon: const Icon(Icons.flag_outlined),
-                  label: Text(l10n.journeyExpeditions),
+                  child: Text(l10n.journeyExpeditions),
                 ),
               ],
             ),

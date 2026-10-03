@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'washi.dart';
+import 'washi_buttons.dart';
 
 ThemeData buildAppTheme() {
-  const square = RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(2)),
-  );
   final colorScheme =
       ColorScheme.fromSeed(
         seedColor: Washi.shu,
@@ -49,20 +47,41 @@ ThemeData buildAppTheme() {
         borderRadius: BorderRadius.all(Radius.circular(2)),
       ),
     ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(shape: square),
-    ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        shape: square,
+    filledButtonTheme: FilledButtonThemeData(style: FudaStyle.shu()),
+    outlinedButtonTheme: OutlinedButtonThemeData(style: FudaStyle.sumi()),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
         foregroundColor: Washi.ink,
-        side: const BorderSide(color: Washi.ink),
+        textStyle: const TextStyle(fontFamily: Washi.mincho, fontSize: 15),
+        minimumSize: const Size(48, 48),
       ),
     ),
-    chipTheme: const ChipThemeData(
-      backgroundColor: Washi.page,
-      side: BorderSide(color: Washi.line),
-      shape: square,
+    // 選ぶ札は、角を落とした木札の形。選ぶと朱の縁とチェックがつく。
+    chipTheme: ChipThemeData(
+      shape: const BeveledRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+      ),
+      color: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? const Color(0x1AB3261E)
+            : Washi.page,
+      ),
+      side: WidgetStateBorderSide.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? const BorderSide(color: Washi.shu, width: 1.4)
+            : const BorderSide(color: Washi.line),
+      ),
+      labelStyle: const TextStyle(
+        fontFamily: Washi.mincho,
+        fontSize: 14,
+        color: Washi.ink,
+      ),
+      secondaryLabelStyle: const TextStyle(
+        fontFamily: Washi.mincho,
+        fontSize: 14,
+        color: Washi.ink,
+      ),
+      checkmarkColor: Washi.shu,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Washi.shu,

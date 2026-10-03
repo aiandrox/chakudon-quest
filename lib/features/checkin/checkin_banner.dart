@@ -11,6 +11,7 @@ import '../records/record_repository.dart';
 import 'checkin_rules.dart';
 import 'retreat_dialog.dart';
 import '../words/words.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 並んでいる店と経過時間。取り消しと撤退ができる。
 class CheckinBanner extends ConsumerStatefulWidget {
@@ -60,7 +61,7 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(l10n.checkinKeep),
           ),
-          TextButton(
+          KeshiFuda(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(l10n.checkinCancel),
           ),
@@ -165,13 +166,14 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
-                  style: TextButton.styleFrom(foregroundColor: Washi.paper),
+                FudeLink(
+                  night: true,
                   onPressed: _cancel,
                   child: Text(l10n.checkinCancel),
                 ),
-                TextButton(
-                  style: TextButton.styleFrom(foregroundColor: Washi.shuLight),
+                const SizedBox(width: 8),
+                KeshiFuda(
+                  night: true,
                   onPressed: _retreat,
                   child: Text(l10n.retreat),
                 ),

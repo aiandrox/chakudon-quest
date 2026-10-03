@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../records/record_repository.dart';
 import '../shop_search/yahoo_local.dart';
 import 'credits.dart';
+import '../../theme/washi_buttons.dart';
 
 class CreditsScreen extends ConsumerWidget {
   const CreditsScreen({super.key});
@@ -56,7 +57,7 @@ class CreditsScreen extends ConsumerWidget {
           heading(l10n.creditsAppHeading),
           Align(
             alignment: Alignment.centerLeft,
-            child: OutlinedButton(
+            child: SumiFuda(
               onPressed: () => showLicensePage(
                 context: context,
                 applicationName: l10n.appName,
