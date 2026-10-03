@@ -28,7 +28,7 @@ enum QuestSealShape {
   dashedRing,
   pentagon,
   star,
-  bowl,
+  garlic,
   compass,
   cornerDots,
   wave,
@@ -289,7 +289,7 @@ const quests = <Quest>[
     unit: '杯',
     thresholds: [1],
     count: _jiroCount,
-    seal: QuestSealDesign('二郎', QuestSealShape.bowl),
+    seal: QuestSealDesign('二郎', QuestSealShape.garlic),
   ),
   Quest(
     id: 'far_journey',

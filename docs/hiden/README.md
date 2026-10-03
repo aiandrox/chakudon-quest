@@ -25,7 +25,7 @@
 | <img src="pilgrimage.png" width="72"> | 月の巡礼 | 1か月に10軒の違う店で食べる | 巡 | 切れ目の輪 | いつでも | `pilgrimage` |
 | <img src="limited_month.png" width="72"> | 限定狩りの月 | 1か月に限定を3杯食べる | 狩 | 五角形 | いつでも | `limited_month` |
 | <img src="perfect.png" width="72"> | 満点の舌 | ★5を10杯つける | 満 | 星 | いつでも | `perfect` |
-| <img src="jiro.png" width="72"> | 二郎の洗礼 | 二郎系を食べる | 二郎 | 丼 | いつでも | `jiro` |
+| <img src="jiro.png" width="72"> | 二郎の洗礼 | 二郎系を食べる | 二郎 | にんにく | いつでも | `jiro` |
 | <img src="far_journey.png" width="72"> | 遥かなる遠征 | いちばん通っている店から100km以上離れた店で食べる | 旅 | 方位 | いつでも | `far_journey` |
 | <img src="new_year_eve.png" width="72"> | 年越しの一杯 | 12月31日に食べる | 年越 | 四隅の点 | いつでも | `new_year_eve` |
 | <img src="summer_cold.png" width="72"> | 夏の涼麺 | 7〜8月につけ麺か汁なしを食べる | 涼 | 波 | いつでも | `summer_cold` |

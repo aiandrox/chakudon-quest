@@ -37,7 +37,7 @@ const _shapeNames = {
   QuestSealShape.dashedRing: '切れ目の輪',
   QuestSealShape.pentagon: '五角形',
   QuestSealShape.star: '星',
-  QuestSealShape.bowl: '丼',
+  QuestSealShape.garlic: 'にんにく',
   QuestSealShape.compass: '方位',
   QuestSealShape.cornerDots: '四隅の点',
   QuestSealShape.wave: '波',
