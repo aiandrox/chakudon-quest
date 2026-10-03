@@ -2,6 +2,8 @@ import { type CuratedShop, etagOf } from './curated.ts';
 
 export interface Env {
   DB: D1Database;
+  /** Yahoo! ローカルサーチの Client ID（`wrangler pages secret put YAHOO_APP_ID`）。無ければ Yahoo! では探さない。 */
+  YAHOO_APP_ID?: string;
 }
 
 export const json = (body: unknown, init: ResponseInit = {}) =>
