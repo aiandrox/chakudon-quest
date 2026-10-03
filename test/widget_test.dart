@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ramen_in_cho/features/checkin/checkin_controller.dart';
 import 'package:ramen_in_cho/features/map/map_screen.dart';
 import 'package:ramen_in_cho/features/notifications/notification_service.dart';
+import 'package:ramen_in_cho/features/onboarding/onboarding_store.dart';
 import 'package:ramen_in_cho/features/record/photo_picker.dart';
 import 'package:ramen_in_cho/features/records/clock.dart';
 import 'package:ramen_in_cho/features/records/models.dart';
@@ -46,6 +47,7 @@ void main() {
           photoPickerProvider.overrideWithValue(FakePhotoPicker()),
           notificationServiceProvider.overrideWithValue(notifications),
           locationServiceProvider.overrideWithValue(FakeLocationService()),
+          showOnboardingOnLaunchProvider.overrideWithValue(false),
           if (now != null) clockProvider.overrideWithValue(() => now),
         ],
         child: const RamenInChoApp(),

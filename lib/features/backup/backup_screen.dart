@@ -49,37 +49,9 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
   }
 
   Future<void> _import() async {
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
-    final file = await openFile(
-      acceptedTypeGroups: [
-        XTypeGroup(
-          label: l10n.backupFileType,
-          extensions: const ['zip'],
-          mimeTypes: const ['application/zip'],
-          uniformTypeIdentifiers: const ['public.zip-archive'],
-        ),
-      ],
-    );
-    if (file == null || !mounted) return;
     setState(() => _isBusy = true);
     try {
-      final summary = await ref
-          .read(backupServiceProvider)
-          .restoreBackup(file.path);
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.backupImportDone(summary.addedVisits, summary.totalVisits),
-          ),
-        ),
-      );
-    } on FormatException catch (e) {
-      debugPrint('Backup import rejected: $e');
-      messenger.showSnackBar(SnackBar(content: Text(l10n.backupImportInvalid)));
-    } catch (e) {
-      debugPrint('Backup import failed: $e');
-      messenger.showSnackBar(SnackBar(content: Text(l10n.backupImportFailed)));
+      await pickAndRestoreBackup(context, ref);
     } finally {
       if (mounted) setState(() => _isBusy = false);
     }
@@ -120,4 +92,43 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
       ),
     );
   }
+}
+
+/// バックアップの zip を選んで読み込み、結果を知らせる。読み込めたら件数を返す（選ばなかった・失敗したら null）。
+Future<RestoreSummary?> pickAndRestoreBackup(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  final l10n = AppLocalizations.of(context);
+  final messenger = ScaffoldMessenger.of(context);
+  final service = ref.read(backupServiceProvider);
+  final file = await openFile(
+    acceptedTypeGroups: [
+      XTypeGroup(
+        label: l10n.backupFileType,
+        extensions: const ['zip'],
+        mimeTypes: const ['application/zip'],
+        uniformTypeIdentifiers: const ['public.zip-archive'],
+      ),
+    ],
+  );
+  if (file == null) return null;
+  try {
+    final summary = await service.restoreBackup(file.path);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          l10n.backupImportDone(summary.addedVisits, summary.totalVisits),
+        ),
+      ),
+    );
+    return summary;
+  } on FormatException catch (e) {
+    debugPrint('Backup import rejected: $e');
+    messenger.showSnackBar(SnackBar(content: Text(l10n.backupImportInvalid)));
+  } catch (e) {
+    debugPrint('Backup import failed: $e');
+    messenger.showSnackBar(SnackBar(content: Text(l10n.backupImportFailed)));
+  }
+  return null;
 }
