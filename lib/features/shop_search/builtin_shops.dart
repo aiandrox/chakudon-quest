@@ -1,0 +1,284 @@
+import 'found_shop.dart';
+import 'geo.dart';
+
+/// 地図の検索で見つからないことのある店を、アプリに持たせておく（通信しなくても候補に出る）。
+/// 今はラーメン二郎の直系店だけ。位置は住所から国土地理院の住所検索で求めた（2026-10-03）。
+/// 開店・閉店・移転があったら、ここを直す。
+class BuiltinShop {
+  const BuiltinShop({
+    required this.name,
+    required this.address,
+    required this.location,
+  });
+
+  final String name;
+  final String address;
+  final GeoPoint location;
+
+  FoundShop toFoundShop() =>
+      FoundShop(name: name, location: location, address: address);
+}
+
+/// [center]から[radiusMeters]以内の、アプリに持たせている店。
+List<FoundShop> builtinShopsNear(GeoPoint center, int radiusMeters) => [
+  for (final shop in builtinShops)
+    if (distanceMeters(center, shop.location) <= radiusMeters)
+      shop.toFoundShop(),
+];
+
+/// 名前に[query]を含む、アプリに持たせている店（空白・全角半角は区別しない）。
+/// 「ラーメン」のように多くの店に当たるときでも並びすぎないよう、[near]に近い順に[limit]件まで。
+List<FoundShop> builtinShopsNamed(
+  String query, {
+  GeoPoint? near,
+  int limit = 5,
+}) {
+  final normalized = normalizeShopName(query);
+  if (normalized.isEmpty) return const [];
+  final matches = [
+    for (final shop in builtinShops)
+      if (normalizeShopName(shop.name).contains(normalized)) shop,
+  ];
+  if (near != null) {
+    matches.sort(
+      (a, b) => distanceMeters(
+        near,
+        a.location,
+      ).compareTo(distanceMeters(near, b.location)),
+    );
+  }
+  return [for (final shop in matches.take(limit)) shop.toFoundShop()];
+}
+
+const builtinShops = <BuiltinShop>[
+  BuiltinShop(
+    name: 'ラーメン二郎 三田本店',
+    address: '東京都港区三田2-16-4',
+    location: GeoPoint(35.648045, 139.741516),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 目黒店',
+    address: '東京都目黒区目黒3-7-2',
+    location: GeoPoint(35.634285, 139.707077),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 仙川店',
+    address: '東京都調布市仙川町1-10-17',
+    location: GeoPoint(35.661385, 139.583847),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 新宿歌舞伎町店',
+    address: '東京都新宿区歌舞伎町2-37-5',
+    location: GeoPoint(35.696198, 139.701874),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 品川店',
+    address: '東京都品川区北品川1-18-5',
+    location: GeoPoint(35.623974, 139.742966),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 新宿小滝橋通り店',
+    address: '東京都新宿区西新宿7-5-5',
+    location: GeoPoint(35.696323, 139.698318),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 環七新新代田店',
+    address: '東京都世田谷区代田5-29-5',
+    location: GeoPoint(35.661949, 139.660385),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 八王子野猿街道店2',
+    address: '東京都八王子市堀之内2-13-16',
+    location: GeoPoint(35.62962, 139.40126),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 池袋東口店',
+    address: '東京都豊島区南池袋2-27-17',
+    location: GeoPoint(35.728195, 139.713913),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 亀戸店',
+    address: '東京都江東区亀戸4-35-17',
+    location: GeoPoint(35.701885, 139.826706),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 府中店',
+    address: '東京都府中市宮西町1-15-5',
+    location: GeoPoint(35.672115, 139.477158),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 めじろ台店',
+    address: '東京都八王子市椚田町513-9',
+    location: GeoPoint(35.638947, 139.312744),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 荻窪店',
+    address: '東京都杉並区荻窪4-33-1',
+    location: GeoPoint(35.703602, 139.626282),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 上野毛店',
+    address: '東京都世田谷区上野毛1-26-16',
+    location: GeoPoint(35.612442, 139.639023),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 環七一之江店',
+    address: '東京都江戸川区一之江8-3-4',
+    location: GeoPoint(35.684071, 139.881927),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 神田神保町店',
+    address: '東京都千代田区神田神保町1-21-4',
+    location: GeoPoint(35.69529, 139.761002),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 小岩店',
+    address: '東京都江戸川区西小岩3-31-13',
+    location: GeoPoint(35.734898, 139.880005),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 ひばりヶ丘駅前店',
+    address: '東京都西東京市谷戸町3-27-24',
+    location: GeoPoint(35.749908, 139.543793),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 立川店',
+    address: '東京都立川市柴崎町2-10-1',
+    location: GeoPoint(35.696507, 139.409515),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 千住大橋駅前店',
+    address: '東京都足立区千住橋戸町10-8',
+    location: GeoPoint(35.742706, 139.796906),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 西台駅前店',
+    address: '東京都板橋区蓮根3-9-7',
+    location: GeoPoint(35.7869, 139.674423),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 一橋学園店',
+    address: '東京都小平市学園西町2-13-4',
+    location: GeoPoint(35.722313, 139.479294),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 京急川崎店',
+    address: '神奈川県川崎市川崎区本町2-10-1',
+    location: GeoPoint(35.534908, 139.705704),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 相模大野店',
+    address: '神奈川県相模原市南区相模大野6-14-9',
+    location: GeoPoint(35.529911, 139.432846),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 横浜関内店',
+    address: '神奈川県横浜市中区長者町6-94',
+    location: GeoPoint(35.442196, 139.63089),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 湘南藤沢店',
+    address: '神奈川県藤沢市本町1-10-14',
+    location: GeoPoint(35.342964, 139.482269),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 中山駅前店',
+    address: '神奈川県横浜市緑区台村町309-1',
+    location: GeoPoint(35.51297, 139.538147),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 生田駅前店',
+    address: '神奈川県川崎市多摩区生田8-1-15',
+    location: GeoPoint(35.615597, 139.546448),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 松戸駅前店',
+    address: '千葉県松戸市本町17-21',
+    location: GeoPoint(35.785427, 139.899033),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 京成大久保店',
+    address: '千葉県船橋市三山2-1-11',
+    location: GeoPoint(35.691578, 140.049591),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 千葉店',
+    address: '千葉県千葉市中央区中央1-7-8',
+    location: GeoPoint(35.610481, 140.123581),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 柏店',
+    address: '千葉県柏市十余二249-5',
+    location: GeoPoint(35.881977, 139.957626),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 栃木街道店',
+    address: '栃木県下都賀郡壬生町本丸2-15-67',
+    location: GeoPoint(36.422985, 139.7948),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 仙台店',
+    address: '宮城県仙台市青葉区一番町2-5-32',
+    location: GeoPoint(38.259483, 140.872208),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 札幌店',
+    address: '北海道札幌市北区北六条西8-8-11',
+    location: GeoPoint(43.067162, 141.343063),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 会津若松駅前店',
+    address: '福島県会津若松市駅前町6-31',
+    location: GeoPoint(37.506386, 139.93132),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 新潟店',
+    address: '新潟県新潟市中央区万代5-2-8',
+    location: GeoPoint(37.917233, 139.06015),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 川越店',
+    address: '埼玉県川越市旭町1-4-15',
+    location: GeoPoint(35.902737, 139.476166),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 越谷店',
+    address: '埼玉県越谷市越ヶ谷2-3-7',
+    location: GeoPoint(35.890182, 139.787659),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 大宮公園駅前店',
+    address: '埼玉県さいたま市大宮区寿能町1-24',
+    location: GeoPoint(35.921688, 139.632248),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 京都店',
+    address: '京都府京都市左京区一乗寺里ノ前町4',
+    location: GeoPoint(35.043465, 135.787445),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 前橋千代田町店',
+    address: '群馬県前橋市千代田町4-12-3',
+    location: GeoPoint(36.392548, 139.070999),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 ひたちなか店',
+    address: '茨城県ひたちなか市田彦1648-4',
+    location: GeoPoint(36.409088, 140.514603),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 朝倉街道駅前店',
+    address: '福岡県筑紫野市針摺中央2-17-8',
+    location: GeoPoint(33.48444, 130.533493),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 名古屋大曽根店',
+    address: '愛知県名古屋市東区矢田4-3-7',
+    location: GeoPoint(35.193916, 136.941925),
+  ),
+  BuiltinShop(
+    name: 'ラーメン二郎 沖縄店',
+    address: '沖縄県那覇市壺屋1-6-16',
+    location: GeoPoint(26.21266, 127.689667),
+  ),
+];

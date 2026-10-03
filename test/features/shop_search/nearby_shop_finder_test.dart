@@ -137,6 +137,16 @@ void main() {
     test('両方失敗したときだけ失敗にする', () {
       expect(finder(failing, failing).searchNearby(_origin), throwsStateError);
     });
+
+    test('ラーメン二郎の直系店は、通信できなくても近くにあれば出す', () async {
+      // 三田本店のすぐそば。
+      const mita = GeoPoint(35.6482, 139.7414);
+      final shops = await finder(failing, failing).searchNearby(mita);
+
+      expect(shops.map((s) => s.name), ['ラーメン二郎 三田本店']);
+      expect(shops.single.osmId, isNull);
+      expect(shops.single.address, '東京都港区三田2-16-4');
+    });
   });
 
   test('Yahoo! の結果も合わせ、OpenStreetMap と同じ店は1つにまとめる', () async {

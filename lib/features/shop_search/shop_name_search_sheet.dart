@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'builtin_shops.dart';
 import 'found_shop.dart';
 import 'geo.dart';
 import 'openpoi_client.dart';
@@ -87,10 +88,12 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
           );
       final yahooShops = await yahoo;
       final poiShops = await poi;
-      if (yahooShops == null && poiShops == null) {
+      // アプリに持たせている店（ラーメン二郎の直系店）は先に並べ、通信できなくても出す。
+      final builtin = builtinShopsNamed(name, near: widget.near);
+      if (yahooShops == null && poiShops == null && builtin.isEmpty) {
         throw StateError('店名の検索がすべて失敗しました');
       }
-      final results = mergeFoundShops(const [], [...?yahooShops, ...?poiShops]);
+      final results = mergeFoundShops(builtin, [...?yahooShops, ...?poiShops]);
       if (!mounted || generation != _generation) return;
       setState(() {
         _results = results;

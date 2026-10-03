@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'builtin_shops.dart';
 import 'geo.dart';
 import 'openpoi_client.dart';
 import 'overpass.dart';
@@ -79,10 +80,17 @@ class NearbyShopFinder {
           ),
         ),
     ]);
+    // アプリに持たせている店（ラーメン二郎の直系店）は、通信できなくても出す。
+    final builtin = builtinShopsNear(center, radiusMeters);
     if (osm == null && poi == null && yahooShops == null) {
+      if (builtin.isNotEmpty) return builtin;
       throw StateError('店の検索がすべて失敗しました');
     }
-    // OpenStreetMap の店を優先し（IDがあるため）、次に Yahoo!、最後に OpenPOI。
-    return mergeFoundShops(osm ?? const [], [...?yahooShops, ...?poi]);
+    // OpenStreetMap の店を優先し（IDがあるため）、次にアプリに持たせている店、Yahoo!、最後に OpenPOI。
+    return mergeFoundShops(osm ?? const [], [
+      ...builtin,
+      ...?yahooShops,
+      ...?poi,
+    ]);
   }
 }

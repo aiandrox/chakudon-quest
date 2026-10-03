@@ -405,6 +405,7 @@
   "creditsTitle": "出典・ライセンス",
   "creditsServicesHeading": "地図と店の情報",
   "creditsOsm": "地図と店の情報: © OpenStreetMap contributors（ODbL）",
+  "creditsGsi": "ラーメン二郎の店の位置: 住所から国土地理院の住所検索で求めたもの",
   "creditsOpenPoi": "店の情報: 出典 OpenPOI API（https://openpoiapi.com/attribution.html）",
   "creditsSavedShopsHeading": "記録した店の出典",
   "creditsSavedShopsNote": "OpenPOI API で見つけて記録した店の情報の出どころです",
