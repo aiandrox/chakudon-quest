@@ -53,7 +53,7 @@ void main() {
       name: '幻の店',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // (10 + 50 + 20 + 10) × 2 = 180 → 五級〜一級に一度に上がる。
+    // (10 + 50 + 20 + 10) × 2 = 180。一級まで届くが、1杯で上がるのは五級だけ。
     final big = buildEntry(
       shop: rare,
       eatenAt: day(5),
@@ -64,20 +64,19 @@ void main() {
 
     expect(seal(ja.rankApprentice), findsOneWidget);
     expect(seal(ja.rankKyu('五')), findsOneWidget);
-    expect(seal(ja.rankKyu('一')), findsOneWidget);
     final achieved = ja.rankHistoryAchievedAt(formatDate(day(5)), '幻の店');
-    expect(find.text(achieved), findsNWidgets(6));
+    expect(find.text(achieved), findsNWidgets(2));
 
-    // 初段（220点）まで、あと 40 点。名前は見える。
-    expect(seal(ja.rankFirstDan), findsOneWidget);
-    expect(find.text(ja.rankHistoryRemaining(40)), findsOneWidget);
-    expect(find.text(masterWords(AdventurerRank.kyu1)), findsOneWidget);
-    expect(find.text(masterWords(AdventurerRank.dan1)), findsNothing);
+    // 四級の必要点にはもう届いているので、次の1杯で上がる。名前は見える。
+    expect(seal(ja.rankKyu('四')), findsOneWidget);
+    expect(find.text(ja.rankHistoryReady), findsOneWidget);
+    expect(find.text(masterWords(AdventurerRank.kyu5)), findsOneWidget);
+    expect(find.text(masterWords(AdventurerRank.kyu4)), findsNothing);
 
-    // 二段より先は名前も点も出さない。
-    expect(seal(ja.rankDan('二')), findsNothing);
+    // 三級より先は名前も点も出さない。
+    expect(seal(ja.rankKyu('三')), findsNothing);
     expect(seal(ja.rankGrandmaster), findsNothing);
-    expect(seal(ja.rankHistoryHidden), findsNWidgets(10));
+    expect(seal(ja.rankHistoryHidden), findsNWidgets(14));
 
     await tester.tap(find.text(achieved).at(1));
     await tester.pumpAndSettle();
@@ -98,7 +97,9 @@ void main() {
     await pumpHistory(
       tester,
       const [],
-      home: const Scaffold(body: RankProgress(totalPoints: 0)),
+      home: const Scaffold(
+        body: RankProgress(totalPoints: 0, rank: AdventurerRank.apprentice),
+      ),
     );
 
     await tester.tap(find.byType(RankProgress));

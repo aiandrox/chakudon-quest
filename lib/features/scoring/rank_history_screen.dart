@@ -140,7 +140,9 @@ class _NextRow extends StatelessWidget {
       ),
       lines: [
         Text(
-          l10n.rankHistoryRemaining(remaining),
+          remaining <= 0
+              ? l10n.rankHistoryReady
+              : l10n.rankHistoryRemaining(remaining),
           style: Theme.of(context).textTheme.bodyLarge
               ?.copyWith(color: Washi.faded),
         ),

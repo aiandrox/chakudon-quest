@@ -12,10 +12,14 @@ class RankProgress extends StatelessWidget {
   const RankProgress({
     super.key,
     required this.totalPoints,
+    required this.rank,
     this.compact = false,
   });
 
   final int totalPoints;
+
+  /// 今の段位。1杯で1つずつしか上がらないので、累計だけでは決まらない。
+  final AdventurerRank rank;
 
   /// 印帳の上では、次の段位まであと何点かを出さない（修行タブで見る）。
   final bool compact;
@@ -25,12 +29,12 @@ class RankProgress extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final rank = adventurerRankFor(totalPoints);
     final next = rank.next;
     final progress = next == null
         ? 1.0
-        : (totalPoints - rank.requiredPoints) /
-              (next.requiredPoints - rank.requiredPoints);
+        : ((totalPoints - rank.requiredPoints) /
+                  (next.requiredPoints - rank.requiredPoints))
+              .clamp(0.0, 1.0);
 
     final row = Row(
       children: [
@@ -56,6 +60,8 @@ class RankProgress extends StatelessWidget {
                     Text(
                       next == null
                           ? l10n.maxRank
+                          : totalPoints >= next.requiredPoints
+                          ? l10n.nextRankReady(adventurerRankLabel(l10n, next))
                           : l10n.nextRank(
                               adventurerRankLabel(l10n, next),
                               next.requiredPoints - totalPoints,

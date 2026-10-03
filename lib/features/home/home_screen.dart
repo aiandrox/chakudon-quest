@@ -213,6 +213,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: RankProgress(
               totalPoints: ref.watch(totalPointsProvider),
+              rank: ref.watch(currentRankProvider),
               compact: true,
             ),
           ),

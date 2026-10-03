@@ -31,7 +31,10 @@ class ShugyoScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
         children: [
-          RankProgress(totalPoints: ref.watch(totalPointsProvider)),
+          RankProgress(
+            totalPoints: ref.watch(totalPointsProvider),
+            rank: ref.watch(currentRankProvider),
+          ),
           const StreakLine(),
           const HealthyLifeCard(),
           const HomeBaseLine(),

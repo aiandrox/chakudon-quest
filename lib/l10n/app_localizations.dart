@@ -802,6 +802,18 @@ abstract class AppLocalizations {
   /// **'免許皆伝に至りました'**
   String get maxRank;
 
+  /// No description provided for @nextRankReady.
+  ///
+  /// In ja, this message translates to:
+  /// **'次の一杯で{rank}'**
+  String nextRankReady(String rank);
+
+  /// No description provided for @rankHistoryReady.
+  ///
+  /// In ja, this message translates to:
+  /// **'次の一杯で上がる'**
+  String get rankHistoryReady;
+
   /// No description provided for @rankUp.
   ///
   /// In ja, this message translates to:

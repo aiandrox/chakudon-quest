@@ -175,7 +175,12 @@ class _ResultBody extends StatelessWidget {
         Opacity(opacity: 0.75, child: PointsBreakdownView(scored: scored)),
         const SizedBox(height: 20),
         // 印を押したあとに修行点の帯が伸び、段位が上がればその場で光って替わる。
-        ExpBar(before: outcome.totalBefore, after: outcome.totalAfter),
+        ExpBar(
+          before: outcome.totalBefore,
+          after: outcome.totalAfter,
+          rankBefore: outcome.rankBefore,
+          rankAfter: outcome.rankAfter,
+        ),
         if (outcome.revealsHealthyLife) ...[
           const SizedBox(height: 12),
           const _HealthyLifeRevealBanner(),

@@ -1,6 +1,7 @@
 import '../quests/quests.dart';
 import '../records/models.dart';
 import 'points.dart';
+import 'rank_history.dart';
 import 'ranks.dart';
 import '../streak/daily_streak.dart';
 
@@ -10,6 +11,8 @@ class RecordOutcome {
     required this.scored,
     required this.totalBefore,
     required this.totalAfter,
+    required this.rankBefore,
+    required this.rankAfter,
     this.questLevelUps = const [],
     this.bestDailyStreakBefore = 0,
     this.bestDailyStreakAfter = 0,
@@ -31,9 +34,8 @@ class RecordOutcome {
       bestDailyStreakBefore < healthyLifeDays &&
       bestDailyStreakAfter >= healthyLifeDays;
 
-  AdventurerRank get rankBefore => adventurerRankFor(totalBefore);
-
-  AdventurerRank get rankAfter => adventurerRankFor(totalAfter);
+  final AdventurerRank rankBefore;
+  final AdventurerRank rankAfter;
 
   bool get isRankUp => rankAfter.index > rankBefore.index;
 }
@@ -57,6 +59,8 @@ RecordOutcome? computeRecordOutcome(
     scored: scored,
     totalBefore: totalPoints(scoredOthers),
     totalAfter: totalPoints(scoredAll),
+    rankBefore: currentRank(scoredOthers),
+    rankAfter: currentRank(scoredAll),
     questLevelUps: newlyAchievedLevels(
       before: evaluateQuests(scoredOthers),
       after: evaluateQuests(scoredAll),
