@@ -39,6 +39,7 @@ D1 のつなぎ（`DB`）は `wrangler.toml` に書いてあるので、デプ�
 
 - iOS: Firebase コンソール → App Check で App Attest を登録（チームIDが要る）。`ios/Runner/Runner.entitlements` に `com.apple.developer.devicecheck.appattest-environment` = `production` を入れ、Release・Profile にだけ付ける
 - Android: Firebase コンソール → App Check で Play Integrity を登録（署名の SHA-256 が要る）。Google Play から入れたアプリでないと通らないので、`adb install` で入れたアプリはデバッグ用トークンを使う
+- トークンの有効期限（Token time to live）は iOS・Android とも1日。店の中は電波が弱く、取り直しで待たせないため（返すのは店の公開情報だけなので、長めでも困らない）
 - デバッグビルド: `--dart-define=APP_CHECK_DEBUG_TOKEN=<UUID>` で渡したトークンを、Firebase コンソール → App Check → アプリ → デバッグトークンの管理 に登録する
 
 ## 手元で
