@@ -70,11 +70,12 @@ class InkanStamp extends StatelessWidget {
         : inkanStyleName(l10n, visit.style);
     final small = TextStyle(
       fontFamily: Washi.brush,
-      fontSize: math.max(8, size * 0.115),
+      fontSize: math.max(8, size * 0.13),
       color: color,
-      height: 1.1,
+      height: 0.95,
     );
 
+    // 印の中の文字どうしは詰めて組む。
     final content = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -101,9 +102,9 @@ class InkanStamp extends StatelessWidget {
             maxLines: 1,
             style: TextStyle(
               fontFamily: Washi.brush,
-              fontSize: size * 0.3,
+              fontSize: size * 0.34,
               color: color,
-              height: 1.15,
+              height: 1.0,
             ),
           ),
         ),
