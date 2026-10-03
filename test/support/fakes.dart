@@ -317,8 +317,10 @@ class FakeWishRepository implements WishRepository {
     required String note,
   }) async {}
 
+  final deleted = <String>[];
+
   @override
-  Future<void> deleteWish(String id) async {}
+  Future<void> deleteWish(String id) async => deleted.add(id);
 
   @override
   Future<List<Wish>> pendingWishes() async => const [];
