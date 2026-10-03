@@ -144,6 +144,19 @@ describe('searchByName', () => {
     expect(calls).toHaveLength(2);
   });
 
+  it('近くの場所を渡したときは、手で持つ店も合わせて近い順に並べる', async () => {
+    const { fetch } = fakeFetch({
+      'api.openpoiapi.com': () => ({
+        suggestions: [
+          { name: '麺屋武蔵 虎洞', lat: 35.7039, lng: 139.579, category: 'restaurant' },
+          { name: '麺屋武蔵 本店', lat: 35.6936, lng: 139.6977, category: 'restaurant' },
+        ],
+      }),
+    });
+    const shops = await searchByName({ fetch, cache: fakeCache() }, [], '麺屋武蔵', shinjuku);
+    expect(shops.map((s) => s.name)).toEqual(['麺屋武蔵 本店', '麺屋武蔵 虎洞']);
+  });
+
   it('手で持つ店は「二郎 関内」「二郎関内」のどちらでも合い、先に並ぶ', () => {
     const kannai: CuratedShop = { ...mita, id: 'jiro-kannai', name: 'ラーメン二郎 横浜関内店', latitude: 35.4422, longitude: 139.6309 };
     for (const q of ['二郎 関内', '二郎関内']) {

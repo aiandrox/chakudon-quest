@@ -170,12 +170,12 @@ export async function searchByName(
   const variants = nameQueryVariants(query);
   if (variants.length === 0) return [];
   const fromCurated = curatedNamed(curated, query, near);
-  // 近い順の並びは大まかでよいので、近くの場所は 0.5 度（約50km）単位でため置く。
-  const area = near ? `${Math.round(near.latitude * 2)},${Math.round(near.longitude * 2)}` : '';
-  const anchor = near ? { latitude: Math.round(near.latitude * 2) / 2, longitude: Math.round(near.longitude * 2) / 2 } : undefined;
+  // 先の検索には 0.1 度（約10km）に丸めた場所を渡してため置き、並びは最後に本当の場所からの近さで決める。
+  const area = near ? `${Math.round(near.latitude * 10)},${Math.round(near.longitude * 10)}` : '';
+  const anchor = near ? { latitude: Math.round(near.latitude * 10) / 10, longitude: Math.round(near.longitude * 10) / 10 } : undefined;
   let found: FoundShop[];
   try {
-    found = await cached(deps, cacheUrl('search/v1', { q: variants[0], area }), async () => {
+    found = await cached(deps, cacheUrl('search/v2', { q: variants[0], area }), async () => {
       const appId = deps.yahooAppId;
       const [yahoo, poi] = await Promise.all([
         appId
@@ -193,7 +193,7 @@ export async function searchByName(
       ]);
       const all = [...yahoo, ...poi];
       if (all.every((r) => r === null)) throw new Error('店名の検索がすべて失敗しました');
-      // Yahoo! はラーメン店の業種で絞れるので先に並べ、OpenPOI で補う。
+      // 同じ店なら、ラーメン店の業種で絞れる Yahoo! のほうを残す。
       return {
         shops: mergeFoundShops([], [...yahoo.flatMap((r) => r ?? []), ...poi.flatMap((r) => r ?? [])]),
         complete: all.every((r) => r !== null),
@@ -203,5 +203,7 @@ export async function searchByName(
     if (fromCurated.length > 0) return fromCurated;
     throw e;
   }
-  return mergeFoundShops(fromCurated, found);
+  const shops = mergeFoundShops(fromCurated, found);
+  if (near) shops.sort((a, b) => distanceMeters(near, a) - distanceMeters(near, b));
+  return shops;
 }

@@ -36,6 +36,17 @@ class FoundShop {
   }
 }
 
+/// [near] があれば近い順に並べ替える（無ければそのまま）。
+List<FoundShop> nearestFirst(List<FoundShop> shops, GeoPoint? near) {
+  if (near == null) return shops;
+  return [...shops]..sort(
+    (a, b) => distanceMeters(
+      near,
+      a.location,
+    ).compareTo(distanceMeters(near, b.location)),
+  );
+}
+
 /// OpenStreetMap の店を優先し（ID があるため）、OpenPOI の店は重ならないものだけ足す。
 /// OpenPOI には ID が無く、同じ店が業種違いで複数件になることもあるため、名前と近さで重なりを判定する。
 List<FoundShop> mergeFoundShops(List<FoundShop> osm, List<FoundShop> poi) {
