@@ -26,28 +26,50 @@ List<FoundShop> builtinShopsNear(GeoPoint center, int radiusMeters) => [
       shop.toFoundShop(),
 ];
 
-/// 名前に[query]を含む、アプリに持たせている店（空白・全角半角は区別しない）。
+/// [query]に合う、アプリに持たせている店（空白・全角半角は区別しない）。
+/// 空白で区切った言葉がすべて名前に含まれるか、言葉の文字が名前に順に現れれば合う
+/// （「二郎 関内」「二郎関内」のどちらでも「ラーメン二郎 横浜関内店」に合う）。
 /// 「ラーメン」のように多くの店に当たるときでも並びすぎないよう、[near]に近い順に[limit]件まで。
 List<FoundShop> builtinShopsNamed(
   String query, {
   GeoPoint? near,
   int limit = 5,
 }) {
-  final normalized = normalizeShopName(query);
-  if (normalized.isEmpty) return const [];
-  final matches = [
+  final words = [
+    for (final word in query.replaceAll('\u3000', ' ').split(' '))
+      if (normalizeShopName(word).isNotEmpty) normalizeShopName(word),
+  ];
+  if (words.isEmpty) return const [];
+  final joined = words.join();
+  bool matches(BuiltinShop shop) {
+    final name = normalizeShopName(shop.name);
+    return words.every(name.contains) || _appearsInOrder(joined, name);
+  }
+
+  final matched = [
     for (final shop in builtinShops)
-      if (normalizeShopName(shop.name).contains(normalized)) shop,
+      if (matches(shop)) shop,
   ];
   if (near != null) {
-    matches.sort(
+    matched.sort(
       (a, b) => distanceMeters(
         near,
         a.location,
       ).compareTo(distanceMeters(near, b.location)),
     );
   }
-  return [for (final shop in matches.take(limit)) shop.toFoundShop()];
+  return [for (final shop in matched.take(limit)) shop.toFoundShop()];
+}
+
+/// [query]の文字が、[name]の中に同じ順で（間に別の文字をはさんでもよく）現れるか。
+bool _appearsInOrder(String query, String name) {
+  var from = 0;
+  for (final rune in query.runes) {
+    final index = name.indexOf(String.fromCharCode(rune), from);
+    if (index < 0) return false;
+    from = index + 1;
+  }
+  return true;
 }
 
 const builtinShops = <BuiltinShop>[

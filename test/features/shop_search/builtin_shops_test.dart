@@ -41,4 +41,15 @@ void main() {
     expect(near.first.name, 'ラーメン二郎 横浜関内店');
     expect(builtinShopsNamed('  '), isEmpty);
   });
+
+  test('「二郎 関内」「二郎　関内」「二郎関内」のどれでも横浜関内店が見つかる', () {
+    for (final query in ['二郎 関内', '二郎　関内', '二郎関内', 'ラーメン二郎 関内店']) {
+      expect(
+        builtinShopsNamed(query).map((s) => s.name),
+        contains('ラーメン二郎 横浜関内店'),
+        reason: query,
+      );
+    }
+    expect(builtinShopsNamed('関内二郎'), isEmpty);
+  });
 }

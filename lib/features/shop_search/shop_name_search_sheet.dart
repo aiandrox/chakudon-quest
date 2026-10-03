@@ -64,28 +64,40 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
     try {
       // Yahoo! はラーメン店の業種で絞れるので先に並べ、OpenPOI で補う。
       // Yahoo! が使えないとき（Client ID が無い・失敗）も、OpenPOI の結果は出す。
+      // 空白の有無で結果が変わるので、空白を詰めた言葉でも探してまとめる。
+      final queries = nameQueryVariants(name);
+      Future<List<FoundShop>?> searchAll(
+        String label,
+        Future<List<FoundShop>> Function(String query) search,
+      ) async {
+        final results = await Future.wait([
+          for (final query in queries)
+            search(query).then<List<FoundShop>?>(
+              (shops) => shops,
+              onError: (Object e) {
+                debugPrint('$label name search failed: $e');
+                return null;
+              },
+            ),
+        ]);
+        if (results.every((shops) => shops == null)) return null;
+        return [for (final shops in results) ...?shops];
+      }
+
       final yahoo = isYahooEnabled
-          ? ref
-                .read(yahooLocalClientProvider)
-                .searchByName(name, near: widget.near)
-                .then<List<FoundShop>?>(
-                  (shops) => shops,
-                  onError: (Object e) {
-                    debugPrint('Yahoo name search failed: $e');
-                    return null;
-                  },
-                )
+          ? searchAll(
+              'Yahoo',
+              (query) => ref
+                  .read(yahooLocalClientProvider)
+                  .searchByName(query, near: widget.near),
+            )
           : Future<List<FoundShop>?>.value();
-      final poi = ref
-          .read(openPoiClientProvider)
-          .searchByName(name, near: widget.near)
-          .then<List<FoundShop>?>(
-            (shops) => shops,
-            onError: (Object e) {
-              debugPrint('OpenPOI name search failed: $e');
-              return null;
-            },
-          );
+      final poi = searchAll(
+        'OpenPOI',
+        (query) => ref
+            .read(openPoiClientProvider)
+            .searchByName(query, near: widget.near),
+      );
       final yahooShops = await yahoo;
       final poiShops = await poi;
       // アプリに持たせている店（ラーメン二郎の直系店）は先に並べ、通信できなくても出す。
