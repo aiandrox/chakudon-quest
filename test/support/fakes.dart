@@ -307,6 +307,7 @@ class FakeWishRepository implements WishRepository {
     required ShopInput shop,
     String trigger = '',
     String note = '',
+    Set<HoursCondition> hoursConditions = const {},
     required DateTime now,
   }) async {
     added.add(shop);
@@ -318,6 +319,7 @@ class FakeWishRepository implements WishRepository {
     String id, {
     required String trigger,
     required String note,
+    required Set<HoursCondition> hoursConditions,
   }) async {}
 
   final deleted = <String>[];

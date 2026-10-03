@@ -200,6 +200,7 @@ class RecordController extends Notifier<RecordState> {
             osmId: wish.osmId,
             name: wish.name,
             location: wishLocation(wish),
+            hoursConditions: wishedConditions(wish),
             dataSource: wish.dataSource,
             wishId: wish.id,
           ),

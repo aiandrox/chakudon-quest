@@ -509,6 +509,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shopMemoSection => 'この店の攻略メモ';
 
   @override
+  String get shopConditionsSection => '店の条件';
+
+  @override
+  String get shopConditionsEmpty => 'まだ入れていません';
+
+  @override
+  String get shopConditionsEdit => '店の条件を選ぶ';
+
+  @override
   String get shopMemoEmpty => 'まだありません';
 
   @override
@@ -568,6 +577,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get wishTrigger => 'きっかけ（任意）';
+
+  @override
+  String get wishConditions => '店の条件（わかれば）';
 
   @override
   String get wishTriggerHint => '同僚に聞いた・テレビで見た など';

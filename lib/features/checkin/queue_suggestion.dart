@@ -38,7 +38,7 @@ ShopCandidate? queueSuggestion({
     if (!canCheckIn(distance)) continue;
     final wish = wishes.where((w) => wishMatchesShop(w, shop)).firstOrNull;
     final candidate = ShopCandidate.fromShop(shop, distanceMeters: distance);
-    candidates.add(wish == null ? candidate : candidate.withWish(wish.id));
+    candidates.add(wish == null ? candidate : candidate.withWish(wish));
   }
   final recentShops = [
     for (final shop in shops)
@@ -59,6 +59,7 @@ ShopCandidate? queueSuggestion({
         name: wish.name,
         location: location,
         distanceMeters: distance,
+        hoursConditions: wishedConditions(wish),
         dataSource: wish.dataSource,
         wishId: wish.id,
       ),

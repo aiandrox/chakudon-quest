@@ -10,8 +10,10 @@ import '../checkin/checkin_rules.dart';
 import '../checkin/checkin_screen.dart';
 import '../records/clock.dart';
 import '../records/date_format.dart';
+import '../records/labels.dart';
 import '../records/models.dart';
 import '../records/visit_details_form.dart';
+import '../shop/hours_condition_chips.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
 import '../shop_search/shop_name_search_sheet.dart';
@@ -184,11 +186,9 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
               VisitDetailsForm(
                 style: state.style,
                 isLimited: state.isLimited,
-                hoursConditions: state.hoursConditions,
                 memoController: _memoController,
                 onStyleChanged: controller.setStyle,
                 onLimitedChanged: controller.setLimited,
-                onHoursConditionsChanged: controller.setHoursConditions,
                 onMemoChanged: controller.setMemo,
                 // 並んだ店を選んでいれば、待ち時間は並んだ時刻から自動で計算する。
                 waitController: state.isCheckinShopSelected
@@ -196,6 +196,26 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                     : _waitController,
                 onWaitChanged: controller.setWaitMinutes,
               ),
+            ],
+          ),
+          // 店の条件は行く前（願掛け・店のページ）に入れる。ここでは閉じておき、入っている条件だけ見せる。
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            title: Text(l10n.shopConditionsSection),
+            subtitle: Text(
+              state.hoursConditions.isEmpty
+                  ? l10n.shopConditionsEmpty
+                  : hoursConditionsLabel(l10n, state.hoursConditions),
+            ),
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: HoursConditionChips(
+                  selected: state.hoursConditions,
+                  onChanged: controller.setHoursConditions,
+                ),
+              ),
+              const SizedBox(height: 8),
             ],
           ),
         ],

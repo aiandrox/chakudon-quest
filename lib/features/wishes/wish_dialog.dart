@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../records/clock.dart';
+import '../records/models.dart';
 import '../records/record_repository.dart';
+import '../shop/hours_condition_chips.dart';
 import 'wish_repository.dart';
 
 class WishText {
@@ -11,11 +14,13 @@ class WishText {
     required this.name,
     required this.trigger,
     required this.note,
+    required this.hoursConditions,
   });
 
   final String name;
   final String trigger;
   final String note;
+  final Set<HoursCondition> hoursConditions;
 }
 
 /// 願を書き留める・書き直す。[name]を渡すと店名は変えられない（地図や店のページから掛けるとき）。
@@ -24,6 +29,7 @@ Future<WishText?> showWishDialog(
   String? name,
   String trigger = '',
   String note = '',
+  Set<HoursCondition> hoursConditions = const {},
   bool isEditing = false,
 }) => showDialog<WishText>(
   context: context,
@@ -31,9 +37,28 @@ Future<WishText?> showWishDialog(
     name: name,
     trigger: trigger,
     note: note,
+    hoursConditions: hoursConditions,
     isEditing: isEditing,
   ),
 );
+
+/// 願の店が記録済みなら、その店。条件は店のものを見せ、選び直したら店にも書く（修行点にすぐ反映する）。
+Future<Shop?> recordedShopFor(WidgetRef ref, String? shopId) async {
+  if (shopId == null) return null;
+  final shops = await ref.read(recordRepositoryProvider).allShops();
+  return shops.where((s) => s.id == shopId).firstOrNull;
+}
+
+Future<void> saveShopConditions(
+  WidgetRef ref,
+  Shop? shop,
+  Set<HoursCondition> conditions,
+) async {
+  if (shop == null || setEquals(shop.hoursConditions, conditions)) return;
+  await ref
+      .read(recordRepositoryProvider)
+      .setShopConditions(shop.id, conditions);
+}
 
 /// [shop]に願を掛ける。きっかけ・ひとことを尋ね、書き留めたら知らせる。
 Future<void> addWishFor(
@@ -45,15 +70,23 @@ Future<void> addWishFor(
   final messenger = ScaffoldMessenger.of(context);
   final repository = ref.read(wishRepositoryProvider);
   final now = ref.read(clockProvider)();
-  final text = await showWishDialog(context, name: shop.name);
+  final recorded = await recordedShopFor(ref, shop.shopId);
+  if (!context.mounted) return;
+  final text = await showWishDialog(
+    context,
+    name: shop.name,
+    hoursConditions: recorded?.hoursConditions ?? const {},
+  );
   if (text == null) return;
   try {
     await repository.addWish(
       shop: shop,
       trigger: text.trigger,
       note: text.note,
+      hoursConditions: text.hoursConditions,
       now: now,
     );
+    await saveShopConditions(ref, recorded, text.hoursConditions);
     messenger.showSnackBar(SnackBar(content: Text(l10n.wishAdded(shop.name))));
   } catch (e) {
     debugPrint('Wish save failed: $e');
@@ -66,12 +99,14 @@ class _WishDialog extends StatefulWidget {
     required this.name,
     required this.trigger,
     required this.note,
+    required this.hoursConditions,
     required this.isEditing,
   });
 
   final String? name;
   final String trigger;
   final String note;
+  final Set<HoursCondition> hoursConditions;
   final bool isEditing;
 
   @override
@@ -82,6 +117,7 @@ class _WishDialogState extends State<_WishDialog> {
   late final _name = TextEditingController(text: widget.name ?? '');
   late final _trigger = TextEditingController(text: widget.trigger);
   late final _note = TextEditingController(text: widget.note);
+  late Set<HoursCondition> _hoursConditions = widget.hoursConditions;
 
   @override
   void dispose() {
@@ -99,6 +135,7 @@ class _WishDialogState extends State<_WishDialog> {
         name: name,
         trigger: _trigger.text.trim(),
         note: _note.text.trim(),
+        hoursConditions: _hoursConditions,
       ),
     );
   }
@@ -138,6 +175,17 @@ class _WishDialogState extends State<_WishDialog> {
                 labelText: l10n.wishNote,
                 hintText: l10n.wishNoteHint,
               ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.wishConditions,
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: 4),
+            HoursConditionChips(
+              selected: _hoursConditions,
+              onChanged: (conditions) =>
+                  setState(() => _hoursConditions = conditions),
             ),
           ],
         ),

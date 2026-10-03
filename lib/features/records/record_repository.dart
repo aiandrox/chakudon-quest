@@ -115,6 +115,7 @@ class RecordRepository {
                 note: Value(wish.note),
                 createdAt: wish.createdAt,
                 fulfilledVisitId: Value(wish.fulfilledVisitId),
+                hoursConditions: Value(wish.hoursConditions),
               ),
             );
       }
@@ -365,6 +366,13 @@ class RecordRepository {
         ShopsCompanion(strategyMemo: Value(memo.trim())),
       );
 
+  Future<void> setShopConditions(
+    String shopId,
+    Set<HoursCondition> conditions,
+  ) => (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
+    ShopsCompanion(hoursConditions: Value(conditions)),
+  );
+
   Future<void> setRating(String visitId, int rating) =>
       (_db.update(_db.visits)..where((v) => v.id.equals(visitId))).write(
         VisitsCompanion(rating: Value(rating)),
@@ -524,12 +532,34 @@ class RecordRepository {
             latitude: Value(input.latitude),
             longitude: Value(input.longitude),
             osmId: Value(input.osmId),
-            hoursConditions: Value(hoursConditions ?? const {}),
+            hoursConditions: Value(
+              hoursConditions ?? await _wishedConditions(input),
+            ),
             dataSource: Value(input.dataSource),
             createdAt: now,
           ),
         );
     return id;
+  }
+
+  /// 初めて記録する店に、願を掛けたときに入れておいた条件を引き継ぐ。
+  Future<Set<HoursCondition>> _wishedConditions(ShopInput input) async {
+    final osmId = input.osmId;
+    final wishId = input.wishId;
+    if (wishId == null && osmId == null) return const {};
+    final wish =
+        await (_db.select(_db.wishes)
+              ..where(
+                (w) =>
+                    w.fulfilledVisitId.isNull() &
+                    (wishId != null
+                        ? w.id.equals(wishId)
+                        : w.osmId.equals(osmId!)),
+              )
+              ..orderBy([(w) => OrderingTerm.asc(w.createdAt)])
+              ..limit(1))
+            .getSingleOrNull();
+    return wish?.hoursConditions ?? const {};
   }
 
   Future<Shop?> _findShop(ShopInput input) async {

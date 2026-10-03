@@ -112,6 +112,7 @@ class Wish {
     this.note = '',
     required this.createdAt,
     this.fulfilledVisitId,
+    this.hoursConditions = const {},
   });
 
   final String id;
@@ -133,6 +134,9 @@ class Wish {
 
   /// この願が叶った1杯。まだならnull。
   final String? fulfilledVisitId;
+
+  /// 行く前に入れておく店の攻略しにくさ。まだ記録の無い店なら、初めて記録したときに店に引き継ぐ。
+  final Set<HoursCondition> hoursConditions;
 }
 
 /// 並んでいる最中の店。記録がまだ無い店のこともあるため、店の情報をそのまま持つ。

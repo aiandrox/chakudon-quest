@@ -32,6 +32,7 @@ class WishRepository {
     required ShopInput shop,
     String trigger = '',
     String note = '',
+    Set<HoursCondition> hoursConditions = const {},
     required DateTime now,
   }) async {
     final wish = Wish(
@@ -45,6 +46,7 @@ class WishRepository {
       trigger: trigger.trim(),
       note: note.trim(),
       createdAt: now,
+      hoursConditions: hoursConditions,
     );
     await _db
         .into(_db.wishes)
@@ -60,6 +62,7 @@ class WishRepository {
             trigger: Value(wish.trigger),
             note: Value(wish.note),
             createdAt: wish.createdAt,
+            hoursConditions: Value(wish.hoursConditions),
           ),
         );
     return wish;
@@ -69,8 +72,13 @@ class WishRepository {
     String id, {
     required String trigger,
     required String note,
+    required Set<HoursCondition> hoursConditions,
   }) => (_db.update(_db.wishes)..where((w) => w.id.equals(id))).write(
-    WishesCompanion(trigger: Value(trigger.trim()), note: Value(note.trim())),
+    WishesCompanion(
+      trigger: Value(trigger.trim()),
+      note: Value(note.trim()),
+      hoursConditions: Value(hoursConditions),
+    ),
   );
 
   Future<void> deleteWish(String id) =>
