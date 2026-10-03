@@ -575,7 +575,7 @@ class _UnvisitedPin extends ConsumerWidget {
       child: Semantics(
         button: true,
         label: shop.name,
-        child: const _SealPin(color: Washi.faded, filled: false),
+        child: const _SealPin(color: Washi.faded, filled: true),
       ),
     );
   }
@@ -600,11 +600,11 @@ class _Pin extends StatelessWidget {
         button: true,
         label: pin.shop.name,
         // 丸い印の頭に格の字を入れ、細い足の先を店の場所にする（字が場所に重ならないように）。
-        // 行った店は朱で塗った印。難しさはタップした先で見る（ぱっと見は種類だけ分かればよい）。
+        // 行った店は朱で塗った印に、店ランク（易・厳・難・極）の字を入れる。
         child: _SealPin(
           color: rank == null ? Washi.faded : Washi.shu,
           filled: true,
-          label: l10n.mapVisitedChar,
+          label: rank == null ? null : shopRankLabel(l10n, rank),
         ),
       ),
     );
