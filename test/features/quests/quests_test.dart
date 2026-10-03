@@ -47,6 +47,50 @@ void main() {
     }
   });
 
+  group('期間限定', () {
+    final limited = Quest(
+      id: 'limited',
+      kind: QuestKind.spot,
+      title: '期間限定',
+      description: '期間中に2杯食べる',
+      unit: '杯',
+      thresholds: const [2],
+      count: (scored) => scored.length,
+      availableFrom: _day(1),
+      availableUntil: _day(3),
+    );
+    QuestProgress evaluate(List<VisitWithShop> entries) =>
+        evaluateQuests(scoreVisits(entries), definitions: [limited]).single;
+
+    test('期間のはじめは含み、おわりの日時は含まない', () {
+      expect(limited.isAvailableAt(_day(1)), isTrue);
+      expect(
+        limited.isAvailableAt(_day(1).subtract(const Duration(minutes: 1))),
+        isFalse,
+      );
+      expect(
+        limited.isAvailableAt(_day(3).subtract(const Duration(minutes: 1))),
+        isTrue,
+      );
+      expect(limited.isAvailableAt(_day(3)), isFalse);
+    });
+
+    test('期間の外で食べた記録は数えない', () {
+      // _day(0)〜_day(3) の4杯のうち、期間内は _day(1) と _day(2) の2杯。
+      final progress = evaluate(_bowls(4));
+      expect(progress.current, 2);
+      expect(progress.levelAchievedAt, [_day(2)]);
+
+      expect(evaluate([_bowls(4)[0], _bowls(4)[3]]).isAchieved, isFalse);
+    });
+
+    test('期間が過ぎても、期間中に会得した秘伝は残る', () {
+      final progress = evaluate(_bowls(30));
+      expect(progress.isAchieved, isTrue);
+      expect(progress.levelAchievedAt, [_day(2)]);
+    });
+  });
+
   test('記録が無ければ、すべてレベル0（未達成）', () {
     final all = evaluateQuests(const []);
 
