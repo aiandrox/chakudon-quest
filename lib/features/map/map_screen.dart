@@ -308,12 +308,14 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             ),
             children: [
               if (tilesEnabled)
-                TileLayer(
-                  urlTemplate: _tileUrl,
-                  userAgentPackageName: 'com.aiandrox.chakudon_quest',
-                  // 地図の色を抜いて和紙の色に寄せ、朱の印（ピン）が目立つようにする。
-                  tileBuilder: (context, tile, _) =>
-                      ColorFiltered(colorFilter: _washiTiles, child: tile),
+                // 地図の色を抜いて和紙の色に寄せ、朱の印（ピン）が目立つようにする。
+                // タイルごとではなく、地図全体に1回だけかける（描画の負担を減らすため）。
+                ColorFiltered(
+                  colorFilter: _washiTiles,
+                  child: TileLayer(
+                    urlTemplate: _tileUrl,
+                    userAgentPackageName: 'com.aiandrox.chakudon_quest',
+                  ),
                 ),
               if (_showJourney && shownStops.length > 1)
                 PolylineLayer(

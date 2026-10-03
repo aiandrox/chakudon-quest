@@ -100,6 +100,8 @@ class _InkWearPainter extends CustomPainter {
   final int seed;
   final InkWearPattern pattern;
 
+  // 描く回数を少なくまとめる（1点ずつぼかして描くと、Android の描画で
+  // メモリが足りなくなりアプリが落ちたため）。
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
@@ -121,43 +123,70 @@ class _InkWearPainter extends CustomPainter {
           ],
         ).createShader(rect),
     );
-    for (final mark in pattern.marks) {
-      final radius = mark.radius * extent;
-      canvas.drawCircle(
-        Offset(mark.x * size.width, mark.y * size.height),
-        radius,
-        Paint()
-          ..blendMode = BlendMode.dstOut
-          ..color = Colors.black.withValues(alpha: mark.strength)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * 0.6),
-      );
-    }
-    _paintStreaks(canvas, size);
-  }
 
-  void _paintStreaks(Canvas canvas, Size size) {
-    final extent = size.shortestSide;
-    for (final streak in pattern.streaks) {
-      canvas.save();
-      canvas.translate(streak.x * size.width, streak.y * size.height);
-      canvas.rotate(streak.angle);
-      final width = streak.width * extent;
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(
-            center: Offset.zero,
-            width: streak.length * extent,
-            height: width,
-          ),
-          Radius.circular(width / 2),
-        ),
-        Paint()
-          ..blendMode = BlendMode.dstOut
-          ..color = Colors.black.withValues(alpha: streak.strength)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, width * 0.4),
-      );
-      canvas.restore();
+    final strongSpecks = Path();
+    final faintSpecks = Path();
+    for (final mark in pattern.marks) {
+      final center = Offset(mark.x * size.width, mark.y * size.height);
+      final radius = mark.radius * extent;
+      if (mark.radius >= 0.05) {
+        // 押しむら: 中心ほど薄くなる、ぼんやりした丸。
+        canvas.drawCircle(
+          center,
+          radius,
+          Paint()
+            ..blendMode = BlendMode.dstOut
+            ..shader = RadialGradient(
+              colors: [
+                Colors.black.withValues(alpha: mark.strength),
+                Colors.transparent,
+              ],
+            ).createShader(Rect.fromCircle(center: center, radius: radius)),
+        );
+      } else {
+        (mark.strength >= 0.75 ? strongSpecks : faintSpecks).addOval(
+          Rect.fromCircle(center: center, radius: radius),
+        );
+      }
     }
+    canvas.drawPath(
+      strongSpecks,
+      Paint()
+        ..blendMode = BlendMode.dstOut
+        ..color = Colors.black.withValues(alpha: 0.9),
+    );
+    canvas.drawPath(
+      faintSpecks,
+      Paint()
+        ..blendMode = BlendMode.dstOut
+        ..color = Colors.black.withValues(alpha: 0.6),
+    );
+
+    final streaks = Path();
+    for (final streak in pattern.streaks) {
+      final width = streak.width * extent;
+      final rrect = Path()
+        ..addRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(
+              center: Offset.zero,
+              width: streak.length * extent,
+              height: width,
+            ),
+            Radius.circular(width / 2),
+          ),
+        );
+      final transform = Matrix4.identity()
+        ..translateByDouble(streak.x * size.width, streak.y * size.height, 0, 1)
+        ..rotateZ(streak.angle);
+      streaks.addPath(rrect, Offset.zero, matrix4: transform.storage);
+    }
+    canvas.drawPath(
+      streaks,
+      Paint()
+        ..blendMode = BlendMode.dstOut
+        ..color = Colors.black.withValues(alpha: 0.75),
+    );
   }
 
   @override
