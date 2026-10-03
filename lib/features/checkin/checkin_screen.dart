@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
 import '../shop_search/shop_tile.dart';
+import '../shop_search/yahoo_local.dart';
 import 'checkin_controller.dart';
 import 'checkin_rules.dart';
 
@@ -110,7 +111,10 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  l10n.shopSearchAttribution,
+                  [
+                    l10n.shopSearchAttribution,
+                    if (isYahooEnabled) l10n.yahooAttribution,
+                  ].join('\n'),
                   style: textTheme.labelSmall,
                 ),
               ),

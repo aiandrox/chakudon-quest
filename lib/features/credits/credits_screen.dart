@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../records/record_repository.dart';
+import '../shop_search/yahoo_local.dart';
 import 'credits.dart';
 
 class CreditsScreen extends ConsumerWidget {
@@ -30,6 +31,10 @@ class CreditsScreen extends ConsumerWidget {
           Text(l10n.creditsOsm),
           const SizedBox(height: 8),
           Text(l10n.creditsOpenPoi),
+          if (isYahooEnabled) ...[
+            const SizedBox(height: 8),
+            Text(l10n.creditsYahoo),
+          ],
           if (!credits.isEmpty) ...[
             heading(l10n.creditsSavedShopsHeading),
             Text(l10n.creditsSavedShopsNote, style: textTheme.bodySmall),

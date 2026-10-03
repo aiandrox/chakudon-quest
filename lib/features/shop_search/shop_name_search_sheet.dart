@@ -5,6 +5,8 @@ import '../../l10n/app_localizations.dart';
 import 'found_shop.dart';
 import 'geo.dart';
 import 'openpoi_client.dart';
+import 'yahoo_local.dart';
+import 'yahoo_local_client.dart';
 
 /// 店名で全国の店を探し、選んだ店を返す。やめたらnull。
 Future<FoundShop?> showShopNameSearch(
@@ -59,9 +61,36 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
       _failed = false;
     });
     try {
-      final results = await ref
+      // Yahoo! はラーメン店の業種で絞れるので先に並べ、OpenPOI で補う。
+      // Yahoo! が使えないとき（Client ID が無い・失敗）も、OpenPOI の結果は出す。
+      final yahoo = isYahooEnabled
+          ? ref
+                .read(yahooLocalClientProvider)
+                .searchByName(name, near: widget.near)
+                .then<List<FoundShop>?>(
+                  (shops) => shops,
+                  onError: (Object e) {
+                    debugPrint('Yahoo name search failed: $e');
+                    return null;
+                  },
+                )
+          : Future<List<FoundShop>?>.value();
+      final poi = ref
           .read(openPoiClientProvider)
-          .searchByName(name, near: widget.near);
+          .searchByName(name, near: widget.near)
+          .then<List<FoundShop>?>(
+            (shops) => shops,
+            onError: (Object e) {
+              debugPrint('OpenPOI name search failed: $e');
+              return null;
+            },
+          );
+      final yahooShops = await yahoo;
+      final poiShops = await poi;
+      if (yahooShops == null && poiShops == null) {
+        throw StateError('店名の検索がすべて失敗しました');
+      }
+      final results = mergeFoundShops(const [], [...?yahooShops, ...?poiShops]);
       if (!mounted || generation != _generation) return;
       setState(() {
         _results = results;
@@ -139,7 +168,10 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        l10n.openPoiAttribution,
+                        [
+                          l10n.openPoiAttribution,
+                          if (isYahooEnabled) l10n.yahooAttribution,
+                        ].join('\n'),
                         style: textTheme.labelSmall,
                         textAlign: TextAlign.right,
                       ),

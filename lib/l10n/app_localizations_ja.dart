@@ -753,6 +753,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shopLocated => '地図に載せました';
 
   @override
+  String get yahooAttribution =>
+      'Web Services by Yahoo! JAPAN（https://developer.yahoo.co.jp/sitemap/）';
+
+  @override
+  String get creditsYahoo =>
+      '店の情報: Web Services by Yahoo! JAPAN（https://developer.yahoo.co.jp/sitemap/）';
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override

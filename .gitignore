@@ -64,3 +64,6 @@ app.*.map.json
 # 店舗データの比較スクリプトの結果と、公開しない地点（tool/place_benchmark）
 /tool/place_benchmark/results/
 /tool/place_benchmark/points.local.json
+
+# Yahoo! の Client ID など、ビルドのときに渡す値（公開リポジトリなのでコミットしない）
+/env/

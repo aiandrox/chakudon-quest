@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
 import 'package:chakudon_quest/features/shop_search/openpoi_client.dart';
 import 'package:chakudon_quest/features/shop_search/overpass.dart';
 import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
+import 'package:chakudon_quest/features/shop_search/yahoo_local_client.dart';
 
 const _origin = GeoPoint(35.69, 139.70);
 
@@ -135,5 +137,48 @@ void main() {
     test('両方失敗したときだけ失敗にする', () {
       expect(finder(failing, failing).searchNearby(_origin), throwsStateError);
     });
+  });
+
+  test('Yahoo! の結果も合わせ、OpenStreetMap と同じ店は1つにまとめる', () async {
+    final finder = NearbyShopFinder(
+      overpass: OverpassClient(
+        MockClient(
+          (_) async => http.Response.bytes(
+            utf8.encode(
+              jsonEncode({
+                'elements': [
+                  {
+                    'type': 'node',
+                    'id': 1,
+                    'lat': 35.4398,
+                    'lon': 139.3651,
+                    'tags': {'name': 'ラーメン豚山'},
+                  },
+                ],
+              }),
+            ),
+            200,
+            headers: {'content-type': 'application/json; charset=utf-8'},
+          ),
+        ),
+      ),
+      openPoi: OpenPoiClient(MockClient((_) async => http.Response('', 503))),
+      yahoo: YahooLocalClient(
+        MockClient(
+          (_) async => http.Response.bytes(
+            utf8.encode(
+              File('test/fixtures/yahoo_local_atsugi.json').readAsStringSync(),
+            ),
+            200,
+          ),
+        ),
+        appId: 'test-id',
+      ),
+    );
+
+    final shops = await finder.searchNearby(const GeoPoint(35.4395, 139.3645));
+
+    expect(shops.map((s) => s.name), ['ラーメン豚山', '麺屋藤ろう']);
+    expect(shops.first.osmId, 'node/1');
   });
 }
