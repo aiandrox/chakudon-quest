@@ -75,6 +75,20 @@ bool shopNamesLookAlike(String a, String b) {
   return shorter.length >= 2 && longer.contains(shorter);
 }
 
+/// 店名で探すときに問い合わせる言葉。全角の空白は半角にそろえ、空白があれば空白を詰めた言葉も足す
+/// （検索サービスによって「麺屋 武蔵」では見つからず「麺屋武蔵」では見つかる、などの違いがあるため）。
+List<String> nameQueryVariants(String query) {
+  final spaced = query
+      .replaceAll('\u3000', ' ')
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((word) => word.isNotEmpty)
+      .join(' ');
+  if (spaced.isEmpty) return const [];
+  final joined = spaced.replaceAll(' ', '');
+  return [spaced, if (joined != spaced) joined];
+}
+
 /// 空白を除き、全角英数を半角に、英字を小文字にそろえる。
 String normalizeShopName(String name) {
   final buffer = StringBuffer();

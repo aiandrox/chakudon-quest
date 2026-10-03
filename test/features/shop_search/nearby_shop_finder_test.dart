@@ -72,6 +72,13 @@ void main() {
     });
   });
 
+  test('店名で探す言葉は、全角の空白を半角にそろえ、空白を詰めた言葉も足す', () {
+    expect(nameQueryVariants('麺屋　武蔵'), ['麺屋 武蔵', '麺屋武蔵']);
+    expect(nameQueryVariants(' 麺屋  武蔵 '), ['麺屋 武蔵', '麺屋武蔵']);
+    expect(nameQueryVariants('麺屋武蔵'), ['麺屋武蔵']);
+    expect(nameQueryVariants('　'), isEmpty);
+  });
+
   test('normalizeShopName は空白を除き全角英字を半角小文字にそろえる', () {
     expect(normalizeShopName('鴨　to 葱'), '鴨to葱');
     expect(normalizeShopName('ＲＡＭＥＮ'), 'ramen');

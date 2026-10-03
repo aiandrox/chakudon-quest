@@ -8,6 +8,7 @@ import '../records/clock.dart';
 import '../records/models.dart';
 import '../records/photo_storage.dart';
 import '../records/record_repository.dart';
+import '../shop_search/found_shop.dart';
 import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
 import '../shop_search/shop_candidate.dart';
@@ -180,7 +181,7 @@ class RecordController extends Notifier<RecordState> {
   }
 
   void setManualName(String name) {
-    final query = name.trim().toLowerCase();
+    final query = normalizeShopName(name);
     final deselects = query.isNotEmpty && state.selectedShop != null;
     state = state.copyWith(
       manualName: name,
@@ -194,7 +195,7 @@ class RecordController extends Notifier<RecordState> {
   List<ShopCandidate> _nameMatches(String query) {
     final wished = [
       for (final wish in _pendingWishes)
-        if (wish.name.toLowerCase().contains(query))
+        if (normalizeShopName(wish.name).contains(query))
           ShopCandidate(
             shopId: wish.shopId,
             osmId: wish.osmId,
@@ -207,7 +208,7 @@ class RecordController extends Notifier<RecordState> {
     ];
     final known = [
       for (final shop in _knownShops)
-        if (shop.name.toLowerCase().contains(query) &&
+        if (normalizeShopName(shop.name).contains(query) &&
             !wished.any((w) => w.shopId == shop.id))
           ShopCandidate.fromShop(shop),
     ];
