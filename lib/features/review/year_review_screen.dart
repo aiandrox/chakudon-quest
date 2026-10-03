@@ -336,20 +336,29 @@ class _CountsPageState extends State<_CountsPage>
     with SingleTickerProviderStateMixin {
   late final int _count = widget.review.stamps.length;
 
+  // めくり終えてから一呼吸おいて押し始める（ページはめくり始めた時点で作られるため）。
+  static const _lead = 900;
+
   // 1つあたり0.15秒、多いときは全部で3秒に収める。押し終えたら0.4秒で数字を出す。
   late final _perStamp = _count == 0 ? 0 : (3000 / _count).clamp(40, 150);
   late final _controller = AnimationController(
     vsync: this,
-    duration: Duration(milliseconds: (_perStamp * _count + 600).round()),
+    duration: Duration(
+      milliseconds: (_lead + _perStamp * _count + 600).round(),
+    ),
   )..forward();
+
+  /// 押し始めてからの時間（ミリ秒）。押し始める前は負。
+  double get _elapsed =>
+      _controller.value * _controller.duration!.inMilliseconds - _lead;
   int _pressed = 0;
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(() {
-      final elapsed = _controller.value * _controller.duration!.inMilliseconds;
-      final pressed = _perStamp == 0
+      final elapsed = _elapsed;
+      final pressed = _perStamp == 0 || elapsed < 0
           ? 0
           : (elapsed / _perStamp).floor().clamp(0, _count);
       if (pressed > _pressed) {
@@ -380,8 +389,7 @@ class _CountsPageState extends State<_CountsPage>
         AnimatedBuilder(
           animation: _controller,
           builder: (context, _) {
-            final elapsed =
-                _controller.value * _controller.duration!.inMilliseconds;
+            final elapsed = _elapsed;
             return Column(
               children: [
                 Wrap(
