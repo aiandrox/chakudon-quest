@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
 
 void main() {
   group('parseOverpassResponse', () {

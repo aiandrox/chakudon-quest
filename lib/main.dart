@@ -16,7 +16,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [documentsDirectoryProvider.overrideWithValue(documents)],
-      child: const ChakudonQuestApp(),
+      child: const RamenInChoApp(),
     ),
   );
 }
@@ -29,8 +29,8 @@ Stream<LicenseEntry> _fontLicenses() async* {
   }
 }
 
-class ChakudonQuestApp extends StatelessWidget {
-  const ChakudonQuestApp({super.key});
+class RamenInChoApp extends StatelessWidget {
+  const RamenInChoApp({super.key});
 
   @override
   Widget build(BuildContext context) {

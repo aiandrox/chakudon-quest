@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/scoring/ranks.dart';
-import 'package:chakudon_quest/features/words/words.dart';
+import 'package:ramen_in_cho/features/scoring/ranks.dart';
+import 'package:ramen_in_cho/features/words/words.dart';
 
 void main() {
   test('同じ鍵からはいつも同じ言葉を選び、鍵が違えばばらける', () {

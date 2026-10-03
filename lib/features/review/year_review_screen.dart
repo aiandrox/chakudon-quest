@@ -76,7 +76,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> {
       image.dispose();
       if (bytes == null) throw StateError('画像を作れませんでした');
       final directory = await getTemporaryDirectory();
-      final file = File(p.join(directory.path, 'chakudon-$_year.png'));
+      final file = File(p.join(directory.path, 'ramen-in-cho-$_year.png'));
       await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
       await SharePlus.instance.share(
         ShareParams(

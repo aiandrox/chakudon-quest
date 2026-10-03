@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
 import 'package:http/http.dart' as http;
 
 import 'evaluation.dart';
@@ -23,7 +23,7 @@ abstract class PlaceProvider {
 }
 
 const _userAgent =
-    'chakudon-quest-benchmark (https://github.com/aiandrox/chakudon-quest)';
+    'ramen-in-cho-benchmark (https://github.com/aiandrox/ramen-in-cho)';
 const _timeout = Duration(seconds: 30);
 
 Map<String, Object?> _decode(http.Response response) {

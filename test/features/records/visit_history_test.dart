@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/visit_history.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/visit_history.dart';
 
 import '../../support/builders.dart';
 

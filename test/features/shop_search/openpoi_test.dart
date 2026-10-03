@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/openpoi.dart';
-import 'package:chakudon_quest/features/shop_search/openpoi_client.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/openpoi.dart';
+import 'package:ramen_in_cho/features/shop_search/openpoi_client.dart';
 
 void main() {
   group('parseOpenPoiResponse', () {

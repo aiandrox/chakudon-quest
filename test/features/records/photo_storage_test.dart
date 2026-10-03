@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:chakudon_quest/features/records/photo_storage.dart';
+import 'package:ramen_in_cho/features/records/photo_storage.dart';
 
 import '../../support/fakes.dart';
 

@@ -1,4 +1,4 @@
-import 'package:chakudon_quest/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
 
 Shop buildShop({
   String id = 'shop',

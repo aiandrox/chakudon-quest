@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/inkan/inkan_stamp.dart';
-import 'package:chakudon_quest/features/notifications/notification_service.dart';
-import 'package:chakudon_quest/features/record/record_result_screen.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/scoring/ranks.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/words/words.dart';
-import 'package:chakudon_quest/theme/washi.dart';
+import 'package:ramen_in_cho/features/inkan/inkan_stamp.dart';
+import 'package:ramen_in_cho/features/notifications/notification_service.dart';
+import 'package:ramen_in_cho/features/record/record_result_screen.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/scoring/ranks.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/words/words.dart';
+import 'package:ramen_in_cho/theme/washi.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';

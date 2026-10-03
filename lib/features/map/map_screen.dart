@@ -320,7 +320,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   colorFilter: _washiTiles,
                   child: TileLayer(
                     urlTemplate: _tileUrl,
-                    userAgentPackageName: 'com.aiandrox.chakudon_quest',
+                    userAgentPackageName: 'com.aiandrox.ramen_in_cho',
                   ),
                 ),
               if (_showJourney && shownStops.length > 1)

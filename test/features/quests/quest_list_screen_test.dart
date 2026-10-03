@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/quests/quest_list_screen.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/quests/quest_seal.dart';
+import 'package:ramen_in_cho/features/quests/quest_list_screen.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/quests/quest_seal.dart';
 
 import '../../support/builders.dart';
 import '../../support/l10n.dart';

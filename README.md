@@ -1,4 +1,4 @@
-# 着丼クエスト
+# 麺印帳（Ramen-In-Cho）
 
 食べたラーメンを記録し、行列や限定営業の「攻略難易度」に応じてポイントを貯めたり、クエスト（お題）を達成したりする、自分用のやり込みゲームです。
 
@@ -22,7 +22,7 @@
 | 並んでいる間の通知 | チェックイン中は通知に経過時間を表示（Android） |
 | バックアップ | 記録と写真を zip に書き出し、機種変更先で読み込む |
 
-機能のアイデアは [「アイデア」ラベルの issue](https://github.com/aiandrox/chakudon-quest/issues?q=is%3Aissue+label%3Aアイデア) にまとめています。
+機能のアイデアは [「アイデア」ラベルの issue](https://github.com/aiandrox/ramen-in-cho/issues?q=is%3Aissue+label%3Aアイデア) にまとめています。
 
 ## 動かし方
 

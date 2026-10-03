@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/shop/hours_condition_chips.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/shop/hours_condition_chips.dart';
 
 void main() {
   test('昼のみと夜のみは、片方を選ぶともう片方が外れる', () {

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/checkin/checkin_rules.dart';
-import 'package:chakudon_quest/features/records/models.dart';
+import 'package:ramen_in_cho/features/checkin/checkin_rules.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
 
 void main() {
   final checkedInAt = DateTime(2026, 9, 30, 11);

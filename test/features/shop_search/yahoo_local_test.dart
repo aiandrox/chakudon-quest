@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/yahoo_local.dart';
-import 'package:chakudon_quest/features/shop_search/yahoo_local_client.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/yahoo_local.dart';
+import 'package:ramen_in_cho/features/shop_search/yahoo_local_client.dart';
 
 void main() {
   final sample = File('test/fixtures/yahoo_local_atsugi.json')

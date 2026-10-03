@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/shop_search/opening_hours.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/shop_search/opening_hours.dart';
 
 void main() {
   test('毎日ふつうに開いている店は、条件なし', () {

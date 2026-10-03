@@ -5,11 +5,11 @@ import 'package:archive/archive_io.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:chakudon_quest/features/backup/backup_codec.dart';
-import 'package:chakudon_quest/features/backup/backup_service.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/photo_storage.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/backup/backup_codec.dart';
+import 'package:ramen_in_cho/features/backup/backup_service.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/photo_storage.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
 
 import '../../support/fakes.dart';
 
@@ -205,7 +205,7 @@ void main() {
 
     test('書き出したファイルを別のスマホで読み込むと、記録と写真が戻る', () async {
       final backup = await serviceFor(source, sourcePhotos).writeBackup(_now);
-      expect(p.basename(backup.path), 'chakudon-quest-20261001-2130.zip');
+      expect(p.basename(backup.path), 'ramen-in-cho-20261001-2130.zip');
 
       final target = RecordRepository(createTestDatabase());
       final targetPhotos = PhotoStorage(createTempDirectory());

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/record/photo_metadata.dart';
+import 'package:ramen_in_cho/features/record/photo_metadata.dart';
 
 void main() {
   group('parseExifDateTime', () {

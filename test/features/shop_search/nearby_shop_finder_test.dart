@@ -5,12 +5,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
-import 'package:chakudon_quest/features/shop_search/openpoi_client.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
-import 'package:chakudon_quest/features/shop_search/yahoo_local_client.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/nearby_shop_finder.dart';
+import 'package:ramen_in_cho/features/shop_search/openpoi_client.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass_client.dart';
+import 'package:ramen_in_cho/features/shop_search/yahoo_local_client.dart';
 
 const _origin = GeoPoint(35.69, 139.70);
 

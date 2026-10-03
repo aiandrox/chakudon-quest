@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:chakudon_quest/l10n/app_localizations.dart';
+import 'package:ramen_in_cho/l10n/app_localizations.dart';
 
 final ja = lookupAppLocalizations(const Locale('ja'));
 

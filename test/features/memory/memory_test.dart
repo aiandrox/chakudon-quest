@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/memory/memory.dart';
-import 'package:chakudon_quest/features/memory/memory_card.dart';
-import 'package:chakudon_quest/features/records/clock.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/scoring/points.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/words/words.dart';
+import 'package:ramen_in_cho/features/memory/memory.dart';
+import 'package:ramen_in_cho/features/memory/memory_card.dart';
+import 'package:ramen_in_cho/features/records/clock.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/scoring/points.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/words/words.dart';
 
 import '../../support/builders.dart';
 import '../../support/l10n.dart';

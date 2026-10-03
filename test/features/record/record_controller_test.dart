@@ -5,21 +5,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:chakudon_quest/features/database/app_database.dart';
-import 'package:chakudon_quest/features/record/photo_metadata.dart';
-import 'package:chakudon_quest/features/record/photo_picker.dart';
-import 'package:chakudon_quest/features/record/record_controller.dart';
-import 'package:chakudon_quest/features/record/record_state.dart';
-import 'package:chakudon_quest/features/records/clock.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/photo_storage.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/records/wait_time.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/location_service.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
-import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
+import 'package:ramen_in_cho/features/database/app_database.dart';
+import 'package:ramen_in_cho/features/record/photo_metadata.dart';
+import 'package:ramen_in_cho/features/record/photo_picker.dart';
+import 'package:ramen_in_cho/features/record/record_controller.dart';
+import 'package:ramen_in_cho/features/record/record_state.dart';
+import 'package:ramen_in_cho/features/records/clock.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/photo_storage.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/records/wait_time.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/location_service.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/nearby_shop_finder.dart';
+import 'package:ramen_in_cho/features/shop_search/shop_search_service.dart';
 
 import '../../support/fakes.dart';
 

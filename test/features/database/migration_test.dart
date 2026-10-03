@@ -1,10 +1,10 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/database/app_database.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/database/app_database.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
 
 /// 最初の版（バージョン1）のテーブル定義。
 const _v1Schema = [

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/theme/ink_wear.dart';
+import 'package:ramen_in_cho/theme/ink_wear.dart';
 
 void main() {
   test('同じ記録の印は、いつ作っても同じかすれ方になる', () {

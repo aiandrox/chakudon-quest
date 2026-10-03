@@ -4,20 +4,20 @@ import 'dart:io';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/backup/backup_codec.dart';
-import 'package:chakudon_quest/features/database/app_database.dart';
-import 'package:chakudon_quest/features/notifications/notification_service.dart';
-import 'package:chakudon_quest/features/record/photo_metadata.dart';
-import 'package:chakudon_quest/features/record/photo_picker.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/location_service.dart';
-import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/overpass_client.dart';
-import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
+import 'package:ramen_in_cho/features/backup/backup_codec.dart';
+import 'package:ramen_in_cho/features/database/app_database.dart';
+import 'package:ramen_in_cho/features/notifications/notification_service.dart';
+import 'package:ramen_in_cho/features/record/photo_metadata.dart';
+import 'package:ramen_in_cho/features/record/photo_picker.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/location_service.dart';
+import 'package:ramen_in_cho/features/shop_search/nearby_shop_finder.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass_client.dart';
+import 'package:ramen_in_cho/features/shop_search/shop_search_service.dart';
 
 AppDatabase createTestDatabase() {
   final database = AppDatabase(NativeDatabase.memory());
@@ -26,7 +26,7 @@ AppDatabase createTestDatabase() {
 }
 
 Directory createTempDirectory() {
-  final directory = Directory.systemTemp.createTempSync('chakudon_test');
+  final directory = Directory.systemTemp.createTempSync('ramen_in_cho_test');
   addTearDown(() => directory.deleteSync(recursive: true));
   return directory;
 }

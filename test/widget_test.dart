@@ -5,19 +5,19 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/checkin/checkin_controller.dart';
-import 'package:chakudon_quest/features/map/map_screen.dart';
-import 'package:chakudon_quest/features/notifications/notification_service.dart';
-import 'package:chakudon_quest/features/record/photo_picker.dart';
-import 'package:chakudon_quest/features/records/clock.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/photo_storage.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/shop_search/location_service.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/inkan/inkan_stamp.dart';
-import 'package:chakudon_quest/main.dart';
-import 'package:chakudon_quest/theme/washi.dart';
+import 'package:ramen_in_cho/features/checkin/checkin_controller.dart';
+import 'package:ramen_in_cho/features/map/map_screen.dart';
+import 'package:ramen_in_cho/features/notifications/notification_service.dart';
+import 'package:ramen_in_cho/features/record/photo_picker.dart';
+import 'package:ramen_in_cho/features/records/clock.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/photo_storage.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/shop_search/location_service.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/inkan/inkan_stamp.dart';
+import 'package:ramen_in_cho/main.dart';
+import 'package:ramen_in_cho/theme/washi.dart';
 
 import 'support/fakes.dart';
 import 'support/l10n.dart';
@@ -48,7 +48,7 @@ void main() {
           locationServiceProvider.overrideWithValue(FakeLocationService()),
           if (now != null) clockProvider.overrideWithValue(() => now),
         ],
-        child: const ChakudonQuestApp(),
+        child: const RamenInChoApp(),
       ),
     );
     await tester.pumpAndSettle();
@@ -165,7 +165,7 @@ void main() {
           photoPickerProvider.overrideWithValue(FakePhotoPicker()),
           notificationServiceProvider.overrideWithValue(notifications),
         ],
-        child: const ChakudonQuestApp(),
+        child: const RamenInChoApp(),
       ),
     );
 

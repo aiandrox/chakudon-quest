@@ -1,6 +1,6 @@
 {
   "@@locale": "ja",
-  "appName": "着丼クエスト",
+  "appName": "麺印帳",
   "homeEmpty": "まだ記録がありません\n「＋」から最初の一杯を記録しましょう",
   "homeLoadFailed": "記録を読み込めませんでした",
   "addRecord": "記録する",
@@ -430,7 +430,7 @@
       "total": {"type": "int"}
     }
   },
-  "backupImportInvalid": "着丼クエストのバックアップとして読めないファイルです",
+  "backupImportInvalid": "麺印帳のバックアップとして読めないファイルです",
   "backupImportFailed": "読み込めませんでした。もう一度お試しください",
   "backupFileType": "バックアップ（zip）",
   "statsBests": "自己ベスト",
