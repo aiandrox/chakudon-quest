@@ -1,5 +1,6 @@
 import '../records/models.dart';
 import '../scoring/points.dart';
+import '../shop_search/geo.dart';
 import '../wishes/wishes.dart';
 
 /// 1杯にたどり着くまでの短い物語（道中記）。保存せず、記録からその場で組み立てる。
@@ -55,18 +56,23 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
     );
   }
 
-  // いつもの地域と違う街なら、遠出したことを必ず書く。
-  final area = target.shop.area;
-  final homeArea = _homeArea(all);
-  if (area != null && homeArea != null && area != homeArea) {
-    lines.add(pick(['遠く$areaまで足をのばして。', 'はるばる$areaへ。', '今日は$areaまで遠征。']));
-  } else if (wish == null && retreats.isEmpty) {
-    // 何も起きなかった日にも彩りがあるよう、地名・時間帯・曜日・季節の一文を添える（添えない日もある）。
-    final scene = pick([
-      ..._scenes(visit.eatenAt),
-      if (area != null) ...['$areaの街で。', '$areaの空の下で。', '$areaにて。'],
-    ]);
+  if (wish == null && retreats.isEmpty) {
+    // 何も起きなかった日にも彩りがあるよう、時間帯・曜日・季節の一文を添える（添えない日もある）。
+    final scene = pick(_scenes(visit.eatenAt));
     if (scene.isNotEmpty) lines.add(scene);
+  }
+
+  // 地名は、あとから調べて分かることがあるため、ほかの言い回しとは別に決めて足すだけにする
+  // （地名が分かっても、ほかの文は変わらない）。
+  final area = target.shop.area;
+  if (area != null && area.isNotEmpty) {
+    final pickArea = _Picker('${visit.id}#area');
+    if (_isFarFromHome(target, all)) {
+      lines.add(pickArea(['遠く$areaまで足をのばして。', 'はるばる$areaへ。', '今日は$areaまで遠征。']));
+    } else {
+      final line = pickArea(['$areaの街で。', '$areaの空の下で。', '$areaにて。', '']);
+      if (line.isNotEmpty) lines.add(line);
+    }
   }
 
   if (retreats.length == 1) {
@@ -127,16 +133,35 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
 
 bool _isEaten(Visit visit) => visit.result == VisitResult.eaten;
 
-/// いちばん多く食べた店の地名（いつもの地域）。地名のわかる店が無ければnull。
-String? _homeArea(List<ScoredVisit> all) {
+/// 遠出とみなす、いつもの店からの距離。
+const _farMeters = 20000;
+
+/// この1杯の店が、いつもの店（この1杯までにいちばん多く食べた店）から遠いか。
+/// あとから記録を足しても過去の道中記が変わらないよう、この1杯までの記録だけで決める。
+bool _isFarFromHome(ScoredVisit target, List<ScoredVisit> all) {
   final counts = <String, int>{};
+  final shops = <String, Shop>{};
   for (final entry in all) {
-    final area = entry.shop.area;
-    if (area == null || !_isEaten(entry.visit)) continue;
-    counts.update(area, (n) => n + 1, ifAbsent: () => 1);
+    if (!_isEaten(entry.visit)) continue;
+    if (entry != target && !_isBefore(entry.visit, target.visit)) continue;
+    counts.update(entry.shop.id, (n) => n + 1, ifAbsent: () => 1);
+    shops[entry.shop.id] = entry.shop;
   }
-  if (counts.isEmpty) return null;
-  return counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
+  if (counts.isEmpty) return false;
+  final home =
+      shops[counts.entries.reduce((a, b) => b.value > a.value ? b : a).key]!;
+  final here = target.shop;
+  if (home.latitude == null ||
+      home.longitude == null ||
+      here.latitude == null ||
+      here.longitude == null) {
+    return false;
+  }
+  return distanceMeters(
+        GeoPoint(home.latitude!, home.longitude!),
+        GeoPoint(here.latitude!, here.longitude!),
+      ) >=
+      _farMeters;
 }
 
 bool _isBefore(Visit a, Visit b) {

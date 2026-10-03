@@ -58,7 +58,7 @@ class Shop {
   /// OpenPOI で見つけた店の出所。OpenStreetMap の店・手入力の店は null。
   final ShopSource? dataSource;
 
-  /// 店のある市区町村（「厚木市」など）。道中記に使う。位置から調べるまではnull。
+  /// 店のある市区町村（「厚木市」など）。道中記に使う。位置から調べるまではnull、調べても分からなければ空。
   final String? area;
   final DateTime createdAt;
 }

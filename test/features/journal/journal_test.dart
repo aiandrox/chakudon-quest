@@ -159,32 +159,44 @@ void main() {
     expect(journals.length, greaterThan(10));
   });
 
-  test('いつもの地域と違う街の1杯は、遠出したことを書く', () {
-    Shop areaShop(String id, String area) =>
-        Shop(id: id, name: id, area: area, createdAt: DateTime(2026));
-    final home = areaShop('home', '新宿区');
-    final away = areaShop('away', '厚木市');
+  Shop placed(String id, String area, double latitude) => Shop(
+    id: id,
+    name: id,
+    area: area,
+    latitude: latitude,
+    longitude: 139.0,
+    createdAt: DateTime(2026),
+  );
+
+  test('いつもの店から20km以上離れた店の1杯は、地名を出して遠出したことを書く', () {
+    final home = placed('home', '新宿区', 35.69);
+    final away = placed('away', '厚木市', 35.44);
     final lines = journalOf([
       buildEntry(shop: home, eatenAt: day(8, 1)),
       buildEntry(shop: home, eatenAt: day(8, 2)),
       buildEntry(shop: away, eatenAt: day(8, 3)),
     ]);
 
-    expect(lines.any((l) => l.contains('厚木市')), isTrue);
+    expect(
+      lines.any(
+        (l) => l.contains('厚木市') && (l.contains('遠') || l.contains('はるばる')),
+      ),
+      isTrue,
+    );
   });
 
-  test('いつもの地域の1杯では、遠出とは書かない', () {
-    final home = Shop(
-      id: 'home',
-      name: 'home',
-      area: '新宿区',
-      createdAt: DateTime(2026),
+  test('地名がわかっても、ほかの言い回しは変わらない', () {
+    final entry = buildEntry(
+      shop: placed('home', '', 35.69),
+      eatenAt: day(8, 1),
     );
-    final lines = journalOf([
-      buildEntry(shop: home, eatenAt: day(8, 1)),
-      buildEntry(shop: home, eatenAt: day(8, 2)),
-    ]);
+    final withArea = VisitWithShop(
+      shop: placed('home', '新宿区', 35.69),
+      visit: entry.visit,
+    );
+    final without = journalOf([entry]);
+    final with_ = journalOf([withArea]);
 
-    expect(lines.any((l) => l.contains('遠') || l.contains('はるばる')), isFalse);
+    expect(with_.where((l) => !l.contains('新宿区')), without);
   });
 }
