@@ -12,6 +12,7 @@ import '../review/year_review_entry.dart';
 import '../scoring/rank_progress.dart';
 import '../scoring/scoring_providers.dart';
 import '../stats/stats_screen.dart';
+import '../streak/healthy_life_card.dart';
 import '../streak/streak_line.dart';
 
 /// 修行の記録をひとまとめにした画面。段位 → 型と秘伝 → 数字 → 設定の順に並べる。
@@ -32,6 +33,7 @@ class ShugyoScreen extends ConsumerWidget {
         children: [
           RankProgress(totalPoints: ref.watch(totalPointsProvider)),
           const StreakLine(),
+          const HealthyLifeCard(),
           const HomeBaseLine(),
           const SizedBox(height: 24),
           const QuestSections(),

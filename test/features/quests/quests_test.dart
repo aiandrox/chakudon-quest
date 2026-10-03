@@ -37,6 +37,18 @@ void main() {
       '幻の店',
       '拠点を構える',
       '百日越しの願',
+      '朝ラーの心得',
+      '丑三つの背徳',
+      '疾風の着丼',
+      '系統はしご',
+      '一途',
+      '月の巡礼',
+      '限定狩りの月',
+      '満点の舌',
+      '二郎の洗礼',
+      '遥かなる遠征',
+      '年越しの一杯',
+      '夏の涼麺',
     ]);
     for (final quest in quests) {
       final sorted = [...quest.thresholds]..sort();
@@ -330,7 +342,11 @@ void main() {
         after: evaluateQuests(scoreVisits(after)),
       );
 
-      expect(levelUps.map((l) => (l.quest.id, l.level)), [('bowls', 2)]);
+      // 同じ店の10杯目なので、秘伝「一途」も同時に会得する。
+      expect(levelUps.map((l) => (l.quest.id, l.level)), [
+        ('bowls', 2),
+        ('devoted', 1),
+      ]);
     });
 
     test('最初の1杯では「はじめての着丼」だけを知らせる（同じことを二重に知らせない）', () {

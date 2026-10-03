@@ -78,7 +78,8 @@ void main() {
 
     final r2025 = review(2025);
     expect(r2025.ranks, isEmpty);
-    expect(r2025.quests.map((q) => q.quest.id), ['first_bowl']);
+    // 2025年の1杯は12月31日なので、秘伝「年越しの一杯」も届く。
+    expect(r2025.quests.map((q) => q.quest.id), ['first_bowl', 'new_year_eve']);
   });
 
   test('型は、その年に上がったいちばん上の段だけを出す', () {

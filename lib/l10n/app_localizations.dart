@@ -1882,6 +1882,24 @@ abstract class AppLocalizations {
   /// **'修行'**
   String get shugyoTitle;
 
+  /// No description provided for @healthyLifeTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'毎日ラーメン健康生活'**
+  String get healthyLifeTitle;
+
+  /// No description provided for @healthyLifeBest.
+  ///
+  /// In ja, this message translates to:
+  /// **'最高 {days}日連続'**
+  String healthyLifeBest(int days);
+
+  /// No description provided for @healthyLifeRevealNote.
+  ///
+  /// In ja, this message translates to:
+  /// **'7日続けて着丼した'**
+  String get healthyLifeRevealNote;
+
   /// No description provided for @shugyorokuTitle.
   ///
   /// In ja, this message translates to:

@@ -3,6 +3,7 @@ import '../records/models.dart';
 import '../records/wait_time.dart';
 import '../scoring/points.dart';
 import '../scoring/ranks.dart';
+import '../shop_search/geo.dart';
 import '../wishes/wishes.dart';
 
 /// 常設: 回数を重ねるごとにレベルが上がる。スポット: 1回達成すれば終わり。
@@ -187,6 +188,126 @@ const quests = <Quest>[
     thresholds: [1],
     count: _longWishCount,
     seal: QuestSealDesign('願', QuestSealShape.dottedRing),
+  ),
+  Quest(
+    id: 'dawn',
+    kind: QuestKind.spot,
+    title: '朝ラーの心得',
+    description: '朝5時〜10時に食べる',
+    unit: '回',
+    thresholds: [1],
+    count: _dawnCount,
+    seal: QuestSealDesign('暁', QuestSealShape.doubleCircle),
+  ),
+  Quest(
+    id: 'midnight',
+    kind: QuestKind.spot,
+    title: '丑三つの背徳',
+    description: '夜中の0時〜4時に食べる',
+    unit: '回',
+    thresholds: [1],
+    count: _midnightCount,
+    seal: QuestSealDesign('闇', QuestSealShape.octagon),
+  ),
+  Quest(
+    id: 'swift',
+    kind: QuestKind.spot,
+    title: '疾風の着丼',
+    description: '並んでから5分以内に着丼する',
+    unit: '回',
+    thresholds: [1],
+    count: _swiftCount,
+    seal: QuestSealDesign('速', QuestSealShape.diamond),
+  ),
+  Quest(
+    id: 'style_ladder',
+    kind: QuestKind.spot,
+    title: '系統はしご',
+    description: '同じ日に違う系統を2杯食べる',
+    unit: '日',
+    thresholds: [1],
+    count: _styleLadderDays,
+    seal: QuestSealDesign('梯', QuestSealShape.hexagon),
+  ),
+  Quest(
+    id: 'devoted',
+    kind: QuestKind.spot,
+    title: '一途',
+    description: '同じ店で10杯食べる',
+    unit: '杯',
+    thresholds: [10],
+    count: _mostAtOneShop,
+    seal: QuestSealDesign('一', QuestSealShape.square),
+  ),
+  Quest(
+    id: 'pilgrimage',
+    kind: QuestKind.spot,
+    title: '月の巡礼',
+    description: '1か月に10軒の違う店で食べる',
+    unit: '軒',
+    thresholds: [10],
+    count: _mostShopsInMonth,
+    seal: QuestSealDesign('巡', QuestSealShape.eightRing),
+  ),
+  Quest(
+    id: 'limited_month',
+    kind: QuestKind.spot,
+    title: '限定狩りの月',
+    description: '1か月に限定を3杯食べる',
+    unit: '杯',
+    thresholds: [3],
+    count: _mostLimitedInMonth,
+    seal: QuestSealDesign('狩', QuestSealShape.flower),
+  ),
+  Quest(
+    id: 'perfect',
+    kind: QuestKind.spot,
+    title: '満点の舌',
+    description: '★5を10杯つける',
+    unit: '杯',
+    thresholds: [10],
+    count: _fiveStarCount,
+    seal: QuestSealDesign('満', QuestSealShape.dottedRing),
+  ),
+  Quest(
+    id: 'jiro',
+    kind: QuestKind.spot,
+    title: '二郎の洗礼',
+    description: '二郎系を食べる',
+    unit: '杯',
+    thresholds: [1],
+    count: _jiroCount,
+    seal: QuestSealDesign('豚', QuestSealShape.castle),
+  ),
+  Quest(
+    id: 'far_journey',
+    kind: QuestKind.spot,
+    title: '遥かなる遠征',
+    description: 'いちばん通っている店から100km以上離れた店で食べる',
+    unit: '回',
+    thresholds: [1],
+    count: _farJourneyCount,
+    seal: QuestSealDesign('旅', QuestSealShape.octagon),
+  ),
+  Quest(
+    id: 'new_year_eve',
+    kind: QuestKind.spot,
+    title: '年越しの一杯',
+    description: '12月31日に食べる',
+    unit: '回',
+    thresholds: [1],
+    count: _newYearEveCount,
+    seal: QuestSealDesign('越', QuestSealShape.hexagon),
+  ),
+  Quest(
+    id: 'summer_cold',
+    kind: QuestKind.spot,
+    title: '夏の涼麺',
+    description: '7〜8月につけ麺か汁なしを食べる',
+    unit: '杯',
+    thresholds: [1],
+    count: _summerColdCount,
+    seal: QuestSealDesign('涼', QuestSealShape.diamond),
   ),
 ];
 
@@ -415,5 +536,117 @@ int _longWishCount(List<ScoredVisit> scored) => scored
       (e) =>
           e.fulfilledWish != null &&
           daysToFulfill(e.fulfilledWish!, e.visit.eatenAt) >= 100,
+    )
+    .length;
+
+int _hourCount(List<ScoredVisit> scored, bool Function(int hour) matches) =>
+    scored.where((e) => _isEaten(e) && matches(e.visit.eatenAt.hour)).length;
+
+int _dawnCount(List<ScoredVisit> scored) =>
+    _hourCount(scored, (hour) => hour >= 5 && hour < 10);
+
+int _midnightCount(List<ScoredVisit> scored) =>
+    _hourCount(scored, (hour) => hour < 4);
+
+/// 並んでから5分以内に着丼した回数（並んでいない記録は数えない）。
+int _swiftCount(List<ScoredVisit> scored) => scored.where((e) {
+  final waited = waitMinutes(e.visit);
+  return waited != null && waited <= 5;
+}).length;
+
+/// 違う系統を2杯以上食べた日の数。
+int _styleLadderDays(List<ScoredVisit> scored) {
+  final perDay = <DateTime, Set<RamenStyle>>{};
+  for (final entry in scored.where(_isEaten)) {
+    final style = entry.visit.style;
+    if (style == null) continue;
+    final at = entry.visit.eatenAt;
+    (perDay[DateTime(at.year, at.month, at.day)] ??= {}).add(style);
+  }
+  return perDay.values.where((styles) => styles.length >= 2).length;
+}
+
+/// いちばん多く食べた店での杯数。
+int _mostAtOneShop(List<ScoredVisit> scored) {
+  final counts = <String, int>{};
+  for (final entry in scored.where(_isEaten)) {
+    counts.update(entry.visit.shopId, (n) => n + 1, ifAbsent: () => 1);
+  }
+  return counts.values.fold(0, (a, b) => a > b ? a : b);
+}
+
+/// 1か月のうちで、いちばん多くの店で食べた月の軒数。
+int _mostShopsInMonth(List<ScoredVisit> scored) {
+  final perMonth = <DateTime, Set<String>>{};
+  for (final entry in scored.where(_isEaten)) {
+    final at = entry.visit.eatenAt;
+    (perMonth[DateTime(at.year, at.month)] ??= {}).add(entry.visit.shopId);
+  }
+  return perMonth.values.fold(0, (a, b) => a > b.length ? a : b.length);
+}
+
+/// 1か月のうちで、いちばん多く限定を食べた月の杯数。
+int _mostLimitedInMonth(List<ScoredVisit> scored) {
+  final perMonth = <DateTime, int>{};
+  for (final entry in scored.where((e) => _isEaten(e) && e.visit.isLimited)) {
+    final at = entry.visit.eatenAt;
+    perMonth.update(
+      DateTime(at.year, at.month),
+      (n) => n + 1,
+      ifAbsent: () => 1,
+    );
+  }
+  return perMonth.values.fold(0, (a, b) => a > b ? a : b);
+}
+
+int _fiveStarCount(List<ScoredVisit> scored) =>
+    scored.where((e) => _isEaten(e) && e.visit.rating == 5).length;
+
+int _jiroCount(List<ScoredVisit> scored) =>
+    scored.where((e) => _isEaten(e) && e.visit.style == RamenStyle.jiro).length;
+
+/// 遠征とみなす、いつもの店からの距離。
+const _farJourneyMeters = 100000;
+
+/// その1杯より前にいちばん多く食べた店から、100km以上離れた店で食べた回数。
+/// その1杯より前の記録だけで決めるので、記録が増えても数は減らない。記録を1回なめるだけで数える。
+int _farJourneyCount(List<ScoredVisit> scored) {
+  final bowls = <String, int>{};
+  GeoPoint? home;
+  var homeBowls = 0;
+  var count = 0;
+  for (final entry in scored.where(_isEaten)) {
+    final latitude = entry.shop.latitude;
+    final longitude = entry.shop.longitude;
+    if (latitude == null || longitude == null) continue;
+    final here = GeoPoint(latitude, longitude);
+    if (home != null && distanceMeters(home, here) >= _farJourneyMeters) {
+      count++;
+    }
+    final n = bowls.update(entry.shop.id, (n) => n + 1, ifAbsent: () => 1);
+    if (n > homeBowls) {
+      homeBowls = n;
+      home = here;
+    }
+  }
+  return count;
+}
+
+int _newYearEveCount(List<ScoredVisit> scored) => scored
+    .where(
+      (e) =>
+          _isEaten(e) &&
+          e.visit.eatenAt.month == 12 &&
+          e.visit.eatenAt.day == 31,
+    )
+    .length;
+
+int _summerColdCount(List<ScoredVisit> scored) => scored
+    .where(
+      (e) =>
+          _isEaten(e) &&
+          (e.visit.eatenAt.month == 7 || e.visit.eatenAt.month == 8) &&
+          (e.visit.style == RamenStyle.tsukemen ||
+              e.visit.style == RamenStyle.shirunashi),
     )
     .length;
