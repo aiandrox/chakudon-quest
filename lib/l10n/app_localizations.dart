@@ -1846,6 +1846,36 @@ abstract class AppLocalizations {
   /// **'修行'**
   String get shugyoTitle;
 
+  /// No description provided for @shugyorokuTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'修行録'**
+  String get shugyorokuTitle;
+
+  /// No description provided for @shugyorokuOpen.
+  ///
+  /// In ja, this message translates to:
+  /// **'これまでの一杯を、物語で読み返す'**
+  String get shugyorokuOpen;
+
+  /// No description provided for @shugyorokuEmpty.
+  ///
+  /// In ja, this message translates to:
+  /// **'最初の一杯から、修行録が始まります'**
+  String get shugyorokuEmpty;
+
+  /// No description provided for @shugyorokuChapter.
+  ///
+  /// In ja, this message translates to:
+  /// **'{year}年 {month}月'**
+  String shugyorokuChapter(int year, int month);
+
+  /// No description provided for @shugyorokuEntryTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'{month}月{day}日　{shop}'**
+  String shugyorokuEntryTitle(int month, int day, String shop);
+
   /// No description provided for @settingsSection.
   ///
   /// In ja, this message translates to:

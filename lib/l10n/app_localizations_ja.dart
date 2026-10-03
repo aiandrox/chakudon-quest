@@ -1027,6 +1027,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shugyoTitle => '修行';
 
   @override
+  String get shugyorokuTitle => '修行録';
+
+  @override
+  String get shugyorokuOpen => 'これまでの一杯を、物語で読み返す';
+
+  @override
+  String get shugyorokuEmpty => '最初の一杯から、修行録が始まります';
+
+  @override
+  String shugyorokuChapter(int year, int month) {
+    return '$year年 $month月';
+  }
+
+  @override
+  String shugyorokuEntryTitle(int month, int day, String shop) {
+    return '$month月$day日　$shop';
+  }
+
+  @override
   String get settingsSection => '設定';
 
   @override

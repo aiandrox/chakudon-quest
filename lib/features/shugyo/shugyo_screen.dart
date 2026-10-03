@@ -5,6 +5,7 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
 import '../backup/backup_screen.dart';
 import '../credits/credits_screen.dart';
+import '../journal/shugyoroku_screen.dart';
 import '../quests/quest_list_screen.dart';
 import '../scoring/rank_progress.dart';
 import '../scoring/scoring_providers.dart';
@@ -31,6 +32,14 @@ class ShugyoScreen extends ConsumerWidget {
           const StreakLine(),
           const SizedBox(height: 24),
           const QuestSections(),
+          const SizedBox(height: 32),
+          SectionTitle(l10n.shugyorokuTitle),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.shugyorokuOpen),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => open(const ShugyorokuScreen()),
+          ),
           const SizedBox(height: 32),
           const StatsSections(),
           const SizedBox(height: 32),
