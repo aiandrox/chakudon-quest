@@ -152,6 +152,10 @@ class _ResultBody extends StatelessWidget {
         const SizedBox(height: 20),
         // 印を押したあとに修行点の帯が伸び、段位が上がればその場で光って替わる。
         ExpBar(before: outcome.totalBefore, after: outcome.totalAfter),
+        if (outcome.revealsHealthyLife) ...[
+          const SizedBox(height: 12),
+          const _HealthyLifeRevealBanner(),
+        ],
         for (final levelUp in outcome.questLevelUps) ...[
           const SizedBox(height: 12),
           _QuestAchievedBanner(levelUp: levelUp),
@@ -365,6 +369,39 @@ class _WishFulfilledBanner extends StatelessWidget {
                 style: textTheme.bodySmall?.copyWith(color: Washi.nightSoft),
                 textAlign: TextAlign.center,
               ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 隠し要素「毎日ラーメン健康生活」が出現したときの知らせ。
+class _HealthyLifeRevealBanner extends StatelessWidget {
+  const _HealthyLifeRevealBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border.all(color: Washi.shuLight)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text(l10n.healthyLifeRevealed, style: textTheme.labelLarge),
+            const SizedBox(height: 4),
+            Text(
+              l10n.healthyLifeTitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 24,
+                color: Washi.shuLight,
+              ),
+            ),
+            Text(l10n.healthyLifeRevealNote, style: textTheme.bodyMedium),
           ],
         ),
       ),
