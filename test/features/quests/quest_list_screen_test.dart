@@ -33,7 +33,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('常設とスポットに分けて表示する。記録が無ければ奥義は隠す', (tester) async {
+  testWidgets('常設とスポットに分けて表示する。記録が無ければ秘伝は隠す', (tester) async {
     await pumpQuests(tester, const []);
 
     expect(find.text(ja.questStanding), findsOneWidget);
@@ -58,7 +58,7 @@ void main() {
 
     // 着丼の道は10杯で Lv.2（次は30杯）。
     expect(find.text(ja.questCount(10, '杯')), findsOneWidget);
-    // 会得した奥義（はじめての着丼）だけを、独自の印で出す。
+    // 会得した秘伝（はじめての着丼）だけを、独自の印で出す。
     expect(find.text('はじめての着丼'), findsOneWidget);
     expect(find.text('初'), findsOneWidget);
     expect(find.text('60分の試練'), findsNothing);

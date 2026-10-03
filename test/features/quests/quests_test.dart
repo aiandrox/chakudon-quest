@@ -139,7 +139,7 @@ void main() {
     expect(_progress('limited', limited(5)).level, 2);
   });
 
-  test('系統の探究は奥義。「その他」を除く8系統をすべて食べた記録で会得', () {
+  test('系統の探究は秘伝。「その他」を除く8系統をすべて食べた記録で会得', () {
     const styles = [
       RamenStyle.shoyu,
       RamenStyle.miso,

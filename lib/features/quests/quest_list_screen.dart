@@ -8,7 +8,7 @@ import '../visit_detail/visit_detail_screen.dart';
 import 'quest_seal.dart';
 import 'quests.dart';
 
-/// 型と奥義の一覧。修行タブの中に並べる。
+/// 型と秘伝の一覧。修行タブの中に並べる。
 class QuestSections extends ConsumerWidget {
   const QuestSections({super.key});
 
@@ -24,7 +24,7 @@ class QuestSections extends ConsumerWidget {
       for (final progress in all)
         if (progress.quest.kind == QuestKind.spot) progress,
     ];
-    // 奥義は会得したものだけを、会得した順に印で並べる（まだのものは隠しておく）。
+    // 秘伝は会得したものだけを、会得した順に印で並べる（まだのものは隠しておく）。
     final achieved =
         [
           for (final progress in spot)
@@ -141,7 +141,7 @@ class _QuestCard extends StatelessWidget {
   }
 }
 
-/// 会得した奥義の印。タップすると、どの店で会得したかを見られる。
+/// 会得した秘伝の印。タップすると、どの店で会得したかを見られる。
 class _SpotSeal extends StatelessWidget {
   const _SpotSeal({required this.progress});
 

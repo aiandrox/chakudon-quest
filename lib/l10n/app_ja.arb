@@ -217,7 +217,7 @@
   "resultOk": "印帳にもどる",
   "navRecords": "印帳",
   "questStanding": "型",
-  "questSpot": "奥義",
+  "questSpot": "秘伝",
   "questLevelTotal": "段の合計 {total}",
   "@questLevelTotal": {
     "placeholders": {
@@ -262,7 +262,7 @@
       "level": {"type": "int"}
     }
   },
-  "questAchieved": "奥義会得！",
+  "questAchieved": "秘伝会得！",
   "statsEmpty": "記録が増えると、ここに統計が出ます",
   "bowls": "{count}杯",
   "@bowls": {
@@ -573,7 +573,7 @@
   "navGlyphShugyo": "修",
   "navGlyphMap": "地",
   "wishTriggerRetreat": "撤退した店",
-  "questSpotNone": "まだ会得した奥義はありません",
+  "questSpotNone": "まだ会得した秘伝はありません",
   "reviewEntry": "{year}年の振り返り",
   "@reviewEntry": {"placeholders": {"year": {"type": "int"}}},
   "reviewInvite": "{year}年の修行を振り返りませんか",
@@ -619,7 +619,7 @@
   },
   "reviewAchievementsTitle": "この一年の成果",
   "reviewRanks": "上がった段位",
-  "reviewQuests": "会得した型と奥義",
+  "reviewQuests": "会得した型と秘伝",
   "reviewWishes": "叶った願",
   "reviewWishCount": "{count}軒",
   "@reviewWishCount": {"placeholders": {"count": {"type": "int"}}},

@@ -68,7 +68,7 @@ void main() {
     expect(review(2025).longestWait, isNull);
   });
 
-  test('その年に上がった段位と、届いた型・奥義', () {
+  test('その年に上がった段位と、届いた型・秘伝', () {
     final r = review(2026);
 
     expect(r.ranks.map((a) => a.rank), [AdventurerRank.dan1]);
