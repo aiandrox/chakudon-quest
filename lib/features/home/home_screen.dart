@@ -13,6 +13,7 @@ import '../records/clock.dart';
 import '../records/models.dart';
 import '../records/record_repository.dart';
 import '../records/visit_photo.dart';
+import '../review/year_review_entry.dart';
 import '../inkan/inkan.dart';
 import '../inkan/inkan_stamp.dart';
 import '../../theme/washi.dart';
@@ -159,6 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           if (_ratingPromptTarget(visits.value) case final entry?)
             RatingPrompt(entry: entry),
+          const YearReviewInviteCard(),
           const MemoryCard(),
           const SizedBox(height: 12),
         ],
