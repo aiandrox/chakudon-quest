@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../records/labels.dart';
 import '../records/models.dart';
+import '../../theme/washi_buttons.dart';
 
 /// 店の攻略しにくさの条件を、いくつでも選ぶ札。
 class HoursConditionChips extends StatelessWidget {
@@ -73,7 +74,7 @@ class _ShopConditionsDialogState extends State<_ShopConditionsDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        TextButton(
+        ShuFuda(
           onPressed: () => Navigator.of(context).pop(_selected),
           child: Text(l10n.editSave),
         ),
