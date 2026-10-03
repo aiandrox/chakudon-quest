@@ -13,7 +13,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       : undefined;
   try {
     const shops = await searchByName(
-      { fetch, cache: caches.default, yahooAppId: env.YAHOO_APP_ID },
+      { fetch: (input, init) => fetch(input, init), cache: caches.default, yahooAppId: env.YAHOO_APP_ID },
       await loadCuratedShops(env.DB),
       query,
       near,
