@@ -223,8 +223,7 @@ flutter analyze      # 静的解析
 flutter test         # テスト
 flutter gen-l10n     # 文言ファイル（app_ja.arb）からコードを生成
 flutter build apk --release --dart-define-from-file=$HOME/.config/ramen-in-cho/local.json   # Yahoo! の Client ID を入れてビルド（ID はリポジトリの外に置く）
-flutter build appbundle --release --dart-define-from-file=$HOME/.config/ramen-in-cho/local.json   # Google Play に上げる AAB（アップロード鍵で署名）
-flutter build ipa --release --dart-define-from-file=$HOME/.config/ramen-in-cho/local.json         # App Store Connect に上げる IPA
+scripts/release.sh <ios|android|all>   # ビルド番号を上げてストアに上げ、v<版>+<番号> のタグを打つ（docs/release/README.md）
 dart run build_runner build --delete-conflicting-outputs   # drift のコード生成
 ```
 
@@ -335,6 +334,7 @@ dart run build_runner build --delete-conflicting-outputs   # drift のコード�
 | 2026-10-03 | アプリのアイコンと起動画面を「藍の印帳の表紙に、題箋『麺印帳』と丼の朱印」にする（ロゴ案 9c）。絵は `test/tool/app_icon_test.dart` で描き、`UPDATE_APP_ICON=true` で Android・iOS の各サイズを作り直す。かすれは入れない | 利用者の選択。印帳（帳面）と印、ラーメン（丼）が1つの絵で伝わるため。小さいアイコンでは、かすれが汚れに見えるため |
 | 2026-10-03 | サーバーの API（`/api/v1/...`）を Firebase App Check で守る。アプリは問い合わせに `X-Firebase-AppCheck` のトークンを添え（取れなければ添えずに問い合わせる）、サーバーは `site/functions/api/_middleware.ts` で確かめる。まずは記録だけ取り、`site/wrangler.toml` の `APP_CHECK_ENFORCE` を `"true"` にすると断るようになる。断られてもアプリは端末から直接探すので、記録はできる。Firebase のうち App Check だけを持ち込み、計測・クラッシュ報告は入れない。`firebase_core`・`firebase_app_check`（BSD-3-Clause、Firebase 公式）と、サーバーに `jose`（MIT）を追加 | API を誰でも呼べると、Yahoo! の利用上限を使い切られたり、Overpass に負荷をかけたりするため（aiandrox の判断で Firebase を許可）。face-seal と同じ作りにするため |
 | 2026-10-04 | ストア（TestFlight・Google Play の内部テスト）に上げられるようにする。Android は AAB（`bundleRelease`）だけをアップロード鍵で署名し、APK はデバッグ鍵のままにする。鍵は `~/.config/ramen-in-cho/upload-keystore.jks`、パスワードは同じ場所の `key.properties`（`android/key.properties` に写して使う。どちらも git の対象外）。iOS は Info.plist に `ITSAppUsesNonExemptEncryption = false` を入れる | 家族の端末には `flutter run --release` / `adb install -r` で入れているので、APK の鍵を変えると上書きできず、入れ直しで記録が消えるため。アップロード鍵を失うと Play のアプリを更新できなくなるので、パスワードの管理アプリにも控える。通信は HTTPS だけで、暗号の輸出の申告は要らないため |
+| 2026-10-04 | ストアへのリリースは face-seal と同じ `scripts/release.sh` で行い、ビルド番号ごとに `v<X.Y.Z>+<N>` のタグと GitHub Release を作る。リリースノートは日本語だけ。鍵と設定は `~/.config/ramen-in-cho/`（または git の対象外の `env/`）に置く | iOS と Android で同じ番号を別の中身で使わないようにし、どのコミットをストアに上げたかをタグで追えるようにするため（aiandrox の要望）。鍵をリポジトリの外に置くのは、公開リポジトリに誤ってコミットしないためと、worktree ごとに置き直さなくて済むため |
 | 初版 | アプリ名は「着丼クエスト」（`chakudon-quest`） | 同名のアプリ・サービスが見つからず、名前で検索したときに埋もれにくいため。遊びの中心を「クエスト（お題）の達成」に置く |
 
 ## 未決の論点

@@ -18,6 +18,7 @@ on:
       - "analysis_options.yaml"
       - "l10n.yaml"
       - "data/**"
+      - "scripts/**"
       - ".github/workflows/flutter-ci.yml"
       - ".github/actions/setup-flutter/**"
 
@@ -44,3 +45,5 @@ jobs:
       - run: flutter analyze
 
       - run: flutter test
+
+      - run: bash scripts/test-release-lib.sh
