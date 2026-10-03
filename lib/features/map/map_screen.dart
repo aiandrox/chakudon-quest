@@ -35,6 +35,14 @@ const nearbySearchRadiusMeters = 1000;
 /// 行った店が無く、現在地もわからないときに最初に見せる場所（東京駅）。
 const _fallbackCenter = LatLng(35.6812, 139.7671);
 
+/// 地図の色を8割ほど抜き、少し明るく暖かい色にする。
+const _washiTiles = ColorFilter.matrix(<double>[
+  0.50, 0.42, 0.08, 0, 30, //
+  0.15, 0.77, 0.08, 0, 26, //
+  0.15, 0.42, 0.43, 0, 14, //
+  0, 0, 0, 1, 0, //
+]);
+
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
@@ -303,6 +311,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 TileLayer(
                   urlTemplate: _tileUrl,
                   userAgentPackageName: 'com.aiandrox.chakudon_quest',
+                  // 地図の色を抜いて和紙の色に寄せ、朱の印（ピン）が目立つようにする。
+                  tileBuilder: (context, tile, _) =>
+                      ColorFiltered(colorFilter: _washiTiles, child: tile),
                 ),
               if (_showJourney && shownStops.length > 1)
                 PolylineLayer(
@@ -366,9 +377,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     ),
                 ],
               ),
-              // 「flutter_map | © 」は部品が付けるため、出典の名前だけを渡す。
-              SimpleAttributionWidget(source: Text(l10n.mapAttribution)),
             ],
+          ),
+          // 出典は必要なものだけを小さく出す（部品名は出さない）。
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: ColoredBox(
+              color: Washi.paper.withValues(alpha: 0.85),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                child: Text(
+                  l10n.mapAttribution,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ),
+            ),
           ),
           if (_nearby.isNotEmpty)
             Positioned(
@@ -450,16 +474,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               child: const Icon(Icons.my_location),
             ),
             const SizedBox(height: 12),
-            FloatingActionButton.extended(
+            FloatingActionButton(
               heroTag: 'search-here',
+              tooltip: l10n.mapSearchHere,
+              shape: const CircleBorder(),
               onPressed: _isSearching ? null : _searchHere,
-              icon: _isSearching
+              child: _isSearching
                   ? const SizedBox.square(
                       dimension: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
                   : const Icon(Icons.search),
-              label: Text(l10n.mapSearchHere),
             ),
           ],
         ),

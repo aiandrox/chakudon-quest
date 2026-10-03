@@ -63,7 +63,7 @@ void main() {
     await pumpMap(tester, [buildEntry(shop: buildShop(id: 'no-location'))]);
 
     expect(find.text(ja.mapEmpty), findsOneWidget);
-    expect(find.text(ja.mapSearchHere), findsOneWidget);
+    expect(find.byTooltip(ja.mapSearchHere), findsOneWidget);
     expect(location.requests, [true]);
   });
 
@@ -77,7 +77,7 @@ void main() {
     );
     await pumpMap(tester, [buildEntry(shop: visited)]);
 
-    await tester.tap(find.text(ja.mapSearchHere));
+    await tester.tap(find.byTooltip(ja.mapSearchHere));
     await tester.pumpAndSettle();
 
     expect(overpass.radii, [nearbySearchRadiusMeters]);
@@ -103,7 +103,7 @@ void main() {
       ),
     ]);
 
-    await tester.tap(find.text(ja.mapSearchHere));
+    await tester.tap(find.byTooltip(ja.mapSearchHere));
     await tester.pumpAndSettle();
 
     expect(find.text(ja.mapNearbyNone), findsOneWidget);
@@ -113,7 +113,7 @@ void main() {
     overpass.error = StateError('offline');
     await pumpMap(tester, const []);
 
-    await tester.tap(find.text(ja.mapSearchHere));
+    await tester.tap(find.byTooltip(ja.mapSearchHere));
     await tester.pumpAndSettle();
 
     expect(find.text(ja.mapSearchFailed), findsOneWidget);
@@ -153,7 +153,7 @@ void main() {
     overpass.gate = gate;
     await pumpMap(tester, [buildEntry(shop: buildShop(id: 'no-location'))]);
 
-    await tester.tap(find.text(ja.mapSearchHere));
+    await tester.tap(find.byTooltip(ja.mapSearchHere));
     await tester.pump();
     expect(find.text(ja.mapSearching), findsOneWidget);
     expect(find.byType(LinearProgressIndicator), findsOneWidget);

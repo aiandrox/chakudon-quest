@@ -1441,7 +1441,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapAttribution.
   ///
   /// In ja, this message translates to:
-  /// **'OpenStreetMap contributors'**
+  /// **'© OpenStreetMap contributors'**
   String get mapAttribution;
 
   /// No description provided for @openPoiAttribution.
