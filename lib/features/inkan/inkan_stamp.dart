@@ -7,8 +7,6 @@ import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
 import '../records/models.dart';
 import '../scoring/points.dart';
-import '../scoring/rank_labels.dart';
-import '../scoring/ranks.dart';
 import 'inkan.dart';
 
 /// 印の真ん中に書く、系統を表す漢字1〜2文字。系統をつけていない記録は「拉麺」。
@@ -59,12 +57,8 @@ class InkanStamp extends StatelessWidget {
       InkanShape.filled => Washi.page,
       _ => Washi.shu,
     };
-    final rank = shopRankLabel(l10n, shopRankFor(scored.points.total));
-    final top = isRetreat
-        ? null
-        : scored.isRetrySuccess
-        ? l10n.inkanTop(rank, l10n.inkanRetry)
-        : rank;
+    // 格は印の形と模様で表す（字にすると麺の量の「並」などと紛らわしいため）。
+    final top = !isRetreat && scored.isRetrySuccess ? l10n.inkanRetry : null;
     final center = isRetreat
         ? l10n.inkanRetreat
         : inkanStyleName(l10n, visit.style);
@@ -85,13 +79,7 @@ class InkanStamp extends StatelessWidget {
             Text(
               top,
               maxLines: 1,
-              // 格の1文字だけのときは大きく見せる。
-              style: top.length == 1
-                  ? small.copyWith(
-                      fontSize: size * 0.21,
-                      fontWeight: FontWeight.w900,
-                    )
-                  : small.copyWith(fontWeight: FontWeight.w700),
+              style: small.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
         // 円の真ん中がいちばん広いので、系統名はほかより幅を広くとる。
@@ -166,33 +154,111 @@ class _InkanPainter extends CustomPainter {
       ..strokeWidth = width
       ..color = color.withValues(alpha: 0.92);
 
+    final ink = Washi.shu.withValues(alpha: 0.92);
+    Paint fill([Color? color]) => Paint()..color = color ?? ink;
+
     switch (shape) {
+      // 並: 細い丸だけ。
       case InkanShape.circle:
         canvas.drawCircle(center, radius - stroke, line(Washi.shu, stroke));
+      // 上: 二重丸のあいだに、小さな点を一周並べる。
       case InkanShape.doubleCircle:
         canvas.drawCircle(center, radius - stroke, line(Washi.shu, stroke));
         canvas.drawCircle(
           center,
-          radius - stroke * 2.8,
+          radius - stroke * 3.2,
           line(Washi.shu, stroke * 0.6),
         );
+        final dots = Path();
+        const count = 28;
+        for (var i = 0; i < count; i++) {
+          final a = 2 * math.pi * i / count;
+          dots.addOval(
+            Rect.fromCircle(
+              center:
+                  center +
+                  Offset(math.cos(a), math.sin(a)) * (radius - stroke * 2.1),
+              radius: stroke * 0.38,
+            ),
+          );
+        }
+        canvas.drawPath(dots, fill());
+      // 特: 角の二重枠に、四隅の菱形と、内側の細い点線を足す。
       case InkanShape.square:
         final outer = Rect.fromCircle(center: center, radius: radius * 0.86);
-        final corner = Radius.circular(radius * 0.12);
+        final corner = Radius.circular(radius * 0.08);
         canvas.drawRRect(
           RRect.fromRectAndRadius(outer, corner),
-          line(Washi.shu, stroke),
+          line(Washi.shu, stroke * 1.2),
         );
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(outer.deflate(stroke * 1.8), corner),
-          line(Washi.shu, stroke * 0.6),
-        );
+        final inner = outer.deflate(stroke * 2);
+        canvas.drawRect(inner, line(Washi.shu, stroke * 0.55));
+        final dashed = Path();
+        final dash = inner.deflate(stroke * 1.2);
+        const steps = 14;
+        for (var i = 0; i < steps; i++) {
+          final t0 = i / steps;
+          final t1 = (i + 0.5) / steps;
+          for (final (from, to) in [
+            (dash.topLeft, dash.topRight),
+            (dash.topRight, dash.bottomRight),
+            (dash.bottomRight, dash.bottomLeft),
+            (dash.bottomLeft, dash.topLeft),
+          ]) {
+            dashed
+              ..moveTo(
+                from.dx + (to.dx - from.dx) * t0,
+                from.dy + (to.dy - from.dy) * t0,
+              )
+              ..lineTo(
+                from.dx + (to.dx - from.dx) * t1,
+                from.dy + (to.dy - from.dy) * t1,
+              );
+          }
+        }
+        canvas.drawPath(dashed, line(Washi.shu, stroke * 0.35));
+        final diamonds = Path();
+        final d = stroke * 1.6;
+        for (final c in [
+          outer.topLeft,
+          outer.topRight,
+          outer.bottomLeft,
+          outer.bottomRight,
+        ]) {
+          diamonds
+            ..moveTo(c.dx, c.dy - d)
+            ..lineTo(c.dx + d, c.dy)
+            ..lineTo(c.dx, c.dy + d)
+            ..lineTo(c.dx - d, c.dy)
+            ..close();
+        }
+        canvas.drawPath(diamonds, fill());
+      // 極: 菊の花びらのような縁取りの中を朱で塗り、金色の細い輪を重ねる。
       case InkanShape.filled:
-        canvas.drawCircle(center, radius - stroke, line(Washi.shu, stroke));
+        const petals = 16;
+        final flower = Path();
+        final petalR = radius * 0.17;
+        final ringR = radius - petalR;
+        for (var i = 0; i < petals; i++) {
+          final a = 2 * math.pi * i / petals;
+          flower.addOval(
+            Rect.fromCircle(
+              center: center + Offset(math.cos(a), math.sin(a)) * ringR,
+              radius: petalR,
+            ),
+          );
+        }
+        flower.addOval(Rect.fromCircle(center: center, radius: ringR));
+        canvas.drawPath(flower, fill());
         canvas.drawCircle(
           center,
-          radius - stroke * 2.6,
-          Paint()..color = Washi.shu.withValues(alpha: 0.95),
+          ringR - stroke * 0.6,
+          line(const Color(0xFFE8C77A), stroke * 0.45),
+        );
+        canvas.drawCircle(
+          center,
+          ringR - stroke * 1.8,
+          line(Washi.page, stroke * 0.3),
         );
       case InkanShape.retreat:
         final paint = line(Washi.faded, stroke * 0.7);
