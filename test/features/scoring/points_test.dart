@@ -145,6 +145,39 @@ void main() {
       );
     });
 
+    test('朝ラー（5〜9時台）と深夜（0〜4時台）は+10。自動でつく', () {
+      PointsBreakdown at(int hour, int minute) => calculatePoints(
+        visit: buildVisit(eatenAt: DateTime(2026, 9, 30, hour, minute)),
+        hoursConditions: const {},
+        isFirstVisit: false,
+        isRetrySuccess: false,
+      );
+
+      expect(at(0, 0).lateNightBonus, 10);
+      expect(at(4, 59).lateNightBonus, 10);
+      expect(at(4, 59).earlyBonus, 0);
+      expect(at(5, 0).earlyBonus, 10);
+      expect(at(5, 0).lateNightBonus, 0);
+      expect(at(9, 59).earlyBonus, 10);
+      expect(at(10, 0).earlyBonus, 0);
+      expect(at(23, 59).lateNightBonus, 0);
+      expect(at(9, 59).total, 20);
+    });
+
+    test('遠征は+20。倍率もかかる', () {
+      final points = calculatePoints(
+        visit: buildVisit(),
+        hoursConditions: const {HoursCondition.lunchOnly},
+        isFirstVisit: false,
+        isRetrySuccess: false,
+        isExpedition: true,
+      );
+
+      expect(points.expeditionBonus, 20);
+      // (10 + 20) × 1.3 = 39
+      expect(points.total, 39);
+    });
+
     test('撤退の記録は0点', () {
       final points = _points(
         result: VisitResult.retreated,
@@ -232,6 +265,21 @@ void main() {
       // (10 + 15 + 10) × 2 = 70、10 + 10 = 20
       expect(scored.map((s) => s.points.total), [70, 20]);
       expect(totalPoints(scored), 90);
+    });
+
+    test('拠点から80km以上離れた店の1杯は遠征になる。拠点ができる前は遠征にならない', () {
+      // 緯度0.01度は約1.1km。
+      final home = buildShop(id: 'home', latitude: 35.0, longitude: 139.0);
+      final far = buildShop(id: 'far', latitude: 35.8, longitude: 139.0);
+      final scored = scoreVisits([
+        buildEntry(shop: far, eatenAt: day(1)),
+        for (var d = 2; d <= 6; d++) buildEntry(shop: home, eatenAt: day(d)),
+        buildEntry(shop: far, eatenAt: day(7)),
+      ]);
+
+      expect(scored.first.points.expeditionBonus, 0);
+      expect(scored.last.points.expeditionBonus, 20);
+      expect(scored.where((s) => s.points.expeditionBonus > 0), hasLength(1));
     });
 
     test('記録が無ければ累計は0', () {

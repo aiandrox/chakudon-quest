@@ -5,11 +5,13 @@ import '../shop_search/geo.dart';
 /// 旅路の1か所（食べた店）。
 class JourneyStop {
   const JourneyStop({
+    required this.visitId,
     required this.shop,
     required this.location,
     required this.eatenAt,
   });
 
+  final String visitId;
   final Shop shop;
   final GeoPoint location;
   final DateTime eatenAt;
@@ -29,6 +31,7 @@ List<JourneyStop> journeyStops(List<ScoredVisit> scored, {int? year}) {
     if (stops.isNotEmpty && stops.last.shop.id == entry.shop.id) continue;
     stops.add(
       JourneyStop(
+        visitId: visit.id,
         shop: entry.shop,
         location: GeoPoint(latitude, longitude),
         eatenAt: visit.eatenAt,
@@ -130,15 +133,19 @@ HomeBase? _baseIn(List<JourneyStop> eaten) {
   return best;
 }
 
-List<JourneyStop> _eatenStops(List<ScoredVisit> scored) => [
-  for (final entry in scored)
-    if (entry.visit.result == VisitResult.eaten &&
-        entry.shop.latitude != null &&
-        entry.shop.longitude != null)
+List<JourneyStop> _eatenStops(List<ScoredVisit> scored) =>
+    _eatenStopsOf([for (final entry in scored) (entry.visit, entry.shop)]);
+
+List<JourneyStop> _eatenStopsOf(List<(Visit, Shop)> entries) => [
+  for (final (visit, shop) in entries)
+    if (visit.result == VisitResult.eaten &&
+        shop.latitude != null &&
+        shop.longitude != null)
       JourneyStop(
-        shop: entry.shop,
-        location: GeoPoint(entry.shop.latitude!, entry.shop.longitude!),
-        eatenAt: entry.visit.eatenAt,
+        visitId: visit.id,
+        shop: shop,
+        location: GeoPoint(shop.latitude!, shop.longitude!),
+        eatenAt: visit.eatenAt,
       ),
 ];
 
@@ -154,28 +161,52 @@ class Expedition {
 /// 食べた日を、日ごとにまとめる（新しい順）。引っ越しても、前の遠征は変わらない。
 /// その日に拠点がまだ無ければ、遠征も無い。[year]を渡すと、その年の遠征だけを返す。
 List<Expedition> expeditions(List<ScoredVisit> scored, {int? year}) {
-  final eaten = _eatenStops(scored);
   final byDay = <DateTime, List<JourneyStop>>{};
-  for (final stop in eaten) {
+  for (final stop in _expeditionStops(_eatenStops(scored))) {
     final at = stop.eatenAt;
     if (year != null && at.year != year) continue;
     (byDay[DateTime(at.year, at.month, at.day)] ??= []).add(stop);
   }
-  final result = <Expedition>[];
-  for (final MapEntry(key: day, value: stops) in byDay.entries) {
-    final nextDay = DateTime(day.year, day.month, day.day + 1);
-    final base = _currentBase([
-      for (final stop in eaten)
-        if (stop.eatenAt.isBefore(nextDay)) stop,
-    ]);
-    if (base == null) continue;
-    final far = [
-      for (final stop in stops)
-        if (distanceMeters(base.location, stop.location) >=
-            expeditionKilometers * 1000)
-          stop,
-    ];
-    if (far.isNotEmpty) result.add(Expedition(day: day, stops: far));
+  return [
+    for (final MapEntry(key: day, value: stops) in byDay.entries)
+      Expedition(day: day, stops: stops),
+  ]..sort((a, b) => b.day.compareTo(a.day));
+}
+
+/// 遠征で食べた記録のID（[expeditions]と同じ決め方）。修行点の採点に使う。
+Set<String> expeditionVisitIds(List<(Visit, Shop)> entries) => {
+  for (final stop in _expeditionStops(_eatenStopsOf(entries))) stop.visitId,
+};
+
+/// その日の時点の拠点から遠い店で食べた1杯（古い順）。
+List<JourneyStop> _expeditionStops(List<JourneyStop> eaten) {
+  final ordered = [...eaten]..sort((a, b) => a.eatenAt.compareTo(b.eatenAt));
+  const far = expeditionKilometers * 1000;
+  final baseByDay = <DateTime, HomeBase?>{};
+  final farFromSome = <String, bool>{};
+  final result = <JourneyStop>[];
+  for (var i = 0; i < ordered.length; i++) {
+    final stop = ordered[i];
+    // 拠点はどれかの店なので、どの店からも遠くなければ遠征ではない（拠点を求めずに済ませる）。
+    final mayBeFar = farFromSome.putIfAbsent(
+      stop.shop.id,
+      () => ordered.any(
+        (other) => distanceMeters(other.location, stop.location) >= far,
+      ),
+    );
+    if (!mayBeFar) continue;
+    final at = stop.eatenAt;
+    final day = DateTime(at.year, at.month, at.day);
+    final base = baseByDay.putIfAbsent(day, () {
+      final nextDay = DateTime(day.year, day.month, day.day + 1);
+      return _currentBase([
+        for (final other in ordered)
+          if (other.eatenAt.isBefore(nextDay)) other,
+      ]);
+    });
+    if (base != null && distanceMeters(base.location, stop.location) >= far) {
+      result.add(stop);
+    }
   }
-  return result..sort((a, b) => b.day.compareTo(a.day));
+  return result;
 }

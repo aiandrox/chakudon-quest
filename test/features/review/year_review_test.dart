@@ -15,7 +15,7 @@ void main() {
     // 20点（初訪問）
     buildEntry(shop: shopA, eatenAt: DateTime(2025, 12, 31, 23, 59)),
     // 10点
-    buildEntry(shop: shopA, eatenAt: DateTime(2026, 1, 1)),
+    buildEntry(shop: shopA, eatenAt: DateTime(2026, 1, 1, 12)),
     // 30点（45分待ち）。累計60点で初段
     buildEntry(shop: shopA, eatenAt: DateTime(2026, 3, 5, 12), waitMinutes: 45),
     buildEntry(
