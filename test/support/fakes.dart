@@ -158,6 +158,7 @@ class FakeRecordRepository implements RecordRepository {
 
   final checkins = <ShopInput>[];
   final retreatMemos = <String>[];
+  final retreatWishTriggers = <String?>[];
   int cancelCount = 0;
 
   @override
@@ -202,11 +203,13 @@ class FakeRecordRepository implements RecordRepository {
   Future<Visit> saveRetreat({
     required Checkin checkin,
     String memo = '',
+    String? wishTrigger,
     required DateTime now,
   }) async {
     final error = this.error;
     if (error != null) throw error;
     retreatMemos.add(memo);
+    retreatWishTriggers.add(wishTrigger);
     return Visit(
       id: 'retreat',
       shopId: 'shop',

@@ -306,7 +306,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get retreatConfirm => '撤退を記録';
 
   @override
-  String get retreatSaved => '撤退を記録しました';
+  String get retreatSaved => '撤退を記録し、願掛け帳に入れました';
 
   @override
   String get retreatFailed => '記録できませんでした。もう一度お試しください';
@@ -1054,4 +1054,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get navGlyphMap => '地';
+
+  @override
+  String get wishTriggerRetreat => '撤退した店';
 }

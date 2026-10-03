@@ -1,15 +1,19 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/database/app_database.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 
 import '../../support/fakes.dart';
 
 void main() {
   late RecordRepository repository;
+  late AppDatabase database;
 
   setUp(() {
-    repository = RecordRepository(createTestDatabase());
+    database = createTestDatabase();
+    repository = RecordRepository(database);
   });
 
   Future<Visit> save(
@@ -567,6 +571,35 @@ void main() {
       expect(entry.shop.name, '麺屋');
       expect(entry.shop.osmId, 'node/1');
       expect(await repository.activeCheckin(), isNull);
+    });
+
+    test('撤退すると、その店を願掛け帳に入れ、次に食べると願が叶う', () async {
+      await repository.checkIn(shop: shop, at: checkedInAt);
+      await repository.saveRetreat(
+        checkin: (await repository.activeCheckin())!,
+        wishTrigger: '撤退した店',
+        now: checkedInAt,
+      );
+      final wishes = WishRepository(database);
+      final wish = (await wishes.watchWishes().first).single;
+      expect(wish.name, '麺屋');
+      expect(wish.trigger, '撤退した店');
+      expect(wish.fulfilledVisitId, isNull);
+
+      // もう一度撤退しても、願は増えない。
+      await repository.checkIn(shop: shop, at: checkedInAt);
+      await repository.saveRetreat(
+        checkin: (await repository.activeCheckin())!,
+        wishTrigger: '撤退した店',
+        now: checkedInAt.add(const Duration(days: 1)),
+      );
+      expect(await wishes.watchWishes().first, hasLength(1));
+
+      final eaten = await save(shop);
+      expect(
+        (await wishes.watchWishes().first).single.fulfilledVisitId,
+        eaten.id,
+      );
     });
 
     test('撤退した店で次に食べると、同じ店の記録になる', () async {
