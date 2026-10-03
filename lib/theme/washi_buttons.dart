@@ -687,3 +687,121 @@ class _SealDiscPainter extends CustomPainter {
   bool shouldRepaint(_SealDiscPainter old) =>
       old.sumi != sumi || old.brush != brush;
 }
+
+/// 下のタブの真ん中に置く、記録を始める大きな判子。墨の丸に朱の筆の円相、和紙色の「＋」。
+/// 朱の印が並ぶ印帳の上でも埋もれないよう、画面でいちばん濃い墨を地にする。
+class RecordSealButton extends StatelessWidget {
+  const RecordSealButton({
+    super.key,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  static const size = 72.0;
+
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x55000000),
+                blurRadius: 6,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
+          child: SizedBox.square(
+            dimension: size,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                const Positioned.fill(
+                  child: CustomPaint(painter: _RecordSealPainter()),
+                ),
+                const Icon(Icons.add, size: 36, color: Washi.page),
+                Positioned.fill(
+                  child: Material(
+                    type: MaterialType.transparency,
+                    shape: const CircleBorder(),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: onPressed,
+                      splashColor: Washi.shuLight.withValues(alpha: 0.3),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _RecordSealPainter extends CustomPainter {
+  const _RecordSealPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final radius = size.shortestSide / 2;
+    canvas.drawPath(_wobblyCircle(center, radius), Paint()..color = Washi.ink);
+    _paintEnso(
+      canvas,
+      center,
+      ringRadius: radius * 0.74,
+      maxWidth: radius * 0.16,
+      wobble: radius * 0.015,
+      color: Washi.shuLight,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_RecordSealPainter old) => false;
+}
+
+/// 筆でひと息に描いた輪（円相）。左上で筆を置いて太く入り、時計回りに細く抜け、始まりの少し手前で終わる。
+void _paintEnso(
+  Canvas canvas,
+  Offset center, {
+  required double ringRadius,
+  required double maxWidth,
+  required double wobble,
+  required Color color,
+}) {
+  Offset at(double angle, double r) =>
+      center + Offset(math.cos(angle), math.sin(angle)) * r;
+  const start = -math.pi * 0.62;
+  const sweep = math.pi * 1.88;
+  const steps = 90;
+  final outer = <Offset>[];
+  final inner = <Offset>[];
+  for (var i = 0; i <= steps; i++) {
+    final t = i / steps;
+    final a = start + sweep * t;
+    final width =
+        maxWidth *
+        (t < 0.08 ? 0.7 + t / 0.08 * 0.3 : 1 - 0.7 * ((t - 0.08) / 0.92));
+    final r = ringRadius + math.sin(t * math.pi * 2) * wobble;
+    outer.add(at(a, r + width / 2));
+    inner.add(at(a, r - width / 2));
+  }
+  final ring = Path()..moveTo(outer.first.dx, outer.first.dy);
+  for (final p in outer.skip(1)) {
+    ring.lineTo(p.dx, p.dy);
+  }
+  for (final p in inner.reversed) {
+    ring.lineTo(p.dx, p.dy);
+  }
+  canvas.drawPath(ring..close(), Paint()..color = color);
+}

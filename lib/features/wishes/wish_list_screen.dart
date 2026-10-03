@@ -107,9 +107,12 @@ class WishListScreen extends ConsumerWidget {
                   ),
           ],
         ),
-        floatingActionButton: AddButton(
+        // 真ん中の判子（記録）と取り違えないよう、「＋」ではなく願の印にする。
+        floatingActionButton: SealFab(
           tooltip: l10n.wishAddTitle,
+          brush: true,
           onPressed: () => _addByName(context, ref),
+          child: const Icon(Icons.bookmark_add),
         ),
       ),
     );
