@@ -348,7 +348,7 @@
   "journeyStop": "止める",
   "journeyExpeditions": "遠征",
   "journeyExpeditionsTitle": "遠征の記録",
-  "journeyExpeditionsNone": "いちばん通う店から20km以上離れた店で食べた日が、遠征として並びます",
+  "journeyExpeditionsNone": "同じあたり（2km以内）で5杯食べると拠点ができます。拠点から20km以上離れた店で食べた日が、遠征として並びます",
   "journeyExpeditionName": "{month}月{day}日の遠征（{shop}）",
   "@journeyExpeditionName": {"placeholders": {"month": {"type": "int"}, "day": {"type": "int"}, "shop": {"type": "String"}}},
   "memoryYearsAgo": "{years, plural, =1{一年前の今日} other{{years}年前の今日}}",

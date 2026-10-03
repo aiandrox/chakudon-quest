@@ -34,6 +34,7 @@ void main() {
       '一日二杯',
       '三度目の正直',
       '幻の店',
+      '拠点を構える',
       '百日越しの願',
     ]);
     for (final quest in quests) {
@@ -312,5 +313,21 @@ void main() {
     expect(daijiNumber(6), '陸');
     expect(daijiNumber(10), '拾');
     expect(daijiNumber(11), '11');
+  });
+
+  test('拠点を構えるは、同じあたりで5杯食べた記録で達成', () {
+    final shop = buildShop(id: 'home', latitude: 35.0, longitude: 139.0);
+    final entries = [
+      for (var d = 1; d <= 5; d++)
+        buildEntry(shop: shop, eatenAt: DateTime(2026, 9, d, 12)),
+    ];
+
+    expect(
+      _progress('home_base', entries.take(4).toList()).isAchieved,
+      isFalse,
+    );
+    final progress = _progress('home_base', entries);
+    expect(progress.isAchieved, isTrue);
+    expect(progress.levelAchievedAt.single, DateTime(2026, 9, 5, 12));
   });
 }

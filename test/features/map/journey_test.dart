@@ -48,10 +48,56 @@ void main() {
     expect(stops.map((s) => s.shop.id), ['near']);
   });
 
-  test('いちばん通う店から20km以上離れた店で食べた日を、遠征としてまとめる', () {
+  group('拠点', () {
+    test('同じあたり（2km以内）で5杯食べると、拠点ができる', () {
+      final four = [
+        for (var d = 1; d <= 3; d++) buildEntry(shop: home, eatenAt: day(1, d)),
+        buildEntry(shop: near, eatenAt: day(1, 4)),
+      ];
+      expect(homeBase(scored(four)), isNull);
+
+      final base = homeBase(
+        scored([...four, buildEntry(shop: near, eatenAt: day(1, 5))]),
+      );
+      expect(base, isNotNull);
+      expect(base!.bowls, 5);
+    });
+
+    test('離れた店や撤退、位置のわからない店は数えない', () {
+      final base = homeBase(
+        scored([
+          for (var d = 1; d <= 4; d++)
+            buildEntry(shop: home, eatenAt: day(1, d)),
+          buildEntry(shop: far, eatenAt: day(1, 5)),
+          buildEntry(shop: unknown, eatenAt: day(1, 6)),
+          buildEntry(
+            shop: near,
+            result: VisitResult.retreated,
+            eatenAt: day(1, 7),
+          ),
+        ]),
+      );
+      expect(base, isNull);
+    });
+
+    test('いちばん多く食べたあたりを拠点にする', () {
+      final base = homeBase(
+        scored([
+          for (var d = 1; d <= 5; d++)
+            buildEntry(shop: home, eatenAt: day(1, d)),
+          for (var d = 1; d <= 7; d++)
+            buildEntry(shop: far, eatenAt: day(2, d)),
+        ]),
+      );
+      expect(base!.shop.id, 'far');
+      expect(base.bowls, 7);
+    });
+  });
+
+  test('拠点から20km以上離れた店で食べた日を、遠征としてまとめる', () {
     final list = expeditions(
       scored([
-        buildEntry(shop: home, eatenAt: day(1, 1)),
+        for (var d = 1; d <= 5; d++) buildEntry(shop: home, eatenAt: day(1, d)),
         buildEntry(shop: far, eatenAt: day(2, 1)),
         buildEntry(shop: near, eatenAt: day(2, 2)),
       ]),
@@ -61,7 +107,18 @@ void main() {
     expect(list.single.stops.single.shop.id, 'far');
   });
 
-  test('いつもの場所は続けて通った回数も数え、同じ遠くの店へ別の日に行けば別の遠征にする', () {
+  test('拠点がまだ無ければ、遠征も無い', () {
+    final list = expeditions(
+      scored([
+        buildEntry(shop: home, eatenAt: day(1, 1)),
+        buildEntry(shop: far, eatenAt: day(2, 1)),
+      ]),
+    );
+
+    expect(list, isEmpty);
+  });
+
+  test('同じ遠くの店へ別の日に行けば別の遠征にする', () {
     final farB = buildShop(id: 'farB', latitude: 35.31, longitude: 139.0);
     final list = expeditions(
       scored([
@@ -80,7 +137,7 @@ void main() {
     ]);
   });
 
-  test('年で絞っても、いつもの場所はすべての年で決める', () {
+  test('年で絞っても、拠点はすべての年で決める', () {
     final list = expeditions(
       scored([
         for (var d = 1; d <= 5; d++)
