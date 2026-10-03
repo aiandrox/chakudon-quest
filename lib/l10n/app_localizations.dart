@@ -1273,7 +1273,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeBaseNone.
   ///
   /// In ja, this message translates to:
-  /// **'同じあたりで{bowls}杯食べると拠点ができます'**
+  /// **'同じ地域で{bowls}杯食べると拠点ができます'**
   String homeBaseNone(int bowls);
 
   /// No description provided for @homeBaseSealChar.

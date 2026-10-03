@@ -351,7 +351,7 @@
   "journeyExpeditionsNone": "拠点から20km以上離れた店で食べた日が、遠征として並びます",
   "homeBaseLine": "今の拠点: {shop}のあたり（{bowls}杯）",
   "@homeBaseLine": {"placeholders": {"shop": {"type": "String"}, "bowls": {"type": "int"}}},
-  "homeBaseNone": "同じあたりで{bowls}杯食べると拠点ができます",
+  "homeBaseNone": "同じ地域で{bowls}杯食べると拠点ができます",
   "@homeBaseNone": {"placeholders": {"bowls": {"type": "int"}}},
   "homeBaseSealChar": "拠",
   "homeBasePinLabel": "今の拠点（{shop}のあたり）",

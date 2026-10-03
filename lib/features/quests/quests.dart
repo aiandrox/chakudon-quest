@@ -172,7 +172,7 @@ const quests = <Quest>[
     id: 'home_base',
     kind: QuestKind.spot,
     title: '拠点を構える',
-    description: '同じあたり（2km以内）で5杯食べて、拠点をつくる',
+    description: '同じ地域（2km以内）で5杯食べて、拠点をつくる',
     unit: '回',
     thresholds: [1],
     count: _homeBaseCount,

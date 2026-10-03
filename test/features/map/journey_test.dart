@@ -49,7 +49,7 @@ void main() {
   });
 
   group('拠点', () {
-    test('同じあたり（2km以内）で5杯食べると、拠点ができる', () {
+    test('同じ地域（2km以内）で5杯食べると、拠点ができる', () {
       final four = [
         for (var d = 1; d <= 3; d++) buildEntry(shop: home, eatenAt: day(1, d)),
         buildEntry(shop: near, eatenAt: day(1, 4)),
