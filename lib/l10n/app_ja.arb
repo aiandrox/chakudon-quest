@@ -485,9 +485,9 @@
     }
   },
   "shopRankS": "極",
-  "shopRankA": "特",
-  "shopRankB": "上",
-  "shopRankC": "並",
+  "shopRankA": "難",
+  "shopRankB": "厳",
+  "shopRankC": "易",
   "inkanRetry": "雪辱",
   "inkanRetreat": "敗",
   "inkanTop": "{rank}　{kind}",

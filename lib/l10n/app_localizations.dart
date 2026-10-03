@@ -1669,19 +1669,19 @@ abstract class AppLocalizations {
   /// No description provided for @shopRankA.
   ///
   /// In ja, this message translates to:
-  /// **'特'**
+  /// **'難'**
   String get shopRankA;
 
   /// No description provided for @shopRankB.
   ///
   /// In ja, this message translates to:
-  /// **'上'**
+  /// **'厳'**
   String get shopRankB;
 
   /// No description provided for @shopRankC.
   ///
   /// In ja, this message translates to:
-  /// **'並'**
+  /// **'易'**
   String get shopRankC;
 
   /// No description provided for @inkanRetry.

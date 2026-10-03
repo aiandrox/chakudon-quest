@@ -122,12 +122,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Expanded(child: _buildVisits(l10n, visits)),
         ],
       ),
-      floatingActionButton: FloatingActionButton.large(
+      floatingActionButton: AddButton(
         heroTag: 'record',
-        shape: const CircleBorder(),
         tooltip: l10n.addRecord,
         onPressed: _openRecord,
-        child: const Icon(Icons.add),
       ),
     );
   }

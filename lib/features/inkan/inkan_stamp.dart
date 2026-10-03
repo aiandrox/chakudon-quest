@@ -164,7 +164,7 @@ class _InkanPainter extends CustomPainter {
     Paint fill([Color? color]) => Paint()..color = color ?? ink;
 
     switch (shape) {
-      // 並: 細い丸だけ。
+      // 易: 細い丸だけ。
       case InkanShape.circle:
         canvas.drawCircle(
           center,
