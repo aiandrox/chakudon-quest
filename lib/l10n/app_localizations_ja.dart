@@ -970,4 +970,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String statsBowlsLine(int thisYear, int total) {
     return '今年 $thisYear杯　通算 $total杯';
   }
+
+  @override
+  String get navGlyphRecords => '印';
+
+  @override
+  String get navGlyphWishes => '願';
+
+  @override
+  String get navGlyphShugyo => '修';
+
+  @override
+  String get navGlyphMap => '地';
 }

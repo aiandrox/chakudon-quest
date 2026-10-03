@@ -71,7 +71,6 @@ class VisitDetailsForm extends StatelessWidget {
               LengthLimitingTextInputFormatter(3),
             ],
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
               labelText: l10n.waitMinutesLabel,
               suffixText: l10n.waitMinutesUnit,
             ),
@@ -102,10 +101,7 @@ class VisitDetailsForm extends StatelessWidget {
           controller: memoController,
           minLines: 2,
           maxLines: 4,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            labelText: l10n.memoLabel,
-          ),
+          decoration: InputDecoration(labelText: l10n.memoLabel),
           onChanged: onMemoChanged,
         ),
         const SizedBox(height: 8),

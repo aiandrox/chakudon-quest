@@ -70,10 +70,20 @@ ThemeData buildAppTheme() {
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Washi.paper,
-      indicatorColor: Washi.shu.withValues(alpha: 0.12),
-      indicatorShape: square,
+      // 選んだタブは、アイコンの印そのものが朱に変わって示す。
+      indicatorColor: Colors.transparent,
     ),
     dividerTheme: const DividerThemeData(color: Washi.line),
+    // 入力欄は枠で囲まず、帳面の罫線のような下線だけにする。
+    inputDecorationTheme: const InputDecorationTheme(
+      border: UnderlineInputBorder(borderSide: BorderSide(color: Washi.line)),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Washi.line),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Washi.shu, width: 2),
+      ),
+    ),
     snackBarTheme: const SnackBarThemeData(
       backgroundColor: Washi.ink,
       contentTextStyle: TextStyle(fontFamily: Washi.mincho, color: Washi.paper),
