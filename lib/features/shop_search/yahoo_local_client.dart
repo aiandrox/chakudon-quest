@@ -43,11 +43,17 @@ class YahooLocalClient {
   }
 
   Future<List<FoundShop>> _get(Uri uri, Duration timeout) async {
-    final response = await _client
-        .get(uri, headers: const {'User-Agent': shopSearchUserAgent})
-        .timeout(timeout);
+    // 失敗の知らせ（端末のログに残る）に Client ID 入りのアドレスが入らないよう、
+    // 通信の失敗は中身を捨てて知らせ直す。
+    final http.Response response;
+    try {
+      response = await _client
+          .get(uri, headers: const {'User-Agent': shopSearchUserAgent})
+          .timeout(timeout);
+    } catch (e) {
+      throw http.ClientException('Yahoo! local search: ${e.runtimeType}');
+    }
     if (response.statusCode != 200) {
-      // 失敗の知らせに Client ID が入らないよう、アドレスは渡さない。
       throw http.ClientException(
         'Yahoo! local search: HTTP ${response.statusCode}',
       );

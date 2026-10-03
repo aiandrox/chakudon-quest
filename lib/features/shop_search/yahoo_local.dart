@@ -77,6 +77,7 @@ List<FoundShop> parseYahooLocal(String body) {
     final lat = double.tryParse(parts[1]);
     if (lat == null || lon == null) continue;
     final property = feature['Property'];
+    if (!_isRamenShop(name, property)) continue;
     final address = property is Map<String, dynamic>
         ? property['Address']
         : null;
@@ -93,3 +94,16 @@ List<FoundShop> parseYahooLocal(String body) {
   }
   return shops;
 }
+
+/// 業種でラーメンに絞っても、ラーメンも出す居酒屋などが混ざるため、
+/// 主な業種（最初の業種）がラーメンの店か、名前がラーメン屋らしい店だけを残す。
+bool _isRamenShop(String name, Object? property) {
+  if (_ramenName.hasMatch(name)) return true;
+  final genres = property is Map<String, dynamic> ? property['Genre'] : null;
+  if (genres is! List || genres.isEmpty) return true;
+  final first = genres.first;
+  final code = first is Map<String, dynamic> ? first['Code'] : null;
+  return code is String && code.startsWith(_ramenGenre);
+}
+
+final _ramenName = RegExp('ラーメン|らーめん|らぁ麺|らぁ麵|拉麺|中華そば|つけ麺|まぜそば|油そば|麺|麵');

@@ -223,7 +223,7 @@ flutter run          # 実機で動かす（起動中に r でホットリロー
 flutter analyze      # 静的解析
 flutter test         # テスト
 flutter gen-l10n     # 文言ファイル（app_ja.arb）からコードを生成
-flutter build apk --release --dart-define-from-file=env/local.json   # Yahoo! の Client ID を入れてビルド（env/ はコミットしない）
+flutter build apk --release --dart-define-from-file=$HOME/.config/chakudon-quest/local.json   # Yahoo! の Client ID を入れてビルド（ID はリポジトリの外に置く）
 dart run build_runner build --delete-conflicting-outputs   # drift のコード生成
 ```
 
@@ -300,8 +300,7 @@ dart run build_runner build --delete-conflicting-outputs   # drift のコード�
 | 2026-10-03 | 印の上の格の字（並・上・特・極）をやめ、印の形と模様だけで格を表す。並＝細い丸、上＝二重丸と点の輪、特＝角の二重枠と四隅の菱形・点線、極＝菊の花びらの縁取りと朱塗り・金の輪・外側の点の輪。撤退は灰色の地に文字を透明に抜く。再挑戦成功の「雪辱」だけは字で残す | 「並」が麺の量に見えて紛らわしいため（利用者の指摘）。格が上がるほど派手にして、集める楽しさを出すため |
 | 2026-10-03 | 「拠点」は、同じあたり（半径2km以内）で5杯以上食べた場所（いちばん多く食べたあたり）。遠征は拠点から20km以上離れた店で食べた日。拠点ができるまでは遠征も無い。奥義「拠点を構える」を足した | 利用者の指定。家の位置は持たないので、食べた店が集まっている場所を拠点とみなす |
 | 2026-10-03 | 店ランクの字を難しさの言葉にする（易・厳・難・極＝やさしい・きびしい・むずかしい・きわめ）。「＋」ボタンはどの画面も朱の大きな丸にそろえる | ランクは攻略の難しさなので。「並」「中」「上」「特」は麺の量や品書きに見え、「普」は易とかぶるため（利用者の判断） |
-| 2026-10-03 | 店の検索に Yahoo! ローカルサーチ（業種コード 0106＝ラーメン・つけ麺）を足し、周辺検索と店名検索で OpenStreetMap・OpenPOI と合わせる（同じ店は1つにまとめる。OSM → Yahoo! → OpenPOI の順に優先）。Client ID は公開リポジトリに入れず、`env/local.json`（git の対象外）からビルド時に `--dart-define-from-file` で渡す。無ければ Yahoo! には問い合わせない。出典「Web Services by Yahoo! JAPAN」を検索結果の画面・地図・出典の画面に出す | 店の精度がまだ足りないため（aiandrox の判断）。Yahoo! は日本のラーメン店に強く、業種で絞れる。無料で使えるのは無償のアプリだけなので、収益化するときは見直す（#29） |
-| 初版 | アプリ名は「着丼クエスト」（`chakudon-quest`） | 同名のアプリ・サービスが見つからず、名前で検索したときに埋もれにくいため。遊びの中心を「クエスト（お題）の達成」に置く |
+>>>>>>> 20d3fc1 (Yahoo! の ID を通信失敗の知らせに残さず、ID が無いときは使わない。ラーメンが主でない店を除く)
 
 ## 未決の論点
 

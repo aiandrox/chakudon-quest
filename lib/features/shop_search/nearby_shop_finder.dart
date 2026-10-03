@@ -5,13 +5,15 @@ import 'geo.dart';
 import 'openpoi_client.dart';
 import 'overpass.dart';
 import 'overpass_client.dart';
+import 'yahoo_local.dart';
 import 'yahoo_local_client.dart';
 
 final nearbyShopFinderProvider = Provider<NearbyShopFinder>(
   (ref) => NearbyShopFinder(
     overpass: ref.watch(overpassClientProvider),
     openPoi: ref.watch(openPoiClientProvider),
-    yahoo: ref.watch(yahooLocalClientProvider),
+    // Client ID が無いときは Yahoo! を使わない（「見つからなかった」と「探せなかった」を取り違えないため）。
+    yahoo: isYahooEnabled ? ref.watch(yahooLocalClientProvider) : null,
   ),
 );
 

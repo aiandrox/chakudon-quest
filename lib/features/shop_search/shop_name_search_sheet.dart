@@ -63,16 +63,18 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
     try {
       // Yahoo! はラーメン店の業種で絞れるので先に並べ、OpenPOI で補う。
       // Yahoo! が使えないとき（Client ID が無い・失敗）も、OpenPOI の結果は出す。
-      final yahoo = ref
-          .read(yahooLocalClientProvider)
-          .searchByName(name, near: widget.near)
-          .then<List<FoundShop>?>(
-            (shops) => shops,
-            onError: (Object e) {
-              debugPrint('Yahoo name search failed: $e');
-              return null;
-            },
-          );
+      final yahoo = isYahooEnabled
+          ? ref
+                .read(yahooLocalClientProvider)
+                .searchByName(name, near: widget.near)
+                .then<List<FoundShop>?>(
+                  (shops) => shops,
+                  onError: (Object e) {
+                    debugPrint('Yahoo name search failed: $e');
+                    return null;
+                  },
+                )
+          : Future<List<FoundShop>?>.value();
       final poi = ref
           .read(openPoiClientProvider)
           .searchByName(name, near: widget.near)

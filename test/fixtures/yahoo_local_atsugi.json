@@ -23,6 +23,15 @@
       }
     },
     {
+      "Id": "4",
+      "Name": "食べ飲み放題 大衆居酒屋 とりいちず",
+      "Geometry": {"Type": "point", "Coordinates": "139.3640,35.4390"},
+      "Property": {
+        "Address": "神奈川県厚木市",
+        "Genre": [{"Code": "0110"}, {"Code": "0106001"}]
+      }
+    },
+    {
       "Id": "3",
       "Gid": "cccc",
       "Name": "座標の無い店",
