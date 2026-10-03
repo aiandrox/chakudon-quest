@@ -306,7 +306,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(lunchOnly);
     await tester.pump();
-    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
+    await tester.tap(find.widgetWithText(AiFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(find.text(ja.editTitle), findsNothing);
@@ -334,7 +334,7 @@ void main() {
     final wait = find.widgetWithText(TextField, ja.waitMinutesLabel);
     await tester.ensureVisible(wait);
     await tester.enterText(wait, '45');
-    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
+    await tester.tap(find.widgetWithText(AiFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(
@@ -349,7 +349,7 @@ void main() {
     ], 'v');
     await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
+    await tester.tap(find.widgetWithText(AiFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(repository.updates.single.checkedInAt, isNull);
@@ -375,7 +375,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('OK'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
+    await tester.tap(find.widgetWithText(AiFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     final update = repository.updates.single;
@@ -390,7 +390,7 @@ void main() {
     await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(ShuFuda, ja.editSave));
+    await tester.tap(find.widgetWithText(AiFuda, ja.editSave));
     await tester.pumpAndSettle();
 
     expect(repository.updates.single.hoursConditions, isNull);
@@ -409,7 +409,7 @@ void main() {
     );
     await tester.pump();
 
-    final saveButton = find.widgetWithText(ShuFuda, ja.editSave);
-    expect(tester.widget<ShuFuda>(saveButton).onPressed, isNull);
+    final saveButton = find.widgetWithText(AiFuda, ja.editSave);
+    expect(tester.widget<AiFuda>(saveButton).onPressed, isNull);
   });
 }

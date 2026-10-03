@@ -83,13 +83,13 @@ void main() {
     expect(find.text('麺屋テスト'), findsOneWidget);
     expect(find.text('111m'), findsOneWidget);
     expect(find.text(ja.shopSearchAttribution), findsOneWidget);
-    final saveButton = find.widgetWithText(ShuFuda, ja.save);
-    expect(tester.widget<ShuFuda>(saveButton).onPressed, isNull);
+    final saveButton = find.widgetWithText(AiFuda, ja.save);
+    expect(tester.widget<AiFuda>(saveButton).onPressed, isNull);
 
     await tester.tap(find.text('麺屋テスト'));
     await tester.pump();
     // ★は食べ終わってから付けることが多いため、店が決まれば保存できる。
-    expect(tester.widget<ShuFuda>(saveButton).onPressed, isNotNull);
+    expect(tester.widget<AiFuda>(saveButton).onPressed, isNotNull);
     await tester.tap(find.byTooltip(ja.ratingStar(4)));
     await tester.pump();
 
@@ -155,8 +155,8 @@ void main() {
     await tester.tap(find.byTooltip(ja.ratingStar(3)));
     await tester.pump();
 
-    final saveButton = find.widgetWithText(ShuFuda, ja.save);
-    expect(tester.widget<ShuFuda>(saveButton).onPressed, isNotNull);
+    final saveButton = find.widgetWithText(AiFuda, ja.save);
+    expect(tester.widget<AiFuda>(saveButton).onPressed, isNotNull);
   });
 
   testWidgets('入力があるときに戻ろうとすると確認し、「続ける」なら残る', (tester) async {

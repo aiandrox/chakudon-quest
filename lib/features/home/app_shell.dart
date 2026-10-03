@@ -92,7 +92,7 @@ class _AppShellState extends State<AppShell> {
   }
 }
 
-/// タブのアイコン。筆文字1字の印で、選んでいるときは朱で塗る。
+/// タブのアイコン。筆文字1字の印で、選んでいるときは藍で塗る。
 class _TabSeal extends StatelessWidget {
   const _TabSeal({required this.glyph, required this.selected});
 
@@ -106,9 +106,9 @@ class _TabSeal extends StatelessWidget {
       height: 30,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: selected ? Washi.shu : Colors.transparent,
+        color: selected ? Washi.ai : Colors.transparent,
         border: Border.all(
-          color: selected ? Washi.shu : Washi.inkSoft,
+          color: selected ? Washi.ai : Washi.inkSoft,
           width: 1.5,
         ),
         borderRadius: BorderRadius.circular(4),

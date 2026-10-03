@@ -132,7 +132,7 @@ class _ShareScreenState extends ConsumerState<ShareScreen> {
       // スマホの戻るボタンの帯に重ならないよう、画面の下に固定する。
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        child: ShuFuda(
+        child: AiFuda(
           key: _buttonKey,
           expand: true,
           height: 56,

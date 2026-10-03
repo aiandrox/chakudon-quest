@@ -58,7 +58,7 @@ class _YearReviewInviteCardState extends ConsumerState<YearReviewInviteCard> {
           elevation: 0,
           color: Washi.page,
           shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Washi.shu),
+            side: const BorderSide(color: Washi.ai),
             borderRadius: BorderRadius.circular(8),
           ),
           margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
@@ -74,7 +74,7 @@ class _YearReviewInviteCardState extends ConsumerState<YearReviewInviteCard> {
                     style: const TextStyle(
                       fontFamily: Washi.brush,
                       fontSize: 18,
-                      color: Washi.shu,
+                      color: Washi.ai,
                     ),
                   ),
                   Text(l10n.reviewInviteSub, style: textTheme.bodyMedium),

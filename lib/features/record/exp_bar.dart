@@ -118,7 +118,7 @@ class _ExpBarState extends State<ExpBar> with TickerProviderStateMixin {
                         gradient: RadialGradient(
                           colors: [
                             Colors.white.withValues(alpha: 0.9 * shine),
-                            Washi.shuLight.withValues(alpha: 0.5 * shine),
+                            Washi.aiLight.withValues(alpha: 0.5 * shine),
                             Colors.transparent,
                           ],
                         ),

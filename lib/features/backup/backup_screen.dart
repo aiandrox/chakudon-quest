@@ -92,7 +92,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
         children: [
           Text(l10n.backupDescription, style: textTheme.bodyLarge),
           const SizedBox(height: 24),
-          ShuFuda(
+          AiFuda(
             key: _exportButtonKey,
             onPressed: _isBusy ? null : _export,
             icon: const Icon(Icons.upload_file),

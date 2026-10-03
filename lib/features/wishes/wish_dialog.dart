@@ -198,7 +198,7 @@ class _WishDialogState extends State<_WishDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        ShuFuda(
+        AiFuda(
           onPressed: _name.text.trim().isEmpty ? null : _submit,
           child: Text(widget.isEditing ? l10n.editSave : l10n.wishAddButton),
         ),

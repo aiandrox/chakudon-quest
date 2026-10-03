@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'ink_wear.dart';
 import 'washi.dart';
 
+/// 墨色の背景の上でも沈まないよう、少し明るくした藍。
+const _aiOnNight = Color(0xFF3D5278);
+
 /// ボタンの見た目。役割ごとに、札・筆の線・印で描き分ける。
 ///
-/// - 朱札（[shu]）: その画面でいちばん大事な決定（着丼・保存・共有など）
+/// - 藍札（[ai]）: その画面でいちばん大事な決定（着丼・保存・共有など）
 /// - 墨札（[sumi]）: ほかの選び方・寄り道（並ぶ・ページを見る・読み込むなど）
 /// - 筆の下線（[fude]）: 控えめな寄り道の文字リンク
 /// - 消し札（[keshi]）: 取り消し・撤退・削除。赤で脅かさず、灰の墨で控えめに
@@ -18,7 +21,7 @@ abstract final class FudaStyle {
     borderRadius: BorderRadius.all(Radius.circular(2)),
   );
 
-  static ButtonStyle shu({
+  static ButtonStyle ai({
     bool night = false,
     double height = 52,
     double fontSize = 20,
@@ -54,7 +57,7 @@ abstract final class FudaStyle {
         ),
       ),
       backgroundBuilder: (context, states, child) =>
-          _ShuBackground(states: states, night: night, child: child),
+          _AiBackground(states: states, night: night, child: child),
     );
   }
 
@@ -109,7 +112,7 @@ abstract final class FudaStyle {
       iconColor: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.disabled)
             ? disabled
-            : (night ? Washi.shuLight : Washi.shu),
+            : (night ? Washi.aiLight : Washi.ai),
       ),
       textStyle: const WidgetStatePropertyAll(
         TextStyle(fontFamily: Washi.mincho, fontSize: 15),
@@ -118,7 +121,7 @@ abstract final class FudaStyle {
         painter: _UnderlinePainter(
           color: states.contains(WidgetState.disabled)
               ? disabled.withValues(alpha: 0.5)
-              : (night ? Washi.shuLight : Washi.shu).withValues(alpha: 0.8),
+              : (night ? Washi.aiLight : Washi.ai).withValues(alpha: 0.8),
         ),
         child: child,
       ),
@@ -169,9 +172,9 @@ abstract final class FudaStyle {
   }
 }
 
-/// 朱塗りの札。朱の地に、和紙色の細い枠（角印の枠）を内側に引き、押しむらのかすれをつける。
-class _ShuBackground extends StatelessWidget {
-  const _ShuBackground({
+/// 藍染めの札。藍の地に、和紙色の細い枠（角印の枠）を内側に引き、押しむらのかすれをつける。
+class _AiBackground extends StatelessWidget {
+  const _AiBackground({
     required this.states,
     required this.night,
     required this.child,
@@ -187,9 +190,11 @@ class _ShuBackground extends StatelessWidget {
     final pressed = states.contains(WidgetState.pressed);
     final fill = disabled
         ? (night ? const Color(0x26F3ECDF) : Washi.line)
-        : (pressed ? const Color(0xFF8C1C16) : Washi.shu);
+        : night
+        ? (pressed ? Washi.ai : _aiOnNight)
+        : (pressed ? Washi.aiDeep : Washi.ai);
     final paint = CustomPaint(
-      painter: _ShuPlatePainter(
+      painter: _AiPlatePainter(
         fill: fill,
         frame: disabled
             ? Colors.transparent
@@ -210,8 +215,8 @@ class _ShuBackground extends StatelessWidget {
   }
 }
 
-class _ShuPlatePainter extends CustomPainter {
-  const _ShuPlatePainter({required this.fill, required this.frame});
+class _AiPlatePainter extends CustomPainter {
+  const _AiPlatePainter({required this.fill, required this.frame});
 
   final Color fill;
   final Color frame;
@@ -230,7 +235,7 @@ class _ShuPlatePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_ShuPlatePainter old) =>
+  bool shouldRepaint(_AiPlatePainter old) =>
       old.fill != fill || old.frame != frame;
 }
 
@@ -316,9 +321,9 @@ void brushStroke(
   canvas.drawPath(path, paint);
 }
 
-/// 朱札。その画面でいちばん大事な決定に使う。
-class ShuFuda extends StatelessWidget {
-  const ShuFuda({
+/// 藍札。その画面でいちばん大事な決定に使う。
+class AiFuda extends StatelessWidget {
+  const AiFuda({
     super.key,
     required this.onPressed,
     required this.child,
@@ -339,7 +344,7 @@ class ShuFuda extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = FudaStyle.shu(
+    final style = FudaStyle.ai(
       night: night,
       height: height,
       fontSize: fontSize,
@@ -455,7 +460,7 @@ class FudeLink extends StatelessWidget {
   }
 }
 
-/// 画面の上に浮かぶ丸いボタン。朱の丸印（[sumi]なら和紙に墨の輪）。
+/// 画面の上に浮かぶ丸いボタン。藍の丸印（[sumi]なら和紙に墨の輪）。
 class SealFab extends StatelessWidget {
   const SealFab({
     super.key,
@@ -572,7 +577,7 @@ class _SealDiscPainter extends CustomPainter {
     }
     canvas.drawPath(
       _wobblyCircle(center, radius),
-      Paint()..color = sumi ? Washi.page : Washi.shu,
+      Paint()..color = sumi ? Washi.page : Washi.ai,
     );
     canvas.drawCircle(
       center,
@@ -586,7 +591,7 @@ class _SealDiscPainter extends CustomPainter {
     );
   }
 
-  /// いちばん目立たせたい「＋」。朱の丸を、外側から墨の筆でひと息に描いた輪（円相）で囲む。
+  /// いちばん目立たせたい「＋」。藍の丸を、外側から墨の筆でひと息に描いた輪（円相）で囲む。
   /// 左上で筆を置いて太く入り、時計回りに細く抜け、始まりの少し手前で終わる。
   void _paintBrushed(Canvas canvas, Offset center, double radius) {
     Offset at(double angle, double r) =>
@@ -594,7 +599,7 @@ class _SealDiscPainter extends CustomPainter {
 
     canvas.drawPath(
       _wobblyCircle(center, radius * 0.84),
-      Paint()..color = Washi.shu,
+      Paint()..color = Washi.ai,
     );
 
     final ringRadius = radius * 0.88;
@@ -632,8 +637,7 @@ class _SealDiscPainter extends CustomPainter {
       old.sumi != sumi || old.brush != brush;
 }
 
-/// 下のタブの真ん中に置く、記録を始める大きな判子。墨の丸に朱の筆の円相、和紙色の「＋」。
-/// 朱の印が並ぶ印帳の上でも埋もれないよう、画面でいちばん濃い墨を地にする。
+/// 下のタブの真ん中に置く、記録を始める大きな判子。藍の丸に淡い藍の筆の円相、和紙色の「＋」。
 class RecordSealButton extends StatelessWidget {
   const RecordSealButton({
     super.key,
@@ -679,7 +683,7 @@ class RecordSealButton extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
                       onTap: onPressed,
-                      splashColor: Washi.shuLight.withValues(alpha: 0.3),
+                      splashColor: Washi.aiLight.withValues(alpha: 0.3),
                     ),
                   ),
                 ),
@@ -699,14 +703,14 @@ class _RecordSealPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
     final radius = size.shortestSide / 2;
-    canvas.drawPath(_wobblyCircle(center, radius), Paint()..color = Washi.ink);
+    canvas.drawPath(_wobblyCircle(center, radius), Paint()..color = Washi.ai);
     _paintEnso(
       canvas,
       center,
       ringRadius: radius * 0.74,
       maxWidth: radius * 0.16,
       wobble: radius * 0.015,
-      color: Washi.shuLight,
+      color: Washi.aiLight,
     );
   }
 

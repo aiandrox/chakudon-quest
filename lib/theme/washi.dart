@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'washi_buttons.dart';
 
-/// 和紙と墨と朱の色、筆文字と明朝の書体。
+/// 和紙と墨と藍と朱の色、筆文字と明朝の書体。
+///
+/// 画面の部品（ボタン・選んだ印・進み具合など）は藍、朱は印だけに使う。
 abstract final class Washi {
   static const paper = Color(0xFFF3ECDF);
   static const desk = Color(0xFFE9E1D2);
@@ -11,6 +13,13 @@ abstract final class Washi {
   static const inkSoft = Color(0xFF5C554D);
   static const line = Color(0xFFCFC3AD);
   static const faded = Color(0xFF8A8175);
+
+  /// アプリのアイコン（印帳の表紙）の藍。
+  static const ai = Color(0xFF26344A);
+  static const aiDeep = Color(0xFF1A2536);
+
+  /// 墨色の背景（着丼直後の画面・並び中の帯）の上で使う藍。
+  static const aiLight = Color(0xFF9DB0D0);
   static const shu = Color(0xFFB3261E);
   static const shuLight = Color(0xFFE46A5F);
   static const nightSoft = Color(0xFFC9BFAE);

@@ -181,7 +181,7 @@ class _YearReviewScreenState extends ConsumerState<YearReviewScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: i == page ? Washi.shu : Washi.line,
+                        color: i == page ? Washi.ai : Washi.line,
                       ),
                     ),
                 ],
@@ -220,7 +220,7 @@ class _Page extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: Washi.brush,
                   fontSize: 26,
-                  color: Washi.shu,
+                  color: Washi.ai,
                 ),
               ),
               const SizedBox(height: 24),
@@ -541,7 +541,7 @@ class _BestBowlPage extends StatelessWidget {
         Text(
           value,
           textAlign: TextAlign.center,
-          style: _bigBrush.copyWith(color: Washi.shu),
+          style: _bigBrush.copyWith(color: Washi.ai),
         ),
       ],
     );
@@ -583,7 +583,7 @@ class _MonthlyPage extends StatelessWidget {
                         Container(
                           height: math.max(2, barHeight * count / most),
                           margin: const EdgeInsets.symmetric(horizontal: 3),
-                          color: count == 0 ? Washi.line : Washi.shu,
+                          color: count == 0 ? Washi.line : Washi.ai,
                         ),
                         const SizedBox(height: 4),
                         Text(
@@ -696,7 +696,7 @@ class _ClosingPage extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Washi.paper,
-              border: Border.all(color: Washi.shu, width: 2),
+              border: Border.all(color: Washi.ai, width: 2),
             ),
             child: Column(
               children: [
@@ -705,7 +705,7 @@ class _ClosingPage extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: Washi.brush,
                     fontSize: 22,
-                    color: Washi.shu,
+                    color: Washi.ai,
                   ),
                 ),
                 Text(
@@ -761,7 +761,7 @@ class _ClosingPage extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Center(
-          child: ShuFuda(
+          child: AiFuda(
             key: buttonKey,
             onPressed: onShare,
             icon: const Icon(Icons.ios_share),

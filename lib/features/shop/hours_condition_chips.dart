@@ -88,7 +88,7 @@ class _ShopConditionsDialogState extends State<_ShopConditionsDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        ShuFuda(
+        AiFuda(
           onPressed: () => Navigator.of(context).pop(_selected),
           child: Text(l10n.editSave),
         ),

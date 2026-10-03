@@ -173,7 +173,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
         ),
         child: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          child: ShuFuda(
+          child: AiFuda(
             expand: true,
             height: 56,
             onPressed: _isSaving || _nameController.text.trim().isEmpty
