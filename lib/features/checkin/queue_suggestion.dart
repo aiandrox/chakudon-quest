@@ -40,9 +40,15 @@ ShopCandidate? queueSuggestion({
     final candidate = ShopCandidate.fromShop(shop, distanceMeters: distance);
     candidates.add(wish == null ? candidate : candidate.withWish(wish.id));
   }
+  final recentShops = [
+    for (final shop in shops)
+      if (recentShopIds.contains(shop.id)) shop,
+  ];
   for (final wish in wishes) {
     final location = wishLocation(wish);
     if (location == null) continue;
+    // 撤退したばかりの願の店などで聞かないよう、記録したばかりの店に当たる願も除く。
+    if (recentShops.any((shop) => wishMatchesShop(wish, shop))) continue;
     if (wish.shopId != null && shops.any((s) => s.id == wish.shopId)) continue;
     if (candidates.any((c) => c.wishId == wish.id)) continue;
     final distance = distanceMeters(here, location);
@@ -68,6 +74,9 @@ final queueSuggestionProvider = FutureProvider.autoDispose<ShopCandidate?>((
   ref,
 ) async {
   final location = ref.read(locationServiceProvider);
+  // 記録や願が変わったら（食べた・願が叶った など）聞き直す。
+  final visitsFuture = ref.watch(visitsProvider.future);
+  ref.watch(wishesProvider);
   try {
     if (!await location.isReady()) return null;
     final here = await location.currentPosition(requestPermission: false);
@@ -78,7 +87,7 @@ final queueSuggestionProvider = FutureProvider.autoDispose<ShopCandidate?>((
       here: here,
       shops: await repository.allShops(),
       wishes: await ref.read(wishRepositoryProvider).pendingWishes(),
-      visits: await ref.read(visitsProvider.future),
+      visits: await visitsFuture,
       now: ref.read(clockProvider)(),
     );
   } catch (e) {

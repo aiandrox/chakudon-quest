@@ -89,6 +89,40 @@ void main() {
       );
     });
 
+    test('撤退したばかりの店に当たる願も出さない', () {
+      final retreat = buildEntry(
+        shop: buildShop(
+          id: 'shop',
+          name: '願の店',
+          latitude: 35.0003,
+          longitude: 139.0,
+          osmId: 'node/1',
+        ),
+        result: VisitResult.retreated,
+        eatenAt: now.subtract(const Duration(minutes: 30)),
+      );
+
+      expect(
+        queueSuggestion(
+          here: here,
+          shops: [retreat.shop],
+          wishes: [
+            Wish(
+              id: 'wish',
+              osmId: 'node/1',
+              name: '願の店',
+              latitude: 35.0003,
+              longitude: 139.0,
+              createdAt: DateTime(2026),
+            ),
+          ],
+          visits: [retreat],
+          now: now,
+        ),
+        isNull,
+      );
+    });
+
     test('まだ記録の無い願の店も、近ければ「願」を付けて出す', () {
       final suggestion = queueSuggestion(
         here: here,
