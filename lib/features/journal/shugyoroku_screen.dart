@@ -25,9 +25,11 @@ class _ShugyorokuScreenState extends ConsumerState<ShugyorokuScreen> {
     final l10n = AppLocalizations.of(context);
     final scored = ref.watch(scoredVisitsProvider);
     final years = shugyorokuYears(scored);
-    final year =
-        _year ??
-        (years.isEmpty ? ref.watch(clockProvider)().year : years.first);
+    // 選んだ年の記録が消えたら（削除・日付の変更）、いちばん新しい年に戻す。
+    final chosen = _year;
+    final year = chosen != null && years.contains(chosen)
+        ? chosen
+        : (years.isEmpty ? ref.watch(clockProvider)().year : years.first);
     final months = shugyoroku(scored, year);
 
     return Scaffold(
