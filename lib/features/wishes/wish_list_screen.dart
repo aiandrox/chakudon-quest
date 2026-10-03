@@ -146,9 +146,9 @@ class _PendingWishCard extends ConsumerWidget {
     }
   }
 
-  Future<void> _delete(BuildContext context, WidgetRef ref) async {
+  /// 消してよいか確かめる。消してよければtrue。
+  Future<bool> _confirmDelete(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    final repository = ref.read(wishRepositoryProvider);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -165,8 +165,7 @@ class _PendingWishCard extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed != true) return;
-    await repository.deleteWish(status.wish.id);
+    return confirmed == true;
   }
 
   @override
@@ -174,30 +173,27 @@ class _PendingWishCard extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final wish = status.wish;
-    final days = daysToFulfill(wish, ref.watch(clockProvider)());
-
-    return Card(
-      child: ListTile(
-        contentPadding: const EdgeInsets.fromLTRB(16, 8, 4, 8),
-        leading: const _WishSeal(fulfilled: false),
-        title: Text(wish.name, style: textTheme.titleMedium),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (wish.note.isNotEmpty) Text(wish.note),
-            if (wish.trigger.isNotEmpty)
-              Text(l10n.wishTriggerLine(wish.trigger)),
-            Text(
-              days == 0 ? l10n.wishSinceToday : l10n.wishSinceDays(days),
-              style: textTheme.bodySmall?.copyWith(color: Washi.faded),
-            ),
-          ],
-        ),
-        onTap: () => _edit(context, ref),
-        trailing: IconButton(
-          tooltip: l10n.delete,
-          icon: const Icon(Icons.close),
-          onPressed: () => _delete(context, ref),
+    // 店名ときっかけだけ。メモはタップして開く編集で見る。外すときは横にすべらせる。
+    return Dismissible(
+      key: ValueKey(wish.id),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (_) => _confirmDelete(context),
+      onDismissed: (_) => ref.read(wishRepositoryProvider).deleteWish(wish.id),
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 24),
+        color: Washi.desk,
+        child: Text(l10n.delete, style: textTheme.bodyMedium),
+      ),
+      child: Card(
+        child: ListTile(
+          contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          leading: const _WishSeal(fulfilled: false),
+          title: Text(wish.name, style: textTheme.titleMedium),
+          subtitle: wish.trigger.isEmpty
+              ? null
+              : Text(l10n.wishTriggerLine(wish.trigger)),
+          onTap: () => _edit(context, ref),
         ),
       ),
     );

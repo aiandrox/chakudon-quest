@@ -11,6 +11,7 @@ import 'package:chakudon_quest/features/records/photo_storage.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
+import 'package:chakudon_quest/theme/washi.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
@@ -76,6 +77,12 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  Future<void> openMenu(WidgetTester tester, String item) async {
+    await tester.tap(find.byTooltip(ja.moreActions));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(item).last);
+  }
+
   Finder stars(int rating) => find.byWidgetPredicate(
     (widget) =>
         widget is Semantics && widget.properties.label == ja.ratingStar(rating),
@@ -91,11 +98,13 @@ void main() {
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12, 34), memo: 'スープが濃い'),
     ], 'v');
 
-    expect(find.text('麺屋テスト'), findsWidgets);
-    expect(find.text('2026/9/30 12:34'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate((w) => w is VerticalText && w.text == '麺屋テスト'),
+      findsOneWidget,
+    );
     expect(tester.widget<StarRating>(find.byType(StarRating)).rating, 4);
-    // 系統のタグと、印の真ん中の2か所。
-    expect(find.text(ja.styleShoyu), findsNWidgets(2));
+    // 系統は印の真ん中だけに出す（札にはしない）。
+    expect(find.text(ja.styleShoyu), findsOneWidget);
     expect(find.text(ja.limitedBadge), findsOneWidget);
     expect(find.text('スープが濃い'), findsOneWidget);
     expect(find.text(ja.previousVisit), findsNothing);
@@ -202,12 +211,11 @@ void main() {
     ], 'second');
 
     expect(find.text(ja.shopStamps), findsOneWidget);
-    expect(find.text('2026/9/30 12:00'), findsOneWidget);
+    expect(tester.widget<StarRating>(find.byType(StarRating)).rating, 3);
 
     await tester.tap(find.text('2026/9/1').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('2026/9/1 12:00'), findsOneWidget);
     expect(tester.widget<StarRating>(find.byType(StarRating)).rating, 5);
     expect(find.text(ja.previousVisit), findsNothing);
   });
@@ -228,7 +236,7 @@ void main() {
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30), photoPath: 'photos/a.jpg'),
     ], 'v');
 
-    await tester.tap(find.byTooltip(ja.delete));
+    await openMenu(tester, ja.delete);
     await tester.pumpAndSettle();
     expect(find.text(ja.deleteConfirmTitle), findsOneWidget);
 
@@ -237,7 +245,7 @@ void main() {
     expect(find.byType(VisitDetailScreen), findsOneWidget);
     expect(repository.deletedVisitIds, isEmpty);
 
-    await tester.tap(find.byTooltip(ja.delete));
+    await openMenu(tester, ja.delete);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, ja.delete));
     await tester.pumpAndSettle();
@@ -261,7 +269,7 @@ void main() {
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30)),
     ], 'v');
 
-    await tester.tap(find.byTooltip(ja.delete));
+    await openMenu(tester, ja.delete);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(TextButton, ja.delete));
     await tester.pumpAndSettle();
@@ -275,7 +283,7 @@ void main() {
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
     ], 'v');
 
-    await tester.tap(find.byTooltip(ja.edit));
+    await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
     expect(find.text(ja.editTitle), findsOneWidget);
 
@@ -316,7 +324,7 @@ void main() {
     await pumpDetail(tester, [
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
     ], 'v');
-    await tester.tap(find.byTooltip(ja.edit));
+    await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
 
     final wait = find.widgetWithText(TextField, ja.waitMinutesLabel);
@@ -335,7 +343,7 @@ void main() {
     await pumpDetail(tester, [
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
     ], 'v');
-    await tester.tap(find.byTooltip(ja.edit));
+    await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
     await tester.pumpAndSettle();
@@ -354,7 +362,7 @@ void main() {
         ),
       ),
     ], 'v');
-    await tester.tap(find.byTooltip(ja.edit));
+    await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
     await tester.tap(find.text(ja.editEatenAt));
     await tester.pumpAndSettle();
@@ -375,7 +383,7 @@ void main() {
     await pumpDetail(tester, [
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
     ], 'v');
-    await tester.tap(find.byTooltip(ja.edit));
+    await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(FilledButton, ja.editSave));
@@ -388,7 +396,7 @@ void main() {
     await pumpDetail(tester, [
       entry(id: 'v', eatenAt: DateTime(2026, 9, 30, 12)),
     ], 'v');
-    await tester.tap(find.byTooltip(ja.edit));
+    await openMenu(tester, ja.edit);
     await tester.pumpAndSettle();
 
     await tester.enterText(

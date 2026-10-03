@@ -12,7 +12,6 @@ import '../scoring/ranks.dart';
 import '../records/record_repository.dart';
 import '../scoring/points_breakdown_view.dart';
 import '../scoring/rank_labels.dart';
-import '../scoring/rank_progress.dart';
 import '../records/models.dart';
 import '../scoring/record_outcome.dart';
 import '../share/share_screen.dart';
@@ -142,30 +141,24 @@ class _ResultBody extends StatelessWidget {
           _WishFulfilledBanner(wish: wish, eatenAt: scored.visit.eatenAt),
         ],
         const SizedBox(height: 16),
-        PointsBreakdownView(scored: scored),
-        const Divider(height: 20, color: Washi.inkSoft),
-        Row(
-          children: [
-            Expanded(
-              child: Text(l10n.pointsSection, style: textTheme.bodyLarge),
-            ),
-            TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0, end: scored.points.total.toDouble()),
-              duration: const Duration(milliseconds: 900),
-              curve: Curves.easeOutCubic,
-              builder: (context, value, _) => Text(
-                l10n.pointsGained(value.round()),
-                style: TextStyle(
-                  fontFamily: Washi.brush,
-                  fontSize: 36,
-                  color: colors.primary,
-                ),
+        // 主役は得た点。内訳はその下に控えめに。段位は上がったときだけ知らせる。
+        Center(
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: scored.points.total.toDouble()),
+            duration: const Duration(milliseconds: 900),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, _) => Text(
+              l10n.pointsGained(value.round()),
+              style: TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 44,
+                color: colors.primary,
               ),
             ),
-          ],
+          ),
         ),
-        const SizedBox(height: 12),
-        RankProgress(totalPoints: outcome.totalAfter),
+        const SizedBox(height: 4),
+        Opacity(opacity: 0.75, child: PointsBreakdownView(scored: scored)),
         if (outcome.isRankUp) ...[
           const SizedBox(height: 16),
           _RankUpBanner(rank: outcome.rankAfter),

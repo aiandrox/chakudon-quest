@@ -38,7 +38,7 @@ void main() {
     await pumpStats(tester, const []);
 
     expect(find.text(ja.statsEmpty), findsOneWidget);
-    expect(find.text(ja.statsThisYear), findsNothing);
+    expect(find.text(ja.statsBowls), findsNothing);
   });
 
   testWidgets('記録を読み込めなかったときは、記録が無いとは表示しない', (tester) async {
@@ -92,8 +92,7 @@ void main() {
       ),
     ]);
 
-    expect(find.text(ja.bowls(3)), findsWidgets);
-    expect(find.text(ja.bowls(4)), findsOneWidget);
+    expect(find.text(ja.statsBowlsLine(3, 4)), findsOneWidget);
 
     expect(find.text(ja.styleShoyu), findsOneWidget);
     expect(find.text(ja.percent(50)), findsOneWidget);

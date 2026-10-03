@@ -428,17 +428,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String questNext(int current, int target, String unit) {
-    return '次の段まで $current / $target$unit';
+    return '$current／$target$unit';
   }
 
   @override
   String questCount(int count, String unit) {
     return '$count$unit';
-  }
-
-  @override
-  String questAchievedOn(String date) {
-    return '$date 会得';
   }
 
   @override
@@ -454,12 +449,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get statsEmpty => '記録が増えると、ここに統計が出ます';
-
-  @override
-  String get statsThisYear => '今年の杯数';
-
-  @override
-  String get statsTotal => '累計の杯数';
 
   @override
   String bowls(int count) {
@@ -556,14 +545,6 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String wishTriggerLine(String trigger) {
     return 'きっかけ: $trigger';
-  }
-
-  @override
-  String get wishSinceToday => '今日、願を掛けた';
-
-  @override
-  String wishSinceDays(int days) {
-    return '願を掛けて $days日';
   }
 
   @override
@@ -973,4 +954,15 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get checkinStart => 'いま並んでいる';
+
+  @override
+  String get moreActions => 'そのほか';
+
+  @override
+  String get statsBowls => '杯数';
+
+  @override
+  String statsBowlsLine(int thisYear, int total) {
+    return '今年 $thisYear杯　通算 $total杯';
+  }
 }
