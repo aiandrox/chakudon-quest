@@ -20,7 +20,7 @@ final backupServiceProvider = Provider<BackupService>(
 );
 
 const _dataFileName = 'backup.json';
-const _fileNamePrefix = 'chakudon-quest-';
+const _fileNamePrefix = 'ramen-in-cho-';
 const _photosDirectory = 'photos';
 
 class RestoreSummary {
@@ -86,7 +86,7 @@ class BackupService {
       final archive = ZipDecoder().decodeStream(input);
       final dataFile = archive.findFile(_dataFileName);
       if (dataFile == null) {
-        throw const FormatException('着丼クエストのバックアップではありません');
+        throw const FormatException('麺印帳のバックアップではありません');
       }
       final data = decodeBackup(
         jsonDecode(utf8.decode(dataFile.readBytes() ?? const [])),

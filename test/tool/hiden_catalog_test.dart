@@ -6,8 +6,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/quests/quest_seal.dart';
-import 'package:chakudon_quest/features/quests/quests.dart';
+import 'package:ramen_in_cho/features/quests/quest_seal.dart';
+import 'package:ramen_in_cho/features/quests/quests.dart';
 
 import '../support/l10n.dart';
 

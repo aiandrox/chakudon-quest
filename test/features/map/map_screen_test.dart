@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/map/map_screen.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/photo_storage.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/location_service.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
-import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
+import 'package:ramen_in_cho/features/map/map_screen.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/photo_storage.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/location_service.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/nearby_shop_finder.dart';
+import 'package:ramen_in_cho/features/visit_detail/visit_detail_screen.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';

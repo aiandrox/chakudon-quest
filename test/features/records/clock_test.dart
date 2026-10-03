@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/records/clock.dart';
+import 'package:ramen_in_cho/features/records/clock.dart';
 
 void main() {
   testWidgets('「今」は1分ごとと、アプリに戻ってきたときに更新する', (tester) async {

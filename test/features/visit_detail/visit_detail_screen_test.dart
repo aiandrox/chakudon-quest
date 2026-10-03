@@ -5,16 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:chakudon_quest/features/record/star_rating.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/photo_storage.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
-import 'package:chakudon_quest/theme/washi.dart';
+import 'package:ramen_in_cho/features/record/star_rating.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/photo_storage.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/visit_detail/visit_detail_screen.dart';
+import 'package:ramen_in_cho/theme/washi.dart';
 
-import 'package:chakudon_quest/features/journal/journal_phrases.dart';
-import 'package:chakudon_quest/theme/washi_buttons.dart';
+import 'package:ramen_in_cho/features/journal/journal_phrases.dart';
+import 'package:ramen_in_cho/theme/washi_buttons.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';

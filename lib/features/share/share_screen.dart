@@ -53,7 +53,7 @@ class _ShareScreenState extends ConsumerState<ShareScreen> {
       if (bytes == null) throw StateError('画像を作れませんでした');
       final directory = await getTemporaryDirectory();
       final file = File(
-        p.join(directory.path, 'chakudon-${widget.visitId}.png'),
+        p.join(directory.path, 'ramen-in-cho-${widget.visitId}.png'),
       );
       await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
       await SharePlus.instance.share(

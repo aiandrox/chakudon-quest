@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/shop_search/builtin_shops.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/builtin_shops.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
 
 void main() {
   test('アプリに持たせている店は名前が重ならず、位置は日本の中にある', () {

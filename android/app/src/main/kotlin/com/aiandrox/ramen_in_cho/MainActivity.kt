@@ -1,4 +1,4 @@
-package com.aiandrox.chakudon_quest
+package com.aiandrox.ramen_in_cho
 
 import io.flutter.embedding.android.FlutterActivity
 

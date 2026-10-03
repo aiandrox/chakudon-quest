@@ -6,9 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/theme/app_theme.dart';
-import 'package:chakudon_quest/theme/washi.dart';
-import 'package:chakudon_quest/theme/washi_buttons.dart';
+import 'package:ramen_in_cho/theme/app_theme.dart';
+import 'package:ramen_in_cho/theme/washi.dart';
+import 'package:ramen_in_cho/theme/washi_buttons.dart';
 
 /// ボタンの見本帳（確認用）を `docs/buttons/` に作る。
 ///

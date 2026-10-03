@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:chakudon_quest/features/shop_search/location_service.dart';
+import 'package:ramen_in_cho/features/shop_search/location_service.dart';
 
 Position _position({required DateTime timestamp, required double accuracy}) =>
     Position(

@@ -5,7 +5,7 @@ import 'geo.dart';
 import 'overpass.dart';
 
 const shopSearchUserAgent =
-    'chakudon-quest (https://github.com/aiandrox/chakudon-quest)';
+    'ramen-in-cho (https://github.com/aiandrox/ramen-in-cho)';
 
 final overpassClientProvider = Provider<OverpassClient>((ref) {
   final client = http.Client();

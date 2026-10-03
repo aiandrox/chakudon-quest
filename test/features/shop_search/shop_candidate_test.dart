@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/shop_candidate.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/shop_candidate.dart';
 
 const _here = GeoPoint(35.0, 139.0);
 

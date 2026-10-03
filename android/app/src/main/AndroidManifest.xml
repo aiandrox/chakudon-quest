@@ -7,7 +7,7 @@
     <!-- 予約した通知（連続記録のお知らせ）を、端末を再起動したあとも届けるため。 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
-        android:label="着丼クエスト"
+        android:label="麺印帳"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/checkin/checkin_controller.dart';
-import 'package:chakudon_quest/features/database/app_database.dart';
-import 'package:chakudon_quest/features/records/clock.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/location_service.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
-import 'package:chakudon_quest/features/shop_search/nearby_shop_finder.dart';
-import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
+import 'package:ramen_in_cho/features/checkin/checkin_controller.dart';
+import 'package:ramen_in_cho/features/database/app_database.dart';
+import 'package:ramen_in_cho/features/records/clock.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/location_service.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/shop_search/nearby_shop_finder.dart';
+import 'package:ramen_in_cho/features/shop_search/shop_search_service.dart';
 
 import '../../support/fakes.dart';
 

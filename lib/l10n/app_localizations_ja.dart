@@ -10,7 +10,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appName => '着丼クエスト';
+  String get appName => '麺印帳';
 
   @override
   String get homeEmpty => 'まだ記録がありません\n「＋」から最初の一杯を記録しましょう';
@@ -888,7 +888,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get backupImportInvalid => '着丼クエストのバックアップとして読めないファイルです';
+  String get backupImportInvalid => '麺印帳のバックアップとして読めないファイルです';
 
   @override
   String get backupImportFailed => '読み込めませんでした。もう一度お試しください';

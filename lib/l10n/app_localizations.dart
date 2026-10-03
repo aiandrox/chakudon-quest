@@ -97,7 +97,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In ja, this message translates to:
-  /// **'着丼クエスト'**
+  /// **'麺印帳'**
   String get appName;
 
   /// No description provided for @homeEmpty.
@@ -1603,7 +1603,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupImportInvalid.
   ///
   /// In ja, this message translates to:
-  /// **'着丼クエストのバックアップとして読めないファイルです'**
+  /// **'麺印帳のバックアップとして読めないファイルです'**
   String get backupImportInvalid;
 
   /// No description provided for @backupImportFailed.

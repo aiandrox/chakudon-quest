@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/checkin/checkin_banner.dart';
-import 'package:chakudon_quest/features/checkin/checkin_screen.dart';
-import 'package:chakudon_quest/features/records/clock.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/records/record_repository.dart';
-import 'package:chakudon_quest/features/wishes/wish_repository.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/shop_candidate.dart';
-import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
-import 'package:chakudon_quest/features/words/words.dart';
-import 'package:chakudon_quest/theme/washi_buttons.dart';
+import 'package:ramen_in_cho/features/checkin/checkin_banner.dart';
+import 'package:ramen_in_cho/features/checkin/checkin_screen.dart';
+import 'package:ramen_in_cho/features/records/clock.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/shop_candidate.dart';
+import 'package:ramen_in_cho/features/shop_search/shop_search_service.dart';
+import 'package:ramen_in_cho/features/words/words.dart';
+import 'package:ramen_in_cho/theme/washi_buttons.dart';
 
 import '../../support/fakes.dart';
 import '../../support/l10n.dart';

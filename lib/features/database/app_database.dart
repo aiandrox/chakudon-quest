@@ -127,7 +127,7 @@ const activeCheckinId = 1;
 @DriftDatabase(tables: [Shops, Visits, ActiveCheckins, Wishes])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
-    : super(executor ?? driftDatabase(name: 'chakudon_quest'));
+    : super(executor ?? driftDatabase(name: 'ramen_in_cho'));
 
   @override
   int get schemaVersion => 8;

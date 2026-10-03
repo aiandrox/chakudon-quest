@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/map/shop_pins.dart';
-import 'package:chakudon_quest/features/records/models.dart';
-import 'package:chakudon_quest/features/scoring/points.dart';
-import 'package:chakudon_quest/features/scoring/ranks.dart';
-import 'package:chakudon_quest/features/shop_search/geo.dart';
-import 'package:chakudon_quest/features/shop_search/overpass.dart';
+import 'package:ramen_in_cho/features/map/shop_pins.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
+import 'package:ramen_in_cho/features/scoring/points.dart';
+import 'package:ramen_in_cho/features/scoring/ranks.dart';
+import 'package:ramen_in_cho/features/shop_search/geo.dart';
+import 'package:ramen_in_cho/features/shop_search/overpass.dart';
 
 import '../../support/builders.dart';
 

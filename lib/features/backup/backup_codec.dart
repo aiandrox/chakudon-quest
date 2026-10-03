@@ -1,5 +1,6 @@
 import '../records/models.dart';
 
+// 旧名（着丼クエスト）のころのバックアップも読めるよう、名前を変えても形式名はそのまま。
 const backupFormat = 'chakudon-quest-backup';
 const backupVersion = 1;
 
@@ -92,7 +93,7 @@ Map<String, Object?> encodeBackup(
 BackupData decodeBackup(Object? json) {
   final root = _map(json, 'バックアップ');
   if (root['format'] != backupFormat) {
-    throw const FormatException('着丼クエストのバックアップではありません');
+    throw const FormatException('麺印帳のバックアップではありません');
   }
   final version = root['version'];
   if (version is! int || version > backupVersion) {

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/credits/credits.dart';
-import 'package:chakudon_quest/features/records/models.dart';
+import 'package:ramen_in_cho/features/credits/credits.dart';
+import 'package:ramen_in_cho/features/records/models.dart';
 
 Shop _shop(String id, [ShopSource? source]) =>
     Shop(id: id, name: id, dataSource: source, createdAt: DateTime(2026));

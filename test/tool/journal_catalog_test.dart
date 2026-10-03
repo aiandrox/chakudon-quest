@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/features/journal/journal_phrases.dart';
+import 'package:ramen_in_cho/features/journal/journal_phrases.dart';
 
 /// 道中記の言い回しの一覧（管理用）を `docs/journal/README.md` に作る。
 ///

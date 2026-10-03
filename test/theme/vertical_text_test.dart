@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chakudon_quest/theme/washi.dart';
+import 'package:ramen_in_cho/theme/washi.dart';
 
 List<String> _lines(String text, {int? maxChars}) => [
   for (final line in verticalLines(text, maxChars: maxChars)) line.join(),
