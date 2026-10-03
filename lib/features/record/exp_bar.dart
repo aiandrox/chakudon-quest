@@ -160,9 +160,10 @@ class _ExpBarState extends State<ExpBar> with TickerProviderStateMixin {
                     const SizedBox(height: 6),
                     Text(
                       masterWords(_rank),
-                      style: textTheme.bodyMedium?.copyWith(
+                      // 夜の色の結果画面でも読めるよう、背景に合わせた文字の色にする。
+                      style: textTheme.bodyLarge?.copyWith(
                         fontFamily: Washi.brush,
-                        color: Washi.inkSoft,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ],
