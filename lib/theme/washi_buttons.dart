@@ -499,6 +499,7 @@ class SealFab extends StatelessWidget {
     required this.child,
     this.sumi = false,
     this.small = false,
+    this.brush = false,
   });
 
   final String tooltip;
@@ -507,10 +508,15 @@ class SealFab extends StatelessWidget {
   final bool sumi;
   final bool small;
 
+  /// 内側の輪を、筆でひと息に描いた輪（円相）にする。
+  final bool brush;
+
   @override
   Widget build(BuildContext context) {
     final size = small ? 48.0 : 60.0;
-    final disc = CustomPaint(painter: _SealDiscPainter(sumi: sumi));
+    final disc = CustomPaint(
+      painter: _SealDiscPainter(sumi: sumi, brush: brush),
+    );
     return Tooltip(
       message: tooltip,
       child: Semantics(
@@ -567,14 +573,19 @@ class SealFab extends StatelessWidget {
 }
 
 class _SealDiscPainter extends CustomPainter {
-  const _SealDiscPainter({required this.sumi});
+  const _SealDiscPainter({required this.sumi, this.brush = false});
 
   final bool sumi;
+  final bool brush;
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
     final radius = size.shortestSide / 2;
+    if (brush) {
+      _paintBrushed(canvas, center, radius);
+      return;
+    }
     canvas.drawCircle(
       center,
       radius,
@@ -592,6 +603,56 @@ class _SealDiscPainter extends CustomPainter {
     );
   }
 
+  /// 朱の丸をわずかに揺らぎのある縁で塗り、内側に筆の円相を和紙色で引く。
+  void _paintBrushed(Canvas canvas, Offset center, double radius) {
+    Offset at(double angle, double r) =>
+        center + Offset(math.cos(angle), math.sin(angle)) * r;
+
+    final disc = Path();
+    const edgeSteps = 72;
+    for (var i = 0; i <= edgeSteps; i++) {
+      final a = 2 * math.pi * i / edgeSteps;
+      // 手で押した印のように、縁をごくわずかに揺らす。
+      final r =
+          radius - 0.6 + math.sin(a * 5 + 0.7) * 0.5 + math.sin(a * 3) * 0.3;
+      final p = at(a, r);
+      i == 0 ? disc.moveTo(p.dx, p.dy) : disc.lineTo(p.dx, p.dy);
+    }
+    canvas.drawPath(disc..close(), Paint()..color = Washi.shu);
+
+    // 左上から時計回りに描き始め、太く入って細く抜け、始まりの少し手前で終わる。
+    final ringRadius = radius * 0.8;
+    final maxWidth = radius * 0.19;
+    const start = -math.pi * 0.62;
+    const sweep = math.pi * 1.88;
+    const steps = 90;
+    final outer = <Offset>[];
+    final inner = <Offset>[];
+    for (var i = 0; i <= steps; i++) {
+      final t = i / steps;
+      final a = start + sweep * t;
+      // 入りは筆を置いた太さ、終わりにかけて細くかすれる。
+      final width =
+          maxWidth *
+          (t < 0.08 ? 0.7 + t / 0.08 * 0.3 : 1 - 0.75 * ((t - 0.08) / 0.92));
+      final r = ringRadius + math.sin(t * math.pi * 2) * radius * 0.015;
+      outer.add(at(a, r + width / 2));
+      inner.add(at(a, r - width / 2));
+    }
+    final ring = Path()..moveTo(outer.first.dx, outer.first.dy);
+    for (final p in outer.skip(1)) {
+      ring.lineTo(p.dx, p.dy);
+    }
+    for (final p in inner.reversed) {
+      ring.lineTo(p.dx, p.dy);
+    }
+    canvas.drawPath(
+      ring..close(),
+      Paint()..color = Washi.page.withValues(alpha: 0.92),
+    );
+  }
+
   @override
-  bool shouldRepaint(_SealDiscPainter old) => old.sumi != sumi;
+  bool shouldRepaint(_SealDiscPainter old) =>
+      old.sumi != sumi || old.brush != brush;
 }

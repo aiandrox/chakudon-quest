@@ -269,6 +269,7 @@ class AddButton extends StatelessWidget {
     return SealFab(
       tooltip: tooltip,
       onPressed: onPressed,
+      brush: true,
       child: const Icon(Icons.add),
     );
   }
