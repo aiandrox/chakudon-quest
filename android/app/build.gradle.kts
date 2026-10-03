@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -6,6 +8,16 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+val keystoreProperties = Properties().apply {
+    val file = rootProject.file("key.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+
+// Play に上げる AAB（bundleRelease）だけをアップロード鍵で署名する。APK は今までどおりデバッグ鍵のままにし、
+// flutter run --release / adb install -r で家族の端末のアプリを上書きできるようにする（鍵が違うと入れ直しになり記録が消える）。
+val signsWithUploadKey = !keystoreProperties.isEmpty &&
+    gradle.startParameter.taskNames.any { it.contains("bundle", ignoreCase = true) }
 
 android {
     namespace = "com.aiandrox.ramen_in_cho"
@@ -34,11 +46,23 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (signsWithUploadKey) {
+            create("upload") {
+                fun required(name: String) = keystoreProperties[name]?.toString()
+                    ?: error("android/key.properties に $name がありません")
+
+                keyAlias = required("keyAlias")
+                keyPassword = required("keyPassword")
+                storeFile = file(required("storeFile"))
+                storePassword = required("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (signsWithUploadKey) "upload" else "debug")
         }
     }
 }
