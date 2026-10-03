@@ -13,9 +13,11 @@ abstract final class Washi {
   static const inkSoft = Color(0xFF5C554D);
   static const line = Color(0xFFCFC3AD);
   static const faded = Color(0xFF8A8175);
+
   /// アプリのアイコン（印帳の表紙）の藍。
   static const ai = Color(0xFF26344A);
   static const aiDeep = Color(0xFF1A2536);
+
   /// 墨色の背景（着丼直後の画面・並び中の帯）の上で使う藍。
   static const aiLight = Color(0xFF9DB0D0);
   static const shu = Color(0xFFB3261E);
