@@ -20,7 +20,7 @@ class HealthyLifeCard extends ConsumerWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Washi.page,
-          border: Border.all(color: Washi.shuLight),
+          border: Border.all(color: Washi.ai),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -32,7 +32,7 @@ class HealthyLifeCard extends ConsumerWidget {
                   style: const TextStyle(
                     fontFamily: Washi.brush,
                     fontSize: 17,
-                    color: Washi.shu,
+                    color: Washi.ai,
                   ),
                 ),
               ),

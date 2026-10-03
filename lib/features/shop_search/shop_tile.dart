@@ -31,7 +31,7 @@ class ShopTile extends StatelessWidget {
       if (shop.shopId != null) l10n.shopVisited,
       ?note,
     ];
-    // 選んだ店は塗りつぶさず、朱の枠で示す（塗ると店名が読めなくなるため）。
+    // 選んだ店は塗りつぶさず、藍の枠で示す（塗ると店名が読めなくなるため）。
     return Card(
       elevation: 0,
       color: colors.surfaceContainerLow,

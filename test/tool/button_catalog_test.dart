@@ -34,8 +34,8 @@ Widget _label(String text, {required bool night}) => Padding(
 
 Widget _panel({required bool night}) {
   final children = <Widget>[
-    _label('朱札（いちばん大事な決定）', night: night),
-    ShuFuda(
+    _label('藍札（いちばん大事な決定）', night: night),
+    AiFuda(
       expand: true,
       height: 60,
       fontSize: 26,
@@ -46,7 +46,7 @@ Widget _panel({required bool night}) {
     Row(
       children: [
         Expanded(
-          child: ShuFuda(
+          child: AiFuda(
             night: night,
             expand: true,
             onPressed: _noop,
@@ -56,7 +56,7 @@ Widget _panel({required bool night}) {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: ShuFuda(
+          child: AiFuda(
             night: night,
             expand: true,
             onPressed: null,
@@ -175,7 +175,7 @@ Widget _panel({required bool night}) {
           const SizedBox(width: 8),
           KeshiFuda(onPressed: _noop, child: const Text('削除')),
           const SizedBox(width: 8),
-          ShuFuda(onPressed: _noop, child: const Text('保存')),
+          AiFuda(onPressed: _noop, child: const Text('保存')),
         ],
       ),
     ],

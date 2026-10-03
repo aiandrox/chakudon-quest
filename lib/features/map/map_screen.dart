@@ -334,7 +334,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                             stop.location.longitude,
                           ),
                       ],
-                      color: Washi.shu.withValues(alpha: 0.8),
+                      color: Washi.ai.withValues(alpha: 0.8),
                       strokeWidth: 3,
                     ),
                   ],
@@ -570,7 +570,7 @@ class _UnvisitedPin extends ConsumerWidget {
                     ),
                   ),
                 const SizedBox(height: 16),
-                ShuFuda(
+                AiFuda(
                   icon: const Icon(Icons.bookmark_add),
                   child: Text(l10n.wishMakeButton),
                   onPressed: () {
@@ -738,7 +738,6 @@ class _WishPin extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
-    final colors = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => showModalBottomSheet<void>(
         context: context,
@@ -766,7 +765,7 @@ class _WishPin extends StatelessWidget {
         button: true,
         label: l10n.mapWishedLabel(wish.name),
         child: _SealPin(
-          color: colors.primary,
+          color: Washi.shu,
           filled: false,
           label: l10n.wishSealChar,
         ),

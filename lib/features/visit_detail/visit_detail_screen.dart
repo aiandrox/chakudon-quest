@@ -508,7 +508,7 @@ class _ShopStamps extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         color: stamp.visit.id == selectedId
-                            ? Washi.shu
+                            ? Washi.ai
                             : Colors.transparent,
                       ),
                     ),

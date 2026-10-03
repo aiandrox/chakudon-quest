@@ -230,7 +230,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         ),
         child: SafeArea(
           minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-          child: ShuFuda(
+          child: AiFuda(
             expand: true,
             height: 60,
             fontSize: 26,

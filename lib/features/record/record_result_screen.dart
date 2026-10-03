@@ -61,7 +61,7 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
     final night = base.copyWith(
       scaffoldBackgroundColor: Washi.ink,
       colorScheme: base.colorScheme.copyWith(
-        primary: Washi.shuLight,
+        primary: Washi.aiLight,
         onPrimary: Washi.ink,
         surface: Washi.ink,
         onSurface: Washi.paper,
@@ -101,7 +101,7 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
             children: [
               if (outcome != null) ...[
                 Expanded(
-                  child: ShuFuda(
+                  child: AiFuda(
                     night: true,
                     expand: true,
                     height: 56,
@@ -361,7 +361,7 @@ class _WishFulfilledBanner extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final days = daysToFulfill(wish, eatenAt);
     return DecoratedBox(
-      decoration: BoxDecoration(border: Border.all(color: Washi.shuLight)),
+      decoration: BoxDecoration(border: Border.all(color: Washi.aiLight)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -371,7 +371,7 @@ class _WishFulfilledBanner extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: Washi.brush,
                 fontSize: 32,
-                color: Washi.shuLight,
+                color: Washi.aiLight,
               ),
             ),
             const SizedBox(height: 4),
@@ -404,7 +404,7 @@ class _HealthyLifeRevealBanner extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     return DecoratedBox(
-      decoration: BoxDecoration(border: Border.all(color: Washi.shuLight)),
+      decoration: BoxDecoration(border: Border.all(color: Washi.aiLight)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -415,7 +415,7 @@ class _HealthyLifeRevealBanner extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: Washi.brush,
                 fontSize: 24,
-                color: Washi.shuLight,
+                color: Washi.aiLight,
               ),
             ),
             Text(l10n.healthyLifeRevealNote, style: textTheme.bodyMedium),

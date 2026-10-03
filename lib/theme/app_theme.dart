@@ -6,10 +6,10 @@ import 'washi_buttons.dart';
 ThemeData buildAppTheme() {
   final colorScheme =
       ColorScheme.fromSeed(
-        seedColor: Washi.shu,
+        seedColor: Washi.ai,
         dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
       ).copyWith(
-        primary: Washi.shu,
+        primary: Washi.ai,
         onPrimary: Colors.white,
         surface: Washi.paper,
         onSurface: Washi.ink,
@@ -47,7 +47,7 @@ ThemeData buildAppTheme() {
         borderRadius: BorderRadius.all(Radius.circular(2)),
       ),
     ),
-    filledButtonTheme: FilledButtonThemeData(style: FudaStyle.shu()),
+    filledButtonTheme: FilledButtonThemeData(style: FudaStyle.ai()),
     outlinedButtonTheme: OutlinedButtonThemeData(style: FudaStyle.sumi()),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
@@ -56,19 +56,19 @@ ThemeData buildAppTheme() {
         minimumSize: const Size(48, 48),
       ),
     ),
-    // 選ぶ札は、角を落とした木札の形。選ぶと朱の縁とチェックがつく。
+    // 選ぶ札は、角を落とした木札の形。選ぶと藍の縁とチェックがつく。
     chipTheme: ChipThemeData(
       shape: const BeveledRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       color: WidgetStateProperty.resolveWith(
         (states) => states.contains(WidgetState.selected)
-            ? const Color(0x1AB3261E)
+            ? const Color(0x1A26344A)
             : Washi.page,
       ),
       side: WidgetStateBorderSide.resolveWith(
         (states) => states.contains(WidgetState.selected)
-            ? const BorderSide(color: Washi.shu, width: 1.4)
+            ? const BorderSide(color: Washi.ai, width: 1.4)
             : const BorderSide(color: Washi.line),
       ),
       labelStyle: const TextStyle(
@@ -81,15 +81,15 @@ ThemeData buildAppTheme() {
         fontSize: 14,
         color: Washi.ink,
       ),
-      checkmarkColor: Washi.shu,
+      checkmarkColor: Washi.ai,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: Washi.shu,
+      backgroundColor: Washi.ai,
       foregroundColor: Colors.white,
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Washi.paper,
-      // 選んだタブは、アイコンの印そのものが朱に変わって示す。
+      // 選んだタブは、アイコンの枠そのものが藍に変わって示す。
       indicatorColor: Colors.transparent,
     ),
     dividerTheme: const DividerThemeData(color: Washi.line),
@@ -100,7 +100,7 @@ ThemeData buildAppTheme() {
         borderSide: BorderSide(color: Washi.line),
       ),
       focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Washi.shu, width: 2),
+        borderSide: BorderSide(color: Washi.ai, width: 2),
       ),
     ),
     snackBarTheme: const SnackBarThemeData(

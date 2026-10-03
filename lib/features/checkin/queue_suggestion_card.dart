@@ -81,7 +81,7 @@ class _QueueSuggestionCardState extends ConsumerState<QueueSuggestionCard> {
       elevation: 0,
       color: Washi.page,
       shape: RoundedRectangleBorder(
-        side: const BorderSide(color: Washi.shuLight),
+        side: const BorderSide(color: Washi.ai),
         borderRadius: BorderRadius.circular(8),
       ),
       margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
@@ -97,7 +97,7 @@ class _QueueSuggestionCardState extends ConsumerState<QueueSuggestionCard> {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
-            ShuFuda(
+            AiFuda(
               height: 48,
               fontSize: 18,
               onPressed: _isSaving ? null : checkIn,

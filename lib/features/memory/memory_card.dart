@@ -67,7 +67,7 @@ class _MemoryCardState extends ConsumerState<MemoryCard> {
                       style: const TextStyle(
                         fontFamily: Washi.brush,
                         fontSize: 16,
-                        color: Washi.shu,
+                        color: Washi.ai,
                       ),
                     ),
                     Text(

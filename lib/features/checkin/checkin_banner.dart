@@ -145,7 +145,7 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
                       Text(
                         l10n.checkinWaiting(minutes),
                         style: textTheme.bodyMedium?.copyWith(
-                          color: Washi.shuLight,
+                          color: Washi.aiLight,
                         ),
                       ),
                       if (memo.isNotEmpty)

@@ -45,7 +45,7 @@ class _ShopMemoDialogState extends State<_ShopMemoDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.cancel),
         ),
-        ShuFuda(
+        AiFuda(
           onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
           child: Text(l10n.editSave),
         ),
