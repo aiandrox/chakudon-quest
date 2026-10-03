@@ -1966,18 +1966,6 @@ abstract class AppLocalizations {
   /// **'まだ会得した奥義はありません'**
   String get questSpotNone;
 
-  /// No description provided for @questSpotAchievedAt.
-  ///
-  /// In ja, this message translates to:
-  /// **'{date} {shop}にて会得'**
-  String questSpotAchievedAt(String date, String shop);
-
-  /// No description provided for @questSpotOpenShop.
-  ///
-  /// In ja, this message translates to:
-  /// **'その一杯を見る'**
-  String get questSpotOpenShop;
-
   /// No description provided for @reviewEntry.
   ///
   /// In ja, this message translates to:
@@ -2169,6 +2157,18 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'{bowls}杯・{shops}軒・{points}点'**
   String reviewSummaryLine(int bowls, int shops, int points);
+
+  /// No description provided for @questSpotAchievedShop.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shop}にて会得'**
+  String questSpotAchievedShop(String shop);
+
+  /// No description provided for @questSpotOpenShop.
+  ///
+  /// In ja, this message translates to:
+  /// **'その一杯を見る'**
+  String get questSpotOpenShop;
 }
 
 class _AppLocalizationsDelegate

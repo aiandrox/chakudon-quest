@@ -39,7 +39,7 @@ void main() {
     expect(find.text(ja.questStanding), findsOneWidget);
     expect(find.text(ja.questSpot), findsOneWidget);
     expect(find.text(ja.questLevelTotal(0)), findsNothing);
-    expect(find.text(ja.questSpotSummary(0, 8)), findsOneWidget);
+    expect(find.text(ja.questSpotSummary(0, 8)), findsNothing);
     expect(find.text('着丼の道'), findsOneWidget);
     expect(find.text('はじめての着丼'), findsNothing);
     expect(find.text(ja.questSpotNone), findsOneWidget);
@@ -62,16 +62,14 @@ void main() {
     expect(find.text('はじめての着丼'), findsOneWidget);
     expect(find.text('初'), findsOneWidget);
     expect(find.text('60分の試練'), findsNothing);
-    expect(find.text(ja.questSpotSummary(1, 8)), findsOneWidget);
+    expect(find.text(ja.questSpotSummary(1, 8)), findsNothing);
     expect(find.text(daijiNumber(2)), findsOneWidget);
 
-    // 印をタップすると、会得した店と日を出し、その一杯へ行ける。
+    // 印をタップすると、会得した店を出し、その一杯へ行ける（日付は印の中だけ）。
     await tester.tap(find.text('はじめての着丼'));
     await tester.pumpAndSettle();
-    expect(
-      find.text(ja.questSpotAchievedAt('2026/9/1', 'shop')),
-      findsOneWidget,
-    );
+    expect(find.text(ja.questSpotAchievedShop('shop')), findsOneWidget);
+    expect(find.textContaining('2026/9/1'), findsNothing);
     expect(find.text(ja.questSpotOpenShop), findsOneWidget);
   });
 }

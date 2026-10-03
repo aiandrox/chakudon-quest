@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
 import '../scoring/scoring_providers.dart';
-import '../records/date_format.dart';
 import '../visit_detail/visit_detail_screen.dart';
 import 'quest_seal.dart';
 import 'quests.dart';
@@ -40,10 +39,7 @@ class QuestSections extends ConsumerWidget {
         _SectionHeader(title: l10n.questStanding),
         for (final progress in standing) _QuestCard(progress: progress),
         const SizedBox(height: 24),
-        _SectionHeader(
-          title: l10n.questSpot,
-          summary: l10n.questSpotSummary(achieved.length, spot.length),
-        ),
+        _SectionHeader(title: l10n.questSpot),
         if (achieved.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -67,22 +63,15 @@ class QuestSections extends ConsumerWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title, this.summary});
+  const _SectionHeader({required this.title});
 
   final String title;
-  final String? summary;
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 4),
-      child: SectionTitle(
-        title,
-        trailing: summary == null
-            ? null
-            : Text(summary!, style: textTheme.titleSmall),
-      ),
+      child: SectionTitle(title),
     );
   }
 }
@@ -173,7 +162,12 @@ class _SpotSeal extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Column(
             children: [
-              QuestSeal(quest: quest, level: progress.level, size: 64),
+              QuestSeal(
+                quest: quest,
+                level: progress.level,
+                size: 64,
+                achievedAt: progress.levelAchievedAt.first,
+              ),
               const SizedBox(height: 6),
               Text(
                 quest.title,
@@ -206,7 +200,12 @@ class _SpotDetails extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            QuestSeal(quest: quest, level: progress.level, size: 96),
+            QuestSeal(
+              quest: quest,
+              level: progress.level,
+              size: 112,
+              achievedAt: by.visit.eatenAt,
+            ),
             const SizedBox(height: 12),
             Text(
               quest.title,
@@ -220,10 +219,7 @@ class _SpotDetails extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              l10n.questSpotAchievedAt(
-                formatDate(by.visit.eatenAt),
-                by.shop.name,
-              ),
+              l10n.questSpotAchievedShop(by.shop.name),
               textAlign: TextAlign.center,
               style: textTheme.bodyLarge,
             ),

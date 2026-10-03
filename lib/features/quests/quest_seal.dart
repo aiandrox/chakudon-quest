@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
+import '../inkan/inkan_stamp.dart';
 import 'quests.dart';
 
 const _daiji = ['壱', '弐', '参', '肆', '伍', '陸', '漆', '捌', '玖', '拾'];
@@ -21,11 +22,15 @@ class QuestSeal extends StatelessWidget {
     required this.quest,
     required this.level,
     this.size = 52,
+    this.achievedAt,
   });
 
   final Quest quest;
   final int level;
   final double size;
+
+  /// 奥義の印に入れる、会得した日。
+  final DateTime? achievedAt;
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +50,41 @@ class QuestSeal extends StatelessWidget {
                 child: CustomPaint(
                   painter: _SpotSealPainter(design.shape),
                   child: Center(
-                    child: Text(
-                      design.glyph,
-                      style: TextStyle(
-                        fontFamily: Washi.brush,
-                        fontSize: size * 0.46,
-                        height: 1.05,
-                        color: Washi.shu,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          design.glyph,
+                          style: TextStyle(
+                            fontFamily: Washi.brush,
+                            fontSize: size * (achievedAt == null ? 0.46 : 0.36),
+                            height: 1.0,
+                            color: Washi.shu,
+                          ),
+                        ),
+                        if (achievedAt case final at?)
+                          SizedBox(
+                            // 菱形と花は内側が狭いので、日付を小さくする。
+                            width:
+                                size *
+                                (design.shape == QuestSealShape.diamond ||
+                                        design.shape == QuestSealShape.flower
+                                    ? 0.38
+                                    : 0.5),
+                            child: FittedBox(
+                              child: Text(
+                                kanjiEraDate(l10n, at),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: Washi.brush,
+                                  fontSize: size * 0.12,
+                                  height: 0.95,
+                                  color: Washi.shu,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
