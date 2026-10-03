@@ -126,9 +126,9 @@ void main() {
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // 1杯目 180、以降 (10 + 20 + 50) × 2 = 160 ずつ。18杯目で 2900 になり、免許皆伝（2800）に届く
+    // 1杯目 180、以降 (10 + 20 + 50) × 2 = 160 ずつ。22杯目で 3540 になり、免許皆伝（3510）に届く
     final entries = [
-      for (var d = 1; d <= 18; d++)
+      for (var d = 1; d <= 22; d++)
         buildEntry(
           shop: rare,
           eatenAt: day(d),

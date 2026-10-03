@@ -12,14 +12,20 @@ void main() {
 
   test('保存した記録のポイントと、累計の変化を返す', () {
     final first = buildEntry(shop: shop, eatenAt: day(1));
-    final second = buildEntry(shop: shop, eatenAt: day(2), isLimited: true);
+    // 10 + 60分待ち 30 + 限定 20 = 60
+    final second = buildEntry(
+      shop: shop,
+      eatenAt: day(2),
+      isLimited: true,
+      waitMinutes: 60,
+    );
 
     final outcome = computeRecordOutcome([second, first], second.visit.id)!;
 
-    expect(outcome.scored.points.total, 30);
+    expect(outcome.scored.points.total, 60);
     expect(outcome.totalBefore, 20);
-    expect(outcome.totalAfter, 50);
-    // 40点の四級を越える。
+    expect(outcome.totalAfter, 80);
+    // 65点の四級を越える。
     expect(outcome.isRankUp, isTrue);
   });
 
@@ -48,7 +54,7 @@ void main() {
     expect(up.rankAfter, AdventurerRank.kyu4);
     expect(up.isRankUp, isTrue);
 
-    // 20 点（五級）→ 30 点では、四級（40）に届かない。
+    // 20 点（五級）→ 30 点では、四級（65）に届かない。
     final first = buildEntry(shop: shop, eatenAt: day(1));
     final again = buildEntry(shop: shop, eatenAt: day(2));
     final notYet = computeRecordOutcome([first, again], again.visit.id)!;

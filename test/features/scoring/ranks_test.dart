@@ -13,22 +13,22 @@ void main() {
         {for (final r in AdventurerRank.values) r: r.requiredPoints},
         {
           AdventurerRank.apprentice: 0,
-          AdventurerRank.kyu5: 15,
-          AdventurerRank.kyu4: 40,
-          AdventurerRank.kyu3: 70,
-          AdventurerRank.kyu2: 110,
-          AdventurerRank.kyu1: 160,
-          AdventurerRank.dan1: 220,
-          AdventurerRank.dan2: 300,
-          AdventurerRank.dan3: 400,
-          AdventurerRank.dan4: 520,
-          AdventurerRank.dan5: 660,
-          AdventurerRank.dan6: 820,
-          AdventurerRank.dan7: 1000,
-          AdventurerRank.dan8: 1300,
-          AdventurerRank.dan9: 1650,
-          AdventurerRank.master: 2100,
-          AdventurerRank.grandmaster: 2800,
+          AdventurerRank.kyu5: 20,
+          AdventurerRank.kyu4: 65,
+          AdventurerRank.kyu3: 115,
+          AdventurerRank.kyu2: 185,
+          AdventurerRank.kyu1: 260,
+          AdventurerRank.dan1: 360,
+          AdventurerRank.dan2: 485,
+          AdventurerRank.dan3: 635,
+          AdventurerRank.dan4: 810,
+          AdventurerRank.dan5: 1010,
+          AdventurerRank.dan6: 1260,
+          AdventurerRank.dan7: 1560,
+          AdventurerRank.dan8: 1910,
+          AdventurerRank.dan9: 2310,
+          AdventurerRank.master: 2810,
+          AdventurerRank.grandmaster: 3510,
         },
       );
     });
@@ -44,7 +44,7 @@ void main() {
 
     test('次のランクと必要ポイントがわかる。最高ランクの次は無い', () {
       expect(AdventurerRank.apprentice.next, AdventurerRank.kyu5);
-      expect(AdventurerRank.apprentice.next!.requiredPoints, 15);
+      expect(AdventurerRank.apprentice.next!.requiredPoints, 20);
       expect(AdventurerRank.kyu1.next, AdventurerRank.dan1);
       expect(AdventurerRank.dan9.next, AdventurerRank.master);
       expect(AdventurerRank.grandmaster.next, isNull);
