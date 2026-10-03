@@ -1,22 +1,22 @@
-name: Server Deploy
+name: Site Deploy
 
 # main にマージされたら、D1 の表を整え、店のデータを正本（data/curated_shops.json）どおりに入れ替えて、
-# Worker をデプロイする。Cloudflare の secret（CLOUDFLARE_API_TOKEN・CLOUDFLARE_ACCOUNT_ID）が
+# 紹介ページと API（Cloudflare Pages の ramen-in-cho）をデプロイする。Cloudflare の secret（CLOUDFLARE_API_TOKEN・CLOUDFLARE_ACCOUNT_ID）が
 # まだ無ければ何もしない（issue #172）。
 on:
   push:
     branches: [main]
     paths:
-      - "server/**"
+      - "site/**"
       - "data/**"
-      - ".github/workflows/server-deploy.yml"
+      - ".github/workflows/site-deploy.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: server-deploy
+  group: site-deploy
   cancel-in-progress: false
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     defaults:
       run:
-        working-directory: server
+        working-directory: site
     steps:
       - name: Cloudflare の設定があるか
         id: configured
@@ -46,7 +46,7 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: server/package-lock.json
+          cache-dependency-path: site/package-lock.json
       - if: steps.configured.outputs.ok == 'true'
         run: npm ci
       - if: steps.configured.outputs.ok == 'true'
@@ -54,4 +54,4 @@ jobs:
       - if: steps.configured.outputs.ok == 'true'
         run: npm run seed && npx wrangler d1 execute chakudon-quest --remote --file seed.sql
       - if: steps.configured.outputs.ok == 'true'
-        run: npx wrangler deploy
+        run: npx wrangler pages deploy --project-name ramen-in-cho --branch main

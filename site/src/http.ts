@@ -4,7 +4,7 @@ export interface Env {
   DB: D1Database;
 }
 
-const json = (body: unknown, init: ResponseInit = {}) =>
+export const json = (body: unknown, init: ResponseInit = {}) =>
   new Response(JSON.stringify(body), {
     ...init,
     headers: { 'content-type': 'application/json; charset=utf-8', ...init.headers },
@@ -24,16 +24,9 @@ export async function curatedShops(request: Request, shops: CuratedShop[]): Prom
   return json({ shops }, { headers });
 }
 
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
-    if (request.method !== 'GET') return json({ error: 'method not allowed' }, { status: 405 });
-    if (url.pathname === '/v1/curated-shops') {
-      const { results } = await env.DB.prepare(
-        'SELECT id, name, address, latitude, longitude, chain, status FROM curated_shops ORDER BY id',
-      ).all<CuratedShop>();
-      return curatedShops(request, results);
-    }
-    return json({ error: 'not found' }, { status: 404 });
-  },
-} satisfies ExportedHandler<Env>;
+export async function loadCuratedShops(db: D1Database): Promise<CuratedShop[]> {
+  const { results } = await db
+    .prepare('SELECT id, name, address, latitude, longitude, chain, status FROM curated_shops ORDER BY id')
+    .all<CuratedShop>();
+  return results;
+}

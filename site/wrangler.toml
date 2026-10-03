@@ -1,7 +1,8 @@
-# 着丼クエストの API（店のデータと検索）。設計は issue #172。
-name = "chakudon-quest-api"
-main = "src/index.ts"
+# 着丼クエストの紹介ページ（public/）と API（functions/、/api/v1/...）。Cloudflare Pages の1つのプロジェクト。
+# 設計は issue #172。公開先は https://ramen-in-cho.aiandrox.com
+name = "ramen-in-cho"
 compatibility_date = "2025-01-01"
+pages_build_output_dir = "public"
 
 [[d1_databases]]
 binding = "DB"

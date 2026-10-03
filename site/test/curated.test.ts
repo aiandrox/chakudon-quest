@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import { type CuratedShop, etagOf, validateCuratedShops } from '../src/curated.ts';
-import { curatedShops } from '../src/index.ts';
+import { curatedShops } from '../src/http.ts';
 import { buildSeedSql } from '../src/seed.ts';
 
 const file = JSON.parse(readFileSync(new URL('../../data/curated_shops.json', import.meta.url), 'utf8'));
