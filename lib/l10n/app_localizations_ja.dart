@@ -785,7 +785,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get navMap => '地図';
 
   @override
-  String get mapAttribution => 'OpenStreetMap contributors';
+  String get mapAttribution => '© OpenStreetMap contributors';
 
   @override
   String get openPoiAttribution =>

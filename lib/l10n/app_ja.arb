@@ -402,7 +402,7 @@
   },
   "statsShopRanks": "店ランク",
   "navMap": "地図",
-  "mapAttribution": "OpenStreetMap contributors",
+  "mapAttribution": "© OpenStreetMap contributors",
   "openPoiAttribution": "出典: OpenPOI API（https://openpoiapi.com/attribution.html）",
   "mapTitle": "ラーメン地図",
   "mapSearching": "このあたりのラーメン店を探しています…",
