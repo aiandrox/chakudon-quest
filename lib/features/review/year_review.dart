@@ -17,6 +17,7 @@ class QuestReached {
 class YearReview {
   const YearReview({
     required this.year,
+    required this.stamps,
     required this.bowls,
     required this.shops,
     required this.retreats,
@@ -33,6 +34,9 @@ class YearReview {
   });
 
   final int year;
+
+  /// その年に食べた1杯（古い順）。印を順に押していくのに使う。
+  final List<ScoredVisit> stamps;
 
   /// 食べた杯数（撤退は数えない）。
   final int bowls;
@@ -90,6 +94,7 @@ YearReview yearReview(
   final bests = personalBests(eaten);
   return YearReview(
     year: year,
+    stamps: eaten,
     bowls: eaten.length,
     shops: {for (final entry in eaten) entry.visit.shopId}.length,
     retreats: inYear.length - eaten.length,

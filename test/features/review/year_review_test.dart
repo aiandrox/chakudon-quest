@@ -38,6 +38,12 @@ void main() {
     final r = review(2026);
 
     expect(r.bowls, 3);
+    // 印は食べた1杯だけを、古い順に並べる。
+    expect(r.stamps, hasLength(3));
+    expect(
+      r.stamps.map((e) => e.visit.eatenAt).toList(),
+      [...r.stamps.map((e) => e.visit.eatenAt)]..sort(),
+    );
     expect(r.shops, 2);
     expect(r.retreats, 1);
     expect(r.points, 75);
