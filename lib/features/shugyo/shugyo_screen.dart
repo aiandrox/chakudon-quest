@@ -6,6 +6,7 @@ import '../../theme/washi.dart';
 import '../backup/backup_screen.dart';
 import '../credits/credits_screen.dart';
 import '../journal/shugyoroku_screen.dart';
+import '../map/home_base_line.dart';
 import '../quests/quest_list_screen.dart';
 import '../scoring/rank_progress.dart';
 import '../scoring/scoring_providers.dart';
@@ -30,6 +31,7 @@ class ShugyoScreen extends ConsumerWidget {
         children: [
           RankProgress(totalPoints: ref.watch(totalPointsProvider)),
           const StreakLine(),
+          const HomeBaseLine(),
           const SizedBox(height: 24),
           const QuestSections(),
           const SizedBox(height: 32),
