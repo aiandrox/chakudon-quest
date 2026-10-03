@@ -169,10 +169,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Expanded(child: _buildVisits(l10n, visits)),
         ],
       ),
-      floatingActionButton: AddButton(
-        tooltip: l10n.addRecord,
-        onPressed: _openRecord,
-      ),
     );
   }
 

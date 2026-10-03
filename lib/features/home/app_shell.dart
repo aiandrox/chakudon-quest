@@ -5,9 +5,12 @@ import '../../theme/washi.dart';
 import '../map/map_screen.dart';
 import '../shugyo/shugyo_screen.dart';
 import '../wishes/wish_list_screen.dart';
+import '../../theme/washi_buttons.dart';
+import '../record/record_screen.dart';
 import 'home_screen.dart';
 
 /// 下のタブ（印帳・願掛け・修行・地図）で画面を切り替える、アプリの外枠。
+/// タブの真ん中には、どの画面からでも記録を始められる大きな判子を置く。
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
@@ -17,6 +20,9 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   static const _mapIndex = 3;
+
+  /// 下のタブで、真ん中の判子のために空けておく位置。
+  static const _gap = 2;
 
   int _index = 0;
 
@@ -38,13 +44,40 @@ class _AppShellState extends State<AppShell> {
             const SizedBox.shrink(),
         ],
       ),
+      floatingActionButton: Padding(
+        // タブの上に半分ほどはみ出すように、少し下げる。
+        padding: const EdgeInsets.only(top: 36),
+        child: RecordSealButton(
+          tooltip: l10n.addRecord,
+          onPressed: () => Navigator.of(
+            context,
+          ).push<void>(MaterialPageRoute(builder: (_) => const RecordScreen())),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (index) => setState(() => _index = index),
+        // 真ん中は判子の場所として空けておく（押しても何もしない）。
+        selectedIndex: _index < _gap ? _index : _index + 1,
+        onDestinationSelected: (index) {
+          if (index == _gap) return;
+          setState(() => _index = index < _gap ? index : index - 1);
+        },
         destinations: [
           for (final (glyph, label) in [
             (l10n.navGlyphRecords, l10n.navRecords),
             (l10n.navGlyphWishes, l10n.navWishes),
+          ])
+            NavigationDestination(
+              icon: _TabSeal(glyph: glyph, selected: false),
+              selectedIcon: _TabSeal(glyph: glyph, selected: true),
+              label: label,
+            ),
+          const NavigationDestination(
+            icon: SizedBox(width: RecordSealButton.size),
+            label: '',
+            enabled: false,
+          ),
+          for (final (glyph, label) in [
             (l10n.navGlyphShugyo, l10n.navShugyo),
             (l10n.navGlyphMap, l10n.navMap),
           ])
