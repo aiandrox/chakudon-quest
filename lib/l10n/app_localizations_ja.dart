@@ -396,6 +396,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rankHistoryTitle => '昇段の記録';
 
   @override
+  String rankHistoryAchievedAt(String date, String shop) {
+    return '$date　$shopにて達成';
+  }
+
+  @override
   String get rankHistoryNoRecord => '最初の一杯から修行が始まります';
 
   @override

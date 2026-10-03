@@ -790,6 +790,12 @@ abstract class AppLocalizations {
   /// **'昇段の記録'**
   String get rankHistoryTitle;
 
+  /// No description provided for @rankHistoryAchievedAt.
+  ///
+  /// In ja, this message translates to:
+  /// **'{date}　{shop}にて達成'**
+  String rankHistoryAchievedAt(String date, String shop);
+
   /// No description provided for @rankHistoryNoRecord.
   ///
   /// In ja, this message translates to:
