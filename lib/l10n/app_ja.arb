@@ -475,6 +475,7 @@
       "count": {"type": "int"}
     }
   },
+  "mapOpenShopPage": "この店のページを見る",
   "mapLastVisit": "最後に行った日 {date}",
   "@mapLastVisit": {
     "placeholders": {
