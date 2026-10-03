@@ -877,7 +877,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get backupImport => '読み込む';
 
   @override
-  String get backupImportNote => '書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません';
+  String get backupImportNote =>
+      '書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません。ファイル名は「ramen-in-cho-（日付）.zip」です';
 
   @override
   String get backupExportFailed => '書き出せませんでした。もう一度お試しください';

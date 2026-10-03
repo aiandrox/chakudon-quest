@@ -1585,7 +1585,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupImportNote.
   ///
   /// In ja, this message translates to:
-  /// **'書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません'**
+  /// **'書き出したファイルを選ぶと、このスマホに無い記録だけを足します。今ある記録は消えません。ファイル名は「ramen-in-cho-（日付）.zip」です'**
   String get backupImportNote;
 
   /// No description provided for @backupExportFailed.
