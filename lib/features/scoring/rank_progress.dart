@@ -41,7 +41,6 @@ class RankProgress extends StatelessWidget {
         RankSeal(
           label: adventurerRankLabel(l10n, rank),
           fontSize: 18,
-          color: colors.primary,
         ),
         const SizedBox(width: 14),
         Expanded(
