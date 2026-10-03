@@ -119,22 +119,13 @@ class _ResultBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
     final colors = Theme.of(context).colorScheme;
     final scored = outcome.scored;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
       children: [
-        Text(
-          l10n.resultStamped,
-          style: textTheme.bodySmall?.copyWith(
-            color: Washi.nightSoft,
-            letterSpacing: 4,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         _StampedPage(scored: scored),
         if (scored.fulfilledWish case final wish?) ...[
           const SizedBox(height: 16),

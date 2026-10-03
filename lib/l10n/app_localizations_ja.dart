@@ -907,9 +907,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shopStamps => 'この道場の印';
 
   @override
-  String get resultStamped => '印をいただきました';
-
-  @override
   String recordPhotoDate(String date) {
     return '食べた日時: $date（写真の撮影日時）';
   }
