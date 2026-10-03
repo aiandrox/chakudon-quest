@@ -33,6 +33,14 @@ Cloudflare Pages の1つのプロジェクトに、紹介ページ（`public/`�
 
 D1 のつなぎ（`DB`）は `wrangler.toml` に書いてあるので、デプロイのときに Pages に反映される。
 
+## App Check
+
+`/api/v1/...` は `functions/api/_middleware.ts` で Firebase App Check（プロジェクト `ramen-in-cho`）のトークンを確かめる。`wrangler.toml` の `APP_CHECK_ENFORCE` が `"false"` のうちは、トークンが無い・正しくない問い合わせも通し、ログ（`app check: missing` / `invalid`）に残すだけ。アプリからの問い合わせがほぼ `ok` になったのを確かめてから `"true"` にする。
+
+- iOS: Firebase コンソール → App Check で App Attest を登録（チームIDが要る）。`ios/Runner/Runner.entitlements` に `com.apple.developer.devicecheck.appattest-environment` = `production` を入れ、Release・Profile にだけ付ける
+- Android: Firebase コンソール → App Check で Play Integrity を登録（署名の SHA-256 が要る）。Google Play から入れたアプリでないと通らないので、`adb install` で入れたアプリはデバッグ用トークンを使う
+- デバッグビルド: `--dart-define=APP_CHECK_DEBUG_TOKEN=<UUID>` で渡したトークンを、Firebase コンソール → App Check → アプリ → デバッグトークンの管理 に登録する
+
 ## 手元で
 
 ```bash

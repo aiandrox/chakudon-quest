@@ -9,3 +9,7 @@ binding = "DB"
 database_name = "ramen-in-cho"
 database_id = "472bcba3-2644-41d8-b16a-1474a517654b"
 migrations_dir = "migrations"
+
+[vars]
+# "true" にすると、Firebase App Check のトークンが無い・正しくない問い合わせを断る（それまでは記録だけ）。
+APP_CHECK_ENFORCE = "false"

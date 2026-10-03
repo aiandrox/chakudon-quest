@@ -45,12 +45,12 @@
 - **マージ前に止まるのは次のときだけ**（本人ではなく aiandrox に回す。「確認の取り方」参照）
   - 「作業の進め方」で勝手に変更しないと決めたもの（bundle ID、署名、ストア関連の設定）に触れる
   - 保存済みの記録や写真が消える・読めなくなるおそれがある
-  - 麺印帳のサーバー・Overpass API・OpenPOI API・OpenStreetMap のタイルサーバー以外への通信を増やす
+  - 麺印帳のサーバー・Overpass API・OpenPOI API・OpenStreetMap のタイルサーバー・Firebase App Check 以外への通信を増やす
   - 作り方の判断に迷い、あとから直すと手戻りが大きい（使い勝手の判断なら本人に聞く）
 - 画面の変更がある PR には確認手順（どこをタップして何を見るか）を書く。スクリーンショットは撮れるときだけ付ける
 - **コメントは基本的に書かない。** 書くのは理由がコードから読み取れないときだけ、1〜3行で。経緯は PR の説明に書く
 - **画面に出す文言は `lib/l10n/app_ja.arb` に書く**（コードに直接書かない）。今は日本語だけ。変更したら `flutter gen-l10n` を実行する
-- **face-seal から持ち込まないもの**: Firebase（計測・クラッシュ報告・Remote Config）、広告、課金、`google_fonts`（実行時にフォントを取りに通信するため）。外部への通信を店の検索と地図の画像だけにする方針と合わないため
+- **face-seal から持ち込まないもの**: Firebase の計測・クラッシュ報告・Remote Config、広告、課金、`google_fonts`（実行時にフォントを取りに通信するため）。外部への通信を店の検索と地図の画像だけにする方針と合わないため。Firebase のうち App Check だけは使う（サーバーの API をアプリ以外から使わせないため）
 - `flutter pub get` / `flutter test` のあとに `ios/Flutter/*.xcconfig` が変わったり `ios/Podfile` ができたりしたら、コミットに含めない
 
 ## 技術構成
@@ -63,11 +63,12 @@
 | 現在地 | `geolocator`（アプリ使用中のみ） |
 | 店の検索 | OpenStreetMap の Overpass API と OpenPOI API を `http` で同時に呼び、結果をまとめる（どちらも API キー不要） |
 | 地図表示（後の段階） | `flutter_map` |
+| サーバーの API の保護 | Firebase App Check（`firebase_core`・`firebase_app_check`。Firebase プロジェクト `ramen-in-cho`）。リリースは App Attest / Play Integrity、デバッグはデバッグ用トークン |
 | 状態管理・フォルダ構成・lint | **既存アプリ `../face-seal` に揃える**（状態管理は `flutter_riverpod`、フォルダは `lib/features/<機能名>/`・`lib/theme/`・`lib/l10n/`、`analysis_options.yaml` も同じものを使う） |
 
 - **ログインは作らない。** 記録・写真はすべて端末内に保存し、アプリの側で写真や記録をサーバーに保存・送信しない。店のデータと検索だけは Cloudflare Pages（`site/`、https://ramen-in-cho.aiandrox.com）に移していく（issue #172。アプリから呼ぶのは第2段階から）
 - 本人が OS の共有画面で写真や記録（画像・バックアップなど）を送るのはよい
-- アプリが自分から通信する先は、麺印帳のサーバー（https://ramen-in-cho.aiandrox.com 。店の検索と手で持つ店の一覧）、サーバーに届かないときの逃げ道として Overpass API・OpenPOI API・Yahoo! ローカルサーチ（Yahoo! は Client ID を渡してビルドしたときだけ）、OpenStreetMap のタイルサーバー（地図の画像）だけ。サーバーに伝わるのは検索の中心・半径・店名だけで、タイルサーバーに伝わるのは地図の表示範囲だけ
+- アプリが自分から通信する先は、麺印帳のサーバー（https://ramen-in-cho.aiandrox.com 。店の検索と手で持つ店の一覧）、サーバーに届かないときの逃げ道として Overpass API・OpenPOI API・Yahoo! ローカルサーチ（Yahoo! は Client ID を渡してビルドしたときだけ）、OpenStreetMap のタイルサーバー（地図の画像）、Firebase App Check（Google。アプリからの問い合わせだと示すトークンを取る）だけ。サーバーに伝わるのは検索の中心・半径・店名だけで、タイルサーバーに伝わるのは地図の表示範囲だけ
 - アプリを閉じている間の位置情報（バックグラウンド位置情報）は**使わない**。自動チェックインは将来の検討事項とする
 
 ## 機能（上から順に作る）
@@ -329,6 +330,7 @@ dart run build_runner build --delete-conflicting-outputs   # drift のコード�
 | 2026-10-03 | サーバーに店の検索を足す（`/api/v1/shops/nearby`・`/api/v1/shops/search`）。手で持つ店・Overpass・OpenPOI・Yahoo! をまとめる決まりはアプリと同じにして TypeScript に移した。結果は Cache API に1週間ためる（どれかが失敗したときは1日）。近くの店は約300mのマスごと、店名は言葉と約50kmの場所ごとにため、誰が探したかは残さない。Yahoo! の Client ID はサーバーの secret に置く | 店はそう変わらないので1週間ためても困らず、先の検索サービスへの問い合わせを減らせるため（aiandrox の判断）。Overpass は同じ IP から同時に2つまでなので、全員の問い合わせがサーバーから出ても詰まりにくくする |
 | 2026-10-03 | アプリの店の検索（近くの店・店名）と手で持つ店の一覧を、麺印帳のサーバー経由にする。サーバーには6秒（地図は呼び出し元と同じ）まで待ち、届かなければ今までどおり端末から直接探す。手で持つ店の一覧は起動のたびに1日1回まで取り直し（ETag で変わったときだけ）、documents の `curated_shops.json` に保存する。取れないときは保存分、それも無ければ同梱分を使う。`--dart-define=RAMEN_IN_CHO_API=` で空にするとサーバーを使わない | 検索の決まりと手で持つ店を、アプリの更新なしで直せるようにするため（issue #172）。サーバーが動き出すまでや落ちたときも、今までどおり検索できるようにするため |
 | 2026-10-03 | アプリのアイコンと起動画面を「藍の印帳の表紙に、題箋『麺印帳』と丼の朱印」にする（ロゴ案 9c）。絵は `test/tool/app_icon_test.dart` で描き、`UPDATE_APP_ICON=true` で Android・iOS の各サイズを作り直す。かすれは入れない | 利用者の選択。印帳（帳面）と印、ラーメン（丼）が1つの絵で伝わるため。小さいアイコンでは、かすれが汚れに見えるため |
+| 2026-10-03 | サーバーの API（`/api/v1/...`）を Firebase App Check で守る。アプリは問い合わせに `X-Firebase-AppCheck` のトークンを添え（取れなければ添えずに問い合わせる）、サーバーは `site/functions/api/_middleware.ts` で確かめる。まずは記録だけ取り、`site/wrangler.toml` の `APP_CHECK_ENFORCE` を `"true"` にすると断るようになる。断られてもアプリは端末から直接探すので、記録はできる。Firebase のうち App Check だけを持ち込み、計測・クラッシュ報告は入れない。`firebase_core`・`firebase_app_check`（BSD-3-Clause、Firebase 公式）と、サーバーに `jose`（MIT）を追加 | API を誰でも呼べると、Yahoo! の利用上限を使い切られたり、Overpass に負荷をかけたりするため（aiandrox の判断で Firebase を許可）。face-seal と同じ作りにするため |
 | 初版 | アプリ名は「着丼クエスト」（`chakudon-quest`） | 同名のアプリ・サービスが見つからず、名前で検索したときに埋もれにくいため。遊びの中心を「クエスト（お題）の達成」に置く |
 
 ## 未決の論点

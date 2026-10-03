@@ -4,6 +4,8 @@ export interface Env {
   DB: D1Database;
   /** Yahoo! ローカルサーチの Client ID（`wrangler pages secret put YAHOO_APP_ID`）。無ければ Yahoo! では探さない。 */
   YAHOO_APP_ID?: string;
+  /** "true" なら、Firebase App Check のトークンが無い・正しくない問い合わせを断る。 */
+  APP_CHECK_ENFORCE?: string;
 }
 
 export const json = (body: unknown, init: ResponseInit = {}) =>

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,8 +21,21 @@ final ramenInChoApiProvider = Provider<RamenInChoApi?>((ref) {
   if (ramenInChoApiBase.isEmpty) return null;
   final client = http.Client();
   ref.onDispose(client.close);
-  return RamenInChoApi(client, base: Uri.parse(ramenInChoApiBase));
+  return RamenInChoApi(
+    client,
+    base: Uri.parse(ramenInChoApiBase),
+    appCheckToken: _firebaseAppCheckToken,
+  );
 });
+
+Future<String?> _firebaseAppCheckToken() async {
+  try {
+    return await FirebaseAppCheck.instance.getToken();
+  } catch (e) {
+    debugPrint('App Check getToken failed: $e');
+    return null;
+  }
+}
 
 /// サーバーの応答（手で持つ店の一覧）。[shops]がnullなら、前に取った一覧から変わっていない（304）。
 class CuratedShopsResponse {
@@ -31,13 +46,17 @@ class CuratedShopsResponse {
 }
 
 class RamenInChoApi {
-  RamenInChoApi(this._client, {required this._base});
+  RamenInChoApi(this._client, {required this._base, this._appCheckToken});
 
   /// 落ちているときに、端末から直接の検索へ早めに切り替えるため短くする。
   static const timeout = Duration(seconds: 6);
+  static const _appCheckTimeout = Duration(seconds: 3);
 
   final http.Client _client;
   final Uri _base;
+
+  /// アプリからの問い合わせだと示す Firebase App Check のトークン。取れなければ付けずに問い合わせる。
+  final Future<String?> Function()? _appCheckToken;
 
   Uri _uri(String path, [Map<String, String>? query]) =>
       _base.replace(path: '${_base.path}$path', queryParameters: query);
@@ -47,9 +66,23 @@ class RamenInChoApi {
     Map<String, String> headers = const {},
     Duration timeout = RamenInChoApi.timeout,
   }) async {
-    final response = await _client
-        .get(uri, headers: {'User-Agent': shopSearchUserAgent, ...headers})
-        .timeout(timeout);
+    // トークンを待つ時間も含めて [timeout] に収め、端末から直接の検索へ早めに切り替える。
+    Future<http.Response> send() async {
+      final appCheckToken = await _appCheckToken?.call().timeout(
+        _appCheckTimeout,
+        onTimeout: () => null,
+      );
+      return _client.get(
+        uri,
+        headers: {
+          'User-Agent': shopSearchUserAgent,
+          'X-Firebase-AppCheck': ?appCheckToken,
+          ...headers,
+        },
+      );
+    }
+
+    final response = await send().timeout(timeout);
     if (response.statusCode != 200 && response.statusCode != 304) {
       throw http.ClientException(
         'Ramen-In-Cho API: HTTP ${response.statusCode}',
