@@ -146,10 +146,9 @@ class _PendingWishCard extends ConsumerWidget {
     }
   }
 
-  /// 消してよいか確かめる。消したらtrue。
-  Future<bool> _delete(BuildContext context, WidgetRef ref) async {
+  /// 消してよいか確かめる。消してよければtrue。
+  Future<bool> _confirmDelete(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
-    final repository = ref.read(wishRepositoryProvider);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -166,9 +165,7 @@ class _PendingWishCard extends ConsumerWidget {
         ],
       ),
     );
-    if (confirmed != true) return false;
-    await repository.deleteWish(status.wish.id);
-    return true;
+    return confirmed == true;
   }
 
   @override
@@ -180,7 +177,8 @@ class _PendingWishCard extends ConsumerWidget {
     return Dismissible(
       key: ValueKey(wish.id),
       direction: DismissDirection.endToStart,
-      confirmDismiss: (_) => _delete(context, ref),
+      confirmDismiss: (_) => _confirmDelete(context),
+      onDismissed: (_) => ref.read(wishRepositoryProvider).deleteWish(wish.id),
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),

@@ -298,7 +298,6 @@
   "wishNoteHint": "限定の煮干しを食べたい など",
   "wishTriggerLine": "きっかけ: {trigger}",
   "@wishTriggerLine": {"placeholders": {"trigger": {"type": "String"}}},
-  "@wishSinceDays": {"placeholders": {"days": {"type": "int"}}},
   "wishFulfilledLine": "{date} 願成就（{days}日越し）",
   "@wishFulfilledLine": {"placeholders": {"date": {"type": "String"}, "days": {"type": "int"}}},
   "wishAdded": "{name} に願を掛けました",
