@@ -1,12 +1,12 @@
-name: Server CI
+name: Site CI
 
-# 店のデータと検索の API（server/）と、その正本（data/）の確認。設計は issue #172。
+# 紹介ページと API（site/、Cloudflare Pages）と、店の正本（data/）の確認。設計は issue #172。
 on:
   pull_request:
     paths:
-      - "server/**"
+      - "site/**"
       - "data/**"
-      - ".github/workflows/server-ci.yml"
+      - ".github/workflows/site-ci.yml"
 
 permissions:
   contents: read
@@ -21,14 +21,14 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        working-directory: server
+        working-directory: site
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
-          cache-dependency-path: server/package-lock.json
+          cache-dependency-path: site/package-lock.json
       - run: npm ci
       - run: npm run typecheck
       - run: npm test

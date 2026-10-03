@@ -1,0 +1,440 @@
+:root {
+  --washi: #f6f1e7;
+  --washi-deep: #ece4d4;
+  --sumi: #231f1c;
+  --sumi-muted: #6f655a;
+  --shu: #c0392b;
+  --shu-ink: #96281c;
+  --line: #ddd2bf;
+  --brush: "Yuji Syuku", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--washi);
+  color: var(--sumi);
+  font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  font-weight: 500;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--brush);
+  font-weight: 400;
+}
+
+/* 朱の丸印（ブランドの印）。中の字は筆文字 */
+.seal {
+  display: inline-grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--shu);
+  color: var(--washi);
+  font-family: var(--brush);
+  font-size: 52px;
+  line-height: 1;
+  box-shadow: inset 0 0 0 4px var(--shu), inset 0 0 0 6px rgba(246, 241, 231, 0.8);
+}
+
+/* hero */
+.hero {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 64px 16px 72px;
+  text-align: center;
+}
+
+.name {
+  margin: 24px 0 0;
+  font-size: clamp(48px, 13vw, 88px);
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+}
+
+.name-en {
+  margin: 0;
+  color: var(--shu);
+  font-size: 14px;
+  letter-spacing: 0.2em;
+}
+
+.catch {
+  margin: 20px 0 0;
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.catch span,
+.closing-copy span {
+  display: inline-block;
+}
+
+.catch em {
+  font-style: normal;
+  color: var(--shu);
+}
+
+.sub {
+  max-width: 30em;
+  margin: 16px auto 0;
+  color: var(--sumi-muted);
+  font-size: 16px;
+}
+
+.store-soon {
+  display: inline-block;
+  margin-top: 32px;
+  padding: 10px 24px;
+  border: 1px solid var(--sumi);
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.store-soon small {
+  display: block;
+  color: var(--sumi-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* features */
+.features {
+  background: var(--washi-deep);
+  padding: 72px 16px;
+}
+
+.features > h2,
+.closing-copy {
+  margin: 0 auto;
+  text-align: center;
+  font-size: clamp(24px, 6vw, 34px);
+  line-height: 1.6;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  max-width: 960px;
+  margin: 48px auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature-list li {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 4px 16px;
+  align-items: start;
+}
+
+.feature-list .mark {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 2px solid var(--shu);
+  border-radius: 50%;
+  color: var(--shu);
+  font-family: var(--brush);
+  font-size: 30px;
+  line-height: 1;
+}
+
+.feature-list .mark.square {
+  border-radius: 8px;
+}
+
+.feature-list .mark.filled {
+  background: var(--shu);
+  color: var(--washi);
+}
+
+.feature-list h3 {
+  margin: 4px 0 0;
+  font-size: 24px;
+  line-height: 1.5;
+}
+
+.feature-list p {
+  margin: 0;
+  color: var(--sumi-muted);
+  font-size: 15px;
+}
+
+/* howto（記録の流れ） */
+.howto {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 72px 16px;
+  text-align: center;
+}
+
+.howto h2 {
+  margin: 0;
+  font-size: clamp(24px, 6vw, 32px);
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 8px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.steps li {
+  padding: 6px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fffdf8;
+}
+
+.steps li.last {
+  border-color: var(--shu);
+  background: var(--shu);
+  color: var(--washi);
+  font-family: var(--brush);
+  font-weight: 400;
+}
+
+.howto p {
+  margin: 24px 0 0;
+  color: var(--sumi-muted);
+  font-size: 15px;
+}
+
+/* promise */
+.promise {
+  padding: 64px 16px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.promise p {
+  margin: 0;
+  font-size: clamp(20px, 5vw, 26px);
+  font-weight: 700;
+}
+
+.promise small {
+  display: block;
+  max-width: 32em;
+  margin: 8px auto 0;
+  color: var(--sumi-muted);
+  font-size: 14px;
+}
+
+/* closing */
+.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 72px 16px 80px;
+}
+
+.closing .seal {
+  width: 72px;
+  height: 72px;
+  font-size: 38px;
+}
+
+/* ページ上部の小さな印と名前（法務・サポート・404） */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--sumi);
+  font-family: var(--brush);
+  font-size: 22px;
+  text-decoration: none;
+}
+
+.brand .seal {
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  box-shadow: inset 0 0 0 2px var(--shu), inset 0 0 0 3px rgba(246, 241, 231, 0.8);
+}
+
+.legal-header {
+  padding: 32px 16px 0;
+  text-align: center;
+}
+
+/* legal（利用規約・プライバシーポリシー） */
+.legal {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 16px 80px;
+  font-size: 15px;
+}
+
+.legal h1 {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(28px, 7vw, 36px);
+}
+
+.legal .dates {
+  margin: 8px 0 40px;
+  text-align: center;
+  color: var(--sumi-muted);
+  font-size: 13px;
+}
+
+.legal h2 {
+  margin: 40px 0 8px;
+  padding-left: 12px;
+  border-left: 4px solid var(--shu);
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.legal ul,
+.legal ol {
+  padding-left: 1.3em;
+}
+
+.legal li + li {
+  margin-top: 8px;
+}
+
+.legal a {
+  color: var(--shu-ink);
+}
+
+/* support（よくある質問） */
+.faq dt {
+  margin-top: 24px;
+  font-weight: 700;
+}
+
+.faq dt::before {
+  content: "問";
+  display: inline-grid;
+  place-items: center;
+  width: 1.6em;
+  height: 1.6em;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--shu);
+  color: var(--washi);
+  font-family: var(--brush);
+  font-size: 14px;
+  font-weight: 400;
+  vertical-align: 0.1em;
+}
+
+.faq dd {
+  margin: 4px 0 0;
+  padding-left: calc(1.6em + 8px);
+}
+
+.contact {
+  margin-top: 16px;
+  padding: 24px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fffdf8;
+  text-align: center;
+}
+
+.contact .mail {
+  margin: 8px 0 0;
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 700;
+}
+
+.contact .owner {
+  margin: 12px 0 0;
+  color: var(--sumi-muted);
+  font-size: 13px;
+}
+
+/* 404 */
+.not-found {
+  max-width: 560px;
+  min-height: calc(100vh - 160px);
+  margin: 0 auto;
+  padding: 80px 16px;
+  text-align: center;
+}
+
+.not-found .seal {
+  background: #8a8178;
+  box-shadow: inset 0 0 0 4px #8a8178, inset 0 0 0 6px rgba(246, 241, 231, 0.8);
+}
+
+.not-found h1 {
+  margin: 32px 0 8px;
+  font-size: clamp(26px, 7vw, 34px);
+}
+
+.not-found a {
+  color: var(--shu-ink);
+}
+
+/* footer */
+.footer {
+  padding: 32px 16px 40px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  color: var(--sumi-muted);
+  font-size: 13px;
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  margin-bottom: 12px;
+}
+
+.footer a {
+  color: var(--sumi-muted);
+}
+
+.footer small {
+  display: block;
+}
+
+.footer .attribution {
+  margin-top: 4px;
+}
+
+@media (min-width: 820px) {
+  .hero {
+    padding: 104px 32px 96px;
+  }
+
+  .feature-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 56px 48px;
+  }
+}

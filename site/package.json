@@ -1,10 +1,10 @@
 {
-  "name": "chakudon-quest-api",
+  "name": "ramen-in-cho",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "dev": "wrangler pages dev",
+    "deploy": "wrangler pages deploy",
     "seed": "node scripts/build-seed.mjs ../data/curated_shops.json > seed.sql",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
