@@ -49,42 +49,58 @@ class QuestSeal extends StatelessWidget {
                 dimension: size,
                 child: CustomPaint(
                   painter: _SpotSealPainter(design.shape),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          design.glyph,
-                          style: TextStyle(
-                            fontFamily: Washi.brush,
-                            fontSize: size * (achievedAt == null ? 0.46 : 0.36),
-                            height: 1.0,
-                            color: Washi.shu,
-                          ),
-                        ),
-                        if (achievedAt case final at?)
-                          SizedBox(
-                            // 菱形と花は内側が狭いので、日付を小さくする。
-                            width:
-                                size *
-                                (design.shape == QuestSealShape.diamond ||
-                                        design.shape == QuestSealShape.flower
-                                    ? 0.38
-                                    : 0.5),
-                            child: FittedBox(
-                              child: Text(
-                                kanjiEraDate(l10n, at),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: Washi.brush,
-                                  fontSize: size * 0.12,
-                                  height: 0.95,
-                                  color: Washi.shu,
+                  // 三角と丼は内側が下に寄っているので、字を下げる（三角は狭いので小さくもする）。
+                  child: Align(
+                    alignment: switch (design.shape) {
+                      QuestSealShape.triangle => const Alignment(0, 0.3),
+                      QuestSealShape.bowl => const Alignment(0, 0.08),
+                      _ => Alignment.center,
+                    },
+                    child: Transform.scale(
+                      scale: design.shape == QuestSealShape.triangle ? 0.6 : 1,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 2文字の字は縦に重ねて、印の中に収める。
+                          for (final char in design.glyph.characters)
+                            Text(
+                              char,
+                              style: TextStyle(
+                                fontFamily: Washi.brush,
+                                fontSize:
+                                    size *
+                                    (achievedAt == null ? 0.46 : 0.36) /
+                                    (design.glyph.characters.length > 1
+                                        ? 1.7
+                                        : 1),
+                                height: 1.0,
+                                color: Washi.shu,
+                              ),
+                            ),
+                          if (achievedAt case final at?)
+                            SizedBox(
+                              // 菱形と花は内側が狭いので、日付を小さくする。
+                              width:
+                                  size *
+                                  (design.shape == QuestSealShape.diamond ||
+                                          design.shape == QuestSealShape.flower
+                                      ? 0.38
+                                      : 0.5),
+                              child: FittedBox(
+                                child: Text(
+                                  kanjiEraDate(l10n, at),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: Washi.brush,
+                                    fontSize: size * 0.12,
+                                    height: 0.95,
+                                    color: Washi.shu,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -265,6 +281,146 @@ class _SpotSealPainter extends CustomPainter {
           ),
           thin,
         );
+      // 朝日のような、短い光の筋を周りにもつ丸。
+      case QuestSealShape.sunburst:
+        canvas.drawCircle(c, r - w * 2.6, line);
+        const rays = 16;
+        for (var i = 0; i < rays; i++) {
+          final a = 2 * math.pi * i / rays;
+          final dir = Offset(math.cos(a), math.sin(a));
+          canvas.drawLine(
+            c + dir * (r - w * 1.6),
+            c + dir * (r - w * 0.2),
+            thin,
+          );
+        }
+      // 三日月を左上に抱いた丸。
+      case QuestSealShape.crescent:
+        canvas.drawCircle(c, r - w, line);
+        final moon = Path.combine(
+          PathOperation.difference,
+          Path()..addOval(Rect.fromCircle(center: c, radius: r - w * 2.2)),
+          Path()..addOval(
+            Rect.fromCircle(
+              center: c + Offset(r * 0.1, r * 0.1),
+              radius: r - w * 2.4,
+            ),
+          ),
+        );
+        canvas.drawPath(moon, fill);
+      case QuestSealShape.triangle:
+        canvas.drawPath(polygon(3, r - w * 0.2), line);
+      // 縦長の角丸の二重線。
+      case QuestSealShape.pill:
+        final rect = Rect.fromCenter(
+          center: c,
+          width: r * 1.3,
+          height: r * 1.9,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(rect, Radius.circular(r * 0.65)),
+          line,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            rect.deflate(w * 1.8),
+            Radius.circular(r * 0.65 - w * 1.8),
+          ),
+          thin,
+        );
+      // 一筋の太い輪。
+      case QuestSealShape.boldRing:
+        canvas.drawCircle(c, r - w * 1.4, line..strokeWidth = w * 2.4);
+      case QuestSealShape.dashedRing:
+        const dashes = 18;
+        final rect = Rect.fromCircle(center: c, radius: r - w);
+        for (var i = 0; i < dashes; i++) {
+          canvas.drawArc(
+            rect,
+            2 * math.pi * i / dashes,
+            math.pi / dashes,
+            false,
+            line,
+          );
+        }
+        canvas.drawCircle(c, r - w * 2.8, thin);
+      case QuestSealShape.pentagon:
+        canvas.drawPath(polygon(5, r - w * 0.4), line);
+        canvas.drawPath(polygon(5, r - w * 2.8), thin);
+      case QuestSealShape.star:
+        final star = Path();
+        for (var i = 0; i < 10; i++) {
+          final a = 2 * math.pi * i / 10 - math.pi / 2;
+          final radius = i.isEven ? r - w * 0.3 : r * 0.72;
+          final p = c + Offset(math.cos(a), math.sin(a)) * radius;
+          i == 0 ? star.moveTo(p.dx, p.dy) : star.lineTo(p.dx, p.dy);
+        }
+        canvas.drawPath(star..close(), line);
+        canvas.drawCircle(c, r * 0.58, thin);
+      // 丼の形（上が平らで、下が深い丸み。下に高台）。
+      case QuestSealShape.bowl:
+        final top = c.dy - r * 0.55;
+        final body = Rect.fromLTRB(
+          c.dx - r,
+          top - r * 1.42,
+          c.dx + r,
+          top + r * 1.42,
+        );
+        final bowl = Path()
+          ..moveTo(body.left, top)
+          ..arcTo(body, math.pi, -math.pi, false)
+          ..close();
+        canvas.drawPath(bowl, line);
+        canvas.drawLine(
+          Offset(c.dx - r * 0.3, c.dy + r * 0.97),
+          Offset(c.dx + r * 0.3, c.dy + r * 0.97),
+          line,
+        );
+      // 東西南北に小さな三角をもつ丸（方位磁石）。
+      case QuestSealShape.compass:
+        canvas.drawCircle(c, r - w * 2.4, line);
+        for (var i = 0; i < 4; i++) {
+          final a = math.pi / 2 * i - math.pi / 2;
+          final dir = Offset(math.cos(a), math.sin(a));
+          final side = Offset(-dir.dy, dir.dx);
+          final tip = c + dir * r;
+          final base = c + dir * (r - w * 2.6);
+          canvas.drawPath(
+            Path()
+              ..moveTo(tip.dx, tip.dy)
+              ..lineTo((base + side * w * 1.2).dx, (base + side * w * 1.2).dy)
+              ..lineTo((base - side * w * 1.2).dx, (base - side * w * 1.2).dy)
+              ..close(),
+            fill,
+          );
+        }
+      // 四隅に点を打った角丸の角印。
+      case QuestSealShape.cornerDots:
+        final rect = Rect.fromCircle(center: c, radius: r * 0.78);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(rect, Radius.circular(r * 0.2)),
+          line,
+        );
+        for (final corner in [
+          rect.topLeft,
+          rect.topRight,
+          rect.bottomLeft,
+          rect.bottomRight,
+        ]) {
+          canvas.drawCircle(corner + (c - corner) * 0.18, w * 0.9, fill);
+        }
+      // 波打つ縁の丸（水の流れ）。
+      case QuestSealShape.wave:
+        final wave = Path();
+        const steps = 120;
+        for (var i = 0; i <= steps; i++) {
+          final a = 2 * math.pi * i / steps;
+          final radius = r - w * 1.6 + math.sin(a * 10) * w * 0.9;
+          final p = c + Offset(math.cos(a), math.sin(a)) * radius;
+          i == 0 ? wave.moveTo(p.dx, p.dy) : wave.lineTo(p.dx, p.dy);
+        }
+        canvas.drawPath(wave..close(), line);
+        canvas.drawCircle(c, r - w * 3.6, thin);
     }
   }
 

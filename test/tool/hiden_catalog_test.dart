@@ -29,6 +29,18 @@ const _shapeNames = {
   QuestSealShape.flower: '花',
   QuestSealShape.dottedRing: '点の輪',
   QuestSealShape.castle: '城壁',
+  QuestSealShape.sunburst: '光の筋',
+  QuestSealShape.crescent: '三日月',
+  QuestSealShape.triangle: '三角',
+  QuestSealShape.pill: '縦長の角丸',
+  QuestSealShape.boldRing: '太い輪',
+  QuestSealShape.dashedRing: '切れ目の輪',
+  QuestSealShape.pentagon: '五角形',
+  QuestSealShape.star: '星',
+  QuestSealShape.bowl: '丼',
+  QuestSealShape.compass: '方位',
+  QuestSealShape.cornerDots: '四隅の点',
+  QuestSealShape.wave: '波',
 };
 
 String _date(DateTime d) => '${d.year}/${d.month}/${d.day}';

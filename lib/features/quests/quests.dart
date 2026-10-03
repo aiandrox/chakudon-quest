@@ -20,9 +20,21 @@ enum QuestSealShape {
   flower,
   dottedRing,
   castle,
+  sunburst,
+  crescent,
+  triangle,
+  pill,
+  boldRing,
+  dashedRing,
+  pentagon,
+  star,
+  bowl,
+  compass,
+  cornerDots,
+  wave,
 }
 
-/// 秘伝の印の字（1文字）と形。
+/// 秘伝の印の字（なるべく1文字、1文字で表しにくければ2文字）と形。
 class QuestSealDesign {
   const QuestSealDesign(this.glyph, this.shape);
 
@@ -197,7 +209,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _dawnCount,
-    seal: QuestSealDesign('暁', QuestSealShape.doubleCircle),
+    seal: QuestSealDesign('朝', QuestSealShape.sunburst),
   ),
   Quest(
     id: 'midnight',
@@ -207,7 +219,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _midnightCount,
-    seal: QuestSealDesign('闇', QuestSealShape.octagon),
+    seal: QuestSealDesign('丑三', QuestSealShape.crescent),
   ),
   Quest(
     id: 'swift',
@@ -217,7 +229,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _swiftCount,
-    seal: QuestSealDesign('速', QuestSealShape.diamond),
+    seal: QuestSealDesign('速', QuestSealShape.triangle),
   ),
   Quest(
     id: 'style_ladder',
@@ -227,7 +239,7 @@ const quests = <Quest>[
     unit: '日',
     thresholds: [1],
     count: _styleLadderDays,
-    seal: QuestSealDesign('梯', QuestSealShape.hexagon),
+    seal: QuestSealDesign('二味', QuestSealShape.pill),
   ),
   Quest(
     id: 'devoted',
@@ -237,7 +249,7 @@ const quests = <Quest>[
     unit: '杯',
     thresholds: [10],
     count: _mostAtOneShop,
-    seal: QuestSealDesign('一', QuestSealShape.square),
+    seal: QuestSealDesign('一途', QuestSealShape.boldRing),
   ),
   Quest(
     id: 'pilgrimage',
@@ -247,7 +259,7 @@ const quests = <Quest>[
     unit: '軒',
     thresholds: [10],
     count: _mostShopsInMonth,
-    seal: QuestSealDesign('巡', QuestSealShape.eightRing),
+    seal: QuestSealDesign('巡', QuestSealShape.dashedRing),
   ),
   Quest(
     id: 'limited_month',
@@ -257,7 +269,7 @@ const quests = <Quest>[
     unit: '杯',
     thresholds: [3],
     count: _mostLimitedInMonth,
-    seal: QuestSealDesign('狩', QuestSealShape.flower),
+    seal: QuestSealDesign('狩', QuestSealShape.pentagon),
   ),
   Quest(
     id: 'perfect',
@@ -267,7 +279,7 @@ const quests = <Quest>[
     unit: '杯',
     thresholds: [10],
     count: _fiveStarCount,
-    seal: QuestSealDesign('満', QuestSealShape.dottedRing),
+    seal: QuestSealDesign('満', QuestSealShape.star),
   ),
   Quest(
     id: 'jiro',
@@ -277,7 +289,7 @@ const quests = <Quest>[
     unit: '杯',
     thresholds: [1],
     count: _jiroCount,
-    seal: QuestSealDesign('豚', QuestSealShape.castle),
+    seal: QuestSealDesign('二郎', QuestSealShape.bowl),
   ),
   Quest(
     id: 'far_journey',
@@ -287,7 +299,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _farJourneyCount,
-    seal: QuestSealDesign('旅', QuestSealShape.octagon),
+    seal: QuestSealDesign('旅', QuestSealShape.compass),
   ),
   Quest(
     id: 'new_year_eve',
@@ -297,7 +309,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _newYearEveCount,
-    seal: QuestSealDesign('越', QuestSealShape.hexagon),
+    seal: QuestSealDesign('年越', QuestSealShape.cornerDots),
   ),
   Quest(
     id: 'summer_cold',
@@ -307,7 +319,7 @@ const quests = <Quest>[
     unit: '杯',
     thresholds: [1],
     count: _summerColdCount,
-    seal: QuestSealDesign('涼', QuestSealShape.diamond),
+    seal: QuestSealDesign('涼', QuestSealShape.wave),
   ),
 ];
 
