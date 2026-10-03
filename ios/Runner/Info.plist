@@ -30,6 +30,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>ラーメンの写真を撮るために使います</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>近くのラーメン店を探すため、また並んだ店を確認するために使います。アプリを閉じている間は使いません</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>近くのラーメン店を探すため、また並んだ店を確認するために使います</string>
 	<key>NSPhotoLibraryUsageDescription</key>
