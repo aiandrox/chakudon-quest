@@ -219,9 +219,9 @@ class _ShuPlatePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    canvas.drawPath(_wobblyRect(rect.deflate(0.5)), Paint()..color = fill);
-    canvas.drawPath(
-      _wobblyRect(rect.deflate(4)),
+    canvas.drawRect(rect.deflate(0.5), Paint()..color = fill);
+    canvas.drawRect(
+      rect.deflate(4),
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
@@ -243,16 +243,12 @@ class _BrushFramePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // 大きさで揺れ方を決め、同じボタンはいつ見ても同じ揺れにする。
-    final random = math.Random(size.width.round() * 31 + size.height.round());
-    double wobble() => (random.nextDouble() - 0.5) * 1.2;
     final l = 4.0, t = 4.0, r = size.width - 4, b = size.height - 4;
     canvas.drawRect(Rect.fromLTRB(l, t, r, b), Paint()..color = fill);
     final paint = Paint()..color = frame;
-    final w = wobble;
     brushStroke(
       canvas,
-      Offset(l - 2, t + w()),
+      Offset(l - 2, t),
       Offset(r + 3, t),
       3.2,
       0.9,
@@ -261,7 +257,7 @@ class _BrushFramePainter extends CustomPainter {
     brushStroke(
       canvas,
       Offset(r, t - 2),
-      Offset(r + w(), b + 3),
+      Offset(r, b + 3),
       2.8,
       0.8,
       paint,
@@ -269,14 +265,14 @@ class _BrushFramePainter extends CustomPainter {
     brushStroke(
       canvas,
       Offset(l - 3, b),
-      Offset(r + 2, b + w()),
+      Offset(r + 2, b),
       3.0,
       1.0,
       paint,
     );
     brushStroke(
       canvas,
-      Offset(l + w(), t - 1),
+      Offset(l, t - 1),
       Offset(l, b + 2),
       3.4,
       1.1,
@@ -585,30 +581,6 @@ Path _wobblyCircle(Offset center, double radius) {
     final p = center + Offset(math.cos(a), math.sin(a)) * r;
     i == 0 ? path.moveTo(p.dx, p.dy) : path.lineTo(p.dx, p.dy);
   }
-  return path..close();
-}
-
-/// 手で押した札のように、4辺をごくわずかに揺らした四角。
-Path _wobblyRect(Rect rect) {
-  final path = Path();
-  const steps = 24;
-  void edge(Offset from, Offset to, double phase) {
-    final normal =
-        Offset(-(to - from).dy, (to - from).dx) / (to - from).distance;
-    for (var i = 1; i <= steps; i++) {
-      final t = i / steps;
-      final sway =
-          math.sin(t * math.pi * 3 + phase) * 0.5 * math.sin(t * math.pi);
-      final p = Offset.lerp(from, to, t)! + normal * sway;
-      path.lineTo(p.dx, p.dy);
-    }
-  }
-
-  path.moveTo(rect.left, rect.top);
-  edge(rect.topLeft, rect.topRight, 0.3);
-  edge(rect.topRight, rect.bottomRight, 1.7);
-  edge(rect.bottomRight, rect.bottomLeft, 2.9);
-  edge(rect.bottomLeft, rect.topLeft, 4.1);
   return path..close();
 }
 
