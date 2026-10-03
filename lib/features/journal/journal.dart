@@ -1,3 +1,4 @@
+import '../map/journey.dart';
 import '../records/models.dart';
 import '../scoring/points.dart';
 import '../shop_search/geo.dart';
@@ -77,12 +78,14 @@ List<String> buildJournal(
   final area = target.shop.area;
   if (area != null && area.isNotEmpty) {
     final pickArea = _Picker('${visit.id}#area');
-    if (_isFarFromHome(target, all)) {
-      lines.add(pickArea(['遠く$areaまで足をのばして。', 'はるばる$areaへ。', '今日は$areaまで遠征。']));
-    } else {
-      final line = pickArea(['$areaの街で。', '$areaの空の下で。', '$areaにて。', '']);
-      if (line.isNotEmpty) lines.add(line);
-    }
+    final line = pickArea(switch (_distanceFromHome(target, all)) {
+      final m? when m >= expeditionKilometers * 1000 => expeditionAreaLines(
+        area,
+      ),
+      final m? when m >= _farMeters => farAreaLines(area),
+      _ => nearAreaLines(area),
+    });
+    if (line.isNotEmpty) lines.add(line);
   }
 
   if (retreats.length == 1) {
@@ -159,12 +162,41 @@ List<String> buildJournal(
 
 bool _isEaten(Visit visit) => visit.result == VisitResult.eaten;
 
-/// 遠出とみなす、いつもの店からの距離。
+/// 遠出とみなす、いつもの店からの距離。遠征（[expeditionKilometers]）より近い。
 const _farMeters = 20000;
 
-/// この1杯の店が、いつもの店（この1杯までにいちばん多く食べた店）から遠いか。
+/// いつもの店の近く・遠出・遠征のときの、地名の一文。空の文は「添えない」。
+List<String> nearAreaLines(String area) => [
+  '$areaの街で。',
+  '$areaの空の下で。',
+  '$areaにて。',
+  '$areaの町角で。',
+  'ふらりと$areaへ。',
+  '$areaの路地をゆく。',
+  '',
+];
+
+List<String> farAreaLines(String area) => [
+  '遠く$areaまで足をのばして。',
+  'はるばる$areaへ。',
+  '少し遠出して$areaへ。',
+  '今日は$areaまで遠出。',
+  '$areaまで、ひと足のばして。',
+  '見知らぬ$areaの街で。',
+];
+
+List<String> expeditionAreaLines(String area) => [
+  '今日は$areaまで遠征。',
+  '遠征の地、$area。',
+  'はるばる$areaまで遠征。',
+  '旅の空の下、$areaにて。',
+  '$areaへ、修行の旅。',
+  '旅先の$areaで一杯。',
+];
+
+/// この1杯の店と、いつもの店（この1杯までにいちばん多く食べた店）との距離（m）。位置が分からなければnull。
 /// あとから記録を足しても過去の道中記が変わらないよう、この1杯までの記録だけで決める。
-bool _isFarFromHome(ScoredVisit target, List<ScoredVisit> all) {
+double? _distanceFromHome(ScoredVisit target, List<ScoredVisit> all) {
   final counts = <String, int>{};
   final shops = <String, Shop>{};
   for (final entry in all) {
@@ -173,7 +205,7 @@ bool _isFarFromHome(ScoredVisit target, List<ScoredVisit> all) {
     counts.update(entry.shop.id, (n) => n + 1, ifAbsent: () => 1);
     shops[entry.shop.id] = entry.shop;
   }
-  if (counts.isEmpty) return false;
+  if (counts.isEmpty) return null;
   final home =
       shops[counts.entries.reduce((a, b) => b.value > a.value ? b : a).key]!;
   final here = target.shop;
@@ -181,13 +213,12 @@ bool _isFarFromHome(ScoredVisit target, List<ScoredVisit> all) {
       home.longitude == null ||
       here.latitude == null ||
       here.longitude == null) {
-    return false;
+    return null;
   }
   return distanceMeters(
-        GeoPoint(home.latitude!, home.longitude!),
-        GeoPoint(here.latitude!, here.longitude!),
-      ) >=
-      _farMeters;
+    GeoPoint(home.latitude!, home.longitude!),
+    GeoPoint(here.latitude!, here.longitude!),
+  );
 }
 
 bool _isBefore(Visit a, Visit b) {

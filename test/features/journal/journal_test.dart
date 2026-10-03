@@ -168,21 +168,39 @@ void main() {
     createdAt: DateTime(2026),
   );
 
-  test('いつもの店から20km以上離れた店の1杯は、地名を出して遠出したことを書く', () {
-    final home = placed('home', '新宿区', 35.69);
-    final away = placed('away', '厚木市', 35.44);
-    final lines = journalOf([
-      buildEntry(shop: home, eatenAt: day(8, 1)),
-      buildEntry(shop: home, eatenAt: day(8, 2)),
-      buildEntry(shop: away, eatenAt: day(8, 3)),
-    ]);
+  group('地名の一文は、いつもの店からの距離で変わる', () {
+    String areaLine(double latitude) {
+      final home = placed('home', '新宿区', 35.69);
+      final here = placed('here', '某市', latitude);
+      return journalOf([
+        buildEntry(shop: home, eatenAt: day(8, 1)),
+        buildEntry(shop: home, eatenAt: day(8, 2)),
+        buildEntry(shop: here, eatenAt: day(8, 3)),
+      ]).firstWhere((l) => l.contains('某市'), orElse: () => '');
+    }
 
-    expect(
-      lines.any(
-        (l) => l.contains('厚木市') && (l.contains('遠') || l.contains('はるばる')),
-      ),
-      isTrue,
-    );
+    // 緯度0.01度は約1.1km。
+    test('20km未満は街の一文（添えないこともある）', () {
+      expect(nearAreaLines('某市'), contains(areaLine(35.69 - 0.17)));
+    });
+
+    test('20km以上80km未満は遠出の一文', () {
+      expect(farAreaLines('某市'), contains(areaLine(35.69 - 0.19)));
+      expect(farAreaLines('某市'), contains(areaLine(35.69 - 0.71)));
+    });
+
+    test('80km以上は遠征の一文', () {
+      expect(expeditionAreaLines('某市'), contains(areaLine(35.69 - 0.73)));
+    });
+
+    test('距離ごとの一文は重ならない', () {
+      final near = nearAreaLines('某市').toSet();
+      final far = farAreaLines('某市').toSet();
+      final expedition = expeditionAreaLines('某市').toSet();
+      expect(near.intersection(far), isEmpty);
+      expect(far.intersection(expedition), isEmpty);
+      expect(near.intersection(expedition), isEmpty);
+    });
   });
 
   test('地名がわかっても、ほかの言い回しは変わらない', () {
