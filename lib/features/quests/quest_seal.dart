@@ -49,15 +49,15 @@ class QuestSeal extends StatelessWidget {
                 dimension: size,
                 child: CustomPaint(
                   painter: _SpotSealPainter(design.shape),
-                  // 三角と丼は内側が下に寄っているので、字を下げる（三角は狭いので小さくもする）。
+                  // 三角とにんにくは内側が下に寄っているので、字を下げる。三角は下ほど狭いので、日付を小さくする。
                   child: Align(
                     alignment: switch (design.shape) {
-                      QuestSealShape.triangle => const Alignment(0, 0.3),
-                      QuestSealShape.bowl => const Alignment(0, 0.08),
+                      QuestSealShape.triangle => const Alignment(0, -0.02),
+                      QuestSealShape.garlic => const Alignment(0, 0.18),
                       _ => Alignment.center,
                     },
                     child: Transform.scale(
-                      scale: design.shape == QuestSealShape.triangle ? 0.6 : 1,
+                      scale: 1,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -69,7 +69,10 @@ class QuestSeal extends StatelessWidget {
                                 fontFamily: Washi.brush,
                                 fontSize:
                                     size *
-                                    (achievedAt == null ? 0.46 : 0.36) /
+                                    (achievedAt == null ? 0.46 : 0.36) *
+                                    (design.shape == QuestSealShape.triangle
+                                        ? 0.9
+                                        : 1) /
                                     (design.glyph.characters.length > 1
                                         ? 1.7
                                         : 1),
@@ -82,10 +85,12 @@ class QuestSeal extends StatelessWidget {
                               // 菱形と花は内側が狭いので、日付を小さくする。
                               width:
                                   size *
-                                  (design.shape == QuestSealShape.diamond ||
-                                          design.shape == QuestSealShape.flower
-                                      ? 0.38
-                                      : 0.5),
+                                  switch (design.shape) {
+                                    QuestSealShape.triangle => 0.34,
+                                    QuestSealShape.diamond ||
+                                    QuestSealShape.flower => 0.38,
+                                    _ => 0.5,
+                                  },
                               child: FittedBox(
                                 child: Text(
                                   kanjiEraDate(l10n, at),
@@ -357,25 +362,62 @@ class _SpotSealPainter extends CustomPainter {
         }
         canvas.drawPath(star..close(), line);
         canvas.drawCircle(c, r * 0.58, thin);
-      // 丼の形（上が平らで、下が深い丸み。下に高台）。
-      case QuestSealShape.bowl:
-        final top = c.dy - r * 0.55;
-        final body = Rect.fromLTRB(
-          c.dx - r,
-          top - r * 1.42,
-          c.dx + r,
-          top + r * 1.42,
-        );
-        final bowl = Path()
-          ..moveTo(body.left, top)
-          ..arcTo(body, math.pi, -math.pi, false)
+      // にんにくの玉（下がふっくら丸く、上がとがる。縁に沿って片の筋、下に根）。
+      case QuestSealShape.garlic:
+        Offset at(double x, double y) => c + Offset(x * r, y * r);
+        final tip = at(0, -0.98);
+        final bulb = Path()
+          ..moveTo(tip.dx, tip.dy)
+          ..cubicTo(
+            at(0.14, -0.7).dx,
+            at(0.14, -0.7).dy,
+            at(0.98, -0.42).dx,
+            at(0.98, -0.42).dy,
+            at(0.92, 0.3).dx,
+            at(0.92, 0.3).dy,
+          )
+          ..cubicTo(
+            at(0.88, 0.8).dx,
+            at(0.88, 0.8).dy,
+            at(0.45, 0.9).dx,
+            at(0.45, 0.9).dy,
+            at(0, 0.9).dx,
+            at(0, 0.9).dy,
+          )
+          ..cubicTo(
+            at(-0.45, 0.9).dx,
+            at(-0.45, 0.9).dy,
+            at(-0.88, 0.8).dx,
+            at(-0.88, 0.8).dy,
+            at(-0.92, 0.3).dx,
+            at(-0.92, 0.3).dy,
+          )
+          ..cubicTo(
+            at(-0.98, -0.42).dx,
+            at(-0.98, -0.42).dy,
+            at(-0.14, -0.7).dx,
+            at(-0.14, -0.7).dy,
+            tip.dx,
+            tip.dy,
+          )
           ..close();
-        canvas.drawPath(bowl, line);
-        canvas.drawLine(
-          Offset(c.dx - r * 0.3, c.dy + r * 0.97),
-          Offset(c.dx + r * 0.3, c.dy + r * 0.97),
-          line,
-        );
+        canvas.drawPath(bulb, line);
+        for (final side in [-1.0, 1.0]) {
+          canvas.drawPath(
+            Path()
+              ..moveTo(at(side * 0.08, -0.78).dx, at(side * 0.08, -0.78).dy)
+              ..quadraticBezierTo(
+                at(side * 0.86, -0.3).dx,
+                at(side * 0.86, -0.3).dy,
+                at(side * 0.72, 0.5).dx,
+                at(side * 0.72, 0.5).dy,
+              ),
+            thin,
+          );
+        }
+        for (final x in [-0.12, 0.0, 0.12]) {
+          canvas.drawLine(at(x * 0.6, 0.92), at(x, 1.0), thin);
+        }
       // 東西南北に小さな三角をもつ丸（方位磁石）。
       case QuestSealShape.compass:
         canvas.drawCircle(c, r - w * 2.4, line);
