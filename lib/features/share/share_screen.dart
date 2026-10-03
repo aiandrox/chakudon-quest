@@ -97,7 +97,7 @@ class _ShareScreenState extends ConsumerState<ShareScreen> {
                 child: ShareCard(
                   entry: entry,
                   scored: scored,
-                  journal: buildJournal(scored, all),
+                  journal: buildJournal(scored, all, includeMemo: false),
                   includePhoto: _includePhoto,
                   includeJournal: _includeJournal,
                   includePoints: _includePoints,
