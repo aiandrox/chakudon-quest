@@ -927,13 +927,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shopRankS => '極';
 
   @override
-  String get shopRankA => '特';
+  String get shopRankA => '難';
 
   @override
-  String get shopRankB => '上';
+  String get shopRankB => '厳';
 
   @override
-  String get shopRankC => '並';
+  String get shopRankC => '易';
 
   @override
   String get inkanRetry => '雪辱';

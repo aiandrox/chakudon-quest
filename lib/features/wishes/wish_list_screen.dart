@@ -105,11 +105,10 @@ class WishListScreen extends ConsumerWidget {
                   ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: AddButton(
           heroTag: 'add-wish',
           tooltip: l10n.wishAddTitle,
           onPressed: () => _addByName(context, ref),
-          child: const Icon(Icons.add),
         ),
       ),
     );
