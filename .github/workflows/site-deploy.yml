@@ -50,8 +50,8 @@ jobs:
       - if: steps.configured.outputs.ok == 'true'
         run: npm ci
       - if: steps.configured.outputs.ok == 'true'
-        run: npx wrangler d1 migrations apply chakudon-quest --remote
+        run: npx wrangler d1 migrations apply ramen-in-cho --remote
       - if: steps.configured.outputs.ok == 'true'
-        run: npm run seed && npx wrangler d1 execute chakudon-quest --remote --file seed.sql
+        run: npm run seed && npx wrangler d1 execute ramen-in-cho --remote --file seed.sql
       - if: steps.configured.outputs.ok == 'true'
         run: npx wrangler pages deploy --project-name ramen-in-cho --branch main

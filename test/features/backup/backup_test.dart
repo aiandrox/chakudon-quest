@@ -121,6 +121,16 @@ void main() {
       );
     });
 
+    test('旧名（着丼クエスト）のバックアップも読める', () {
+      final restored = decodeBackup({
+        'format': legacyBackupFormat,
+        'version': backupVersion,
+        'shops': <Object?>[],
+        'visits': <Object?>[],
+      });
+      expect(restored.visits, isEmpty);
+    });
+
     test('ほかのアプリのファイルや、新しい版のバックアップは読まない', () {
       expect(() => decodeBackup({'format': 'other'}), throwsFormatException);
       expect(
