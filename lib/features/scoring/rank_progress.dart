@@ -38,10 +38,7 @@ class RankProgress extends StatelessWidget {
 
     final row = Row(
       children: [
-        RankSeal(
-          label: adventurerRankLabel(l10n, rank),
-          fontSize: 18,
-        ),
+        RankSeal(label: adventurerRankLabel(l10n, rank), fontSize: 18),
         const SizedBox(width: 14),
         Expanded(
           child: Column(
