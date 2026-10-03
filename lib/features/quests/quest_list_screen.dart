@@ -194,48 +194,56 @@ class _SpotDetails extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final quest = progress.quest;
     final by = progress.levelAchievedBy.first;
+    // どの秘伝でも同じ高さにし、ボタンの位置もそろえる（説明や店名の長さで変わらないように）。
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            QuestSeal(
-              quest: quest,
-              level: progress.level,
-              size: 112,
-              achievedAt: by.visit.eatenAt,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              quest.title,
-              style: textTheme.titleLarge?.copyWith(fontFamily: Washi.brush),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              quest.description,
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium?.copyWith(color: Washi.inkSoft),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.questSpotAchievedShop(by.shop.name),
-              textAlign: TextAlign.center,
-              style: textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => VisitDetailScreen(visitId: by.visit.id),
-                  ),
-                );
-              },
-              child: Text(l10n.questSpotOpenShop),
-            ),
-          ],
+      child: SizedBox(
+        width: double.infinity,
+        height: 400,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          child: Column(
+            children: [
+              QuestSeal(
+                quest: quest,
+                level: progress.level,
+                size: 112,
+                achievedAt: by.visit.eatenAt,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                quest.title,
+                style: textTheme.titleLarge?.copyWith(fontFamily: Washi.brush),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                quest.description,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodyMedium?.copyWith(color: Washi.inkSoft),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.questSpotAchievedShop(by.shop.name),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodyLarge,
+              ),
+              const Spacer(),
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => VisitDetailScreen(visitId: by.visit.id),
+                    ),
+                  );
+                },
+                child: Text(l10n.questSpotOpenShop),
+              ),
+            ],
+          ),
         ),
       ),
     );
