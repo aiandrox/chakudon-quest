@@ -246,38 +246,10 @@ class _BrushFramePainter extends CustomPainter {
     final l = 4.0, t = 4.0, r = size.width - 4, b = size.height - 4;
     canvas.drawRect(Rect.fromLTRB(l, t, r, b), Paint()..color = fill);
     final paint = Paint()..color = frame;
-    brushStroke(
-      canvas,
-      Offset(l - 2, t),
-      Offset(r + 3, t),
-      3.2,
-      0.9,
-      paint,
-    );
-    brushStroke(
-      canvas,
-      Offset(r, t - 2),
-      Offset(r, b + 3),
-      2.8,
-      0.8,
-      paint,
-    );
-    brushStroke(
-      canvas,
-      Offset(l - 3, b),
-      Offset(r + 2, b),
-      3.0,
-      1.0,
-      paint,
-    );
-    brushStroke(
-      canvas,
-      Offset(l, t - 1),
-      Offset(l, b + 2),
-      3.4,
-      1.1,
-      paint,
-    );
+    brushStroke(canvas, Offset(l - 2, t), Offset(r + 3, t), 3.2, 0.9, paint);
+    brushStroke(canvas, Offset(r, t - 2), Offset(r, b + 3), 2.8, 0.8, paint);
+    brushStroke(canvas, Offset(l - 3, b), Offset(r + 2, b), 3.0, 1.0, paint);
+    brushStroke(canvas, Offset(l, t - 1), Offset(l, b + 2), 3.4, 1.1, paint);
   }
 
   @override
