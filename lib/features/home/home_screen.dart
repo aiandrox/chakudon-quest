@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../l10n/app_localizations.dart';
 import '../checkin/checkin_banner.dart';
 import '../checkin/checkin_controller.dart';
+import '../checkin/queue_suggestion_card.dart';
 import '../notifications/notification_service.dart';
 import '../record/photo_picker.dart';
 import '../record/record_screen.dart';
@@ -113,7 +114,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Column(
         children: [
           // 並んでいる最中は、何より先に見えるよう上に固定する。
-          if (checkin != null) CheckinBanner(checkin: checkin),
+          if (checkin != null)
+            CheckinBanner(checkin: checkin)
+          else if (checkinState.hasValue)
+            const QueueSuggestionCard(),
           Expanded(child: _buildVisits(l10n, visits)),
         ],
       ),

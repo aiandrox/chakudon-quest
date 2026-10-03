@@ -1264,6 +1264,36 @@ abstract class AppLocalizations {
   /// **'閉じる'**
   String get memoryDismiss;
 
+  /// No description provided for @queueSuggestion.
+  ///
+  /// In ja, this message translates to:
+  /// **'{shop} に並んだ？'**
+  String queueSuggestion(String shop);
+
+  /// No description provided for @queueSuggestionWished.
+  ///
+  /// In ja, this message translates to:
+  /// **'願掛けの {shop} に並んだ？'**
+  String queueSuggestionWished(String shop);
+
+  /// No description provided for @queueSuggestionYes.
+  ///
+  /// In ja, this message translates to:
+  /// **'並んだ'**
+  String get queueSuggestionYes;
+
+  /// No description provided for @queueSuggestionDismiss.
+  ///
+  /// In ja, this message translates to:
+  /// **'閉じる'**
+  String get queueSuggestionDismiss;
+
+  /// No description provided for @queueSuggestionFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'並んだ時刻を残せませんでした'**
+  String get queueSuggestionFailed;
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:
