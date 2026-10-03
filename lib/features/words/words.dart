@@ -12,6 +12,11 @@ String pickWord(String key, List<String> options) {
 /// 段位に上がったときの、師匠のひとこと。
 String masterWords(AdventurerRank rank) => switch (rank) {
   AdventurerRank.apprentice => 'よく来た。まずは一杯、すすってみよ。',
+  AdventurerRank.kyu5 => '最初の一杯、しかと見届けた。',
+  AdventurerRank.kyu4 => '暖簾をくぐる手が、少し慣れてきたな。',
+  AdventurerRank.kyu3 => 'まずはスープをひと口。それが作法だ。',
+  AdventurerRank.kyu2 => '店の前の行列に、心が躍りはじめたか。',
+  AdventurerRank.kyu1 => '段の入口は、もう目の前だ。',
   AdventurerRank.dan1 => 'ようやく入口に立ったな。',
   AdventurerRank.dan2 => '箸の運びが、少しさまになってきた。',
   AdventurerRank.dan3 => '並ぶことを、苦にしなくなったか。',

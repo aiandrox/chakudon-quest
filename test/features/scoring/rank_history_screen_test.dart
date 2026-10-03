@@ -53,7 +53,7 @@ void main() {
       name: '幻の店',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // (10 + 50 + 20 + 10) × 2 = 180 → 初段と二段に一度に上がる。
+    // (10 + 50 + 20 + 10) × 2 = 180 → 五級〜一級に一度に上がる。
     final big = buildEntry(
       shop: rare,
       eatenAt: day(5),
@@ -63,35 +63,35 @@ void main() {
     await pumpHistory(tester, [big]);
 
     expect(seal(ja.rankApprentice), findsOneWidget);
-    expect(seal(ja.rankFirstDan), findsOneWidget);
-    expect(seal(ja.rankDan('二')), findsOneWidget);
+    expect(seal(ja.rankKyu('五')), findsOneWidget);
+    expect(seal(ja.rankKyu('一')), findsOneWidget);
     final achieved = ja.rankHistoryAchievedAt(formatDate(day(5)), '幻の店');
-    expect(find.text(achieved), findsNWidgets(3));
+    expect(find.text(achieved), findsNWidgets(6));
 
-    // 三段（200点）まで、あと 20 点。名前は見える。
-    expect(seal(ja.rankDan('三')), findsOneWidget);
-    expect(find.text(ja.rankHistoryRemaining(20)), findsOneWidget);
-    expect(find.text(masterWords(AdventurerRank.dan2)), findsOneWidget);
-    expect(find.text(masterWords(AdventurerRank.dan3)), findsNothing);
+    // 初段（220点）まで、あと 40 点。名前は見える。
+    expect(seal(ja.rankFirstDan), findsOneWidget);
+    expect(find.text(ja.rankHistoryRemaining(40)), findsOneWidget);
+    expect(find.text(masterWords(AdventurerRank.kyu1)), findsOneWidget);
+    expect(find.text(masterWords(AdventurerRank.dan1)), findsNothing);
 
-    // 四段より先は名前も点も出さない。
-    expect(seal(ja.rankDan('四')), findsNothing);
+    // 二段より先は名前も点も出さない。
+    expect(seal(ja.rankDan('二')), findsNothing);
     expect(seal(ja.rankGrandmaster), findsNothing);
-    expect(seal(ja.rankHistoryHidden), findsNWidgets(8));
+    expect(seal(ja.rankHistoryHidden), findsNWidgets(10));
 
     await tester.tap(find.text(achieved).at(1));
     await tester.pumpAndSettle();
     expect(find.byType(VisitDetailScreen), findsOneWidget);
   });
 
-  testWidgets('記録が無ければ入門だけが上がった段位で、次は初段', (tester) async {
+  testWidgets('記録が無ければ入門だけが上がった段位で、次は五級', (tester) async {
     await pumpHistory(tester, const []);
 
     expect(seal(ja.rankApprentice), findsOneWidget);
     expect(find.text(ja.rankHistoryNoRecord), findsOneWidget);
-    expect(seal(ja.rankFirstDan), findsOneWidget);
-    expect(find.text(ja.rankHistoryRemaining(50)), findsOneWidget);
-    expect(seal(ja.rankHistoryHidden), findsNWidgets(10));
+    expect(seal(ja.rankKyu('五')), findsOneWidget);
+    expect(find.text(ja.rankHistoryRemaining(15)), findsOneWidget);
+    expect(seal(ja.rankHistoryHidden), findsNWidgets(15));
   });
 
   testWidgets('段位の表示をタップすると昇段の記録を開く', (tester) async {

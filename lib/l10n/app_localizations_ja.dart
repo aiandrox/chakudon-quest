@@ -326,6 +326,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rankFirstDan => '初段';
 
   @override
+  String rankKyu(String number) {
+    return '$number級';
+  }
+
+  @override
   String rankDan(String number) {
     return '$number段';
   }
@@ -400,6 +405,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get rankUp => '昇段！';
+
+  @override
+  String get rankUpKyu => '昇級！';
 
   @override
   String get rankHistoryTitle => '昇段の記録';

@@ -110,7 +110,7 @@ void main() {
     expect(verticalText('麺屋テスト'), findsOneWidget);
 
     expect(find.byType(InkanStamp), findsOneWidget);
-    expect(find.text(ja.rankApprentice), findsOneWidget);
+    expect(find.text(ja.rankKyu('五')), findsOneWidget);
     expect(find.text(ja.totalPoints(20)), findsOneWidget);
     expect(find.text(ja.homeEmpty), findsNothing);
   });

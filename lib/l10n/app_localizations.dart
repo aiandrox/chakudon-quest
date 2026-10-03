@@ -682,6 +682,12 @@ abstract class AppLocalizations {
   /// **'初段'**
   String get rankFirstDan;
 
+  /// No description provided for @rankKyu.
+  ///
+  /// In ja, this message translates to:
+  /// **'{number}級'**
+  String rankKyu(String number);
+
   /// No description provided for @rankDan.
   ///
   /// In ja, this message translates to:
@@ -801,6 +807,12 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'昇段！'**
   String get rankUp;
+
+  /// No description provided for @rankUpKyu.
+  ///
+  /// In ja, this message translates to:
+  /// **'昇級！'**
+  String get rankUpKyu;
 
   /// No description provided for @rankHistoryTitle.
   ///

@@ -71,13 +71,17 @@ void main() {
   test('その年に上がった段位と、届いた型・秘伝', () {
     final r = review(2026);
 
-    expect(r.ranks.map((a) => a.rank), [AdventurerRank.dan1]);
+    // 累計 20（2025年・五級）→ 30 → 60（四級）→ 95（三級）。
+    expect(r.ranks.map((a) => a.rank), [
+      AdventurerRank.kyu4,
+      AdventurerRank.kyu3,
+    ]);
     expect(r.quests.map((q) => q.quest.id), containsAll(['queue', 'retry']));
     expect(r.quests.map((q) => q.quest.id), isNot(contains('first_bowl')));
     expect(r.hasAchievements, isTrue);
 
     final r2025 = review(2025);
-    expect(r2025.ranks, isEmpty);
+    expect(r2025.ranks.map((a) => a.rank), [AdventurerRank.kyu5]);
     // 2025年の1杯は12月31日なので、秘伝「年越しの一杯」も届く。
     expect(r2025.quests.map((q) => q.quest.id), ['first_bowl', 'new_year_eve']);
   });
