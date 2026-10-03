@@ -916,6 +916,12 @@ abstract class AppLocalizations {
   /// **'よく行く店'**
   String get statsFrequent;
 
+  /// No description provided for @statsFrequentNone.
+  ///
+  /// In ja, this message translates to:
+  /// **'2杯以上食べた店が、ここに並びます'**
+  String get statsFrequentNone;
+
   /// No description provided for @shopMemoSection.
   ///
   /// In ja, this message translates to:

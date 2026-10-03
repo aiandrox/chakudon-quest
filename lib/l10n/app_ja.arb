@@ -269,6 +269,7 @@
     }
   },
   "statsFrequent": "よく行く店",
+  "statsFrequentNone": "2杯以上食べた店が、ここに並びます",
   "shopMemoSection": "この店の攻略メモ",
   "shopMemoEmpty": "まだありません",
   "shopMemoHint": "開店の何分前に着けばいいか、券売機、整理券の配り方など",

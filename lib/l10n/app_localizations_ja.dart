@@ -475,6 +475,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get statsFrequent => 'よく行く店';
 
   @override
+  String get statsFrequentNone => '2杯以上食べた店が、ここに並びます';
+
+  @override
   String get shopMemoSection => 'この店の攻略メモ';
 
   @override
