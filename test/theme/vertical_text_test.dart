@@ -8,8 +8,8 @@ List<String> _lines(String text, {int? maxChars}) => [
 
 void main() {
   group('verticalLines', () {
-    test('収まるときは1行。空白は詰める', () {
-      expect(_lines('麺処 たつみ', maxChars: 6), ['麺処たつみ']);
+    test('収まるときは1行。区切りの空白はすき間として残す', () {
+      expect(_lines('麺処 たつみ', maxChars: 6), ['麺処 たつみ']);
       expect(_lines('とても長い店の名前'), ['とても長い店の名前']);
     });
 
