@@ -70,7 +70,8 @@ List<StyleShare> styleShares(List<ScoredVisit> scored) {
   return shares;
 }
 
-/// 食べた回数の多い店。同数なら、最近行った店を先にする。
+/// 2杯以上食べた店を、回数の多い順に返す（1杯だけの店は「よく行く」と言えないので除く）。
+/// 同数なら、最近行った店を先にする。
 List<FrequentShop> frequentShops(List<ScoredVisit> scored, {int limit = 5}) {
   final counts = <String, int>{};
   final lastVisit = <String, DateTime>{};
@@ -84,11 +85,14 @@ List<FrequentShop> frequentShops(List<ScoredVisit> scored, {int limit = 5}) {
       lastVisit[shopId] = entry.visit.eatenAt;
     }
   }
-  final ids = counts.keys.toList()
-    ..sort((a, b) {
-      final byCount = counts[b]!.compareTo(counts[a]!);
-      return byCount != 0 ? byCount : lastVisit[b]!.compareTo(lastVisit[a]!);
-    });
+  final ids =
+      [
+        for (final MapEntry(:key, :value) in counts.entries)
+          if (value >= 2) key,
+      ]..sort((a, b) {
+        final byCount = counts[b]!.compareTo(counts[a]!);
+        return byCount != 0 ? byCount : lastVisit[b]!.compareTo(lastVisit[a]!);
+      });
   return [
     for (final id in ids.take(limit))
       FrequentShop(shop: shops[id]!, count: counts[id]!),

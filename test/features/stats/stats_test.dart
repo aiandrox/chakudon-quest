@@ -80,36 +80,39 @@ void main() {
   group('frequentShops', () {
     DateTime day(int d) => DateTime(2026, 9, d, 12);
 
-    test('食べた回数の多い順。同数なら最近行った店が先', () {
+    test('2杯以上の店を食べた回数の多い順に。同数なら最近行った店が先。1杯の店と撤退は数えない', () {
       final shops = frequentShops(
         scoreVisits([
           buildEntry(shop: shopA, eatenAt: day(1)),
           buildEntry(shop: shopB, eatenAt: day(2)),
           buildEntry(shop: shopB, eatenAt: day(3)),
           buildEntry(shop: shopC, eatenAt: day(4)),
+          buildEntry(shop: shopC, eatenAt: day(5)),
+          buildEntry(shop: shopB, eatenAt: day(6)),
           buildEntry(
             shop: shopA,
-            eatenAt: day(5),
+            eatenAt: day(7),
             result: VisitResult.retreated,
           ),
         ]),
       );
 
-      expect(shops.map((s) => s.shop.name), ['B店', 'C店', 'A店']);
-      expect(shops.map((s) => s.count), [2, 1, 1]);
+      expect(shops.map((s) => s.shop.name), ['B店', 'C店']);
+      expect(shops.map((s) => s.count), [3, 2]);
     });
 
     test('上位の件数を絞れる', () {
       final shops = frequentShops(
         scoreVisits([
-          buildEntry(shop: shopA, eatenAt: day(1)),
-          buildEntry(shop: shopB, eatenAt: day(2)),
-          buildEntry(shop: shopC, eatenAt: day(3)),
+          for (final shop in [shopA, shopB, shopC]) ...[
+            buildEntry(shop: shop, eatenAt: day(1)),
+            buildEntry(shop: shop, eatenAt: day(2)),
+          ],
         ]),
         limit: 2,
       );
 
-      expect(shops.map((s) => s.shop.name), ['C店', 'B店']);
+      expect(shops, hasLength(2));
     });
   });
 

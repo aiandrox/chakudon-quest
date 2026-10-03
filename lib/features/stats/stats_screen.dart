@@ -45,6 +45,8 @@ class StatsSections extends ConsumerWidget {
         _StyleBreakdown(shares: styleShares(scored)),
         const SizedBox(height: 24),
         SectionTitle(l10n.statsFrequent),
+        if (frequentShops(scored).isEmpty)
+          Text(l10n.statsFrequentNone, style: textTheme.bodyMedium),
         for (final frequent in frequentShops(scored))
           ListTile(
             contentPadding: EdgeInsets.zero,

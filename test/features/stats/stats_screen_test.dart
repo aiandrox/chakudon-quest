@@ -100,9 +100,9 @@ void main() {
     expect(find.text(ja.styleMiso), findsOneWidget);
     expect(find.text(ja.styleUnset), findsOneWidget);
 
-    // よく行く店と店ランクの両方に出る。
+    // 2杯以上の店は、よく行く店と店ランクの両方に出る。1杯だけの店は店ランクだけ。
     expect(find.text('よく行く麺屋'), findsNWidgets(2));
-    expect(find.text('週2日の店'), findsNWidgets(2));
+    expect(find.text('週2日の店'), findsOneWidget);
     expect(find.text(ja.shopRankS), findsOneWidget);
     expect(find.text(ja.shopRankC), findsOneWidget);
     expect(find.text(ja.statsBestPoints(80)), findsOneWidget);
