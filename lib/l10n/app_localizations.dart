@@ -1935,6 +1935,24 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'撤退した店'**
   String get wishTriggerRetreat;
+
+  /// No description provided for @questSpotNone.
+  ///
+  /// In ja, this message translates to:
+  /// **'まだ会得した奥義はありません'**
+  String get questSpotNone;
+
+  /// No description provided for @questSpotAchievedAt.
+  ///
+  /// In ja, this message translates to:
+  /// **'{date} {shop}にて会得'**
+  String questSpotAchievedAt(String date, String shop);
+
+  /// No description provided for @questSpotOpenShop.
+  ///
+  /// In ja, this message translates to:
+  /// **'その一杯を見る'**
+  String get questSpotOpenShop;
 }
 
 class _AppLocalizationsDelegate
