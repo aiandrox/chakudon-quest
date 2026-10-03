@@ -1,5 +1,6 @@
 import '../records/models.dart';
 import 'geo.dart';
+import 'opening_hours.dart';
 
 const shopSearchRadiusMeters = 300;
 
@@ -11,6 +12,7 @@ class FoundShop {
     required this.location,
     this.dataSource,
     this.address,
+    this.openingHours,
   });
 
   /// OpenStreetMap の ID。OpenPOI で見つかった店は null。
@@ -23,6 +25,15 @@ class FoundShop {
 
   /// 店名で探したときに、同じ名前の店（支店）を見分けるための住所。わからなければnull。
   final String? address;
+
+  /// OpenStreetMap に載っている営業時間（`opening_hours`）。
+  final String? openingHours;
+
+  /// 営業時間から推し量った攻略しにくさ。当てはまるものが無いか、わからなければnull。
+  Set<HoursCondition>? get suggestedConditions {
+    final conditions = conditionsFromOpeningHours(openingHours);
+    return conditions == null || conditions.isEmpty ? null : conditions;
+  }
 }
 
 /// OpenStreetMap の店を優先し（ID があるため）、OpenPOI の店は重ならないものだけ足す。

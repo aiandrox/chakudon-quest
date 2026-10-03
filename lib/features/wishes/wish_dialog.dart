@@ -64,8 +64,9 @@ Future<void> saveShopConditions(
 Future<void> addWishFor(
   BuildContext context,
   WidgetRef ref,
-  ShopInput shop,
-) async {
+  ShopInput shop, {
+  Set<HoursCondition>? suggestedConditions,
+}) async {
   final l10n = AppLocalizations.of(context);
   final messenger = ScaffoldMessenger.of(context);
   final repository = ref.read(wishRepositoryProvider);
@@ -75,7 +76,8 @@ Future<void> addWishFor(
   final text = await showWishDialog(
     context,
     name: shop.name,
-    hoursConditions: recorded?.hoursConditions ?? const {},
+    hoursConditions:
+        recorded?.hoursConditions ?? suggestedConditions ?? const {},
   );
   if (text == null) return;
   try {

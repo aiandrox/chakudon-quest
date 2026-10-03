@@ -205,6 +205,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             subtitle: Text(
               state.hoursConditions.isEmpty
                   ? l10n.shopConditionsEmpty
+                  : state.chosenHoursConditions == null &&
+                        (state.selectedShop?.conditionsFromMap ?? false)
+                  ? l10n.shopConditionsFromMap(
+                      hoursConditionsLabel(l10n, state.hoursConditions),
+                    )
                   : hoursConditionsLabel(l10n, state.hoursConditions),
             ),
             children: [
