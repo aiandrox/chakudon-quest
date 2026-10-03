@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/shop_search/builtin_shops.dart';
@@ -51,5 +54,25 @@ void main() {
       );
     }
     expect(builtinShopsNamed('関内二郎'), isEmpty);
+  });
+
+  test('アプリに同梱した店は、正本（data/curated_shops.json）の営業中の店と同じ', () {
+    final file = jsonDecode(
+      File('data/curated_shops.json').readAsStringSync(),
+    ) as Map<String, dynamic>;
+    final open = [
+      for (final shop in file['shops'] as List)
+        if ((shop as Map)['status'] == 'open')
+          (shop['name'], shop['address'], shop['latitude'], shop['longitude']),
+    ];
+    expect([
+      for (final shop in builtinShops)
+        (
+          shop.name,
+          shop.address,
+          shop.location.latitude,
+          shop.location.longitude,
+        ),
+    ], open);
   });
 }

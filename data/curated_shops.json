@@ -1,0 +1,419 @@
+{
+  "note": "アプリに持たせる店（地図の検索で見つからないことのある店）。位置は住所から国土地理院の住所検索で求めた。開店・閉店・移転はここを直して PR を出す。閉店は消さずに status を closed にする。",
+  "shops": [
+    {
+      "id": "jiro-mita",
+      "name": "ラーメン二郎 三田本店",
+      "address": "東京都港区三田2-16-4",
+      "latitude": 35.648045,
+      "longitude": 139.741516,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-meguro",
+      "name": "ラーメン二郎 目黒店",
+      "address": "東京都目黒区目黒3-7-2",
+      "latitude": 35.634285,
+      "longitude": 139.707077,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-sengawa",
+      "name": "ラーメン二郎 仙川店",
+      "address": "東京都調布市仙川町1-10-17",
+      "latitude": 35.661385,
+      "longitude": 139.583847,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-shinjuku-kabukicho",
+      "name": "ラーメン二郎 新宿歌舞伎町店",
+      "address": "東京都新宿区歌舞伎町2-37-5",
+      "latitude": 35.696198,
+      "longitude": 139.701874,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-shinagawa",
+      "name": "ラーメン二郎 品川店",
+      "address": "東京都品川区北品川1-18-5",
+      "latitude": 35.623974,
+      "longitude": 139.742966,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-shinjuku-otakibashi",
+      "name": "ラーメン二郎 新宿小滝橋通り店",
+      "address": "東京都新宿区西新宿7-5-5",
+      "latitude": 35.696323,
+      "longitude": 139.698318,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kan7-shinshindaita",
+      "name": "ラーメン二郎 環七新新代田店",
+      "address": "東京都世田谷区代田5-29-5",
+      "latitude": 35.661949,
+      "longitude": 139.660385,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-hachioji-yaen",
+      "name": "ラーメン二郎 八王子野猿街道店2",
+      "address": "東京都八王子市堀之内2-13-16",
+      "latitude": 35.62962,
+      "longitude": 139.40126,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-ikebukuro-higashiguchi",
+      "name": "ラーメン二郎 池袋東口店",
+      "address": "東京都豊島区南池袋2-27-17",
+      "latitude": 35.728195,
+      "longitude": 139.713913,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kameido",
+      "name": "ラーメン二郎 亀戸店",
+      "address": "東京都江東区亀戸4-35-17",
+      "latitude": 35.701885,
+      "longitude": 139.826706,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-fuchu",
+      "name": "ラーメン二郎 府中店",
+      "address": "東京都府中市宮西町1-15-5",
+      "latitude": 35.672115,
+      "longitude": 139.477158,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-mejirodai",
+      "name": "ラーメン二郎 めじろ台店",
+      "address": "東京都八王子市椚田町513-9",
+      "latitude": 35.638947,
+      "longitude": 139.312744,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-ogikubo",
+      "name": "ラーメン二郎 荻窪店",
+      "address": "東京都杉並区荻窪4-33-1",
+      "latitude": 35.703602,
+      "longitude": 139.626282,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kaminoge",
+      "name": "ラーメン二郎 上野毛店",
+      "address": "東京都世田谷区上野毛1-26-16",
+      "latitude": 35.612442,
+      "longitude": 139.639023,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kan7-ichinoe",
+      "name": "ラーメン二郎 環七一之江店",
+      "address": "東京都江戸川区一之江8-3-4",
+      "latitude": 35.684071,
+      "longitude": 139.881927,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kanda-jimbocho",
+      "name": "ラーメン二郎 神田神保町店",
+      "address": "東京都千代田区神田神保町1-21-4",
+      "latitude": 35.69529,
+      "longitude": 139.761002,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-koiwa",
+      "name": "ラーメン二郎 小岩店",
+      "address": "東京都江戸川区西小岩3-31-13",
+      "latitude": 35.734898,
+      "longitude": 139.880005,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-hibarigaoka",
+      "name": "ラーメン二郎 ひばりヶ丘駅前店",
+      "address": "東京都西東京市谷戸町3-27-24",
+      "latitude": 35.749908,
+      "longitude": 139.543793,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-tachikawa",
+      "name": "ラーメン二郎 立川店",
+      "address": "東京都立川市柴崎町2-10-1",
+      "latitude": 35.696507,
+      "longitude": 139.409515,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-senjuohashi",
+      "name": "ラーメン二郎 千住大橋駅前店",
+      "address": "東京都足立区千住橋戸町10-8",
+      "latitude": 35.742706,
+      "longitude": 139.796906,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-nishidai",
+      "name": "ラーメン二郎 西台駅前店",
+      "address": "東京都板橋区蓮根3-9-7",
+      "latitude": 35.7869,
+      "longitude": 139.674423,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-hitotsubashi-gakuen",
+      "name": "ラーメン二郎 一橋学園店",
+      "address": "東京都小平市学園西町2-13-4",
+      "latitude": 35.722313,
+      "longitude": 139.479294,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-keikyu-kawasaki",
+      "name": "ラーメン二郎 京急川崎店",
+      "address": "神奈川県川崎市川崎区本町2-10-1",
+      "latitude": 35.534908,
+      "longitude": 139.705704,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-sagami-ono",
+      "name": "ラーメン二郎 相模大野店",
+      "address": "神奈川県相模原市南区相模大野6-14-9",
+      "latitude": 35.529911,
+      "longitude": 139.432846,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-yokohama-kannai",
+      "name": "ラーメン二郎 横浜関内店",
+      "address": "神奈川県横浜市中区長者町6-94",
+      "latitude": 35.442196,
+      "longitude": 139.63089,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-shonan-fujisawa",
+      "name": "ラーメン二郎 湘南藤沢店",
+      "address": "神奈川県藤沢市本町1-10-14",
+      "latitude": 35.342964,
+      "longitude": 139.482269,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-nakayama",
+      "name": "ラーメン二郎 中山駅前店",
+      "address": "神奈川県横浜市緑区台村町309-1",
+      "latitude": 35.51297,
+      "longitude": 139.538147,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-ikuta",
+      "name": "ラーメン二郎 生田駅前店",
+      "address": "神奈川県川崎市多摩区生田8-1-15",
+      "latitude": 35.615597,
+      "longitude": 139.546448,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-matsudo",
+      "name": "ラーメン二郎 松戸駅前店",
+      "address": "千葉県松戸市本町17-21",
+      "latitude": 35.785427,
+      "longitude": 139.899033,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-keisei-okubo",
+      "name": "ラーメン二郎 京成大久保店",
+      "address": "千葉県船橋市三山2-1-11",
+      "latitude": 35.691578,
+      "longitude": 140.049591,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-chiba",
+      "name": "ラーメン二郎 千葉店",
+      "address": "千葉県千葉市中央区中央1-7-8",
+      "latitude": 35.610481,
+      "longitude": 140.123581,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kashiwa",
+      "name": "ラーメン二郎 柏店",
+      "address": "千葉県柏市十余二249-5",
+      "latitude": 35.881977,
+      "longitude": 139.957626,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-tochigi-kaido",
+      "name": "ラーメン二郎 栃木街道店",
+      "address": "栃木県下都賀郡壬生町本丸2-15-67",
+      "latitude": 36.422985,
+      "longitude": 139.7948,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-sendai",
+      "name": "ラーメン二郎 仙台店",
+      "address": "宮城県仙台市青葉区一番町2-5-32",
+      "latitude": 38.259483,
+      "longitude": 140.872208,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-sapporo",
+      "name": "ラーメン二郎 札幌店",
+      "address": "北海道札幌市北区北六条西8-8-11",
+      "latitude": 43.067162,
+      "longitude": 141.343063,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-aizuwakamatsu",
+      "name": "ラーメン二郎 会津若松駅前店",
+      "address": "福島県会津若松市駅前町6-31",
+      "latitude": 37.506386,
+      "longitude": 139.93132,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-niigata",
+      "name": "ラーメン二郎 新潟店",
+      "address": "新潟県新潟市中央区万代5-2-8",
+      "latitude": 37.917233,
+      "longitude": 139.06015,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kawagoe",
+      "name": "ラーメン二郎 川越店",
+      "address": "埼玉県川越市旭町1-4-15",
+      "latitude": 35.902737,
+      "longitude": 139.476166,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-koshigaya",
+      "name": "ラーメン二郎 越谷店",
+      "address": "埼玉県越谷市越ヶ谷2-3-7",
+      "latitude": 35.890182,
+      "longitude": 139.787659,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-omiya-koen",
+      "name": "ラーメン二郎 大宮公園駅前店",
+      "address": "埼玉県さいたま市大宮区寿能町1-24",
+      "latitude": 35.921688,
+      "longitude": 139.632248,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-kyoto",
+      "name": "ラーメン二郎 京都店",
+      "address": "京都府京都市左京区一乗寺里ノ前町4",
+      "latitude": 35.043465,
+      "longitude": 135.787445,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-maebashi-chiyodacho",
+      "name": "ラーメン二郎 前橋千代田町店",
+      "address": "群馬県前橋市千代田町4-12-3",
+      "latitude": 36.392548,
+      "longitude": 139.070999,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-hitachinaka",
+      "name": "ラーメン二郎 ひたちなか店",
+      "address": "茨城県ひたちなか市田彦1648-4",
+      "latitude": 36.409088,
+      "longitude": 140.514603,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-asakura-kaido",
+      "name": "ラーメン二郎 朝倉街道駅前店",
+      "address": "福岡県筑紫野市針摺中央2-17-8",
+      "latitude": 33.48444,
+      "longitude": 130.533493,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-nagoya-ozone",
+      "name": "ラーメン二郎 名古屋大曽根店",
+      "address": "愛知県名古屋市東区矢田4-3-7",
+      "latitude": 35.193916,
+      "longitude": 136.941925,
+      "chain": "jiro",
+      "status": "open"
+    },
+    {
+      "id": "jiro-okinawa",
+      "name": "ラーメン二郎 沖縄店",
+      "address": "沖縄県那覇市壺屋1-6-16",
+      "latitude": 26.21266,
+      "longitude": 127.689667,
+      "chain": "jiro",
+      "status": "open"
+    }
+  ]
+}

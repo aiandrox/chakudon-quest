@@ -17,6 +17,7 @@ on:
       - "pubspec.lock"
       - "analysis_options.yaml"
       - "l10n.yaml"
+      - "data/**"
       - ".github/workflows/flutter-ci.yml"
       - ".github/actions/setup-flutter/**"
 

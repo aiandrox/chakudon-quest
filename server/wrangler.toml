@@ -1,0 +1,11 @@
+# 着丼クエストの API（店のデータと検索）。設計は issue #172。
+name = "chakudon-quest-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "chakudon-quest"
+# Cloudflare のアカウントを決めたら `wrangler d1 create chakudon-quest` の結果に置き換える。
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"

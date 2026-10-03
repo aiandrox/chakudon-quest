@@ -1,0 +1,57 @@
+name: Server Deploy
+
+# main にマージされたら、D1 の表を整え、店のデータを正本（data/curated_shops.json）どおりに入れ替えて、
+# Worker をデプロイする。Cloudflare の secret（CLOUDFLARE_API_TOKEN・CLOUDFLARE_ACCOUNT_ID）が
+# まだ無ければ何もしない（issue #172）。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+      - "data/**"
+      - ".github/workflows/server-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: server-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - name: Cloudflare の設定があるか
+        id: configured
+        working-directory: .
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Cloudflare の secret が無いので、デプロイしない"
+          fi
+      - if: steps.configured.outputs.ok == 'true'
+        uses: actions/checkout@v4
+      - if: steps.configured.outputs.ok == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+      - if: steps.configured.outputs.ok == 'true'
+        run: npm ci
+      - if: steps.configured.outputs.ok == 'true'
+        run: npx wrangler d1 migrations apply chakudon-quest --remote
+      - if: steps.configured.outputs.ok == 'true'
+        run: npm run seed && npx wrangler d1 execute chakudon-quest --remote --file seed.sql
+      - if: steps.configured.outputs.ok == 'true'
+        run: npx wrangler deploy
