@@ -708,6 +708,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get queueSuggestionFailed => '並んだ時刻を残せませんでした';
 
   @override
+  String nameSearchOpen(String name) {
+    return '全国の店から「$name」を探す（地図に載せる）';
+  }
+
+  @override
+  String get nameSearchTitle => '店名で探す';
+
+  @override
+  String get nameSearchButton => '探す';
+
+  @override
+  String get nameSearchNone => '見つかりませんでした。店名を短くして探してみてください';
+
+  @override
+  String get nameSearchFailed => '探せませんでした。電波のよいところでもう一度試してください';
+
+  @override
+  String nameSearchDistance(String km) {
+    return '${km}km';
+  }
+
+  @override
+  String get shopLocate => '地図に載せる（店名で探す）';
+
+  @override
+  String get shopLocated => '地図に載せました';
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override

@@ -26,6 +26,7 @@ import '../wishes/wishes.dart';
 import '../journal/journal.dart';
 import '../journal/journal_view.dart';
 import '../share/share_screen.dart';
+import '../shop_search/shop_name_search_sheet.dart';
 import 'visit_edit_screen.dart';
 
 /// 1つの店のページ。開いた1杯を大きく見せ、この店で集めた印をタップすると切り替わる。
@@ -80,6 +81,28 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
       await storage.delete(photoPath);
     } catch (e) {
       debugPrint('Photo delete failed: $e');
+    }
+  }
+
+  /// 位置のわからない店（過去の写真から手入力した店など）を、店名で探して地図に載せる。
+  Future<void> _locateShop(Shop shop) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final repository = ref.read(recordRepositoryProvider);
+    final found = await showShopNameSearch(context, initialName: shop.name);
+    if (found == null) return;
+    try {
+      await repository.setShopLocation(
+        shop.id,
+        latitude: found.location.latitude,
+        longitude: found.location.longitude,
+        osmId: found.osmId,
+        dataSource: found.dataSource,
+      );
+      messenger.showSnackBar(SnackBar(content: Text(l10n.shopLocated)));
+    } catch (e) {
+      debugPrint('Shop locate failed: $e');
+      messenger.showSnackBar(SnackBar(content: Text(l10n.editSaveFailed)));
     }
   }
 
@@ -196,6 +219,15 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: _ShopPage(entry: entry, scored: scored),
           ),
+          if (entry.shop.latitude == null || entry.shop.longitude == null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.travel_explore),
+                label: Text(l10n.shopLocate),
+                onPressed: () => _locateShop(entry.shop),
+              ),
+            ),
           if (canFulfill)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),

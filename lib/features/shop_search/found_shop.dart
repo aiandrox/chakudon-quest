@@ -10,6 +10,7 @@ class FoundShop {
     required this.name,
     required this.location,
     this.dataSource,
+    this.address,
   });
 
   /// OpenStreetMap の ID。OpenPOI で見つかった店は null。
@@ -19,6 +20,9 @@ class FoundShop {
 
   /// OpenPOI で見つけた店の出所。
   final ShopSource? dataSource;
+
+  /// 店名で探したときに、同じ名前の店（支店）を見分けるための住所。わからなければnull。
+  final String? address;
 }
 
 /// OpenStreetMap の店を優先し（ID があるため）、OpenPOI の店は重ならないものだけ足す。

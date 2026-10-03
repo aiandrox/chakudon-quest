@@ -128,4 +128,60 @@ void main() {
       );
     });
   });
+
+  group('店名で探す', () {
+    test('全国から探し、近い順の基準があれば中心を渡す', () {
+      final nationwide = buildOpenPoiNameUri(' 藤ろう ');
+      expect(nationwide.queryParameters['q'], '藤ろう');
+      expect(nationwide.queryParameters.containsKey('center'), isFalse);
+
+      final near = buildOpenPoiNameUri(
+        '藤ろう',
+        near: const GeoPoint(35.69, 139.70),
+      );
+      expect(near.queryParameters['center'], '139.7,35.69');
+    });
+
+    test('同じ店をまとめ、住所が無ければ都道府県と市区町村を添える', () async {
+      final client = OpenPoiClient(
+        MockClient(
+          (_) async => http.Response.bytes(
+            utf8.encode(
+              jsonEncode({
+                'results': [
+                  {
+                    'name': '麺屋藤ろう',
+                    'prefecture': '神奈川県',
+                    'city': '厚木市',
+                    'address': '',
+                    'lat': 35.44,
+                    'lng': 139.36,
+                  },
+                  {
+                    'name': '麺屋 藤ろう',
+                    'address': '神奈川県厚木市中町',
+                    'lat': 35.4401,
+                    'lng': 139.36,
+                  },
+                  {
+                    'name': '藤ろう',
+                    'address': '埼玉県加須市',
+                    'lat': 36.1,
+                    'lng': 139.6,
+                  },
+                ],
+              }),
+            ),
+            200,
+          ),
+        ),
+      );
+
+      final shops = await client.searchByName('藤ろう');
+
+      expect(shops.map((s) => s.name), ['麺屋藤ろう', '藤ろう']);
+      expect(shops.first.address, '神奈川県厚木市');
+      expect(shops.last.address, '埼玉県加須市');
+    });
+  });
 }

@@ -301,6 +301,22 @@ class RecordRepository {
     WishesCompanion(fulfilledVisitId: Value(visitId), shopId: Value(shopId)),
   );
 
+  /// 位置のわからない店に、店名で探した店の位置を付ける（地図に載るようにする）。
+  Future<void> setShopLocation(
+    String shopId, {
+    required double latitude,
+    required double longitude,
+    String? osmId,
+    ShopSource? dataSource,
+  }) => (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
+    ShopsCompanion(
+      latitude: Value(latitude),
+      longitude: Value(longitude),
+      osmId: osmId == null ? const Value.absent() : Value(osmId),
+      dataSource: dataSource == null ? const Value.absent() : Value(dataSource),
+    ),
+  );
+
   Future<void> setShopMemo(String shopId, String memo) =>
       (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
         ShopsCompanion(strategyMemo: Value(memo.trim())),
@@ -426,14 +442,22 @@ class RecordRepository {
           !setEquals(existing.hoursConditions, hoursConditions);
       final adoptsSource =
           existing.dataSource == null && input.dataSource != null;
-      if (adoptsOsm || changesHours || adoptsSource) {
+      // 位置のわからない店に、店名で探した店などの位置が来たら、地図に載るよう位置を補う。
+      final adoptsLocation =
+          existing.latitude == null &&
+          input.latitude != null &&
+          input.longitude != null;
+      final setsLocation = adoptsOsm || adoptsLocation;
+      if (setsLocation || changesHours || adoptsSource) {
         await (_db.update(
           _db.shops,
         )..where((s) => s.id.equals(existing.id))).write(
           ShopsCompanion(
             osmId: adoptsOsm ? Value(input.osmId) : const Value.absent(),
-            latitude: adoptsOsm ? Value(input.latitude) : const Value.absent(),
-            longitude: adoptsOsm
+            latitude: setsLocation
+                ? Value(input.latitude)
+                : const Value.absent(),
+            longitude: setsLocation
                 ? Value(input.longitude)
                 : const Value.absent(),
             hoursConditions: changesHours

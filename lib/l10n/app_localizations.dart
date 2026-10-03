@@ -1300,6 +1300,54 @@ abstract class AppLocalizations {
   /// **'並んだ時刻を残せませんでした'**
   String get queueSuggestionFailed;
 
+  /// No description provided for @nameSearchOpen.
+  ///
+  /// In ja, this message translates to:
+  /// **'全国の店から「{name}」を探す（地図に載せる）'**
+  String nameSearchOpen(String name);
+
+  /// No description provided for @nameSearchTitle.
+  ///
+  /// In ja, this message translates to:
+  /// **'店名で探す'**
+  String get nameSearchTitle;
+
+  /// No description provided for @nameSearchButton.
+  ///
+  /// In ja, this message translates to:
+  /// **'探す'**
+  String get nameSearchButton;
+
+  /// No description provided for @nameSearchNone.
+  ///
+  /// In ja, this message translates to:
+  /// **'見つかりませんでした。店名を短くして探してみてください'**
+  String get nameSearchNone;
+
+  /// No description provided for @nameSearchFailed.
+  ///
+  /// In ja, this message translates to:
+  /// **'探せませんでした。電波のよいところでもう一度試してください'**
+  String get nameSearchFailed;
+
+  /// No description provided for @nameSearchDistance.
+  ///
+  /// In ja, this message translates to:
+  /// **'{km}km'**
+  String nameSearchDistance(String km);
+
+  /// No description provided for @shopLocate.
+  ///
+  /// In ja, this message translates to:
+  /// **'地図に載せる（店名で探す）'**
+  String get shopLocate;
+
+  /// No description provided for @shopLocated.
+  ///
+  /// In ja, this message translates to:
+  /// **'地図に載せました'**
+  String get shopLocated;
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:
