@@ -61,7 +61,7 @@ void main() {
 
     expect(lines.first, contains('2軒目'));
     expect(lines.first, isNot(contains('願')));
-    expect(lines.last, '今年 2杯目。');
+    expect(lines.last, contains('今年 2杯目'));
   });
 
   test('2回目は来訪の回数を、撤退が続いたあとの1杯は再挑戦成功を添える', () {
@@ -113,5 +113,49 @@ void main() {
     );
 
     expect(lines.any((l) => l.contains('願')), isFalse);
+  });
+
+  test('★の数に合ったひとことで締める。★が無ければ言わない', () {
+    VisitWithShop rated(int? rating) => VisitWithShop(
+      shop: shop,
+      visit: Visit(
+        id: 'v$rating',
+        shopId: 'shop',
+        result: VisitResult.eaten,
+        eatenAt: day(6, 1),
+        rating: rating,
+        isLimited: false,
+        hasTicket: false,
+        memo: '',
+        createdAt: day(6, 1),
+      ),
+    );
+    const five = ['文句なしの一杯。また必ず来る。', 'これぞ求めていた味。', '箸が止まらなかった。', 'スープまで一滴残らず。'];
+
+    expect(journalOf([rated(5)]).any(five.contains), isTrue);
+    expect(journalOf([rated(null)]).any(five.contains), isFalse);
+  });
+
+  test('何も起きなかった1杯でも、記録ごとに言い回しが変わる', () {
+    final journals = {
+      for (var i = 0; i < 20; i++)
+        journalOf([
+          VisitWithShop(
+            shop: shop,
+            visit: Visit(
+              id: 'visit-$i',
+              shopId: 'shop',
+              result: VisitResult.eaten,
+              eatenAt: day(7, 1 + i),
+              isLimited: false,
+              hasTicket: false,
+              memo: '',
+              createdAt: day(7, 1 + i),
+            ),
+          ),
+        ]).join(),
+    };
+
+    expect(journals.length, greaterThan(10));
   });
 }

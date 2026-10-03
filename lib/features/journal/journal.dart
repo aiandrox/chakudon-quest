@@ -45,7 +45,20 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
     );
   } else if (eatenBefore > 0) {
     final times = eatenBefore + 1;
-    lines.add(pick(['通うこと$times度目。', '$times度目の来訪。']));
+    lines.add(
+      pick([
+        '通うこと$times度目。',
+        '$times度目の来訪。',
+        'またこの暖簾をくぐる。$times度目。',
+        '勝手知ったる道場、$times度目。',
+      ]),
+    );
+  }
+
+  // 何も起きなかった日にも彩りがあるよう、時間帯・曜日・季節の一文を添える（添えない日もある）。
+  if (wish == null && retreats.isEmpty) {
+    final scene = pick(_scenes(visit.eatenAt));
+    if (scene.isNotEmpty) lines.add(scene);
   }
 
   if (retreats.length == 1) {
@@ -69,7 +82,21 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
 
   final bowl = '${visit.isLimited ? '限定の' : ''}${_styleName(visit.style)}の一杯';
   final dramatic = wish != null || retreats.isNotEmpty || (waited ?? 0) >= 60;
-  lines.add('${dramatic ? 'ついに着丼。' : '着丼。'}$bowl、修行点 ${target.points.total}。');
+  final points = target.points.total;
+  // 共有カードで修行点を外すとき「、修行点 N」を消すので、この形は崩さない。
+  lines.add(
+    dramatic
+        ? 'ついに着丼。$bowl、修行点 $points。'
+        : pick([
+            '着丼。$bowl、修行点 $points。',
+            '丼が置かれた。$bowl、修行点 $points。',
+            '湯気の向こうに$bowl、修行点 $points。',
+            '待望の$bowl、修行点 $points。',
+          ]),
+  );
+
+  final verdict = _verdicts[visit.rating];
+  if (verdict != null) lines.add(pick(verdict));
 
   if (wish != null) {
     final days = daysToFulfill(wish, visit.eatenAt);
@@ -77,7 +104,15 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
   } else if (target.isRetrySuccess) {
     lines.add('再挑戦、成功。');
   } else {
-    lines.add('今年 ${_yearNumber(target, all)}杯目。');
+    final count = _yearNumber(target, all);
+    lines.add(
+      pick([
+        '今年 $count杯目。',
+        '今年 $count杯目の修行。',
+        '修行は続く。今年 $count杯目。',
+        '麺道、今年 $count杯目。',
+      ]),
+    );
   }
   return lines;
 }
@@ -129,6 +164,37 @@ int _yearNumber(ScoredVisit target, List<ScoredVisit> all) => all
           (entry == target || _isBefore(entry.visit, target.visit)),
     )
     .length;
+
+/// ★の数ごとの、食べ終わったあとのひとこと。★がまだ無ければ何も言わない。
+const _verdicts = <int, List<String>>{
+  5: ['文句なしの一杯。また必ず来る。', 'これぞ求めていた味。', '箸が止まらなかった。', 'スープまで一滴残らず。'],
+  4: ['満足の一杯。', 'いい道場に出会えた。', 'また来たいと思える味。'],
+  3: ['悪くない。', '可もなく不可もなく、それもまた修行。', 'いつもの安心する味。'],
+  2: ['今日はあと一歩。', '好みとは少し違った。'],
+  1: ['これもまた修行。', '合わない味を知るのも道のうち。'],
+};
+
+/// 食べた時間帯・曜日・季節に合う一文の候補。空文字は「添えない」。
+List<String> _scenes(DateTime at) {
+  final hour = at.hour;
+  final time = switch (hour) {
+    >= 5 && < 11 => ['朝の澄んだ空気の中、朝ラーの暖簾へ。', '一日の始まりは一杯から。'],
+    >= 11 && < 15 => ['昼どきの喧騒をくぐり抜けて。', '腹の虫が鳴る昼下がり。'],
+    >= 15 && < 18 => ['中休み前のすき間を狙って。', '夕暮れ前のひと休み。'],
+    >= 18 && < 23 => ['一日の終わりに、夜の暖簾へ。', '夜風に誘われて。'],
+    _ => ['真夜中の一杯は、背徳の味。', '眠らない街の灯りの下で。'],
+  };
+  final weekend = at.weekday >= DateTime.saturday
+      ? ['休日の気ままな一杯。']
+      : const <String>[];
+  final season = switch (at.month) {
+    12 || 1 || 2 => ['冷えた体に湯気がしみる。'],
+    6 || 7 || 8 => ['汗をぬぐいながらすする。'],
+    3 || 4 || 5 => ['春の陽気に誘われて。'],
+    _ => ['秋の夜長にもう一杯。'],
+  };
+  return [...time, ...weekend, ...season, '', ''];
+}
 
 String _styleName(RamenStyle? style) => switch (style) {
   RamenStyle.shoyu => '醤油',
