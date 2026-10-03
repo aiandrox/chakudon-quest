@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chakudon_quest/features/journal/journal.dart';
+import 'package:chakudon_quest/features/journal/journal_phrases.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/scoring/points.dart';
 
@@ -181,22 +182,25 @@ void main() {
 
     // 緯度0.01度は約1.1km。
     test('20km未満は街の一文（添えないこともある）', () {
-      expect(nearAreaLines('某市'), contains(areaLine(35.69 - 0.17)));
+      expect(nearArea.fill({'地名': '某市'}), contains(areaLine(35.69 - 0.17)));
     });
 
     test('20km以上80km未満は遠出の一文', () {
-      expect(farAreaLines('某市'), contains(areaLine(35.69 - 0.19)));
-      expect(farAreaLines('某市'), contains(areaLine(35.69 - 0.71)));
+      expect(farArea.fill({'地名': '某市'}), contains(areaLine(35.69 - 0.19)));
+      expect(farArea.fill({'地名': '某市'}), contains(areaLine(35.69 - 0.71)));
     });
 
     test('80km以上は遠征の一文', () {
-      expect(expeditionAreaLines('某市'), contains(areaLine(35.69 - 0.73)));
+      expect(
+        expeditionArea.fill({'地名': '某市'}),
+        contains(areaLine(35.69 - 0.73)),
+      );
     });
 
     test('距離ごとの一文は重ならない', () {
-      final near = nearAreaLines('某市').toSet();
-      final far = farAreaLines('某市').toSet();
-      final expedition = expeditionAreaLines('某市').toSet();
+      final near = nearArea.fill({'地名': '某市'}).toSet();
+      final far = farArea.fill({'地名': '某市'}).toSet();
+      final expedition = expeditionArea.fill({'地名': '某市'}).toSet();
       expect(near.intersection(far), isEmpty);
       expect(far.intersection(expedition), isEmpty);
       expect(near.intersection(expedition), isEmpty);
