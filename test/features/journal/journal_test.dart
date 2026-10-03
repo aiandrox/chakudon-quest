@@ -158,4 +158,45 @@ void main() {
 
     expect(journals.length, greaterThan(10));
   });
+
+  Shop placed(String id, String area, double latitude) => Shop(
+    id: id,
+    name: id,
+    area: area,
+    latitude: latitude,
+    longitude: 139.0,
+    createdAt: DateTime(2026),
+  );
+
+  test('いつもの店から20km以上離れた店の1杯は、地名を出して遠出したことを書く', () {
+    final home = placed('home', '新宿区', 35.69);
+    final away = placed('away', '厚木市', 35.44);
+    final lines = journalOf([
+      buildEntry(shop: home, eatenAt: day(8, 1)),
+      buildEntry(shop: home, eatenAt: day(8, 2)),
+      buildEntry(shop: away, eatenAt: day(8, 3)),
+    ]);
+
+    expect(
+      lines.any(
+        (l) => l.contains('厚木市') && (l.contains('遠') || l.contains('はるばる')),
+      ),
+      isTrue,
+    );
+  });
+
+  test('地名がわかっても、ほかの言い回しは変わらない', () {
+    final entry = buildEntry(
+      shop: placed('home', '', 35.69),
+      eatenAt: day(8, 1),
+    );
+    final withArea = VisitWithShop(
+      shop: placed('home', '新宿区', 35.69),
+      visit: entry.visit,
+    );
+    final without = journalOf([entry]);
+    final with_ = journalOf([withArea]);
+
+    expect(with_.where((l) => !l.contains('新宿区')), without);
+  });
 }

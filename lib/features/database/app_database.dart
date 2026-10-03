@@ -58,6 +58,7 @@ class Shops extends Table {
   TextColumn get strategyMemo => text().withDefault(const Constant(''))();
   TextColumn get dataSource =>
       text().map(const ShopSourceConverter()).nullable()();
+  TextColumn get area => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
   @override
@@ -126,7 +127,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'chakudon_quest'));
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -146,11 +147,12 @@ class AppDatabase extends _$AppDatabase {
                 "WHEN 'fewDays' THEN 'fewDays' ELSE '' END",
               ),
             },
-            // 作り直した表には、バージョン4・5で足した列もすでに入る。
+            // 作り直した表には、バージョン4・5・7で足した列もすでに入る。
             newColumns: [
               shops.hoursConditions,
               shops.strategyMemo,
               shops.dataSource,
+              shops.area,
             ],
           ),
         );
@@ -160,6 +162,7 @@ class AppDatabase extends _$AppDatabase {
         await migrator.addColumn(shops, shops.dataSource);
       }
       if (from < 6) await migrator.createTable(wishes);
+      if (from >= 3 && from < 7) await migrator.addColumn(shops, shops.area);
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

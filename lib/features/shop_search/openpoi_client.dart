@@ -54,6 +54,19 @@ class OpenPoiClient {
     await _search(buildOpenPoiNameUri(name, near: near), timeout),
   );
 
+  /// [location]のある市区町村（道中記で地名に触れるため）。わからなければnull。
+  Future<String?> areaAt(
+    GeoPoint location, {
+    Duration timeout = OverpassClient.timeout,
+  }) async {
+    final uri = buildOpenPoiAreaUri(location);
+    final response = await _client
+        .get(uri, headers: const {'User-Agent': shopSearchUserAgent})
+        .timeout(timeout);
+    if (response.statusCode != 200) return null;
+    return parseOpenPoiArea(utf8.decode(response.bodyBytes));
+  }
+
   Future<List<FoundShop>> _search(Uri uri, Duration timeout) async {
     final response = await _client
         .get(uri, headers: const {'User-Agent': shopSearchUserAgent})

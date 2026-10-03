@@ -25,6 +25,7 @@ import '../wishes/wish_providers.dart';
 import '../wishes/wishes.dart';
 import '../journal/journal.dart';
 import '../journal/journal_view.dart';
+import '../journal/shop_area.dart';
 import '../share/share_screen.dart';
 import '../shop_search/shop_name_search_sheet.dart';
 import 'visit_edit_screen.dart';
@@ -132,6 +133,8 @@ class _VisitDetailScreenState extends ConsumerState<VisitDetailScreen> {
       );
     }
     final visit = entry.visit;
+    // 道中記で地名に触れるため、まだなら店の市区町村を調べておく。
+    ref.watch(ensureShopAreaProvider(entry.shop.id));
     final previous = previousVisitAtShop(visits, visit);
     final scored = ref.watch(scoredVisitByIdProvider)[visit.id];
     final shopStamps = [

@@ -184,4 +184,19 @@ void main() {
       expect(shops.last.address, '埼玉県加須市');
     });
   });
+
+  test('まわりの施設でいちばん多い市区町村を、その場所の地名にする', () {
+    expect(
+      parseOpenPoiArea(
+        '{"results":[{"city":"厚木市"},{"city":""},{"city":"厚木市"},'
+        '{"city":"海老名市"}]}',
+      ),
+      '厚木市',
+    );
+    expect(parseOpenPoiArea('{"results":[]}'), isNull);
+    expect(
+      buildOpenPoiAreaUri(const GeoPoint(35.44, 139.36)).queryParameters,
+      containsPair('center', '139.36,35.44'),
+    );
+  });
 }

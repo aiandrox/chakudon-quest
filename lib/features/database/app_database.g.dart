@@ -88,6 +88,15 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       ).withConverter<ShopSource?>($ShopsTable.$converterdataSourcen);
+  static const VerificationMeta _areaMeta = const VerificationMeta('area');
+  @override
+  late final GeneratedColumn<String> area = GeneratedColumn<String>(
+    'area',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -109,6 +118,7 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
     hoursConditions,
     strategyMemo,
     dataSource,
+    area,
     createdAt,
   ];
   @override
@@ -161,6 +171,12 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
           data['strategy_memo']!,
           _strategyMemoMeta,
         ),
+      );
+    }
+    if (data.containsKey('area')) {
+      context.handle(
+        _areaMeta,
+        area.isAcceptableOrUnknown(data['area']!, _areaMeta),
       );
     }
     if (data.containsKey('created_at')) {
@@ -216,6 +232,10 @@ class $ShopsTable extends Shops with TableInfo<$ShopsTable, Shop> {
           data['${effectivePrefix}data_source'],
         ),
       ),
+      area: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}area'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -245,6 +265,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
   final Value<Set<HoursCondition>> hoursConditions;
   final Value<String> strategyMemo;
   final Value<ShopSource?> dataSource;
+  final Value<String?> area;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const ShopsCompanion({
@@ -256,6 +277,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.hoursConditions = const Value.absent(),
     this.strategyMemo = const Value.absent(),
     this.dataSource = const Value.absent(),
+    this.area = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -268,6 +290,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     this.hoursConditions = const Value.absent(),
     this.strategyMemo = const Value.absent(),
     this.dataSource = const Value.absent(),
+    this.area = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -282,6 +305,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Expression<String>? hoursConditions,
     Expression<String>? strategyMemo,
     Expression<String>? dataSource,
+    Expression<String>? area,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
   }) {
@@ -294,6 +318,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       if (hoursConditions != null) 'hours_conditions': hoursConditions,
       if (strategyMemo != null) 'strategy_memo': strategyMemo,
       if (dataSource != null) 'data_source': dataSource,
+      if (area != null) 'area': area,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -308,6 +333,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
     Value<Set<HoursCondition>>? hoursConditions,
     Value<String>? strategyMemo,
     Value<ShopSource?>? dataSource,
+    Value<String?>? area,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
   }) {
@@ -320,6 +346,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
       hoursConditions: hoursConditions ?? this.hoursConditions,
       strategyMemo: strategyMemo ?? this.strategyMemo,
       dataSource: dataSource ?? this.dataSource,
+      area: area ?? this.area,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
     );
@@ -356,6 +383,9 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
         $ShopsTable.$converterdataSourcen.toSql(dataSource.value),
       );
     }
+    if (area.present) {
+      map['area'] = Variable<String>(area.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -376,6 +406,7 @@ class ShopsCompanion extends UpdateCompanion<Shop> {
           ..write('hoursConditions: $hoursConditions, ')
           ..write('strategyMemo: $strategyMemo, ')
           ..write('dataSource: $dataSource, ')
+          ..write('area: $area, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1853,6 +1884,7 @@ typedef $$ShopsTableCreateCompanionBuilder = ShopsCompanion Function({
   Value<Set<HoursCondition>> hoursConditions,
   Value<String> strategyMemo,
   Value<ShopSource?> dataSource,
+  Value<String?> area,
   required DateTime createdAt,
   Value<int> rowid,
 });
@@ -1865,6 +1897,7 @@ typedef $$ShopsTableUpdateCompanionBuilder = ShopsCompanion Function({
   Value<Set<HoursCondition>> hoursConditions,
   Value<String> strategyMemo,
   Value<ShopSource?> dataSource,
+  Value<String?> area,
   Value<DateTime> createdAt,
   Value<int> rowid,
 });
@@ -1947,6 +1980,11 @@ class $$ShopsTableFilterComposer extends Composer<_$AppDatabase, $ShopsTable> {
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
+  ColumnFilters<String> get area => $composableBuilder(
+    column: $table.area,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnFilters(column),
@@ -2027,6 +2065,11 @@ class $$ShopsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get area => $composableBuilder(
+    column: $table.area,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2073,6 +2116,9 @@ class $$ShopsTableAnnotationComposer
         column: $table.dataSource,
         builder: (column) => column,
       );
+
+  GeneratedColumn<String> get area =>
+      $composableBuilder(column: $table.area, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2140,6 +2186,7 @@ class $$ShopsTableTableManager
                     const Value.absent(),
                 Value<String> strategyMemo = const Value.absent(),
                 Value<ShopSource?> dataSource = const Value.absent(),
+                Value<String?> area = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion(
@@ -2151,6 +2198,7 @@ class $$ShopsTableTableManager
                 hoursConditions: hoursConditions,
                 strategyMemo: strategyMemo,
                 dataSource: dataSource,
+                area: area,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
@@ -2165,6 +2213,7 @@ class $$ShopsTableTableManager
                     const Value.absent(),
                 Value<String> strategyMemo = const Value.absent(),
                 Value<ShopSource?> dataSource = const Value.absent(),
+                Value<String?> area = const Value.absent(),
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
               }) => ShopsCompanion.insert(
@@ -2176,6 +2225,7 @@ class $$ShopsTableTableManager
                 hoursConditions: hoursConditions,
                 strategyMemo: strategyMemo,
                 dataSource: dataSource,
+                area: area,
                 createdAt: createdAt,
                 rowid: rowid,
               ),
