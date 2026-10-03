@@ -76,9 +76,9 @@ void main() {
 
     expect(find.text(ja.pointsRetry), findsNothing);
 
-    // 段位は上がったときだけ出す。
-    expect(find.text(ja.rankApprentice), findsNothing);
-    expect(find.text(ja.rankUp), findsNothing);
+    // 82点で入門から初段へ上がる（50点で初段）。
+    expect(find.text(ja.rankUp), findsOneWidget);
+    expect(find.text(ja.rankFirstDan), findsWidgets);
 
     // スポット「はじめての着丼」の達成と、常設の Lv.1 到達
     // （35分待ち・限定・1杯で60点以上のSランク）を知らせる。
@@ -113,7 +113,7 @@ void main() {
     await pumpResult(tester, [reaches, big], reaches.visit.id);
 
     expect(find.text(ja.rankUp), findsOneWidget);
-    expect(find.text(ja.rankTraveler), findsOneWidget);
+    expect(find.text(ja.rankDan('三')), findsOneWidget);
   });
 
   testWidgets('最高ランクでは、次のランクの代わりに到達を表示する', (tester) async {
@@ -121,9 +121,9 @@ void main() {
       id: 'rare',
       hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
     );
-    // 1杯目 180、以降 (10 + 20 + 50) × 2 = 160 ずつ
+    // 1杯目 180、以降 (10 + 20 + 50) × 2 = 160 ずつ。18杯目で 2900 になり、免許皆伝（2800）に届く
     final entries = [
-      for (var d = 1; d <= 10; d++)
+      for (var d = 1; d <= 18; d++)
         buildEntry(
           shop: rare,
           eatenAt: day(d),
@@ -134,7 +134,7 @@ void main() {
     await pumpResult(tester, entries, entries.last.visit.id);
 
     // この1杯で最高ランクに上がるため、お知らせとランク表示の両方に出る。
-    expect(find.text(ja.rankLegend), findsOneWidget);
+    expect(find.text(ja.rankGrandmaster), findsOneWidget);
   });
 
   testWidgets('記録がまだ読み込まれていなければ待つ', (tester) async {

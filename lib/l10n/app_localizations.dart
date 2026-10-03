@@ -682,23 +682,29 @@ abstract class AppLocalizations {
   /// **'入門'**
   String get rankApprentice;
 
-  /// No description provided for @rankTraveler.
+  /// No description provided for @rankFirstDan.
   ///
   /// In ja, this message translates to:
   /// **'初段'**
-  String get rankTraveler;
+  String get rankFirstDan;
 
-  /// No description provided for @rankHero.
+  /// No description provided for @rankDan.
+  ///
+  /// In ja, this message translates to:
+  /// **'{number}段'**
+  String rankDan(String number);
+
+  /// No description provided for @rankMaster.
   ///
   /// In ja, this message translates to:
   /// **'師範代'**
-  String get rankHero;
+  String get rankMaster;
 
-  /// No description provided for @rankLegend.
+  /// No description provided for @rankGrandmaster.
   ///
   /// In ja, this message translates to:
   /// **'免許皆伝'**
-  String get rankLegend;
+  String get rankGrandmaster;
 
   /// No description provided for @points.
   ///

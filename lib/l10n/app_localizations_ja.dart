@@ -326,13 +326,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get rankApprentice => '入門';
 
   @override
-  String get rankTraveler => '初段';
+  String get rankFirstDan => '初段';
 
   @override
-  String get rankHero => '師範代';
+  String rankDan(String number) {
+    return '$number段';
+  }
 
   @override
-  String get rankLegend => '免許皆伝';
+  String get rankMaster => '師範代';
+
+  @override
+  String get rankGrandmaster => '免許皆伝';
 
   @override
   String points(int points) {
