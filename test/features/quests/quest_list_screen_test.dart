@@ -39,7 +39,7 @@ void main() {
     expect(find.text(ja.questStanding), findsOneWidget);
     expect(find.text(ja.questSpot), findsOneWidget);
     expect(find.text(ja.questLevelTotal(0)), findsNothing);
-    expect(find.text(ja.questSpotSummary(0, 7)), findsOneWidget);
+    expect(find.text(ja.questSpotSummary(0, 8)), findsOneWidget);
     expect(find.text('着丼の道'), findsOneWidget);
     expect(find.text('はじめての着丼'), findsOneWidget);
     expect(find.text(ja.questCount(0, '杯')), findsWidgets);
@@ -59,7 +59,7 @@ void main() {
     expect(find.text(ja.questCount(10, '杯')), findsOneWidget);
     // はじめての着丼は達成。
     expect(find.text(ja.questCleared), findsOneWidget);
-    expect(find.text(ja.questSpotSummary(1, 7)), findsOneWidget);
+    expect(find.text(ja.questSpotSummary(1, 8)), findsOneWidget);
     // 着丼の道 Lv.2 + 開拓者 Lv.0 ...のレベル合計。
     expect(find.text(daijiNumber(2)), findsOneWidget);
   });

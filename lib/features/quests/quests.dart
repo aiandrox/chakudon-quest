@@ -1,3 +1,4 @@
+import '../map/journey.dart';
 import '../records/models.dart';
 import '../records/wait_time.dart';
 import '../scoring/points.dart';
@@ -138,6 +139,15 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _rareShopCount,
+  ),
+  Quest(
+    id: 'home_base',
+    kind: QuestKind.spot,
+    title: '拠点を構える',
+    description: '同じあたり（2km以内）で5杯食べて、拠点をつくる',
+    unit: '回',
+    thresholds: [1],
+    count: _homeBaseCount,
   ),
   Quest(
     id: 'long_wish',
@@ -321,6 +331,9 @@ int _doubleBowlDays(List<ScoredVisit> scored) {
   }
   return perDay.values.where((n) => n >= 2).length;
 }
+
+int _homeBaseCount(List<ScoredVisit> scored) =>
+    homeBase(scored) == null ? 0 : 1;
 
 int _rareShopCount(List<ScoredVisit> scored) => scored
     .where(

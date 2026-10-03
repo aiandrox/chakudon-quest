@@ -47,8 +47,64 @@ double journeyKilometers(List<JourneyStop> stops) {
   return meters / 1000;
 }
 
-/// 遠征とみなす、いつもの場所からの距離。
+/// 遠征とみなす、拠点からの距離。
 const expeditionKilometers = 20;
+
+/// 拠点とみなす「同じあたり」の広さ（半径）と、そこで食べた杯数。
+const homeBaseKilometers = 2;
+const homeBaseBowls = 5;
+
+/// 拠点。同じあたり（[homeBaseKilometers]以内）で[homeBaseBowls]杯以上食べると、そこが拠点になる。
+class HomeBase {
+  const HomeBase({
+    required this.shop,
+    required this.location,
+    required this.bowls,
+  });
+
+  /// 拠点の中心にした店（まわりでいちばん多く食べた店）。
+  final Shop shop;
+  final GeoPoint location;
+
+  /// 拠点のあたりで食べた杯数。
+  final int bowls;
+}
+
+/// 拠点。まだできていなければnull。家の位置は持たないので、食べた店が集まっている場所を拠点とみなす。
+HomeBase? homeBase(List<ScoredVisit> scored) {
+  final eaten = _eatenStops(scored);
+  HomeBase? best;
+  for (final center in eaten) {
+    final bowls = eaten
+        .where(
+          (s) =>
+              distanceMeters(center.location, s.location) <=
+              homeBaseKilometers * 1000,
+        )
+        .length;
+    if (bowls < homeBaseBowls) continue;
+    if (best == null || bowls > best.bowls) {
+      best = HomeBase(
+        shop: center.shop,
+        location: center.location,
+        bowls: bowls,
+      );
+    }
+  }
+  return best;
+}
+
+List<JourneyStop> _eatenStops(List<ScoredVisit> scored) => [
+  for (final entry in scored)
+    if (entry.visit.result == VisitResult.eaten &&
+        entry.shop.latitude != null &&
+        entry.shop.longitude != null)
+      JourneyStop(
+        shop: entry.shop,
+        location: GeoPoint(entry.shop.latitude!, entry.shop.longitude!),
+        eatenAt: entry.visit.eatenAt,
+      ),
+];
 
 /// 遠くへ食べに行った1日。
 class Expedition {
@@ -58,33 +114,17 @@ class Expedition {
   final List<JourneyStop> stops;
 }
 
-/// いつもの場所（いちばん多く食べた店。すべての年で数える）から [expeditionKilometers] 以上離れた店で
-/// 食べた日を、日ごとにまとめる（新しい順）。家の位置は持たないので、いちばん通っている店を「いつもの場所」とみなす。
-/// [year]を渡すと、その年の遠征だけを返す。
+/// 拠点から [expeditionKilometers] 以上離れた店で食べた日を、日ごとにまとめる（新しい順）。
+/// 拠点がまだ無ければ、遠征も無い。[year]を渡すと、その年の遠征だけを返す。
 List<Expedition> expeditions(List<ScoredVisit> scored, {int? year}) {
-  final eaten = [
-    for (final entry in scored)
-      if (entry.visit.result == VisitResult.eaten &&
-          entry.shop.latitude != null &&
-          entry.shop.longitude != null)
-        JourneyStop(
-          shop: entry.shop,
-          location: GeoPoint(entry.shop.latitude!, entry.shop.longitude!),
-          eatenAt: entry.visit.eatenAt,
-        ),
-  ];
-  if (eaten.isEmpty) return const [];
-  final counts = <String, int>{};
-  for (final stop in eaten) {
-    counts.update(stop.shop.id, (n) => n + 1, ifAbsent: () => 1);
-  }
-  final homeId = counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
-  final home = eaten.firstWhere((s) => s.shop.id == homeId).location;
+  final base = homeBase(scored);
+  if (base == null) return const [];
   final byDay = <DateTime, List<JourneyStop>>{};
-  for (final stop in eaten) {
+  for (final stop in _eatenStops(scored)) {
     final at = stop.eatenAt;
     if (year != null && at.year != year) continue;
-    if (distanceMeters(home, stop.location) < expeditionKilometers * 1000) {
+    if (distanceMeters(base.location, stop.location) <
+        expeditionKilometers * 1000) {
       continue;
     }
     (byDay[DateTime(at.year, at.month, at.day)] ??= []).add(stop);
