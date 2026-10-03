@@ -1261,7 +1261,7 @@ abstract class AppLocalizations {
   /// No description provided for @journeyExpeditionsNone.
   ///
   /// In ja, this message translates to:
-  /// **'拠点から20km以上離れた店で食べた日が、遠征として並びます'**
+  /// **'拠点から80km以上離れた店で食べた日が、遠征として並びます'**
   String get journeyExpeditionsNone;
 
   /// No description provided for @homeBaseLine.
