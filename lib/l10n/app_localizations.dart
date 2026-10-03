@@ -2305,97 +2305,97 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingLater.
   ///
   /// In ja, this message translates to:
-  /// **'あとで'**
+  /// **'また今度'**
   String get onboardingLater;
 
   /// No description provided for @onboardingNext.
   ///
   /// In ja, this message translates to:
-  /// **'次へ'**
+  /// **'先へ進む'**
   String get onboardingNext;
 
   /// No description provided for @onboardingWelcomeTitle.
   ///
   /// In ja, this message translates to:
-  /// **'ようこそ、麺印帳へ'**
+  /// **'よくぞ参られた'**
   String get onboardingWelcomeTitle;
 
   /// No description provided for @onboardingWelcomeBody.
   ///
   /// In ja, this message translates to:
-  /// **'食べたラーメンを1杯ずつ記録して、印を集めていく修行の帳面です。行列に並ぶほど、遠くへ行くほど、修行点が貯まります。\n\nまずは、どこから始めますか？'**
+  /// **'ここは麺の道を歩む者の道場、麺印帳。\n食べた一杯ごとに印を授け、並んだ時間も、遠き店への旅路も、すべて修行点として刻んでゆく。\n\nまずは、そなたの「いま」を聞かせよ。'**
   String get onboardingWelcomeBody;
 
   /// No description provided for @onboardingWelcomeRecord.
   ///
   /// In ja, this message translates to:
-  /// **'写真から記録してみる'**
+  /// **'写真から一杯を刻む'**
   String get onboardingWelcomeRecord;
 
   /// No description provided for @onboardingWelcomeQueue.
   ///
   /// In ja, this message translates to:
-  /// **'いまラーメン屋に並んでいる'**
+  /// **'いま行列に並んでおる'**
   String get onboardingWelcomeQueue;
 
   /// No description provided for @onboardingWelcomeBackup.
   ///
   /// In ja, this message translates to:
-  /// **'前の記録（バックアップ）を読み込む'**
+  /// **'前の帳面を引き継ぐ（バックアップ）'**
   String get onboardingWelcomeBackup;
 
   /// No description provided for @onboardingRecordTitle.
   ///
   /// In ja, this message translates to:
-  /// **'最初の一杯を記録しよう'**
+  /// **'最初の一杯を刻め'**
   String get onboardingRecordTitle;
 
   /// No description provided for @onboardingRecordBody.
   ///
   /// In ja, this message translates to:
-  /// **'撮りためたラーメンの写真を1枚選ぶだけで記録できます。写真の撮影日時と場所から、お店の候補も出します。\n\n次の画面で「ギャラリーから選ぶ」を押し、お店を選んで「着丼！」を押してください。'**
+  /// **'撮りためた一杯の写真があれば、それで足りる。撮った日と場所から、店の候補はこちらで探し出そう。\n\n次の間で「ギャラリーから選ぶ」を押し、店を選んで「着丼！」と唱えるのじゃ。'**
   String get onboardingRecordBody;
 
   /// No description provided for @onboardingRecordButton.
   ///
   /// In ja, this message translates to:
-  /// **'写真を選んで記録する'**
+  /// **'写真を選んで刻む'**
   String get onboardingRecordButton;
 
   /// No description provided for @onboardingShareTitle.
   ///
   /// In ja, this message translates to:
-  /// **'一杯目の印が押されました'**
+  /// **'見事。一杯目の印じゃ'**
   String get onboardingShareTitle;
 
   /// No description provided for @onboardingShareBody.
   ///
   /// In ja, this message translates to:
-  /// **'記録した一杯は、こんな印になって印帳に並びます。\n\n写真・印・店名を1枚の画像にして、家族や友だちに送ることもできます。'**
+  /// **'刻んだ一杯は、こうして印となり帳面に並ぶ。長く並ぶほど、攻め難い店ほど、印は立派になってゆく。\n\n写真と印と店の名を一枚の絵にして、同じ道を行く者に見せることもできる。'**
   String get onboardingShareBody;
 
   /// No description provided for @onboardingShareButton.
   ///
   /// In ja, this message translates to:
-  /// **'画像にして共有する'**
+  /// **'絵にして分かち合う'**
   String get onboardingShareButton;
 
   /// No description provided for @onboardingWishTitle.
   ///
   /// In ja, this message translates to:
-  /// **'気になる店に願を掛けよう'**
+  /// **'次なる一杯に願を掛けよ'**
   String get onboardingWishTitle;
 
   /// No description provided for @onboardingWishBody.
   ///
   /// In ja, this message translates to:
-  /// **'行ってみたい店を「願掛け帳」に書き留めておくと、食べに行ったときに願が叶います。\n\n地図の右下の「探す」を押すと、近くのまだ行っていない店が灰色の印で出ます。気になる店をタップして「願を掛ける」を押してください。'**
+  /// **'行きたい店を願掛け帳に記しておけば、食べに行った日に願が成就する。\n\n地図の右下「探す」を押せば、近くのまだ見ぬ店が灰色の印で現れる。気になる店に触れ、「願を掛ける」のじゃ。'**
   String get onboardingWishBody;
 
   /// No description provided for @onboardingWishNotYet.
   ///
   /// In ja, this message translates to:
-  /// **'まだ願は掛かっていません。店の名前からでも掛けられます。'**
+  /// **'まだ願は掛かっておらぬ。店の名からでも掛けられるぞ。'**
   String get onboardingWishNotYet;
 
   /// No description provided for @onboardingWishMap.
@@ -2407,31 +2407,31 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingWishByName.
   ///
   /// In ja, this message translates to:
-  /// **'店の名前で願を掛ける'**
+  /// **'店の名で願を掛ける'**
   String get onboardingWishByName;
 
   /// No description provided for @onboardingFinishTitle.
   ///
   /// In ja, this message translates to:
-  /// **'どんどん食べに行こう！'**
+  /// **'あとは、精進あるのみ'**
   String get onboardingFinishTitle;
 
   /// No description provided for @onboardingFinishBody.
   ///
   /// In ja, this message translates to:
-  /// **'「修行」では、段位や型と秘伝、修行録や一年の振り返りで、これまでの一杯を振り返れます。\n\n一杯ごとに印が増え、段位が上がっていきます。'**
+  /// **'「修行」の間では、段位、型と秘伝、修行録、一年の振り返りを見ることができる。\n\n一杯ごとに印は増え、段位は上がる。\nいざ、麺の道へ。'**
   String get onboardingFinishBody;
 
   /// No description provided for @onboardingFinishShugyo.
   ///
   /// In ja, this message translates to:
-  /// **'修行をのぞいてみる'**
+  /// **'修行の間をのぞく'**
   String get onboardingFinishShugyo;
 
   /// No description provided for @onboardingFinishRecords.
   ///
   /// In ja, this message translates to:
-  /// **'印帳へ'**
+  /// **'印帳を開く'**
   String get onboardingFinishRecords;
 
   /// No description provided for @onboardingReplay.
@@ -2439,6 +2439,72 @@ abstract class AppLocalizations {
   /// In ja, this message translates to:
   /// **'使い方をもう一度見る'**
   String get onboardingReplay;
+
+  /// No description provided for @onboardingScroll.
+  ///
+  /// In ja, this message translates to:
+  /// **'入門の心得'**
+  String get onboardingScroll;
+
+  /// No description provided for @onboardingWelcomeChapter.
+  ///
+  /// In ja, this message translates to:
+  /// **'其の一　入門'**
+  String get onboardingWelcomeChapter;
+
+  /// No description provided for @onboardingWelcomeSeal.
+  ///
+  /// In ja, this message translates to:
+  /// **'入'**
+  String get onboardingWelcomeSeal;
+
+  /// No description provided for @onboardingRecordChapter.
+  ///
+  /// In ja, this message translates to:
+  /// **'其の二　初陣'**
+  String get onboardingRecordChapter;
+
+  /// No description provided for @onboardingRecordSeal.
+  ///
+  /// In ja, this message translates to:
+  /// **'刻'**
+  String get onboardingRecordSeal;
+
+  /// No description provided for @onboardingShareChapter.
+  ///
+  /// In ja, this message translates to:
+  /// **'其の三　授印'**
+  String get onboardingShareChapter;
+
+  /// No description provided for @onboardingShareSeal.
+  ///
+  /// In ja, this message translates to:
+  /// **'印'**
+  String get onboardingShareSeal;
+
+  /// No description provided for @onboardingWishChapter.
+  ///
+  /// In ja, this message translates to:
+  /// **'其の四　願掛'**
+  String get onboardingWishChapter;
+
+  /// No description provided for @onboardingWishSeal.
+  ///
+  /// In ja, this message translates to:
+  /// **'願'**
+  String get onboardingWishSeal;
+
+  /// No description provided for @onboardingFinishChapter.
+  ///
+  /// In ja, this message translates to:
+  /// **'其の五　精進'**
+  String get onboardingFinishChapter;
+
+  /// No description provided for @onboardingFinishSeal.
+  ///
+  /// In ja, this message translates to:
+  /// **'進'**
+  String get onboardingFinishSeal;
 }
 
 class _AppLocalizationsDelegate
