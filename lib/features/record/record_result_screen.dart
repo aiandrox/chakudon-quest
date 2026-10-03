@@ -8,12 +8,11 @@ import '../../l10n/app_localizations.dart';
 import '../notifications/notification_service.dart';
 import '../quests/quest_seal.dart';
 import '../quests/quests.dart';
-import '../scoring/ranks.dart';
 import '../records/record_repository.dart';
 import '../scoring/points_breakdown_view.dart';
-import '../scoring/rank_labels.dart';
 import '../records/models.dart';
 import '../scoring/record_outcome.dart';
+import 'exp_bar.dart';
 import '../share/share_screen.dart';
 import '../wishes/wish_repository.dart';
 import '../wishes/wishes.dart';
@@ -150,10 +149,9 @@ class _ResultBody extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Opacity(opacity: 0.75, child: PointsBreakdownView(scored: scored)),
-        if (outcome.isRankUp) ...[
-          const SizedBox(height: 16),
-          _RankUpBanner(rank: outcome.rankAfter),
-        ],
+        const SizedBox(height: 20),
+        // 印を押したあとに修行点の帯が伸び、段位が上がればその場で光って替わる。
+        ExpBar(before: outcome.totalBefore, after: outcome.totalAfter),
         for (final levelUp in outcome.questLevelUps) ...[
           const SizedBox(height: 12),
           _QuestAchievedBanner(levelUp: levelUp),
@@ -272,43 +270,6 @@ class _StampedPageState extends State<_StampedPage>
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _RankUpBanner extends StatelessWidget {
-  const _RankUpBanner({required this.rank});
-
-  final AdventurerRank rank;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
-
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.6, end: 1),
-      duration: const Duration(milliseconds: 700),
-      curve: Curves.elasticOut,
-      builder: (context, scale, child) =>
-          Transform.scale(scale: scale, child: child),
-      child: DecoratedBox(
-        decoration: BoxDecoration(border: Border.all(color: Washi.shuLight)),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(l10n.rankUp, style: textTheme.titleMedium),
-              const SizedBox(height: 12),
-              RankSeal(
-                label: adventurerRankLabel(l10n, rank),
-                fontSize: 32,
-                color: Washi.shuLight,
-              ),
-            ],
-          ),
         ),
       ),
     );
