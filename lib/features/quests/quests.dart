@@ -200,6 +200,8 @@ class Quest {
     required this.thresholds,
     required this.count,
     this.seal,
+    this.availableFrom,
+    this.availableUntil,
   });
 
   final String id;
@@ -218,6 +220,16 @@ class Quest {
 
   /// 秘伝の印の字と形。秘伝ごとに違う印にする。
   final QuestSealDesign? seal;
+
+  /// 期間限定の秘伝の、数えはじめる日時と、数えおわる日時（この日時より前まで）。
+  /// どちらもnullなら、いつでも数える。期間が過ぎても定義は消さずに残す（過去分の記録のため）。
+  final DateTime? availableFrom;
+  final DateTime? availableUntil;
+
+  /// [at]に食べた記録を、このクエストで数えるか。
+  bool isAvailableAt(DateTime at) =>
+      (availableFrom == null || !at.isBefore(availableFrom!)) &&
+      (availableUntil == null || at.isBefore(availableUntil!));
 
   int get maxLevel => thresholds.length;
 }
@@ -282,7 +294,14 @@ List<QuestLevelUp> newlyAchievedLevels({
   ];
 }
 
-QuestProgress _evaluate(Quest quest, List<ScoredVisit> scored) {
+QuestProgress _evaluate(Quest quest, List<ScoredVisit> all) {
+  // 期間限定のクエストは、期間内に食べた記録だけで数える。
+  final scored = quest.availableFrom == null && quest.availableUntil == null
+      ? all
+      : [
+          for (final entry in all)
+            if (quest.isAvailableAt(entry.visit.eatenAt)) entry,
+        ];
   final count = quest.count(scored);
   return QuestProgress(
     quest: quest,
