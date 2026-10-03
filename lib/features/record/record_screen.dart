@@ -16,6 +16,7 @@ import '../shop_search/shop_candidate.dart';
 import '../shop_search/shop_search_service.dart';
 import '../shop_search/shop_name_search_sheet.dart';
 import '../shop_search/shop_tile.dart';
+import '../shop_search/yahoo_local.dart';
 import 'record_controller.dart';
 import 'record_result_screen.dart';
 import 'record_state.dart';
@@ -412,7 +413,10 @@ class _ShopSection extends ConsumerWidget {
           Align(
             alignment: Alignment.centerRight,
             child: Text(
-              l10n.shopSearchAttribution,
+              [
+                l10n.shopSearchAttribution,
+                if (isYahooEnabled) l10n.yahooAttribution,
+              ].join('\n'),
               style: textTheme.labelSmall,
             ),
           ),

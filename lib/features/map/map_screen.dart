@@ -21,6 +21,7 @@ import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
 import '../wishes/wishes.dart';
 import 'journey.dart';
+import '../shop_search/yahoo_local.dart';
 import 'shop_pins.dart';
 
 /// 地図の画像は OpenStreetMap のタイルサーバーから取る。送るのは表示範囲だけ（issue #8）。
@@ -406,7 +407,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(3),
                   child: Text(
-                    l10n.openPoiAttribution,
+                    [
+                      l10n.openPoiAttribution,
+                      if (isYahooEnabled) l10n.yahooAttribution,
+                    ].join('\n'),
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ),

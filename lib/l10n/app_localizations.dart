@@ -1372,6 +1372,18 @@ abstract class AppLocalizations {
   /// **'地図に載せました'**
   String get shopLocated;
 
+  /// No description provided for @yahooAttribution.
+  ///
+  /// In ja, this message translates to:
+  /// **'Web Services by Yahoo! JAPAN（https://developer.yahoo.co.jp/sitemap/）'**
+  String get yahooAttribution;
+
+  /// No description provided for @creditsYahoo.
+  ///
+  /// In ja, this message translates to:
+  /// **'店の情報: Web Services by Yahoo! JAPAN（https://developer.yahoo.co.jp/sitemap/）'**
+  String get creditsYahoo;
+
   /// No description provided for @backupTitle.
   ///
   /// In ja, this message translates to:

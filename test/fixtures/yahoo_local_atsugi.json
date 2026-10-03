@@ -1,0 +1,32 @@
+{
+  "ResultInfo": {"Count": 3, "Total": 3, "Start": 1, "Status": 200},
+  "Feature": [
+    {
+      "Id": "1",
+      "Gid": "aaaa",
+      "Name": "ラーメン豚山 本厚木店",
+      "Geometry": {"Type": "point", "Coordinates": "139.3651,35.4398"},
+      "Category": [],
+      "Property": {
+        "Address": "神奈川県厚木市中町2-1-1",
+        "Genre": [{"Code": "0106001", "Name": "ラーメン"}]
+      }
+    },
+    {
+      "Id": "2",
+      "Gid": "bbbb",
+      "Name": "麺屋藤ろう",
+      "Geometry": {"Type": "point", "Coordinates": "139.3638,35.4391"},
+      "Property": {
+        "Address": "",
+        "Genre": [{"Code": "0106001", "Name": "ラーメン"}]
+      }
+    },
+    {
+      "Id": "3",
+      "Gid": "cccc",
+      "Name": "座標の無い店",
+      "Property": {"Address": "神奈川県厚木市"}
+    }
+  ]
+}
