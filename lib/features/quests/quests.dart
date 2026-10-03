@@ -10,6 +10,7 @@ enum QuestKind { standing, spot }
 
 /// 奥義の印の形。
 enum QuestSealShape {
+  eightRing,
   doubleCircle,
   square,
   octagon,
@@ -89,15 +90,6 @@ const quests = <Quest>[
     count: _rankSShopCount,
   ),
   Quest(
-    id: 'styles',
-    kind: QuestKind.standing,
-    title: '系統の探究',
-    description: '食べた系統の数（「その他」を除く8系統）。8系統で全系統制覇',
-    unit: '系統',
-    thresholds: [3, 5, 8],
-    count: _styleCount,
-  ),
-  Quest(
     id: 'wishes',
     kind: QuestKind.standing,
     title: '願掛け',
@@ -155,6 +147,16 @@ const quests = <Quest>[
     thresholds: [1],
     count: _thirdTimeCount,
     seal: QuestSealDesign('三', QuestSealShape.hexagon),
+  ),
+  Quest(
+    id: 'styles',
+    kind: QuestKind.spot,
+    title: '系統の探究',
+    description: '「その他」を除く8系統をすべて食べる',
+    unit: '系統',
+    thresholds: [8],
+    count: _styleCount,
+    seal: QuestSealDesign('全', QuestSealShape.eightRing),
   ),
   Quest(
     id: 'rare_shop',

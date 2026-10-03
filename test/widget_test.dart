@@ -70,8 +70,8 @@ void main() {
     expect(find.text('着丼の道'), findsOneWidget);
     await tester.scrollUntilVisible(find.text(ja.statsEmpty), 300);
     expect(find.text(ja.statsEmpty), findsOneWidget);
-    await tester.scrollUntilVisible(find.text(ja.backupTitle), 300);
-    expect(find.text(ja.creditsTitle), findsOneWidget);
+    await tester.scrollUntilVisible(find.text(ja.creditsTitle), 300);
+    expect(find.text(ja.backupTitle), findsOneWidget);
     expect(find.byType(MapScreen), findsNothing);
 
     await tester.tap(find.text(ja.navMap));

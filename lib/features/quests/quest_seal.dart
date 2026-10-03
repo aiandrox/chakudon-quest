@@ -184,6 +184,17 @@ class _SpotSealPainter extends CustomPainter {
     }
 
     switch (shape) {
+      // 8つの系統を表す、8つの小さな丸の輪。
+      case QuestSealShape.eightRing:
+        canvas.drawCircle(c, r - w * 3.2, line);
+        for (var i = 0; i < 8; i++) {
+          final a = 2 * math.pi * i / 8 - math.pi / 2;
+          canvas.drawCircle(
+            c + Offset(math.cos(a), math.sin(a)) * (r - w * 1.3),
+            w * 1.1,
+            fill,
+          );
+        }
       case QuestSealShape.doubleCircle:
         canvas.drawCircle(c, r - w, line);
         canvas.drawCircle(c, r - w * 2.8, thin);

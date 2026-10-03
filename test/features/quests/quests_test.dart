@@ -25,7 +25,7 @@ void main() {
     expect(quests.map((q) => q.id).toSet(), hasLength(quests.length));
     expect(
       quests.where((q) => q.kind == QuestKind.standing).map((q) => q.title),
-      ['着丼の道', '開拓者', '行列の覇者', '限定ハンター', '不屈の挑戦者', '大物討伐', '系統の探究', '願掛け'],
+      ['着丼の道', '開拓者', '行列の覇者', '限定ハンター', '不屈の挑戦者', '大物討伐', '願掛け'],
     );
     expect(quests.where((q) => q.kind == QuestKind.spot).map((q) => q.title), [
       'はじめての着丼',
@@ -33,6 +33,7 @@ void main() {
       '90分の死闘',
       '一日二杯',
       '三度目の正直',
+      '系統の探究',
       '幻の店',
       '拠点を構える',
       '百日越しの願',
@@ -138,7 +139,7 @@ void main() {
     expect(_progress('limited', limited(5)).level, 2);
   });
 
-  test('系統の探究は、「その他」を除く系統の数。8系統で最高レベル（全系統制覇）', () {
+  test('系統の探究は奥義。「その他」を除く8系統をすべて食べた記録で会得', () {
     const styles = [
       RamenStyle.shoyu,
       RamenStyle.miso,
@@ -155,9 +156,9 @@ void main() {
       buildEntry(shop: buildShop(), eatenAt: _day(9), style: RamenStyle.other),
     ]);
 
-    expect(progress.level, 3);
-    expect(progress.isMaxLevel, isTrue);
-    expect(progress.levelAchievedAt, [_day(2), _day(4), _day(7)]);
+    expect(progress.quest.kind, QuestKind.spot);
+    expect(progress.isAchieved, isTrue);
+    expect(progress.levelAchievedAt, [_day(7)]);
   });
 
   test('大物討伐は、1杯で60点以上のSランクの店の数', () {

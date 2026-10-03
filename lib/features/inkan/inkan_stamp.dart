@@ -6,6 +6,8 @@ import '../../l10n/app_localizations.dart';
 import '../../theme/ink_wear.dart';
 import '../../theme/washi.dart';
 import '../records/models.dart';
+import '../scoring/rank_labels.dart';
+import '../scoring/ranks.dart';
 import '../scoring/points.dart';
 import 'inkan.dart';
 
@@ -57,8 +59,13 @@ class InkanStamp extends StatelessWidget {
       InkanShape.filled => Washi.page,
       _ => Washi.shu,
     };
-    // 格は印の形と模様で表す（字にすると麺の量の「並」などと紛らわしいため）。
-    final top = !isRetreat && scored.isRetrySuccess ? l10n.inkanRetry : null;
+    // 上に難しさ（易・厳・難・極）。再挑戦成功なら「雪辱」も添える。
+    final rank = shopRankLabel(l10n, shopRankFor(scored.points.total));
+    final top = isRetreat
+        ? null
+        : scored.isRetrySuccess
+        ? l10n.inkanTop(rank, l10n.inkanRetry)
+        : rank;
     final center = isRetreat
         ? l10n.inkanRetreat
         : inkanStyleName(l10n, visit.style);
@@ -82,7 +89,10 @@ class InkanStamp extends StatelessWidget {
             Text(
               top,
               maxLines: 1,
-              style: small.copyWith(fontWeight: FontWeight.w700),
+              style: small.copyWith(
+                fontSize: size * 0.15,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         // 円の真ん中がいちばん広いので、系統名はほかより幅を広くとる。
@@ -124,9 +134,10 @@ class InkanStamp extends StatelessWidget {
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Padding(
+                    // 丸い印は上下に余裕があるので、難しさの字を足しても他の字は小さくしない。
                     padding: EdgeInsets.symmetric(
                       horizontal: size * 0.08,
-                      vertical: size * 0.1,
+                      vertical: size * 0.04,
                     ),
                     child: content,
                   ),
