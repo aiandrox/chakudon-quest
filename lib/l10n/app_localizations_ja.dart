@@ -998,11 +998,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String inchoMonthCount(int count) {
-    return '$count杯';
-  }
-
-  @override
   String get eraReiwa => '令和';
 
   @override

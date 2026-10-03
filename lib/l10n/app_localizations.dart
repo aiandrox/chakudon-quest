@@ -1774,12 +1774,6 @@ abstract class AppLocalizations {
   /// **'{era}{eraYear}年 {month}月'**
   String inchoMonth(String era, String eraYear, String month);
 
-  /// No description provided for @inchoMonthCount.
-  ///
-  /// In ja, this message translates to:
-  /// **'{count}杯'**
-  String inchoMonthCount(int count);
-
   /// No description provided for @eraReiwa.
   ///
   /// In ja, this message translates to:
