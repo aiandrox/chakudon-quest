@@ -1,11 +1,20 @@
 import '../records/models.dart';
 import 'points.dart';
 
+/// 段位。入門から初段〜九段を経て、師範代・免許皆伝へ。序盤ほど間隔を短くし、数杯で昇段できるようにする。
 enum AdventurerRank {
   apprentice(0),
-  traveler(200),
-  hero(600),
-  legend(1500);
+  dan1(50),
+  dan2(120),
+  dan3(200),
+  dan4(300),
+  dan5(450),
+  dan6(650),
+  dan7(900),
+  dan8(1200),
+  dan9(1600),
+  master(2100),
+  grandmaster(2800);
 
   const AdventurerRank(this.requiredPoints);
 

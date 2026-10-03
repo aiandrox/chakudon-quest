@@ -148,9 +148,11 @@
     }
   },
   "rankApprentice": "入門",
-  "rankTraveler": "初段",
-  "rankHero": "師範代",
-  "rankLegend": "免許皆伝",
+  "rankFirstDan": "初段",
+  "rankDan": "{number}段",
+  "@rankDan": {"placeholders": {"number": {"type": "String"}}},
+  "rankMaster": "師範代",
+  "rankGrandmaster": "免許皆伝",
   "points": "{points}点",
   "@points": {
     "placeholders": {
