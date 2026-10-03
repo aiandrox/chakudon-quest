@@ -406,7 +406,6 @@ class _ShopSection extends ConsumerWidget {
           controller: nameController,
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
             labelText: l10n.shopNameLabel,
             hintText: l10n.shopNameHint,
           ),

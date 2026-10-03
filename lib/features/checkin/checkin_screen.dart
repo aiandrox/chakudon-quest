@@ -119,7 +119,6 @@ class _CheckinScreenState extends ConsumerState<CheckinScreen> {
                 controller: _nameController,
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
                   labelText: l10n.shopNameLabel,
                   hintText: l10n.shopNameHint,
                 ),

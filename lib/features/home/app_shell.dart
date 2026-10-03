@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../theme/washi.dart';
 import '../map/map_screen.dart';
 import '../shugyo/shugyo_screen.dart';
 import '../wishes/wish_list_screen.dart';
@@ -41,24 +42,52 @@ class _AppShellState extends State<AppShell> {
         selectedIndex: _index,
         onDestinationSelected: (index) => setState(() => _index = index),
         destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.ramen_dining),
-            label: l10n.navRecords,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.bookmark_border),
-            selectedIcon: const Icon(Icons.bookmark),
-            label: l10n.navWishes,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.emoji_events),
-            label: l10n.navShugyo,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.map),
-            label: l10n.navMap,
-          ),
+          for (final (glyph, label) in [
+            (l10n.navGlyphRecords, l10n.navRecords),
+            (l10n.navGlyphWishes, l10n.navWishes),
+            (l10n.navGlyphShugyo, l10n.navShugyo),
+            (l10n.navGlyphMap, l10n.navMap),
+          ])
+            NavigationDestination(
+              icon: _TabSeal(glyph: glyph, selected: false),
+              selectedIcon: _TabSeal(glyph: glyph, selected: true),
+              label: label,
+            ),
         ],
+      ),
+    );
+  }
+}
+
+/// タブのアイコン。筆文字1字の印で、選んでいるときは朱で塗る。
+class _TabSeal extends StatelessWidget {
+  const _TabSeal({required this.glyph, required this.selected});
+
+  final String glyph;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 30,
+      height: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: selected ? Washi.shu : Colors.transparent,
+        border: Border.all(
+          color: selected ? Washi.shu : Washi.inkSoft,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        glyph,
+        style: TextStyle(
+          fontFamily: Washi.brush,
+          fontSize: 18,
+          height: 1.1,
+          color: selected ? Washi.page : Washi.inkSoft,
+        ),
       ),
     );
   }

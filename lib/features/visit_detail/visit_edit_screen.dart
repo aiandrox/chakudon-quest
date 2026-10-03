@@ -132,10 +132,7 @@ class _VisitEditScreenState extends ConsumerState<VisitEditScreen> {
           TextField(
             controller: _nameController,
             textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: l10n.editShopName,
-            ),
+            decoration: InputDecoration(labelText: l10n.editShopName),
             onChanged: (_) => setState(() {}),
           ),
           ListTile(

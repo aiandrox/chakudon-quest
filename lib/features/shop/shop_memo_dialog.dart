@@ -37,10 +37,7 @@ class _ShopMemoDialogState extends State<_ShopMemoDialog> {
         autofocus: true,
         minLines: 3,
         maxLines: 6,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          hintText: l10n.shopMemoHint,
-        ),
+        decoration: InputDecoration(hintText: l10n.shopMemoHint),
       ),
       actions: [
         TextButton(

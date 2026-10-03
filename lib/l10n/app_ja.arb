@@ -519,5 +519,9 @@
       "thisYear": {"type": "int"},
       "total": {"type": "int"}
     }
-  }
+  },
+  "navGlyphRecords": "印",
+  "navGlyphWishes": "願",
+  "navGlyphShugyo": "修",
+  "navGlyphMap": "地"
 }
