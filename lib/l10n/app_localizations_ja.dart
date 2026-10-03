@@ -684,7 +684,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String homeBaseNone(int bowls) {
-    return '同じあたりで$bowls杯食べると拠点ができます';
+    return '同じ地域で$bowls杯食べると拠点ができます';
   }
 
   @override

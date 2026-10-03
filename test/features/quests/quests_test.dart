@@ -316,7 +316,7 @@ void main() {
     expect(daijiNumber(11), '11');
   });
 
-  test('拠点を構えるは、同じあたりで5杯食べた記録で達成', () {
+  test('拠点を構えるは、同じ地域で5杯食べた記録で達成', () {
     final shop = buildShop(id: 'home', latitude: 35.0, longitude: 139.0);
     final entries = [
       for (var d = 1; d <= 5; d++)

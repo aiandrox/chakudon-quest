@@ -50,11 +50,11 @@ double journeyKilometers(List<JourneyStop> stops) {
 /// 遠征とみなす、拠点からの距離。
 const expeditionKilometers = 20;
 
-/// 拠点とみなす「同じあたり」の広さ（半径）と、そこで食べた杯数。
+/// 拠点とみなす「同じ地域」の広さ（半径）と、そこで食べた杯数。
 const homeBaseKilometers = 2;
 const homeBaseBowls = 5;
 
-/// 拠点。同じあたり（[homeBaseKilometers]以内）で[homeBaseBowls]杯以上食べると、そこが拠点になる。
+/// 拠点。同じ地域（[homeBaseKilometers]以内）で[homeBaseBowls]杯以上食べると、そこが拠点になる。
 class HomeBase {
   const HomeBase({
     required this.shop,
