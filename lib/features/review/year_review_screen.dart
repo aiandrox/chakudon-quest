@@ -266,7 +266,7 @@ class _CoverPage extends StatelessWidget {
         Text(
           l10n.reviewCoverYear(review.year),
           textAlign: TextAlign.center,
-          style: _bigBrush.copyWith(fontSize: 30),
+          style: textTheme.titleMedium?.copyWith(color: Washi.inkSoft),
         ),
         const SizedBox(height: 32),
         Text(
@@ -580,7 +580,7 @@ class _ClosingPage extends StatelessWidget {
                 ),
                 Text(
                   l10n.reviewCoverYear(review.year),
-                  style: const TextStyle(fontFamily: Washi.brush, fontSize: 18),
+                  style: textTheme.bodyMedium?.copyWith(color: Washi.inkSoft),
                 ),
                 const SizedBox(height: 12),
                 Text(

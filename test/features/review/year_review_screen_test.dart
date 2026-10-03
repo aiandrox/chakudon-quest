@@ -60,7 +60,8 @@ void main() {
     await pump(tester, const YearReviewScreen(year: 2026));
 
     expect(find.text(ja.reviewCoverEra('令和', '八')), findsOneWidget);
-    expect(find.text(ja.reviewCoverYear(2026)), findsOneWidget);
+    expect(find.textContaining('（'), findsNothing);
+    expect(find.text(ja.reviewCoverYear(2026)), findsWidgets);
     expect(find.text(ja.reviewCoverHint), findsOneWidget);
 
     await next(tester);
@@ -113,7 +114,7 @@ void main() {
     await tester.tap(find.text(ja.reviewEntry(2026)));
     await tester.pumpAndSettle();
 
-    expect(find.text(ja.reviewCoverYear(2026)), findsOneWidget);
+    expect(find.text(ja.reviewCoverYear(2026)), findsWidgets);
   });
 
   testWidgets('記録が無いうちは、修行タブに入口を出さない', (tester) async {

@@ -577,14 +577,14 @@
   "@reviewInvite": {"placeholders": {"year": {"type": "int"}}},
   "reviewInviteSub": "この一年の杯数・最高の一杯・会得した型をめくって見られます",
   "reviewDismiss": "閉じる",
-  "reviewCoverEra": "{era}{eraYear}年",
+  "reviewCoverEra": "{era}{eraYear}年の修行",
   "@reviewCoverEra": {
     "placeholders": {
       "era": {"type": "String"},
       "eraYear": {"type": "String"}
     }
   },
-  "reviewCoverYear": "（{year}年）の修行",
+  "reviewCoverYear": "{year}年",
   "@reviewCoverYear": {"placeholders": {"year": {"type": "int"}}},
   "reviewCoverHint": "左へめくって、一年を振り返る",
   "reviewCoverEmpty": "この年の記録はありません",
