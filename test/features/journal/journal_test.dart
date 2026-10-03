@@ -158,4 +158,33 @@ void main() {
 
     expect(journals.length, greaterThan(10));
   });
+
+  test('いつもの地域と違う街の1杯は、遠出したことを書く', () {
+    Shop areaShop(String id, String area) =>
+        Shop(id: id, name: id, area: area, createdAt: DateTime(2026));
+    final home = areaShop('home', '新宿区');
+    final away = areaShop('away', '厚木市');
+    final lines = journalOf([
+      buildEntry(shop: home, eatenAt: day(8, 1)),
+      buildEntry(shop: home, eatenAt: day(8, 2)),
+      buildEntry(shop: away, eatenAt: day(8, 3)),
+    ]);
+
+    expect(lines.any((l) => l.contains('厚木市')), isTrue);
+  });
+
+  test('いつもの地域の1杯では、遠出とは書かない', () {
+    final home = Shop(
+      id: 'home',
+      name: 'home',
+      area: '新宿区',
+      createdAt: DateTime(2026),
+    );
+    final lines = journalOf([
+      buildEntry(shop: home, eatenAt: day(8, 1)),
+      buildEntry(shop: home, eatenAt: day(8, 2)),
+    ]);
+
+    expect(lines.any((l) => l.contains('遠') || l.contains('はるばる')), isFalse);
+  });
 }

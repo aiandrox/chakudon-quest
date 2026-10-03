@@ -90,6 +90,7 @@ class RecordRepository {
                 hoursConditions: Value(shop.hoursConditions),
                 strategyMemo: Value(shop.strategyMemo),
                 dataSource: Value(shop.dataSource),
+                area: Value(shop.area),
                 createdAt: shop.createdAt,
               ),
             );
@@ -316,6 +317,11 @@ class RecordRepository {
       dataSource: dataSource == null ? const Value.absent() : Value(dataSource),
     ),
   );
+
+  Future<void> setShopArea(String shopId, String area) =>
+      (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(
+        ShopsCompanion(area: Value(area)),
+      );
 
   Future<void> setShopMemo(String shopId, String memo) =>
       (_db.update(_db.shops)..where((s) => s.id.equals(shopId))).write(

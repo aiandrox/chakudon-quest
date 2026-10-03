@@ -55,9 +55,17 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
     );
   }
 
-  // 何も起きなかった日にも彩りがあるよう、時間帯・曜日・季節の一文を添える（添えない日もある）。
-  if (wish == null && retreats.isEmpty) {
-    final scene = pick(_scenes(visit.eatenAt));
+  // いつもの地域と違う街なら、遠出したことを必ず書く。
+  final area = target.shop.area;
+  final homeArea = _homeArea(all);
+  if (area != null && homeArea != null && area != homeArea) {
+    lines.add(pick(['遠く$areaまで足をのばして。', 'はるばる$areaへ。', '今日は$areaまで遠征。']));
+  } else if (wish == null && retreats.isEmpty) {
+    // 何も起きなかった日にも彩りがあるよう、地名・時間帯・曜日・季節の一文を添える（添えない日もある）。
+    final scene = pick([
+      ..._scenes(visit.eatenAt),
+      if (area != null) ...['$areaの街で。', '$areaの空の下で。', '$areaにて。'],
+    ]);
     if (scene.isNotEmpty) lines.add(scene);
   }
 
@@ -118,6 +126,18 @@ List<String> buildJournal(ScoredVisit target, List<ScoredVisit> all) {
 }
 
 bool _isEaten(Visit visit) => visit.result == VisitResult.eaten;
+
+/// いちばん多く食べた店の地名（いつもの地域）。地名のわかる店が無ければnull。
+String? _homeArea(List<ScoredVisit> all) {
+  final counts = <String, int>{};
+  for (final entry in all) {
+    final area = entry.shop.area;
+    if (area == null || !_isEaten(entry.visit)) continue;
+    counts.update(area, (n) => n + 1, ifAbsent: () => 1);
+  }
+  if (counts.isEmpty) return null;
+  return counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
+}
 
 bool _isBefore(Visit a, Visit b) {
   final byEaten = a.eatenAt.compareTo(b.eatenAt);

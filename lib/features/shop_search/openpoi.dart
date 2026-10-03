@@ -86,3 +86,27 @@ Uri buildOpenPoiNameUri(String name, {GeoPoint? near}) =>
       // 既定の50kmより広く、国内のどこでも見つかるようにする。
       if (near != null) 'radius': '2000000',
     });
+
+/// 位置のまわりの施設を数件だけ取り、その場所の市区町村を知るための問い合わせ。
+Uri buildOpenPoiAreaUri(GeoPoint location) =>
+    Uri.https('api.openpoiapi.com', '/v1/search', {
+      'center': '${location.longitude},${location.latitude}',
+      'radius': '300',
+      'limit': '10',
+    });
+
+/// まわりの施設でいちばん多い市区町村。わからなければnull。
+String? parseOpenPoiArea(String body) {
+  final decoded = jsonDecode(body);
+  final results = decoded is Map<String, dynamic> ? decoded['results'] : null;
+  if (results is! List) return null;
+  final counts = <String, int>{};
+  for (final result in results) {
+    if (result is! Map<String, dynamic>) continue;
+    final city = result['city'];
+    if (city is! String || city.trim().isEmpty) continue;
+    counts.update(city.trim(), (n) => n + 1, ifAbsent: () => 1);
+  }
+  if (counts.isEmpty) return null;
+  return counts.entries.reduce((a, b) => b.value > a.value ? b : a).key;
+}

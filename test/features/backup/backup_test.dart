@@ -26,6 +26,7 @@ void main() {
         osmId: 'node/1',
         hoursConditions: {HoursCondition.fewDays, HoursCondition.lunchOnly},
         strategyMemo: '券売機は現金のみ',
+        area: '厚木市',
         dataSource: const ShopSource(
           licenses: ['CC BY 4.0'],
           attributions: ['東京都新宿区食品等営業許可・届出一覧'],
@@ -67,6 +68,7 @@ void main() {
         HoursCondition.fewDays,
       });
       expect(restoredShop.strategyMemo, '券売機は現金のみ');
+      expect(restoredShop.area, '厚木市');
       expect(restoredShop.dataSource!.licenses, ['CC BY 4.0']);
       expect(restoredShop.dataSource!.attributions, ['東京都新宿区食品等営業許可・届出一覧']);
       expect(restoredShop.createdAt, DateTime(2026, 9, 1));

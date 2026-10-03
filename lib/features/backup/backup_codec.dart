@@ -36,6 +36,7 @@ Map<String, Object?> encodeBackup(
             if (shop.hoursConditions.contains(condition)) condition.name,
         ],
         'strategyMemo': shop.strategyMemo,
+        'area': shop.area,
         if (shop.dataSource case final source?)
           'dataSource': {
             'licenses': source.licenses,
@@ -118,6 +119,7 @@ Shop _decodeShop(Object? json) {
     },
     strategyMemo: _stringOrNull(map['strategyMemo']) ?? '',
     dataSource: _decodeSource(map['dataSource']),
+    area: _stringOrNull(map['area']),
     createdAt: _dateTime(map['createdAt']),
   );
 }
