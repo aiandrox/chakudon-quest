@@ -10,6 +10,7 @@ import '../records/models.dart';
 import '../records/record_repository.dart';
 import 'checkin_rules.dart';
 import 'retreat_dialog.dart';
+import '../words/words.dart';
 
 /// 並んでいる店と経過時間。取り消しと撤退ができる。
 class CheckinBanner extends ConsumerStatefulWidget {
@@ -77,12 +78,18 @@ class _CheckinBannerState extends ConsumerState<CheckinBanner> {
     final memo = await showRetreatDialog(context);
     if (memo == null) return;
     try {
-      await repository.saveRetreat(
+      final visit = await repository.saveRetreat(
         checkin: widget.checkin,
         memo: memo,
         now: clock(),
       );
-      messenger.showSnackBar(SnackBar(content: Text(l10n.retreatSaved)));
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            '${l10n.retreatSaved}\n${retreatConsolation(memo, visit.id)}',
+          ),
+        ),
+      );
     } catch (e) {
       debugPrint('Retreat save failed: $e');
       messenger.showSnackBar(SnackBar(content: Text(l10n.retreatFailed)));

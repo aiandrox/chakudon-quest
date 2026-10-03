@@ -9,6 +9,7 @@ import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
 import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
+import '../words/words.dart';
 import 'memory.dart';
 
 /// 一覧の上に、何年か前の今日の1杯をそっと出す。×で閉じる（アプリを開き直すとまた出る）。
@@ -71,6 +72,12 @@ class _MemoryCardState extends ConsumerState<MemoryCard> {
                     Text(
                       l10n.memoryLine(shop.name),
                       style: textTheme.bodyLarge,
+                    ),
+                    Text(
+                      memoryWhisper(memory.scored.visit.id, memory.yearsAgo),
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontFamily: Washi.brush,
+                      ),
                     ),
                     if (memory.notVisitedSince)
                       Text(

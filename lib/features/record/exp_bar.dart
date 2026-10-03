@@ -6,6 +6,7 @@ import '../../theme/washi.dart';
 import '../inkan/inkan_stamp.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/ranks.dart';
+import '../words/words.dart';
 
 /// 着丼の直後に、修行点の帯を前の累計から今の累計まで伸ばす。
 /// 途中で段位が上がったら、段位の印をぴかっと光らせて新しい段位に替える。
@@ -155,6 +156,16 @@ class _ExpBarState extends State<ExpBar> with TickerProviderStateMixin {
                     color: colors.primary,
                     backgroundColor: Washi.line.withValues(alpha: 0.4),
                   ),
+                  if (_rankedUp) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      masterWords(_rank),
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontFamily: Washi.brush,
+                        color: Washi.inkSoft,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

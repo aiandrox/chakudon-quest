@@ -9,6 +9,7 @@ import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
 import 'package:chakudon_quest/features/scoring/points.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
+import 'package:chakudon_quest/features/words/words.dart';
 
 import '../../support/builders.dart';
 import '../../support/l10n.dart';
@@ -79,14 +80,11 @@ void main() {
   });
 
   testWidgets('一覧の上に一年前の今日の1杯を出し、×で閉じられる', (tester) async {
+    final entry = buildEntry(shop: a, eatenAt: DateTime(2025, 10, 3, 12));
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          visitsProvider.overrideWithValue(
-            AsyncData([
-              buildEntry(shop: a, eatenAt: DateTime(2025, 10, 3, 12)),
-            ]),
-          ),
+          visitsProvider.overrideWithValue(AsyncData([entry])),
           wishesProvider.overrideWithValue(const AsyncData([])),
           clockProvider.overrideWithValue(() => today),
         ],
@@ -98,6 +96,7 @@ void main() {
     expect(find.text(ja.memoryYearsAgo(1)), findsOneWidget);
     expect(find.text(ja.memoryLine('はやし田')), findsOneWidget);
     expect(find.text(ja.memoryNotSince), findsOneWidget);
+    expect(find.text(memoryWhisper(entry.visit.id, 1)), findsOneWidget);
     expect(find.text(ja.wishMakeButton), findsOneWidget);
 
     await tester.tap(find.byTooltip(ja.memoryDismiss));

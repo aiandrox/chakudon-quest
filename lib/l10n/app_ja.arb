@@ -125,7 +125,6 @@
       "weeks": {"type": "int"}
     }
   },
-  "streakReminderBody": "今週はまだ着丼していません。日曜が終わるまでに一杯いかがですか？",
   "checkinCancel": "取り消す",
   "checkinCancelTitle": "チェックインを取り消しますか？",
   "checkinCancelMessage": "並んだ記録は残りません",
@@ -138,7 +137,7 @@
   "retreatReasonNoTime": "時間切れ",
   "retreatMemoLabel": "メモ（任意）",
   "retreatConfirm": "撤退を記録",
-  "retreatSaved": "撤退を記録しました。次こそ着丼！",
+  "retreatSaved": "撤退を記録しました",
   "retreatFailed": "記録できませんでした。もう一度お試しください",
   "retreatBadge": "撤退",
   "waitTime": "待ち時間 {minutes}分",

@@ -11,6 +11,8 @@ import 'package:chakudon_quest/features/scoring/rank_history_screen.dart';
 import 'package:chakudon_quest/features/scoring/rank_progress.dart';
 import 'package:chakudon_quest/features/visit_detail/visit_detail_screen.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
+import 'package:chakudon_quest/features/scoring/ranks.dart';
+import 'package:chakudon_quest/features/words/words.dart';
 
 import '../../support/builders.dart';
 import '../../support/fakes.dart';
@@ -69,6 +71,8 @@ void main() {
     // 三段（200点）まで、あと 20 点。名前は見える。
     expect(seal(ja.rankDan('三')), findsOneWidget);
     expect(find.text(ja.rankHistoryRemaining(20)), findsOneWidget);
+    expect(find.text(masterWords(AdventurerRank.dan2)), findsOneWidget);
+    expect(find.text(masterWords(AdventurerRank.dan3)), findsNothing);
 
     // 四段より先は名前も点も出さない。
     expect(seal(ja.rankDan('四')), findsNothing);

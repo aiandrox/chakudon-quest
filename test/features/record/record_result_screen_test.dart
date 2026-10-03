@@ -7,7 +7,9 @@ import 'package:chakudon_quest/features/notifications/notification_service.dart'
 import 'package:chakudon_quest/features/record/record_result_screen.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
+import 'package:chakudon_quest/features/scoring/ranks.dart';
 import 'package:chakudon_quest/features/wishes/wish_repository.dart';
+import 'package:chakudon_quest/features/words/words.dart';
 import 'package:chakudon_quest/theme/washi.dart';
 
 import '../../support/builders.dart';
@@ -79,6 +81,7 @@ void main() {
     // 82点で入門から初段へ上がる（50点で初段）。
     expect(find.text(ja.rankUp), findsOneWidget);
     expect(find.text(ja.rankFirstDan), findsWidgets);
+    expect(find.text(masterWords(AdventurerRank.dan1)), findsOneWidget);
 
     // スポット「はじめての着丼」の達成と、常設の Lv.1 到達
     // （35分待ち・限定・1杯で60点以上のSランク）を知らせる。

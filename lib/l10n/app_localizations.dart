@@ -574,12 +574,6 @@ abstract class AppLocalizations {
   /// **'{weeks}週連続の記録が途切れそう'**
   String streakReminderTitle(int weeks);
 
-  /// No description provided for @streakReminderBody.
-  ///
-  /// In ja, this message translates to:
-  /// **'今週はまだ着丼していません。日曜が終わるまでに一杯いかがですか？'**
-  String get streakReminderBody;
-
   /// No description provided for @checkinCancel.
   ///
   /// In ja, this message translates to:
@@ -655,7 +649,7 @@ abstract class AppLocalizations {
   /// No description provided for @retreatSaved.
   ///
   /// In ja, this message translates to:
-  /// **'撤退を記録しました。次こそ着丼！'**
+  /// **'撤退を記録しました'**
   String get retreatSaved;
 
   /// No description provided for @retreatFailed.

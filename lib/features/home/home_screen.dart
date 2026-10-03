@@ -22,6 +22,7 @@ import '../memory/memory_card.dart';
 import 'rating_prompt.dart';
 import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
+import '../words/words.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -81,7 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       notifications.scheduleStreakReminder(
         at: remindAt,
         title: l10n.streakReminderTitle(streak.weeks),
-        body: l10n.streakReminderBody,
+        body: streakReminderBody(remindAt),
       );
     }, fireImmediately: true);
   }
