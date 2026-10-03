@@ -6,7 +6,6 @@ pages_build_output_dir = "public"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "chakudon-quest"
-# Cloudflare のアカウントを決めたら `wrangler d1 create chakudon-quest` の結果に置き換える。
-database_id = "00000000-0000-0000-0000-000000000000"
+database_name = "ramen-in-cho"
+database_id = "472bcba3-2644-41d8-b16a-1474a517654b"
 migrations_dir = "migrations"

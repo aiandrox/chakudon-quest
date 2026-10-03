@@ -67,3 +67,4 @@ app.*.map.json
 
 # Yahoo! の Client ID など、ビルドのときに渡す値（公開リポジトリなのでコミットしない）
 /env/
+/.wrangler/

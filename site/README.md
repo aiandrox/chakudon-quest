@@ -24,7 +24,7 @@ Cloudflare Pages の1つのプロジェクトに、紹介ページ（`public/`�
 ## はじめの設定（一度だけ）
 
 1. Cloudflare にログイン: `npx wrangler login`
-2. D1 を作る: `npx wrangler d1 create chakudon-quest` → 出てきた `database_id` を `wrangler.toml` に書く
+2. D1 を作る: `npx wrangler d1 create ramen-in-cho` → 出てきた `database_id` を `wrangler.toml` に書く
 3. Pages のプロジェクトを作る: `npx wrangler pages project create ramen-in-cho --production-branch main`
 4. 独自ドメイン: ダッシュボード → Workers & Pages → ramen-in-cho → Custom domains に `ramen-in-cho.aiandrox.com` を足し、aiandrox.com の DNS に案内どおりの CNAME を足す
 5. Yahoo! の Client ID をサーバーに入れる: `npx wrangler pages secret put YAHOO_APP_ID --project-name ramen-in-cho`
