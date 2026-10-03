@@ -14,6 +14,7 @@ import 'package:ramen_in_cho/features/records/clock.dart';
 import 'package:ramen_in_cho/features/records/models.dart';
 import 'package:ramen_in_cho/features/records/photo_storage.dart';
 import 'package:ramen_in_cho/features/records/record_repository.dart';
+import 'package:ramen_in_cho/features/settings/settings_screen.dart';
 import 'package:ramen_in_cho/features/shop_search/location_service.dart';
 import 'package:ramen_in_cho/features/wishes/wish_repository.dart';
 import 'package:ramen_in_cho/features/inkan/inkan_stamp.dart';
@@ -74,9 +75,15 @@ void main() {
     expect(find.text('着丼の道'), findsOneWidget);
     await tester.scrollUntilVisible(find.text(ja.statsEmpty), 300);
     expect(find.text(ja.statsEmpty), findsOneWidget);
-    await tester.scrollUntilVisible(find.text(ja.creditsTitle), 300);
-    expect(find.text(ja.backupTitle), findsOneWidget);
     expect(find.byType(MapScreen), findsNothing);
+
+    await tester.tap(find.byTooltip(ja.settingsSection));
+    await tester.pumpAndSettle();
+    expect(find.text(ja.backupTitle), findsOneWidget);
+    expect(find.text(ja.onboardingReplay), findsOneWidget);
+    expect(find.text(ja.creditsTitle), findsOneWidget);
+    Navigator.of(tester.element(find.byType(SettingsScreen))).pop();
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text(ja.navMap));
     await tester.pumpAndSettle();
