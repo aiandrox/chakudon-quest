@@ -199,4 +199,108 @@ void main() {
 
     expect(with_.where((l) => !l.contains('新宿区')), without);
   });
+
+  group('節目・間隔・特別な日', () {
+    test('通算10杯目と、3日連続を書く', () {
+      final lines = journalOf([
+        for (var d = 1; d <= 10; d++)
+          buildEntry(
+            shop: buildShop(id: 'shop$d'),
+            eatenAt: day(3, d),
+          ),
+      ]);
+
+      expect(lines, contains('通算10杯目の節目。'));
+      expect(lines, contains('10日連続の麺修行。'));
+    });
+
+    test('同じ日の2杯目と、年明け最初の一杯を書く', () {
+      final lines = journalOf([
+        buildEntry(
+          shop: buildShop(id: 'a'),
+          eatenAt: DateTime(2027, 1, 1, 11),
+        ),
+        buildEntry(
+          shop: buildShop(id: 'b'),
+          eatenAt: DateTime(2027, 1, 1, 19),
+        ),
+      ]);
+
+      expect(lines, contains('年明け最初の一杯。'));
+      expect(lines, contains('本日2杯目。'));
+    });
+
+    test('その店に1年以上あいたら「〇年ぶりの再会」、5度目は「常連の域」', () {
+      final again = journalOf([
+        buildEntry(shop: shop, eatenAt: DateTime(2024, 5, 1, 12)),
+        buildEntry(shop: shop, eatenAt: DateTime(2026, 5, 2, 12)),
+      ]);
+      expect(again, contains('2年ぶりの再会。'));
+
+      final regular = journalOf([
+        for (var w = 0; w < 5; w++)
+          buildEntry(shop: shop, eatenAt: DateTime(2026, 4, 1 + w * 7, 12)),
+      ]);
+      expect(regular, contains('常連の域に入った。'));
+    });
+  });
+
+  group('記録の更新', () {
+    test('自己最高の修行点と、この店で最長の待ちを書く（1つまで）', () {
+      final lines = journalOf([
+        buildEntry(shop: shop, eatenAt: day(9, 1), waitMinutes: 10),
+        buildEntry(
+          shop: shop,
+          eatenAt: day(9, 2),
+          waitMinutes: 40,
+          isLimited: true,
+        ),
+      ]);
+
+      expect(lines, contains('自己最高の修行点を更新。'));
+      expect(lines, isNot(contains('この店で最長の待ち。')));
+    });
+
+    test('この店で初めて60点以上なら、印が「極」になったと書く', () {
+      final rare = buildShop(
+        id: 'rare',
+        hoursConditions: {HoursCondition.weekdaysOnly, HoursCondition.fewDays},
+      );
+      final lines = journalOf([
+        buildEntry(
+          shop: buildShop(id: 'big'),
+          eatenAt: day(9, 1),
+          isLimited: true,
+          waitMinutes: 120,
+        ),
+        buildEntry(shop: rare, eatenAt: day(9, 2)),
+        buildEntry(shop: rare, eatenAt: day(9, 3), isLimited: true),
+      ]);
+
+      expect(lines, contains('この道場の印は「極」に。'));
+    });
+  });
+
+  test('短いメモは引用して書き残す', () {
+    final entry = buildEntry(shop: shop, eatenAt: day(9, 5), memo: '海苔多めが正解');
+    expect(journalOf([entry]), contains('――「海苔多めが正解」と書き残す。'));
+  });
+
+  test('系統ごとの一文は、添える1杯と添えない1杯がある', () {
+    final lines = {
+      for (var i = 0; i < 20; i++)
+        ...journalOf([
+          buildEntry(
+            shop: buildShop(id: 'iekei$i'),
+            eatenAt: day(10, 1 + i),
+            style: RamenStyle.iekei,
+          ),
+        ]),
+    };
+
+    expect(
+      lines.contains('海苔をスープに浸して。') || lines.contains('「お好みは？」に「硬め濃いめ多め」。'),
+      isTrue,
+    );
+  });
 }
