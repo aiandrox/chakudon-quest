@@ -129,7 +129,7 @@ class _ExpBarState extends State<ExpBar> with TickerProviderStateMixin {
                     child: RankSeal(
                       label: adventurerRankLabel(l10n, _rank),
                       fontSize: 18,
-                      color: colors.primary,
+                      color: Washi.shuLight,
                     ),
                   ),
                 ],
