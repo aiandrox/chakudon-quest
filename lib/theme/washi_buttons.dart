@@ -219,12 +219,9 @@ class _ShuPlatePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, const Radius.circular(2)),
-      Paint()..color = fill,
-    );
-    canvas.drawRect(
-      rect.deflate(4),
+    canvas.drawPath(_wobblyRect(rect.deflate(0.5)), Paint()..color = fill);
+    canvas.drawPath(
+      _wobblyRect(rect.deflate(4)),
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1
@@ -572,6 +569,49 @@ class SealFab extends StatelessWidget {
   }
 }
 
+/// 手で押した印のように、縁をごくわずかに揺らした丸。
+Path _wobblyCircle(Offset center, double radius) {
+  final path = Path();
+  const steps = 72;
+  for (var i = 0; i <= steps; i++) {
+    final a = 2 * math.pi * i / steps;
+    // 規則的な波にならないよう、周期の違う小さな揺れを重ねる。
+    final r =
+        radius -
+        0.5 +
+        math.sin(a * 3 + 0.7) * 0.35 +
+        math.sin(a * 7 + 2.1) * 0.2 +
+        math.sin(a * 11 + 4.0) * 0.12;
+    final p = center + Offset(math.cos(a), math.sin(a)) * r;
+    i == 0 ? path.moveTo(p.dx, p.dy) : path.lineTo(p.dx, p.dy);
+  }
+  return path..close();
+}
+
+/// 手で押した札のように、4辺をごくわずかに揺らした四角。
+Path _wobblyRect(Rect rect) {
+  final path = Path();
+  const steps = 24;
+  void edge(Offset from, Offset to, double phase) {
+    final normal =
+        Offset(-(to - from).dy, (to - from).dx) / (to - from).distance;
+    for (var i = 1; i <= steps; i++) {
+      final t = i / steps;
+      final sway =
+          math.sin(t * math.pi * 3 + phase) * 0.5 * math.sin(t * math.pi);
+      final p = Offset.lerp(from, to, t)! + normal * sway;
+      path.lineTo(p.dx, p.dy);
+    }
+  }
+
+  path.moveTo(rect.left, rect.top);
+  edge(rect.topLeft, rect.topRight, 0.3);
+  edge(rect.topRight, rect.bottomRight, 1.7);
+  edge(rect.bottomRight, rect.bottomLeft, 2.9);
+  edge(rect.bottomLeft, rect.topLeft, 4.1);
+  return path..close();
+}
+
 class _SealDiscPainter extends CustomPainter {
   const _SealDiscPainter({required this.sumi, this.brush = false});
 
@@ -586,9 +626,8 @@ class _SealDiscPainter extends CustomPainter {
       _paintBrushed(canvas, center, radius);
       return;
     }
-    canvas.drawCircle(
-      center,
-      radius,
+    canvas.drawPath(
+      _wobblyCircle(center, radius),
       Paint()..color = sumi ? Washi.page : Washi.shu,
     );
     canvas.drawCircle(
@@ -603,26 +642,19 @@ class _SealDiscPainter extends CustomPainter {
     );
   }
 
-  /// 朱の丸をわずかに揺らぎのある縁で塗り、内側に筆の円相を和紙色で引く。
+  /// いちばん目立たせたい「＋」。朱の丸を、外側から墨の筆でひと息に描いた輪（円相）で囲む。
+  /// 左上で筆を置いて太く入り、時計回りに細く抜け、始まりの少し手前で終わる。
   void _paintBrushed(Canvas canvas, Offset center, double radius) {
     Offset at(double angle, double r) =>
         center + Offset(math.cos(angle), math.sin(angle)) * r;
 
-    final disc = Path();
-    const edgeSteps = 72;
-    for (var i = 0; i <= edgeSteps; i++) {
-      final a = 2 * math.pi * i / edgeSteps;
-      // 手で押した印のように、縁をごくわずかに揺らす。
-      final r =
-          radius - 0.6 + math.sin(a * 5 + 0.7) * 0.5 + math.sin(a * 3) * 0.3;
-      final p = at(a, r);
-      i == 0 ? disc.moveTo(p.dx, p.dy) : disc.lineTo(p.dx, p.dy);
-    }
-    canvas.drawPath(disc..close(), Paint()..color = Washi.shu);
+    canvas.drawPath(
+      _wobblyCircle(center, radius * 0.84),
+      Paint()..color = Washi.shu,
+    );
 
-    // 左上から時計回りに描き始め、太く入って細く抜け、始まりの少し手前で終わる。
-    final ringRadius = radius * 0.8;
-    final maxWidth = radius * 0.19;
+    final ringRadius = radius * 0.88;
+    final maxWidth = radius * 0.22;
     const start = -math.pi * 0.62;
     const sweep = math.pi * 1.88;
     const steps = 90;
@@ -631,10 +663,9 @@ class _SealDiscPainter extends CustomPainter {
     for (var i = 0; i <= steps; i++) {
       final t = i / steps;
       final a = start + sweep * t;
-      // 入りは筆を置いた太さ、終わりにかけて細くかすれる。
       final width =
           maxWidth *
-          (t < 0.08 ? 0.7 + t / 0.08 * 0.3 : 1 - 0.75 * ((t - 0.08) / 0.92));
+          (t < 0.08 ? 0.7 + t / 0.08 * 0.3 : 1 - 0.7 * ((t - 0.08) / 0.92));
       final r = ringRadius + math.sin(t * math.pi * 2) * radius * 0.015;
       outer.add(at(a, r + width / 2));
       inner.add(at(a, r - width / 2));
@@ -648,7 +679,7 @@ class _SealDiscPainter extends CustomPainter {
     }
     canvas.drawPath(
       ring..close(),
-      Paint()..color = Washi.page.withValues(alpha: 0.92),
+      Paint()..color = Washi.ink.withValues(alpha: 0.95),
     );
   }
 
