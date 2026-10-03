@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "452252955491",
+    "project_id": "ramen-in-cho",
+    "storage_bucket": "ramen-in-cho.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452252955491:android:efc55421954858aba91956",
+        "android_client_info": {
+          "package_name": "com.aiandrox.ramen_in_cho"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBea22p0di9beWbYIBmUA3xt3WQmhbeXYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

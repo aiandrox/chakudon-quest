@@ -70,6 +70,23 @@ void main() {
     expect(shops.last.dataSource!.licenses, ['CC BY 4.0']);
   });
 
+  test('App Check のトークンが取れれば添え、取れなければ添えずに問い合わせる', () async {
+    final sent = <String?>[];
+    final client = MockClient((request) async {
+      sent.add(request.headers['X-Firebase-AppCheck']);
+      return _json({'shops': <Object>[]});
+    });
+    for (final token in ['token', null]) {
+      await RamenInChoApi(
+        client,
+        base: _base,
+        appCheckToken: () async => token,
+      ).searchByName('麺屋武蔵');
+    }
+    await RamenInChoApi(client, base: _base).searchByName('麺屋武蔵');
+    expect(sent, ['token', null, null]);
+  });
+
   test('手で持つ店の一覧から、閉店した店を外す', () {
     final shops = parseCuratedShops(
       jsonEncode({
