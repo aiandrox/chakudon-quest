@@ -7,6 +7,7 @@ import '../../theme/washi_buttons.dart';
 import '../backup/backup_screen.dart';
 import '../checkin/checkin_screen.dart';
 import '../home/app_tab.dart';
+import '../../theme/ink_wear.dart';
 import '../inkan/inkan_stamp.dart';
 import '../map/map_screen.dart';
 import '../record/record_screen.dart';
@@ -156,8 +157,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
     final page = switch (_step) {
       OnboardingStep.welcome => _OnboardingPage(
+        chapter: l10n.onboardingWelcomeChapter,
         title: l10n.onboardingWelcomeTitle,
         body: l10n.onboardingWelcomeBody,
+        hero: _StepSeal(glyph: l10n.onboardingWelcomeSeal),
         actions: [
           AiFuda(
             expand: true,
@@ -177,8 +180,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ],
       ),
       OnboardingStep.record => _OnboardingPage(
+        chapter: l10n.onboardingRecordChapter,
         title: l10n.onboardingRecordTitle,
         body: l10n.onboardingRecordBody,
+        hero: _StepSeal(glyph: l10n.onboardingRecordSeal),
         actions: [
           AiFuda(
             expand: true,
@@ -189,11 +194,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ],
       ),
       OnboardingStep.share => _OnboardingPage(
+        chapter: l10n.onboardingShareChapter,
         title: l10n.onboardingShareTitle,
         body: l10n.onboardingShareBody,
-        visual: switch (ref.watch(scoredVisitByIdProvider)[_visitId]) {
-          final scored? => InkanStamp(scored: scored, size: 140),
-          null => null,
+        hero: switch (ref.watch(scoredVisitByIdProvider)[_visitId]) {
+          final scored? => InkanStamp(scored: scored, size: 132),
+          null => _StepSeal(glyph: l10n.onboardingShareSeal),
         },
         actions: [
           AiFuda(
@@ -210,8 +216,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ],
       ),
       OnboardingStep.wish => _OnboardingPage(
+        chapter: l10n.onboardingWishChapter,
         title: l10n.onboardingWishTitle,
         body: l10n.onboardingWishBody,
+        hero: _StepSeal(glyph: l10n.onboardingWishSeal),
         note: _noWishYet ? l10n.onboardingWishNotYet : null,
         actions: [
           AiFuda(
@@ -228,8 +236,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ],
       ),
       OnboardingStep.finish => _OnboardingPage(
+        chapter: l10n.onboardingFinishChapter,
         title: l10n.onboardingFinishTitle,
         body: l10n.onboardingFinishBody,
+        hero: _StepSeal(glyph: l10n.onboardingFinishSeal, filled: true),
         actions: [
           AiFuda(
             expand: true,
@@ -244,17 +254,114 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ),
     };
     return Scaffold(
+      backgroundColor: Washi.paper,
       appBar: AppBar(
+        backgroundColor: Washi.paper,
         leading: IconButton(
           tooltip: l10n.onboardingClose,
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        centerTitle: true,
+        title: Text(
+          l10n.onboardingScroll,
+          style: const TextStyle(
+            fontFamily: Washi.brush,
+            fontSize: 18,
+            color: Washi.inkSoft,
+            letterSpacing: 4,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: _StepMarks(current: _step.index),
+          ),
+        ],
       ),
       body: SafeArea(
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 250),
+          duration: const Duration(milliseconds: 300),
           child: KeyedSubtree(key: ValueKey(_step), child: page),
+        ),
+      ),
+    );
+  }
+}
+
+/// 心得の進み具合。済んだ段は朱の小さな角印、いまの段は朱の枠、先の段は薄墨の枠。
+class _StepMarks extends StatelessWidget {
+  const _StepMarks({required this.current});
+
+  final int current;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < OnboardingStep.values.length; i++)
+          Container(
+            width: 9,
+            height: 9,
+            margin: const EdgeInsets.only(left: 5),
+            decoration: BoxDecoration(
+              color: i < current ? Washi.shu : null,
+              border: Border.all(
+                color: i <= current ? Washi.shu : Washi.line,
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(1.5),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// 心得の段ごとの印。朱の枠に筆文字1字。最後の段だけ朱塗り。
+class _StepSeal extends StatelessWidget {
+  const _StepSeal({required this.glyph, this.filled = false});
+
+  final String glyph;
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: -0.07,
+      child: InkWear(
+        seed: inkSeed('onboarding-$glyph'),
+        child: Container(
+          width: 112,
+          height: 112,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: filled ? Washi.shu : null,
+            border: Border.all(color: Washi.shu, width: 4),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Container(
+            width: 96,
+            height: 96,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: filled ? Washi.page : Washi.shu,
+                width: 1.2,
+              ),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              glyph,
+              style: TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 64,
+                height: 1.1,
+                color: filled ? Washi.page : Washi.shu,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -263,17 +370,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
 class _OnboardingPage extends StatelessWidget {
   const _OnboardingPage({
+    required this.chapter,
     required this.title,
     required this.body,
+    required this.hero,
     required this.actions,
-    this.visual,
     this.note,
   });
 
+  final String chapter;
   final String title;
   final String body;
+  final Widget hero;
   final List<Widget> actions;
-  final Widget? visual;
   final String? note;
 
   @override
@@ -281,28 +390,45 @@ class _OnboardingPage extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+        padding: const EdgeInsets.fromLTRB(28, 8, 28, 24),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
           child: IntrinsicHeight(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                const SizedBox(height: 8),
+                Center(child: hero),
+                const SizedBox(height: 28),
+                Text(
+                  chapter,
+                  style: const TextStyle(
+                    fontFamily: Washi.brush,
+                    fontSize: 16,
+                    color: Washi.shu,
+                    letterSpacing: 3,
+                  ),
+                ),
+                const SizedBox(height: 6),
                 Text(
                   title,
                   style: const TextStyle(
                     fontFamily: Washi.brush,
-                    fontSize: 30,
+                    fontSize: 32,
                     height: 1.3,
                     color: Washi.ink,
                   ),
                 ),
-                const SizedBox(height: 20),
-                Text(body, style: textTheme.bodyLarge?.copyWith(height: 1.7)),
-                if (visual case final visual?) ...[
-                  const SizedBox(height: 28),
-                  Center(child: visual),
-                ],
+                const SizedBox(height: 12),
+                const _BrushRule(),
+                const SizedBox(height: 18),
+                Text(
+                  body,
+                  style: textTheme.bodyLarge?.copyWith(
+                    height: 1.9,
+                    color: Washi.ink,
+                  ),
+                ),
                 if (note case final note?) ...[
                   const SizedBox(height: 16),
                   Text(
@@ -311,7 +437,7 @@ class _OnboardingPage extends StatelessWidget {
                   ),
                 ],
                 const Spacer(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
                 for (final (i, action) in actions.indexed) ...[
                   if (i > 0) const SizedBox(height: 12),
                   action,
@@ -323,4 +449,32 @@ class _OnboardingPage extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 題の下に引く、朱の短い筆の線（入りが太く、抜けが細い）。
+class _BrushRule extends StatelessWidget {
+  const _BrushRule();
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: CustomPaint(size: const Size(64, 6), painter: _BrushRulePainter()),
+    );
+  }
+}
+
+class _BrushRulePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(0, size.height * 0.2)
+      ..quadraticBezierTo(size.width * 0.5, 0, size.width, size.height * 0.45)
+      ..quadraticBezierTo(size.width * 0.5, size.height * 0.7, 0, size.height)
+      ..close();
+    canvas.drawPath(path, Paint()..color = Washi.shu);
+  }
+
+  @override
+  bool shouldRepaint(_BrushRulePainter oldDelegate) => false;
 }

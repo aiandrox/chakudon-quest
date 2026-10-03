@@ -1307,76 +1307,109 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingClose => '案内を閉じる';
 
   @override
-  String get onboardingLater => 'あとで';
+  String get onboardingLater => 'また今度';
 
   @override
-  String get onboardingNext => '次へ';
+  String get onboardingNext => '先へ進む';
 
   @override
-  String get onboardingWelcomeTitle => 'ようこそ、麺印帳へ';
+  String get onboardingWelcomeTitle => 'よくぞ参られた';
 
   @override
   String get onboardingWelcomeBody =>
-      '食べたラーメンを1杯ずつ記録して、印を集めていく修行の帳面です。行列に並ぶほど、遠くへ行くほど、修行点が貯まります。\n\nまずは、どこから始めますか？';
+      'ここは麺の道を歩む者の道場、麺印帳。\n食べた一杯ごとに印を授け、並んだ時間も、遠き店への旅路も、すべて修行点として刻んでゆく。\n\nまずは、そなたの「いま」を聞かせよ。';
 
   @override
-  String get onboardingWelcomeRecord => '写真から記録してみる';
+  String get onboardingWelcomeRecord => '写真から一杯を刻む';
 
   @override
-  String get onboardingWelcomeQueue => 'いまラーメン屋に並んでいる';
+  String get onboardingWelcomeQueue => 'いま行列に並んでおる';
 
   @override
-  String get onboardingWelcomeBackup => '前の記録（バックアップ）を読み込む';
+  String get onboardingWelcomeBackup => '前の帳面を引き継ぐ（バックアップ）';
 
   @override
-  String get onboardingRecordTitle => '最初の一杯を記録しよう';
+  String get onboardingRecordTitle => '最初の一杯を刻め';
 
   @override
   String get onboardingRecordBody =>
-      '撮りためたラーメンの写真を1枚選ぶだけで記録できます。写真の撮影日時と場所から、お店の候補も出します。\n\n次の画面で「ギャラリーから選ぶ」を押し、お店を選んで「着丼！」を押してください。';
+      '撮りためた一杯の写真があれば、それで足りる。撮った日と場所から、店の候補はこちらで探し出そう。\n\n次の間で「ギャラリーから選ぶ」を押し、店を選んで「着丼！」と唱えるのじゃ。';
 
   @override
-  String get onboardingRecordButton => '写真を選んで記録する';
+  String get onboardingRecordButton => '写真を選んで刻む';
 
   @override
-  String get onboardingShareTitle => '一杯目の印が押されました';
+  String get onboardingShareTitle => '見事。一杯目の印じゃ';
 
   @override
   String get onboardingShareBody =>
-      '記録した一杯は、こんな印になって印帳に並びます。\n\n写真・印・店名を1枚の画像にして、家族や友だちに送ることもできます。';
+      '刻んだ一杯は、こうして印となり帳面に並ぶ。長く並ぶほど、攻め難い店ほど、印は立派になってゆく。\n\n写真と印と店の名を一枚の絵にして、同じ道を行く者に見せることもできる。';
 
   @override
-  String get onboardingShareButton => '画像にして共有する';
+  String get onboardingShareButton => '絵にして分かち合う';
 
   @override
-  String get onboardingWishTitle => '気になる店に願を掛けよう';
+  String get onboardingWishTitle => '次なる一杯に願を掛けよ';
 
   @override
   String get onboardingWishBody =>
-      '行ってみたい店を「願掛け帳」に書き留めておくと、食べに行ったときに願が叶います。\n\n地図の右下の「探す」を押すと、近くのまだ行っていない店が灰色の印で出ます。気になる店をタップして「願を掛ける」を押してください。';
+      '行きたい店を願掛け帳に記しておけば、食べに行った日に願が成就する。\n\n地図の右下「探す」を押せば、近くのまだ見ぬ店が灰色の印で現れる。気になる店に触れ、「願を掛ける」のじゃ。';
 
   @override
-  String get onboardingWishNotYet => 'まだ願は掛かっていません。店の名前からでも掛けられます。';
+  String get onboardingWishNotYet => 'まだ願は掛かっておらぬ。店の名からでも掛けられるぞ。';
 
   @override
   String get onboardingWishMap => '地図で近くの店を探す';
 
   @override
-  String get onboardingWishByName => '店の名前で願を掛ける';
+  String get onboardingWishByName => '店の名で願を掛ける';
 
   @override
-  String get onboardingFinishTitle => 'どんどん食べに行こう！';
+  String get onboardingFinishTitle => 'あとは、精進あるのみ';
 
   @override
   String get onboardingFinishBody =>
-      '「修行」では、段位や型と秘伝、修行録や一年の振り返りで、これまでの一杯を振り返れます。\n\n一杯ごとに印が増え、段位が上がっていきます。';
+      '「修行」の間では、段位、型と秘伝、修行録、一年の振り返りを見ることができる。\n\n一杯ごとに印は増え、段位は上がる。\nいざ、麺の道へ。';
 
   @override
-  String get onboardingFinishShugyo => '修行をのぞいてみる';
+  String get onboardingFinishShugyo => '修行の間をのぞく';
 
   @override
-  String get onboardingFinishRecords => '印帳へ';
+  String get onboardingFinishRecords => '印帳を開く';
 
   @override
   String get onboardingReplay => '使い方をもう一度見る';
+
+  @override
+  String get onboardingScroll => '入門の心得';
+
+  @override
+  String get onboardingWelcomeChapter => '其の一　入門';
+
+  @override
+  String get onboardingWelcomeSeal => '入';
+
+  @override
+  String get onboardingRecordChapter => '其の二　初陣';
+
+  @override
+  String get onboardingRecordSeal => '刻';
+
+  @override
+  String get onboardingShareChapter => '其の三　授印';
+
+  @override
+  String get onboardingShareSeal => '印';
+
+  @override
+  String get onboardingWishChapter => '其の四　願掛';
+
+  @override
+  String get onboardingWishSeal => '願';
+
+  @override
+  String get onboardingFinishChapter => '其の五　精進';
+
+  @override
+  String get onboardingFinishSeal => '進';
 }
