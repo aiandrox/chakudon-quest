@@ -552,5 +552,6 @@
   "navGlyphRecords": "印",
   "navGlyphWishes": "願",
   "navGlyphShugyo": "修",
-  "navGlyphMap": "地"
+  "navGlyphMap": "地",
+  "mapVisitedChar": "着"
 }

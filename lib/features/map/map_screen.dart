@@ -8,7 +8,6 @@ import 'package:latlong2/latlong.dart';
 import '../../l10n/app_localizations.dart';
 import '../records/date_format.dart';
 import '../scoring/rank_labels.dart';
-import '../scoring/ranks.dart';
 import '../scoring/scoring_providers.dart';
 import '../shop_search/geo.dart';
 import '../shop_search/location_service.dart';
@@ -349,8 +348,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           shop.location.latitude,
                           shop.location.longitude,
                         ),
-                        width: 40,
-                        height: 40,
+                        width: 44,
+                        height: 44,
                         alignment: Alignment.topCenter,
                         child: _UnvisitedPin(shop: shop, here: here),
                       ),
@@ -523,7 +522,6 @@ class _UnvisitedPin extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
     final here = this.here;
     return GestureDetector(
       onTap: () => showModalBottomSheet<void>(
@@ -573,11 +571,7 @@ class _UnvisitedPin extends ConsumerWidget {
       child: Semantics(
         button: true,
         label: shop.name,
-        child: Icon(
-          Icons.location_on_outlined,
-          size: 40,
-          color: colors.outline,
-        ),
+        child: const _SealPin(color: Washi.faded, filled: false),
       ),
     );
   }
@@ -591,7 +585,6 @@ class _Pin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
     final rank = pin.rank;
     return GestureDetector(
       onTap: () => showModalBottomSheet<void>(
@@ -603,10 +596,11 @@ class _Pin extends StatelessWidget {
         button: true,
         label: pin.shop.name,
         // 丸い印の頭に格の字を入れ、細い足の先を店の場所にする（字が場所に重ならないように）。
+        // 行った店は朱で塗った印。難しさはタップした先で見る（ぱっと見は種類だけ分かればよい）。
         child: _SealPin(
-          color: rank == null ? colors.outline : Washi.shu,
-          filled: rank == ShopRank.s,
-          label: rank == null ? null : shopRankLabel(l10n, rank),
+          color: rank == null ? Washi.faded : Washi.shu,
+          filled: true,
+          label: l10n.mapVisitedChar,
         ),
       ),
     );

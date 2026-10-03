@@ -255,7 +255,7 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
-/// 画面の右下の「＋」ボタン。どの画面でも同じ形（朱の大きな丸）にする。
+/// 画面の右下の「＋」ボタン。どの画面でも同じ形（朱の丸）にする。
 class AddButton extends StatelessWidget {
   const AddButton({
     super.key,
@@ -270,7 +270,7 @@ class AddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.large(
+    return FloatingActionButton(
       heroTag: heroTag,
       shape: const CircleBorder(),
       tooltip: tooltip,
