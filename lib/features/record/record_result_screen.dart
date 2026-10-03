@@ -20,7 +20,6 @@ import '../wishes/wishes.dart';
 import '../inkan/inkan_stamp.dart';
 import '../records/visit_photo.dart';
 import '../scoring/points.dart';
-import '../../theme/kami_fubuki.dart';
 import '../../theme/washi.dart';
 
 /// 保存した記録で得たポイントの内訳と、累計・ランクの変化を見せる。
@@ -89,13 +88,7 @@ class _RecordResultScreenState extends ConsumerState<RecordResultScreen> {
           title: Text(l10n.resultTitle),
         ),
         body: switch (outcome) {
-          final outcome? => Stack(
-            children: [
-              _ResultBody(outcome: outcome),
-              if (outcome.isMilestone)
-                const Positioned.fill(child: KamiFubuki()),
-            ],
-          ),
+          final outcome? => _ResultBody(outcome: outcome),
           null when visitsState.hasError => Center(
             child: Text(l10n.homeLoadFailed),
           ),
@@ -199,21 +192,39 @@ class _StampedPage extends StatefulWidget {
   State<_StampedPage> createState() => _StampedPageState();
 }
 
-class _StampedPageState extends State<_StampedPage> {
-  static const _delay = Duration(milliseconds: 350);
-  static const _press = Duration(milliseconds: 380);
+/// 印を「ポンッ」と押す。上から落ちてきて紙に当たった瞬間に少しつぶれて戻り、
+/// 朱肉がにじむように輪が広がる。当たった瞬間に強めに震わせる。
+class _StampedPageState extends State<_StampedPage>
+    with SingleTickerProviderStateMixin {
+  // 0〜0.2: 待つ／0.2〜0.45: 落ちる／0.45: 当たる／0.45〜0.75: つぶれて戻る・輪が広がる
+  static const _impact = 0.45;
 
-  bool _pressed = false;
+  late final _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1300),
+  );
+  bool _hit = false;
 
   @override
   void initState() {
     super.initState();
-    Future<void>.delayed(_delay, () {
-      if (!mounted) return;
-      setState(() => _pressed = true);
-      Future<void>.delayed(_press, HapticFeedback.mediumImpact);
-    });
+    _controller
+      ..addListener(() {
+        if (_hit || _controller.value < _impact) return;
+        _hit = true;
+        HapticFeedback.heavyImpact();
+      })
+      ..forward();
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  static double _phase(double t, double from, double to) =>
+      ((t - from) / (to - from)).clamp(0.0, 1.0);
 
   @override
   Widget build(BuildContext context) {
@@ -252,15 +263,45 @@ class _StampedPageState extends State<_StampedPage> {
                 ),
                 Transform.translate(
                   offset: const Offset(0, -20),
-                  child: AnimatedScale(
-                    scale: _pressed ? 1 : 1.8,
-                    duration: _press,
-                    curve: Curves.easeInCubic,
-                    child: AnimatedOpacity(
-                      opacity: _pressed ? 1 : 0,
-                      duration: _press,
-                      child: InkanStamp(scored: scored, size: 136),
-                    ),
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    child: InkanStamp(scored: scored, size: 136),
+                    builder: (context, stamp) {
+                      final t = _controller.value;
+                      final drop = Curves.easeInCubic.transform(
+                        _phase(t, 0.2, _impact),
+                      );
+                      final squash = _phase(t, _impact, 0.75);
+                      // 当たった直後に0.9までつぶれ、少し跳ねて1に戻る。
+                      final settle = squash == 0
+                          ? 1.0
+                          : 1 - 0.1 * math.sin(squash * math.pi) * (1 - squash);
+                      final scale = t < _impact ? 1.9 - 0.9 * drop : settle;
+                      final ring = _phase(t, _impact, 0.9);
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          if (ring > 0 && ring < 1)
+                            Container(
+                              width: 136 * (1 + 0.5 * ring),
+                              height: 136 * (1 + 0.5 * ring),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Washi.shuLight.withValues(
+                                    alpha: 0.6 * (1 - ring),
+                                  ),
+                                  width: 3,
+                                ),
+                              ),
+                            ),
+                          Opacity(
+                            opacity: t < 0.2 ? 0 : (0.3 + 0.7 * drop),
+                            child: Transform.scale(scale: scale, child: stamp),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ],
