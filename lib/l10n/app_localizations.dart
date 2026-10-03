@@ -1261,8 +1261,32 @@ abstract class AppLocalizations {
   /// No description provided for @journeyExpeditionsNone.
   ///
   /// In ja, this message translates to:
-  /// **'同じあたり（2km以内）で5杯食べると拠点ができます。拠点から20km以上離れた店で食べた日が、遠征として並びます'**
+  /// **'拠点から20km以上離れた店で食べた日が、遠征として並びます'**
   String get journeyExpeditionsNone;
+
+  /// No description provided for @homeBaseLine.
+  ///
+  /// In ja, this message translates to:
+  /// **'今の拠点: {shop}のあたり（{bowls}杯）'**
+  String homeBaseLine(String shop, int bowls);
+
+  /// No description provided for @homeBaseNone.
+  ///
+  /// In ja, this message translates to:
+  /// **'同じあたりで{bowls}杯食べると拠点ができます'**
+  String homeBaseNone(int bowls);
+
+  /// No description provided for @homeBaseSealChar.
+  ///
+  /// In ja, this message translates to:
+  /// **'拠'**
+  String get homeBaseSealChar;
+
+  /// No description provided for @homeBasePinLabel.
+  ///
+  /// In ja, this message translates to:
+  /// **'今の拠点（{shop}のあたり）'**
+  String homeBasePinLabel(String shop);
 
   /// No description provided for @journeyExpeditionName.
   ///

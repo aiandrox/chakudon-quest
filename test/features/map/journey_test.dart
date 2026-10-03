@@ -94,6 +94,74 @@ void main() {
     });
   });
 
+  group('今の拠点', () {
+    test('いちばん新しい記録から12か月の間に、2km以内で5杯食べたあたり', () {
+      final four = [
+        for (var d = 1; d <= 3; d++) buildEntry(shop: home, eatenAt: day(1, d)),
+        buildEntry(shop: near, eatenAt: day(1, 4)),
+        buildEntry(shop: far, eatenAt: day(1, 5)),
+      ];
+      expect(currentHomeBase(scored(four)), isNull);
+
+      final base = currentHomeBase(
+        scored([...four, buildEntry(shop: near, eatenAt: day(1, 6))]),
+      );
+      expect(base!.bowls, 5);
+      expect(base.shop.id, 'home');
+    });
+
+    test('引っ越して新しいあたりで5杯食べると、そちらが今の拠点になる', () {
+      final entries = [
+        for (var d = 1; d <= 10; d++)
+          buildEntry(shop: home, eatenAt: DateTime(2024, 1, d, 12)),
+        for (var d = 1; d <= 5; d++) buildEntry(shop: far, eatenAt: day(3, d)),
+      ];
+
+      expect(currentHomeBase(scored(entries))!.shop.id, 'far');
+      expect(homeBase(scored(entries))!.shop.id, 'home');
+    });
+
+    test('12か月より前の記録は数えない', () {
+      final base = currentHomeBase(
+        scored([
+          buildEntry(shop: far, eatenAt: DateTime(2025, 3, 1, 11)),
+          for (var d = 1; d <= 4; d++)
+            buildEntry(shop: far, eatenAt: day(1, d)),
+          for (var d = 1; d <= 5; d++)
+            buildEntry(shop: home, eatenAt: DateTime(2024, 1, d, 12)),
+          buildEntry(shop: home, eatenAt: day(3, 1)),
+        ]),
+      );
+      expect(base!.shop.id, 'home');
+
+      final within = currentHomeBase(
+        scored([
+          buildEntry(shop: far, eatenAt: DateTime(2025, 3, 1, 12)),
+          for (var d = 1; d <= 4; d++)
+            buildEntry(shop: far, eatenAt: day(1, d)),
+          buildEntry(shop: home, eatenAt: day(3, 1)),
+        ]),
+      );
+      expect(within!.shop.id, 'far');
+    });
+
+    test('12か月の間で拠点ができなければ、全期間で決める', () {
+      final base = currentHomeBase(
+        scored([
+          for (var d = 1; d <= 5; d++)
+            buildEntry(shop: home, eatenAt: DateTime(2024, 1, d, 12)),
+          for (var d = 1; d <= 3; d++)
+            buildEntry(shop: far, eatenAt: day(3, d)),
+        ]),
+      );
+      expect(base!.shop.id, 'home');
+    });
+
+    test('記録が無ければ拠点も無い', () {
+      expect(currentHomeBase(const []), isNull);
+    });
+  });
+
   test('拠点から20km以上離れた店で食べた日を、遠征としてまとめる', () {
     final list = expeditions(
       scored([
@@ -153,6 +221,36 @@ void main() {
       DateTime(2026, 1, 2),
       DateTime(2026, 1, 1),
     ]);
+  });
+
+  test('遠征はその日の時点の拠点で決め、引っ越しても前の遠征は変わらない', () {
+    final list = expeditions(
+      scored([
+        for (var d = 1; d <= 5; d++)
+          buildEntry(shop: home, eatenAt: DateTime(2024, 1, d, 12)),
+        buildEntry(shop: far, eatenAt: DateTime(2024, 2, 1, 12)),
+        for (var h = 10; h <= 14; h++)
+          buildEntry(shop: far, eatenAt: DateTime(2026, 3, 1, h)),
+        buildEntry(shop: home, eatenAt: day(6, 1)),
+      ]),
+    );
+
+    expect(list.map((e) => (e.day, e.stops.single.shop.id)), [
+      (DateTime(2026, 6, 1), 'home'),
+      (DateTime(2024, 2, 1), 'far'),
+    ]);
+  });
+
+  test('拠点ができる前の日の遠い店は、遠征にしない', () {
+    final list = expeditions(
+      scored([
+        buildEntry(shop: far, eatenAt: day(1, 1)),
+        for (var d = 2; d <= 6; d++) buildEntry(shop: home, eatenAt: day(1, d)),
+        buildEntry(shop: far, eatenAt: day(2, 1)),
+      ]),
+    );
+
+    expect(list.single.day, DateTime(2026, 2, 1));
   });
 
   test('記録が無ければ遠征も無い', () {

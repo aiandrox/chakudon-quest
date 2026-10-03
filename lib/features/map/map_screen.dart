@@ -19,6 +19,7 @@ import '../records/record_repository.dart';
 import '../wishes/wish_dialog.dart';
 import '../wishes/wish_providers.dart';
 import '../wishes/wishes.dart';
+import 'home_base_line.dart';
 import 'journey.dart';
 import '../shop_search/yahoo_local.dart';
 import 'shop_pins.dart';
@@ -202,6 +203,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               l10n.journeyExpeditionsTitle,
               style: Theme.of(context).textTheme.titleLarge,
             ),
+            const HomeBaseLine(),
             if (list.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -269,6 +271,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             for (final pin in allPins)
               if (shownStops.any((stop) => stop.shop.id == pin.shop.id)) pin,
           ];
+    final base = currentHomeBase(scored);
     final tilesEnabled = ref.watch(mapTilesEnabledProvider);
     final here = _here;
 
@@ -361,6 +364,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       height: 44,
                       alignment: Alignment.topCenter,
                       child: _WishPin(wish: wish),
+                    ),
+                  if (base != null && _replayCount == null)
+                    Marker(
+                      point: LatLng(
+                        base.location.latitude,
+                        base.location.longitude,
+                      ),
+                      width: 44,
+                      height: 44,
+                      child: _HomeBasePin(base: base),
                     ),
                   for (final pin in pins)
                     Marker(
@@ -643,6 +656,45 @@ class _PinDetails extends StatelessWidget {
               style: textTheme.bodyMedium,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 今の拠点の中心。中心の店のピンを隠さないよう、足元の右下に小さな墨の輪で出す。
+class _HomeBasePin extends StatelessWidget {
+  const _HomeBasePin({required this.base});
+
+  final HomeBase base;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return IgnorePointer(
+      child: Semantics(
+        label: l10n.homeBasePinLabel(base.shop.name),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: Container(
+            width: 20,
+            height: 20,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Washi.page,
+              border: Border.all(color: Washi.ink, width: 1.5),
+            ),
+            child: Text(
+              l10n.homeBaseSealChar,
+              style: const TextStyle(
+                fontFamily: Washi.brush,
+                fontSize: 12,
+                height: 1,
+                color: Washi.ink,
+              ),
+            ),
+          ),
         ),
       ),
     );

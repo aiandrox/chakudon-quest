@@ -675,8 +675,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get journeyExpeditionsTitle => '遠征の記録';
 
   @override
-  String get journeyExpeditionsNone =>
-      '同じあたり（2km以内）で5杯食べると拠点ができます。拠点から20km以上離れた店で食べた日が、遠征として並びます';
+  String get journeyExpeditionsNone => '拠点から20km以上離れた店で食べた日が、遠征として並びます';
+
+  @override
+  String homeBaseLine(String shop, int bowls) {
+    return '今の拠点: $shopのあたり（$bowls杯）';
+  }
+
+  @override
+  String homeBaseNone(int bowls) {
+    return '同じあたりで$bowls杯食べると拠点ができます';
+  }
+
+  @override
+  String get homeBaseSealChar => '拠';
+
+  @override
+  String homeBasePinLabel(String shop) {
+    return '今の拠点（$shopのあたり）';
+  }
 
   @override
   String journeyExpeditionName(int month, int day, String shop) {
