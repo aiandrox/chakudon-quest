@@ -686,6 +686,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get memoryDismiss => '閉じる';
 
   @override
+  String queueSuggestion(String shop) {
+    return '$shop に並んだ？';
+  }
+
+  @override
+  String queueSuggestionWished(String shop) {
+    return '願掛けの $shop に並んだ？';
+  }
+
+  @override
+  String get queueSuggestionYes => '並んだ';
+
+  @override
+  String get queueSuggestionDismiss => '閉じる';
+
+  @override
+  String get queueSuggestionFailed => '並んだ時刻を残せませんでした';
+
+  @override
   String get backupTitle => 'バックアップ';
 
   @override
