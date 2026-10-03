@@ -6,6 +6,7 @@ import '../../theme/washi.dart';
 import '../inkan/inkan_stamp.dart';
 import '../records/date_format.dart';
 import '../visit_detail/visit_detail_screen.dart';
+import '../words/words.dart';
 import 'rank_history.dart';
 import 'rank_labels.dart';
 import 'ranks.dart';
@@ -89,22 +90,27 @@ class _ReachedRow extends StatelessWidget {
         label: adventurerRankLabel(l10n, attainment.rank),
         fontSize: 20,
       ),
-      lines: visit == null
-          ? [
-              Text(
-                l10n.rankHistoryNoRecord,
-                style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
-              ),
-            ]
-          : [
-              Text(formatDate(visit.visit.eatenAt), style: textTheme.bodyLarge),
-              Text(
-                visit.shop.name,
-                style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+      lines: [
+        if (visit == null)
+          Text(
+            l10n.rankHistoryNoRecord,
+            style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
+          )
+        else ...[
+          Text(formatDate(visit.visit.eatenAt), style: textTheme.bodyLarge),
+          Text(
+            visit.shop.name,
+            style: textTheme.bodySmall?.copyWith(color: Washi.inkSoft),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+        const SizedBox(height: 4),
+        Text(
+          masterWords(attainment.rank),
+          style: textTheme.bodyMedium?.copyWith(fontFamily: Washi.brush),
+        ),
+      ],
       onTap: visit == null
           ? null
           : () => Navigator.of(context).push(

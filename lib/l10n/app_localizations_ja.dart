@@ -270,9 +270,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get streakReminderBody => '今週はまだ着丼していません。日曜が終わるまでに一杯いかがですか？';
-
-  @override
   String get checkinCancel => '取り消す';
 
   @override
@@ -309,7 +306,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get retreatConfirm => '撤退を記録';
 
   @override
-  String get retreatSaved => '撤退を記録しました。次こそ着丼！';
+  String get retreatSaved => '撤退を記録しました';
 
   @override
   String get retreatFailed => '記録できませんでした。もう一度お試しください';

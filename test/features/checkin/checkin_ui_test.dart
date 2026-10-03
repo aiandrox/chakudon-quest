@@ -11,6 +11,7 @@ import 'package:chakudon_quest/features/wishes/wish_repository.dart';
 import 'package:chakudon_quest/features/shop_search/geo.dart';
 import 'package:chakudon_quest/features/shop_search/shop_candidate.dart';
 import 'package:chakudon_quest/features/shop_search/shop_search_service.dart';
+import 'package:chakudon_quest/features/words/words.dart';
 
 import '../../support/fakes.dart';
 import '../../support/l10n.dart';
@@ -193,7 +194,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(repository.retreatMemos, [ja.retreatReasonSoldOut]);
-      expect(find.text(ja.retreatSaved), findsOneWidget);
+      expect(
+        find.text(
+          '${ja.retreatSaved}\n${retreatConsolation(ja.retreatReasonSoldOut, 'retreat')}',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('撤退をキャンセルすると何も記録しない', (tester) async {
