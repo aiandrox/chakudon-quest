@@ -31,6 +31,37 @@ class QuestSeal extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final isSpot = quest.kind == QuestKind.spot;
+    final design = quest.seal;
+    if (isSpot && level > 0 && design != null) {
+      return Semantics(
+        label: quest.title,
+        child: ExcludeSemantics(
+          child: Transform.rotate(
+            angle: -6 * math.pi / 180,
+            child: InkWear(
+              seed: inkSeed('${quest.id}:$level'),
+              child: SizedBox.square(
+                dimension: size,
+                child: CustomPaint(
+                  painter: _SpotSealPainter(design.shape),
+                  child: Center(
+                    child: Text(
+                      design.glyph,
+                      style: TextStyle(
+                        fontFamily: Washi.brush,
+                        fontSize: size * 0.46,
+                        height: 1.05,
+                        color: Washi.shu,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     final locked = level <= 0;
     final isMax = !isSpot && level >= quest.maxLevel;
     final color = locked ? Washi.faded : Washi.shu;
@@ -87,4 +118,114 @@ class QuestSeal extends StatelessWidget {
       ),
     );
   }
+}
+
+/// 奥義ごとの印の枠。
+class _SpotSealPainter extends CustomPainter {
+  const _SpotSealPainter(this.shape);
+
+  final QuestSealShape shape;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = size.center(Offset.zero);
+    final r = size.shortestSide / 2;
+    final w = r * 0.09;
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w
+      ..color = Washi.shu.withValues(alpha: 0.92);
+    final thin = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.5
+      ..color = Washi.shu.withValues(alpha: 0.92);
+    final fill = Paint()..color = Washi.shu.withValues(alpha: 0.92);
+
+    Path polygon(int sides, double radius, {double rotate = 0}) {
+      final path = Path();
+      for (var i = 0; i < sides; i++) {
+        final a = rotate + 2 * math.pi * i / sides - math.pi / 2;
+        final p = c + Offset(math.cos(a), math.sin(a)) * radius;
+        i == 0 ? path.moveTo(p.dx, p.dy) : path.lineTo(p.dx, p.dy);
+      }
+      return path..close();
+    }
+
+    switch (shape) {
+      case QuestSealShape.doubleCircle:
+        canvas.drawCircle(c, r - w, line);
+        canvas.drawCircle(c, r - w * 2.8, thin);
+      case QuestSealShape.square:
+        final rect = Rect.fromCircle(center: c, radius: r * 0.82);
+        canvas.drawRect(rect, line);
+        canvas.drawRect(rect.deflate(w * 1.8), thin);
+      case QuestSealShape.octagon:
+        canvas.drawPath(polygon(8, r - w, rotate: math.pi / 8), line);
+        canvas.drawPath(polygon(8, r - w * 2.8, rotate: math.pi / 8), thin);
+      case QuestSealShape.diamond:
+        canvas.drawPath(polygon(4, r - w * 0.5), line);
+        canvas.drawPath(polygon(4, r - w * 2.6), thin);
+      case QuestSealShape.hexagon:
+        canvas.drawPath(polygon(6, r - w), line);
+        canvas.drawPath(polygon(6, r - w * 2.8), thin);
+      case QuestSealShape.flower:
+        const petals = 8;
+        final petalR = r * 0.24;
+        final ringR = r - petalR - w * 0.5;
+        for (var i = 0; i < petals; i++) {
+          final a = 2 * math.pi * i / petals;
+          canvas.drawCircle(
+            c + Offset(math.cos(a), math.sin(a)) * ringR,
+            petalR,
+            thin,
+          );
+        }
+        canvas.drawCircle(c, ringR, line);
+      case QuestSealShape.dottedRing:
+        canvas.drawCircle(c, r - w * 2.4, line);
+        final dots = Path();
+        const count = 20;
+        for (var i = 0; i < count; i++) {
+          final a = 2 * math.pi * i / count;
+          dots.addOval(
+            Rect.fromCircle(
+              center: c + Offset(math.cos(a), math.sin(a)) * (r - w * 0.6),
+              radius: w * 0.5,
+            ),
+          );
+        }
+        canvas.drawPath(dots, fill);
+      case QuestSealShape.castle:
+        // 城壁のような凸凹の上辺をもつ角印。
+        final rect = Rect.fromCircle(center: c, radius: r * 0.8);
+        final path = Path()..moveTo(rect.left, rect.top);
+        const merlons = 5;
+        final step = rect.width / (merlons * 2 - 1);
+        for (var i = 0; i < merlons * 2 - 1; i++) {
+          final x = rect.left + step * (i + 1);
+          final y = i.isEven ? rect.top : rect.top + step * 0.8;
+          path
+            ..lineTo(rect.left + step * i, y)
+            ..lineTo(x, y);
+        }
+        path
+          ..lineTo(rect.right, rect.bottom)
+          ..lineTo(rect.left, rect.bottom)
+          ..close();
+        canvas.drawPath(path, line);
+        canvas.drawRect(
+          Rect.fromLTRB(
+            rect.left + w * 1.8,
+            rect.top + step * 0.8 + w * 1.8,
+            rect.right - w * 1.8,
+            rect.bottom - w * 1.8,
+          ),
+          thin,
+        );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SpotSealPainter oldDelegate) =>
+      oldDelegate.shape != shape;
 }

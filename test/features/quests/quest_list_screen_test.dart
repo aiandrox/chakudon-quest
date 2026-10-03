@@ -33,7 +33,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('常設とスポットに分けて表示する。記録が無ければすべて未達成', (tester) async {
+  testWidgets('常設とスポットに分けて表示する。記録が無ければ奥義は隠す', (tester) async {
     await pumpQuests(tester, const []);
 
     expect(find.text(ja.questStanding), findsOneWidget);
@@ -41,7 +41,8 @@ void main() {
     expect(find.text(ja.questLevelTotal(0)), findsNothing);
     expect(find.text(ja.questSpotSummary(0, 8)), findsOneWidget);
     expect(find.text('着丼の道'), findsOneWidget);
-    expect(find.text('はじめての着丼'), findsOneWidget);
+    expect(find.text('はじめての着丼'), findsNothing);
+    expect(find.text(ja.questSpotNone), findsOneWidget);
     expect(find.text(ja.questCount(0, '杯')), findsWidgets);
     final seals = tester.widgetList<QuestSeal>(find.byType(QuestSeal));
     expect(seals.map((seal) => seal.level).toSet(), {0});
@@ -57,10 +58,20 @@ void main() {
 
     // 着丼の道は10杯で Lv.2（次は30杯）。
     expect(find.text(ja.questCount(10, '杯')), findsOneWidget);
-    // はじめての着丼は達成。
-    expect(find.text(ja.questCleared), findsOneWidget);
+    // 会得した奥義（はじめての着丼）だけを、独自の印で出す。
+    expect(find.text('はじめての着丼'), findsOneWidget);
+    expect(find.text('初'), findsOneWidget);
+    expect(find.text('60分の試練'), findsNothing);
     expect(find.text(ja.questSpotSummary(1, 8)), findsOneWidget);
-    // 着丼の道 Lv.2 + 開拓者 Lv.0 ...のレベル合計。
     expect(find.text(daijiNumber(2)), findsOneWidget);
+
+    // 印をタップすると、会得した店と日を出し、その一杯へ行ける。
+    await tester.tap(find.text('はじめての着丼'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(ja.questSpotAchievedAt('2026/9/1', 'shop')),
+      findsOneWidget,
+    );
+    expect(find.text(ja.questSpotOpenShop), findsOneWidget);
   });
 }

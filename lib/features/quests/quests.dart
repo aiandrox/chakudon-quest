@@ -8,6 +8,26 @@ import '../wishes/wishes.dart';
 /// 常設: 回数を重ねるごとにレベルが上がる。スポット: 1回達成すれば終わり。
 enum QuestKind { standing, spot }
 
+/// 奥義の印の形。
+enum QuestSealShape {
+  doubleCircle,
+  square,
+  octagon,
+  diamond,
+  hexagon,
+  flower,
+  dottedRing,
+  castle,
+}
+
+/// 奥義の印の字（1文字）と形。
+class QuestSealDesign {
+  const QuestSealDesign(this.glyph, this.shape);
+
+  final String glyph;
+  final QuestSealShape shape;
+}
+
 /// クエスト（お題）の定義。追加・変更はこの一覧だけを書き換える。
 ///
 /// 達成状況は保存せず、毎回記録から[Quest.count]で数える。[Quest.count]は記録が増えても
@@ -94,6 +114,7 @@ const quests = <Quest>[
     unit: '杯',
     thresholds: [1],
     count: _eatenCount,
+    seal: QuestSealDesign('初', QuestSealShape.doubleCircle),
   ),
   Quest(
     id: 'queue_60',
@@ -103,6 +124,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _waited60Count,
+    seal: QuestSealDesign('忍', QuestSealShape.square),
   ),
   Quest(
     id: 'queue_90',
@@ -112,6 +134,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _waited90Count,
+    seal: QuestSealDesign('闘', QuestSealShape.octagon),
   ),
   Quest(
     id: 'double_bowl',
@@ -121,6 +144,7 @@ const quests = <Quest>[
     unit: '日',
     thresholds: [1],
     count: _doubleBowlDays,
+    seal: QuestSealDesign('双', QuestSealShape.diamond),
   ),
   Quest(
     id: 'third_time',
@@ -130,6 +154,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _thirdTimeCount,
+    seal: QuestSealDesign('三', QuestSealShape.hexagon),
   ),
   Quest(
     id: 'rare_shop',
@@ -139,6 +164,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _rareShopCount,
+    seal: QuestSealDesign('幻', QuestSealShape.flower),
   ),
   Quest(
     id: 'home_base',
@@ -148,6 +174,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _homeBaseCount,
+    seal: QuestSealDesign('城', QuestSealShape.castle),
   ),
   Quest(
     id: 'long_wish',
@@ -157,6 +184,7 @@ const quests = <Quest>[
     unit: '回',
     thresholds: [1],
     count: _longWishCount,
+    seal: QuestSealDesign('願', QuestSealShape.dottedRing),
   ),
 ];
 
@@ -169,6 +197,7 @@ class Quest {
     required this.unit,
     required this.thresholds,
     required this.count,
+    this.seal,
   });
 
   final String id;
@@ -185,6 +214,9 @@ class Quest {
   /// 採点済みの記録（古い順）から、今の数を数える。
   final int Function(List<ScoredVisit> scored) count;
 
+  /// 奥義の印の字と形。奥義ごとに違う印にする。
+  final QuestSealDesign? seal;
+
   int get maxLevel => thresholds.length;
 }
 
@@ -192,7 +224,7 @@ class QuestProgress {
   const QuestProgress({
     required this.quest,
     required this.current,
-    required this.levelAchievedAt,
+    required this.levelAchievedBy,
   });
 
   final Quest quest;
@@ -200,8 +232,13 @@ class QuestProgress {
   /// 今の数。
   final int current;
 
-  /// 到達したレベルごとの、到達した記録の日時（古い順）。長さが今のレベル。
-  final List<DateTime> levelAchievedAt;
+  /// 到達したレベルごとの、到達した記録（古い順）。長さが今のレベル。
+  final List<ScoredVisit> levelAchievedBy;
+
+  /// 到達したレベルごとの、到達した記録の日時（古い順）。
+  List<DateTime> get levelAchievedAt => [
+    for (final entry in levelAchievedBy) entry.visit.eatenAt,
+  ];
 
   int get level => levelAchievedAt.length;
 
@@ -248,15 +285,15 @@ QuestProgress _evaluate(Quest quest, List<ScoredVisit> scored) {
   return QuestProgress(
     quest: quest,
     current: count,
-    levelAchievedAt: [
+    levelAchievedBy: [
       for (final threshold in quest.thresholds)
-        if (count >= threshold) _reachedAt(quest, scored, threshold),
+        if (count >= threshold) _reachedBy(quest, scored, threshold),
     ],
   );
 }
 
 /// 記録が増えても数は減らないので、[threshold]に届いた記録を二分探索で求められる。
-DateTime _reachedAt(Quest quest, List<ScoredVisit> scored, int threshold) {
+ScoredVisit _reachedBy(Quest quest, List<ScoredVisit> scored, int threshold) {
   var low = 1;
   var high = scored.length;
   while (low < high) {
@@ -267,7 +304,7 @@ DateTime _reachedAt(Quest quest, List<ScoredVisit> scored, int threshold) {
       low = middle + 1;
     }
   }
-  return scored[low - 1].visit.eatenAt;
+  return scored[low - 1];
 }
 
 bool _isEaten(ScoredVisit entry) => entry.visit.result == VisitResult.eaten;

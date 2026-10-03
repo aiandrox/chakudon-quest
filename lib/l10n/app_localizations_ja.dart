@@ -1057,4 +1057,15 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get wishTriggerRetreat => '撤退した店';
+
+  @override
+  String get questSpotNone => 'まだ会得した奥義はありません';
+
+  @override
+  String questSpotAchievedAt(String date, String shop) {
+    return '$date $shopにて会得';
+  }
+
+  @override
+  String get questSpotOpenShop => 'その一杯を見る';
 }

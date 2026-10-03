@@ -555,5 +555,9 @@
   "navGlyphWishes": "願",
   "navGlyphShugyo": "修",
   "navGlyphMap": "地",
-  "wishTriggerRetreat": "撤退した店"
+  "wishTriggerRetreat": "撤退した店",
+  "questSpotNone": "まだ会得した奥義はありません",
+  "questSpotAchievedAt": "{date} {shop}にて会得",
+  "@questSpotAchievedAt": {"placeholders": {"date": {"type": "String"}, "shop": {"type": "String"}}},
+  "questSpotOpenShop": "その一杯を見る"
 }

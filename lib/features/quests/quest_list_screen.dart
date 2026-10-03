@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../theme/washi.dart';
 import '../scoring/scoring_providers.dart';
+import '../records/date_format.dart';
+import '../visit_detail/visit_detail_screen.dart';
 import 'quest_seal.dart';
 import 'quests.dart';
 
@@ -23,6 +25,14 @@ class QuestSections extends ConsumerWidget {
       for (final progress in all)
         if (progress.quest.kind == QuestKind.spot) progress,
     ];
+    // 奥義は会得したものだけを、会得した順に印で並べる（まだのものは隠しておく）。
+    final achieved =
+        [
+          for (final progress in spot)
+            if (progress.isAchieved) progress,
+        ]..sort(
+          (a, b) => a.levelAchievedAt.first.compareTo(b.levelAchievedAt.first),
+        );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -32,12 +42,25 @@ class QuestSections extends ConsumerWidget {
         const SizedBox(height: 24),
         _SectionHeader(
           title: l10n.questSpot,
-          summary: l10n.questSpotSummary(
-            spot.where((progress) => progress.isAchieved).length,
-            spot.length,
-          ),
+          summary: l10n.questSpotSummary(achieved.length, spot.length),
         ),
-        for (final progress in spot) _QuestCard(progress: progress),
+        if (achieved.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              l10n.questSpotNone,
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: Washi.inkSoft),
+            ),
+          )
+        else
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final progress in achieved) _SpotSeal(progress: progress),
+            ],
+          ),
       ],
     );
   }
@@ -122,6 +145,100 @@ class _QuestCard extends StatelessWidget {
                 ),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 会得した奥義の印。タップすると、どの店で会得したかを見られる。
+class _SpotSeal extends StatelessWidget {
+  const _SpotSeal({required this.progress});
+
+  final QuestProgress progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final quest = progress.quest;
+    return InkWell(
+      onTap: () => showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        builder: (_) => _SpotDetails(progress: progress),
+      ),
+      child: SizedBox(
+        width: 96,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            children: [
+              QuestSeal(quest: quest, level: progress.level, size: 64),
+              const SizedBox(height: 6),
+              Text(
+                quest.title,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SpotDetails extends StatelessWidget {
+  const _SpotDetails({required this.progress});
+
+  final QuestProgress progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final quest = progress.quest;
+    final by = progress.levelAchievedBy.first;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            QuestSeal(quest: quest, level: progress.level, size: 96),
+            const SizedBox(height: 12),
+            Text(
+              quest.title,
+              style: textTheme.titleLarge?.copyWith(fontFamily: Washi.brush),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              quest.description,
+              textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(color: Washi.inkSoft),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.questSpotAchievedAt(
+                formatDate(by.visit.eatenAt),
+                by.shop.name,
+              ),
+              textAlign: TextAlign.center,
+              style: textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => VisitDetailScreen(visitId: by.visit.id),
+                  ),
+                );
+              },
+              child: Text(l10n.questSpotOpenShop),
+            ),
           ],
         ),
       ),
