@@ -530,6 +530,10 @@
       "day": {"type": "String"}
     }
   },
+  "inchoMonth": "{era}{eraYear}年 {month}月",
+  "@inchoMonth": {"placeholders": {"era": {"type": "String"}, "eraYear": {"type": "String"}, "month": {"type": "String"}}},
+  "inchoMonthCount": "{count}杯",
+  "@inchoMonthCount": {"placeholders": {"count": {"type": "int"}}},
   "eraReiwa": "令和",
   "eraHeisei": "平成",
   "eraFirstYear": "元",

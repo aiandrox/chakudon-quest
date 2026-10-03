@@ -1768,6 +1768,18 @@ abstract class AppLocalizations {
   /// **'{era}{year}年\n{month}月{day}日'**
   String kanjiEraDate(String era, String year, String month, String day);
 
+  /// No description provided for @inchoMonth.
+  ///
+  /// In ja, this message translates to:
+  /// **'{era}{eraYear}年 {month}月'**
+  String inchoMonth(String era, String eraYear, String month);
+
+  /// No description provided for @inchoMonthCount.
+  ///
+  /// In ja, this message translates to:
+  /// **'{count}杯'**
+  String inchoMonthCount(int count);
+
   /// No description provided for @eraReiwa.
   ///
   /// In ja, this message translates to:

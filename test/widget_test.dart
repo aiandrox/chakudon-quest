@@ -106,6 +106,9 @@ void main() {
     ]);
 
     expect(verticalText('麺屋テスト'), findsOneWidget);
+    // 月の見出し（令和八年 九月・1杯）を付ける。
+    expect(find.text(ja.inchoMonth('令和', '八', '九')), findsOneWidget);
+    expect(find.text(ja.inchoMonthCount(1)), findsOneWidget);
     expect(find.byType(InkanStamp), findsOneWidget);
     expect(find.text(ja.rankApprentice), findsOneWidget);
     expect(find.text(ja.totalPoints(20)), findsOneWidget);

@@ -20,6 +20,7 @@ import '../../theme/washi.dart';
 import '../scoring/rank_progress.dart';
 import '../streak/streak.dart';
 import '../memory/memory_card.dart';
+import 'incho_months.dart';
 import 'rating_prompt.dart';
 import '../scoring/scoring_providers.dart';
 import '../visit_detail/visit_detail_screen.dart';
@@ -33,6 +34,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final _scroll = ScrollController();
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -143,6 +152,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return null;
   }
 
+  String _monthLabel(AppLocalizations l10n, DateTime month) {
+    final (era, eraYear) = japaneseEra(month);
+    return l10n.inchoMonth(
+      switch (era) {
+        Era.heisei => l10n.eraHeisei,
+        Era.reiwa => l10n.eraReiwa,
+      },
+      eraYear == 1 ? l10n.eraFirstYear : kanjiNumber(eraYear),
+      kanjiNumber(month.month),
+    );
+  }
+
   Widget _buildVisits(
     AppLocalizations l10n,
     AsyncValue<List<VisitWithShop>> visits,
@@ -178,23 +199,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ],
       ),
-      AsyncData(:final value) => CustomScrollView(
-        slivers: [
-          header,
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 200),
-            sliver: SliverGrid.builder(
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 220,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 0.76,
+      // 月ごとに見出しを付け、見出しは画面の上に残す。右端のつまみで一気に動かせる。
+      AsyncData(:final value) => Scrollbar(
+        controller: _scroll,
+        interactive: true,
+        thickness: 8,
+        radius: const Radius.circular(4),
+        thumbVisibility: value.length > 20,
+        child: CustomScrollView(
+          controller: _scroll,
+          slivers: [
+            header,
+            for (final month in inchoMonths(value))
+              SliverMainAxisGroup(
+                slivers: [
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _MonthHeader(
+                      label: _monthLabel(l10n, month.month),
+                      count: month.entries.length,
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+                    sliver: SliverGrid.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 220,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            childAspectRatio: 0.76,
+                          ),
+                      itemCount: month.entries.length,
+                      itemBuilder: (context, index) =>
+                          _VisitPage(entry: month.entries[index]),
+                    ),
+                  ),
+                ],
               ),
-              itemCount: value.length,
-              itemBuilder: (context, index) => _VisitPage(entry: value[index]),
-            ),
-          ),
-        ],
+            const SliverToBoxAdapter(child: SizedBox(height: 184)),
+          ],
+        ),
       ),
       AsyncError() => Center(child: Text(l10n.homeLoadFailed)),
       _ => const Center(child: CircularProgressIndicator()),
@@ -288,4 +333,52 @@ class _VisitPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// 印帳の月の見出し（「令和八年 十月」と、その月の杯数）。スクロールしても上に残る。
+class _MonthHeader extends SliverPersistentHeaderDelegate {
+  const _MonthHeader({required this.label, required this.count});
+
+  final String label;
+  final int count;
+
+  static const _height = 40.0;
+
+  @override
+  double get minExtent => _height;
+
+  @override
+  double get maxExtent => _height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) => Container(
+    color: Washi.desk,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    alignment: Alignment.centerLeft,
+    child: Row(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: Washi.brush,
+            fontSize: 18,
+            color: Washi.ink,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          AppLocalizations.of(context).inchoMonthCount(count),
+          style: const TextStyle(fontSize: 13, color: Washi.inkSoft),
+        ),
+      ],
+    ),
+  );
+
+  @override
+  bool shouldRebuild(_MonthHeader oldDelegate) =>
+      oldDelegate.label != label || oldDelegate.count != count;
 }
