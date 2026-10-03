@@ -328,6 +328,7 @@ dart run build_runner build --delete-conflicting-outputs   # drift のコード�
 | 2026-10-03 | サーバーは Cloudflare Workers 単体ではなく Cloudflare Pages の1つのプロジェクト（`site/`、名前 ramen-in-cho）にし、紹介ページ（`public/`）と API（Pages Functions、`/api/v1/...`）を同じ所に置く。公開先は https://ramen-in-cho.aiandrox.com 。フォルダとデプロイの流れは face-seal（Firebase Hosting ＋ Functions）にそろえる | LP は Pages に置く・サブドメインを使う（aiandrox の判断）。Pages Functions なら DNS が Cloudflare に無くても CNAME だけで API も同じドメインに載り、デプロイも1回で済むため |
 | 2026-10-03 | サーバーに店の検索を足す（`/api/v1/shops/nearby`・`/api/v1/shops/search`）。手で持つ店・Overpass・OpenPOI・Yahoo! をまとめる決まりはアプリと同じにして TypeScript に移した。結果は Cache API に1週間ためる（どれかが失敗したときは1日）。近くの店は約300mのマスごと、店名は言葉と約50kmの場所ごとにため、誰が探したかは残さない。Yahoo! の Client ID はサーバーの secret に置く | 店はそう変わらないので1週間ためても困らず、先の検索サービスへの問い合わせを減らせるため（aiandrox の判断）。Overpass は同じ IP から同時に2つまでなので、全員の問い合わせがサーバーから出ても詰まりにくくする |
 | 2026-10-03 | アプリの店の検索（近くの店・店名）と手で持つ店の一覧を、麺印帳のサーバー経由にする。サーバーには6秒（地図は呼び出し元と同じ）まで待ち、届かなければ今までどおり端末から直接探す。手で持つ店の一覧は起動のたびに1日1回まで取り直し（ETag で変わったときだけ）、documents の `curated_shops.json` に保存する。取れないときは保存分、それも無ければ同梱分を使う。`--dart-define=RAMEN_IN_CHO_API=` で空にするとサーバーを使わない | 検索の決まりと手で持つ店を、アプリの更新なしで直せるようにするため（issue #172）。サーバーが動き出すまでや落ちたときも、今までどおり検索できるようにするため |
+| 2026-10-03 | アプリのアイコンと起動画面を「藍の印帳の表紙に、題箋『麺印帳』と丼の朱印」にする（ロゴ案 9c）。絵は `test/tool/app_icon_test.dart` で描き、`UPDATE_APP_ICON=true` で Android・iOS の各サイズを作り直す。かすれは入れない | 利用者の選択。印帳（帳面）と印、ラーメン（丼）が1つの絵で伝わるため。小さいアイコンでは、かすれが汚れに見えるため |
 | 初版 | アプリ名は「着丼クエスト」（`chakudon-quest`） | 同名のアプリ・サービスが見つからず、名前で検索したときに埋もれにくいため。遊びの中心を「クエスト（お題）の達成」に置く |
 
 ## 未決の論点
