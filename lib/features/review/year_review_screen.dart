@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -16,6 +17,7 @@ import '../inkan/inkan_stamp.dart';
 import '../quests/quest_seal.dart';
 import '../quests/quests.dart';
 import '../records/date_format.dart';
+import '../scoring/points.dart';
 import '../scoring/rank_labels.dart';
 import '../scoring/scoring_providers.dart';
 import '../stats/stats.dart';
@@ -320,29 +322,148 @@ class _Figure extends StatelessWidget {
   }
 }
 
-class _CountsPage extends StatelessWidget {
+/// この一年で食べた1杯の印を、ポン、ポン、と順に押していき、押し終えたら数字を出す。
+class _CountsPage extends StatefulWidget {
   const _CountsPage({required this.review});
 
   final YearReview review;
 
   @override
+  State<_CountsPage> createState() => _CountsPageState();
+}
+
+class _CountsPageState extends State<_CountsPage>
+    with SingleTickerProviderStateMixin {
+  late final int _count = widget.review.stamps.length;
+
+  // 1つあたり0.15秒、多いときは全部で3秒に収める。押し終えたら0.4秒で数字を出す。
+  late final _perStamp = _count == 0 ? 0 : (3000 / _count).clamp(40, 150);
+  late final _controller = AnimationController(
+    vsync: this,
+    duration: Duration(milliseconds: (_perStamp * _count + 600).round()),
+  )..forward();
+  int _pressed = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      final elapsed = _controller.value * _controller.duration!.inMilliseconds;
+      final pressed = _perStamp == 0
+          ? 0
+          : (elapsed / _perStamp).floor().clamp(0, _count);
+      if (pressed > _pressed) {
+        HapticFeedback.selectionClick();
+        _pressed = pressed;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final review = widget.review;
+    final size = _count <= 12
+        ? 64.0
+        : _count <= 30
+        ? 48.0
+        : 36.0;
     return _Page(
       title: l10n.reviewCountsTitle,
       children: [
-        _Figure(label: l10n.reviewBowls, value: l10n.bowls(review.bowls)),
-        _Figure(
-          label: l10n.reviewShops,
-          value: l10n.reviewShopCount(review.shops),
+        AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            final elapsed =
+                _controller.value * _controller.duration!.inMilliseconds;
+            return Column(
+              children: [
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    for (final (i, stamp) in review.stamps.indexed)
+                      SizedBox.square(
+                        dimension: size,
+                        child: _PressedStamp(
+                          scored: stamp,
+                          size: size,
+                          progress: _perStamp == 0
+                              ? 1
+                              : ((elapsed - i * _perStamp) / _perStamp).clamp(
+                                  0.0,
+                                  1.0,
+                                ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                AnimatedOpacity(
+                  opacity: _controller.isCompleted ? 1 : 0,
+                  duration: const Duration(milliseconds: 400),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 24,
+                    children: [
+                      _Figure(
+                        label: l10n.reviewBowls,
+                        value: l10n.bowls(review.bowls),
+                      ),
+                      _Figure(
+                        label: l10n.reviewShops,
+                        value: l10n.reviewShopCount(review.shops),
+                      ),
+                      _Figure(
+                        label: l10n.reviewPoints,
+                        value: l10n.points(review.points),
+                      ),
+                      if (review.retreats > 0)
+                        _Figure(
+                          label: l10n.reviewRetreats,
+                          value: l10n.reviewRetreatCount(review.retreats),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        _Figure(label: l10n.reviewPoints, value: l10n.points(review.points)),
-        if (review.retreats > 0)
-          _Figure(
-            label: l10n.reviewRetreats,
-            value: l10n.reviewRetreatCount(review.retreats),
-          ),
       ],
+    );
+  }
+}
+
+/// 押される途中の印。上から大きく落ちてきて、[progress]が1で紙に着く。
+class _PressedStamp extends StatelessWidget {
+  const _PressedStamp({
+    required this.scored,
+    required this.size,
+    required this.progress,
+  });
+
+  final ScoredVisit scored;
+  final double size;
+  final double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    if (progress <= 0) return const SizedBox.shrink();
+    final drop = Curves.easeInCubic.transform(progress);
+    return Opacity(
+      opacity: 0.3 + 0.7 * drop,
+      child: Transform.scale(
+        scale: 1.8 - 0.8 * drop,
+        child: InkanStamp(scored: scored, size: size),
+      ),
     );
   }
 }
@@ -583,6 +704,24 @@ class _ClosingPage extends StatelessWidget {
                   style: textTheme.bodyMedium?.copyWith(color: Washi.inkSoft),
                 ),
                 const SizedBox(height: 12),
+                // 共有する絵は、この一年の印の一覧を主役にする。
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 2,
+                  runSpacing: 2,
+                  children: [
+                    for (final stamp in review.stamps)
+                      InkanStamp(
+                        scored: stamp,
+                        size: review.stamps.length <= 20
+                            ? 56
+                            : review.stamps.length <= 60
+                            ? 40
+                            : 30,
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 Text(
                   l10n.reviewSummaryLine(
                     review.bowls,
@@ -591,13 +730,13 @@ class _ClosingPage extends StatelessWidget {
                   ),
                   style: textTheme.titleMedium,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Text(
                   yearClosingWords(review.year),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontFamily: Washi.brush,
-                    fontSize: 22,
+                    fontSize: 16,
                     color: Washi.ink,
                     height: 1.5,
                   ),

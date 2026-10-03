@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chakudon_quest/features/inkan/inkan_stamp.dart';
+
 import 'package:chakudon_quest/features/records/clock.dart';
 import 'package:chakudon_quest/features/records/models.dart';
 import 'package:chakudon_quest/features/records/record_repository.dart';
@@ -66,6 +68,8 @@ void main() {
 
     await next(tester);
     expect(find.text(ja.reviewCountsTitle), findsOneWidget);
+    // この一年の1杯の印を押し終えてから、数字を出す。
+    expect(find.byType(InkanStamp), findsOneWidget);
     expect(find.text(ja.bowls(1)), findsOneWidget);
     expect(find.text(ja.reviewRetreatCount(1)), findsOneWidget);
 
