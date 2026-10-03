@@ -206,6 +206,7 @@ Visit（1杯の記録。撤退も含む）
   - `NSCameraUsageDescription`: ラーメンの写真を撮るために使います
   - `NSPhotoLibraryUsageDescription`: 撮った写真を記録に使うために使います
   - `NSLocationWhenInUseUsageDescription`: 近くのラーメン店を探すため、また並んだ店を確認するために使います
+  - `NSLocationAlwaysAndWhenInUseUsageDescription`: 近くのラーメン店を探すため、また並んだ店を確認するために使います。アプリを閉じている間は使いません（`geolocator` が「常に許可」の API を参照しているため、使わなくても書かないとストアで警告される）
 - Android はアプリ使用中の位置情報（`ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION`）だけを要求する
 - 権限が拒否されても、手入力で記録できること
 
