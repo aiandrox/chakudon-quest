@@ -35,6 +35,9 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
   bool _isSearching = false;
   bool _failed = false;
 
+  /// 探している途中で探し直したら、新しい方の結果だけを出す。
+  int _generation = 0;
+
   @override
   void initState() {
     super.initState();
@@ -49,7 +52,8 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
 
   Future<void> _search() async {
     final name = _controller.text.trim();
-    if (name.isEmpty || _isSearching) return;
+    if (name.isEmpty) return;
+    final generation = ++_generation;
     setState(() {
       _isSearching = true;
       _failed = false;
@@ -58,12 +62,18 @@ class _ShopNameSearchSheetState extends ConsumerState<_ShopNameSearchSheet> {
       final results = await ref
           .read(openPoiClientProvider)
           .searchByName(name, near: widget.near);
-      if (mounted) setState(() => _results = results);
+      if (!mounted || generation != _generation) return;
+      setState(() {
+        _results = results;
+        _isSearching = false;
+      });
     } catch (e) {
       debugPrint('Shop name search failed: $e');
-      if (mounted) setState(() => _failed = true);
-    } finally {
-      if (mounted) setState(() => _isSearching = false);
+      if (!mounted || generation != _generation) return;
+      setState(() {
+        _failed = true;
+        _isSearching = false;
+      });
     }
   }
 

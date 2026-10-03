@@ -442,14 +442,22 @@ class RecordRepository {
           !setEquals(existing.hoursConditions, hoursConditions);
       final adoptsSource =
           existing.dataSource == null && input.dataSource != null;
-      if (adoptsOsm || changesHours || adoptsSource) {
+      // 位置のわからない店に、店名で探した店などの位置が来たら、地図に載るよう位置を補う。
+      final adoptsLocation =
+          existing.latitude == null &&
+          input.latitude != null &&
+          input.longitude != null;
+      final setsLocation = adoptsOsm || adoptsLocation;
+      if (setsLocation || changesHours || adoptsSource) {
         await (_db.update(
           _db.shops,
         )..where((s) => s.id.equals(existing.id))).write(
           ShopsCompanion(
             osmId: adoptsOsm ? Value(input.osmId) : const Value.absent(),
-            latitude: adoptsOsm ? Value(input.latitude) : const Value.absent(),
-            longitude: adoptsOsm
+            latitude: setsLocation
+                ? Value(input.latitude)
+                : const Value.absent(),
+            longitude: setsLocation
                 ? Value(input.longitude)
                 : const Value.absent(),
             hoursConditions: changesHours
