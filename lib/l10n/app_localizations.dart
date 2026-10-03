@@ -1894,12 +1894,6 @@ abstract class AppLocalizations {
   /// **'最高 {days}日連続'**
   String healthyLifeBest(int days);
 
-  /// No description provided for @healthyLifeRevealed.
-  ///
-  /// In ja, this message translates to:
-  /// **'隠し要素が出現しました'**
-  String get healthyLifeRevealed;
-
   /// No description provided for @healthyLifeRevealNote.
   ///
   /// In ja, this message translates to:

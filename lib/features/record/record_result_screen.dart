@@ -390,8 +390,6 @@ class _HealthyLifeRevealBanner extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text(l10n.healthyLifeRevealed, style: textTheme.labelLarge),
-            const SizedBox(height: 4),
             Text(
               l10n.healthyLifeTitle,
               textAlign: TextAlign.center,

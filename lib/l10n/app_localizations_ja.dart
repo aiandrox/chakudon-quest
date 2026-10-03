@@ -1060,9 +1060,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get healthyLifeRevealed => '隠し要素が出現しました';
-
-  @override
   String get healthyLifeRevealNote => '7日続けて着丼した';
 
   @override
